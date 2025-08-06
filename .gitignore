@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+.npm
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MCP Servers (개발 도구)
+mcp-servers/
+
+# 수집된 CSS 데이터
+jobkorea_css/collected/node_modules/
+saramin_css/node_modules/
+
+# 로컬 설정
+.claude/
+
+# 임시 파일
+*.tmp
+*.bak
+*.log

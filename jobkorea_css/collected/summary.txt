@@ -1,0 +1,15 @@
+JobKorea CSS Collection Summary
+==============================
+
+Total CSS URLs found: 18
+Inline style blocks: 2
+Components analyzed: 5
+Unique colors found: 5
+Typography variations: 5
+
+Components analyzed:
+  - main_button_primary
+  - main_footer
+  - main_header
+  - main_main_banner
+  - main_search_box

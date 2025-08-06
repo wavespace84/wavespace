@@ -1,0 +1,215 @@
+{
+  "summary": {
+    "totalCSSFiles": 16,
+    "totalColors": 31,
+    "totalButtonStyles": 65,
+    "totalCardStyles": 40,
+    "totalFormStyles": 10,
+    "pagesAnalyzed": 5
+  },
+  "cssFileCategories": {
+    "layout": [
+      "https://www.saramin.co.kr/sri_css/header_default.css?v=20250722142036",
+      "https://www.saramin.co.kr/sri_css/gnb_default_override.css?v=20250722142036",
+      "https://www.saramin.co.kr/sri_css/layout.css?v=20250722142036"
+    ],
+    "components": [
+      "https://www.saramin.co.kr/sri_css/pattern.css?v=20250722142036",
+      "https://www.saramin.co.kr/sri_css/components.css?v=20250722142036"
+    ],
+    "pages": [
+      "https://www.saramin.co.kr/sri_css/main.css?v=20250722142036",
+      "https://www.saramin.co.kr/sri_css/login.css?v=20250722142036",
+      "https://www.saramin.co.kr/sri_css/jobs-recruit.css?v=20250722142036",
+      "https://www.saramin.co.kr/sri_css/jobs-total.css?v=20250722142036"
+    ],
+    "utilities": [
+      "https://www.saramin.co.kr/sri_css/common_ui_keeping.css?v=20250722142036",
+      "https://www.saramin.co.kr/sri_css/help.css?v=20250722142036"
+    ],
+    "vendor": [
+      "https://www.saraminimage.co.kr/js/libs/swiper_4.4.6/swiper.min.css"
+    ]
+  },
+  "colorAnalysis": {
+    "blacks": [
+      "rgb(0, 0, 0)"
+    ],
+    "whites": [
+      "rgb(255, 255, 255)"
+    ],
+    "blues": [
+      "rgb(45, 103, 255)",
+      "rgb(132, 145, 167)",
+      "rgb(55, 63, 87)",
+      "rgb(215, 220, 229)",
+      "rgb(92, 102, 123)",
+      "rgb(41, 46, 65)",
+      "rgb(150, 160, 181)",
+      "rgb(45, 101, 242)",
+      "rgb(0, 63, 229)",
+      "rgb(64, 117, 255)",
+      "rgb(148, 181, 252)",
+      "rgb(234, 237, 244)",
+      "rgb(103, 115, 142)",
+      "rgb(163, 188, 255)",
+      "rgb(0, 0, 238)",
+      "rgb(107, 118, 139)",
+      "rgb(244, 246, 250)",
+      "rgb(72, 118, 239)",
+      "rgb(49, 87, 221)",
+      "rgb(180, 192, 211)"
+    ],
+    "grays": [
+      "rgb(102, 102, 102)",
+      "rgb(68, 68, 68)",
+      "rgb(115, 115, 115)"
+    ],
+    "others": []
+  },
+  "typographyAnalysis": {
+    "fontSizes": [
+      "13px",
+      "14px",
+      "15px",
+      "16px",
+      "17px",
+      "1px",
+      "36px"
+    ],
+    "fontWeights": [
+      "400",
+      "700"
+    ],
+    "lineHeights": [
+      "20px",
+      "24px",
+      "36px",
+      "50px",
+      "normal"
+    ],
+    "tagSpecific": {
+      "a": {
+        "count": 14,
+        "commonSize": "14px",
+        "commonWeight": "400"
+      },
+      "h1": {
+        "count": 2,
+        "commonSize": "16px",
+        "commonWeight": "400"
+      },
+      "span": {
+        "count": 20,
+        "commonSize": "14px",
+        "commonWeight": "400"
+      },
+      "h5": {
+        "count": 2,
+        "commonSize": "16px",
+        "commonWeight": "400"
+      }
+    }
+  },
+  "buttonAnalysis": {
+    "totalButtons": 65,
+    "borderRadiuses": [
+      "0px",
+      "28px",
+      "16px",
+      "0px 4px 4px 0px",
+      "4px",
+      "20px"
+    ],
+    "heights": [
+      "20px",
+      "16px",
+      "52px",
+      "32px",
+      "40px",
+      "100%",
+      "44px",
+      "24px",
+      "26px",
+      "46px",
+      "auto",
+      "56px",
+      "43px"
+    ],
+    "displays": [
+      "block",
+      "grid",
+      "inline-block",
+      "none",
+      "flex"
+    ],
+    "commonPatterns": {
+      "transparentBackground": 55,
+      "withBorder": 65,
+      "rounded": 16
+    }
+  },
+  "layoutSystem": {
+    "body": {
+      "display": "block",
+      "maxWidth": "none",
+      "margin": "0px",
+      "padding": "48px 0px 0px",
+      "width": "1920px"
+    },
+    "main": null,
+    "container": {
+      "display": "block",
+      "maxWidth": "none",
+      "margin": "0px",
+      "padding": "20px 0px",
+      "width": "216px"
+    }
+  },
+  "navigationStyle": {
+    "backgroundColor": "rgb(255, 255, 255)",
+    "color": "rgb(0, 0, 0)",
+    "height": "161px",
+    "display": "block",
+    "position": "sticky",
+    "zIndex": "100",
+    "boxShadow": "none"
+  },
+  "designSystemFindings": {
+    "primaryFont": "Pretendard, \"Malgun Gothic\", dotum, gulim, sans-serif",
+    "fallbackFont": "\"Malgun Gothic\", arial, sans-serif",
+    "primaryColors": [
+      "rgb(45, 103, 255)",
+      "rgb(132, 145, 167)",
+      "rgb(55, 63, 87)",
+      "rgb(215, 220, 229)",
+      "rgb(92, 102, 123)"
+    ],
+    "commonBorderRadius": [
+      "0px 4px 4px 0px",
+      "16px",
+      "20px",
+      "28px",
+      "4px",
+      "8px"
+    ],
+    "commonSpacing": [
+      "0px 0px 0px 10px",
+      "0px 0px 0px 14px",
+      "0px 13px",
+      "0px 24px 0px 48px",
+      "0px 4px",
+      "10px 0px",
+      "10px 0px 12px 83px",
+      "12px 0px",
+      "13px 15px 15px",
+      "24px 12px 8px",
+      "2px 0px",
+      "4px 8px",
+      "7px 5px 5px",
+      "8px 20px 8px 48px",
+      "8px 4px",
+      "9px 0px"
+    ]
+  }
+}

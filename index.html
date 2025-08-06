@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAVE space - 대한민국 No.1 분양실무자 대표 커뮤니티</title>
+    <script src="preload.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="sidebar-fix.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 전체 컨테이너 -->
+    <div class="app-container">
+        <!-- 사이드바 -->
+        <aside class="sidebar">
+            <!-- 로고 영역 -->
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <span class="logo-text">WAVE space</span>
+                    <span class="beta-badge">BETA</span>
+                </div>
+            </div>
+
+            <!-- 슬로건 -->
+            <div class="sidebar-slogan">
+                <p>대한민국 No.1 분양실무자 대표 커뮤니티</p>
+            </div>
+
+            <!-- 네비게이션 -->
+            <nav class="sidebar-nav">
+                <!-- 안내 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-book-open"></i>
+                                <span>안내</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="notice.html" class="nav-item">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span>공지사항</span>
+                                </a>
+                                <a href="updates.html" class="nav-item highlighted">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>업데이트</span>
+                                </a>
+                                <a href="support.html" class="nav-item">
+                                    <i class="fas fa-life-ring"></i>
+                                    <span>고객센터</span>
+                                </a>
+                                <a href="plus-membership.html" class="nav-item">
+                                    <i class="fas fa-rocket"></i>
+                                    <span>+Plus Membership</span>
+                                </a>
+                                <a href="events.html" class="nav-item">
+                                    <i class="fas fa-gift"></i>
+                                    <span>이벤트</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 커뮤니티 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-users"></i>
+                                <span>커뮤니티</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="/hall-of-fame" class="nav-item">
+                                    <i class="fas fa-trophy"></i>
+                                    <span>명예의전당</span>
+                                </a>
+                                <a href="/attendance" class="nav-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>출석체크</span>
+                                </a>
+                                <a href="/forum" class="nav-item">
+                                    <i class="fas fa-comments"></i>
+                                    <span>자유게시판</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 구인구직 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-building"></i>
+                                <span>구인구직</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="/jobs/planning" class="nav-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>분양기획</span>
+                                </a>
+                                <a href="/jobs/sales" class="nav-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>분양영업</span>
+                                </a>
+                                <a href="/jobs/headhunting" class="nav-item">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span>헤드헌팅</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 분양자료 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-folder-open"></i>
+                                <span>분양자료</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="/data/center" class="nav-item">
+                                    <i class="fas fa-database"></i>
+                                    <span>Data Center</span>
+                                </a>
+                                <a href="/data/market-research" class="nav-item">
+                                    <i class="fas fa-book"></i>
+                                    <span>시장조사서</span>
+                                </a>
+                                <a href="/data/proposal" class="nav-item">
+                                    <i class="fas fa-file-signature"></i>
+                                    <span>제안서</span>
+                                </a>
+                                <a href="/data/education" class="nav-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>교육자료</span>
+                                </a>
+                                <a href="/data/policy" class="nav-item">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>정책자료</span>
+                                </a>
+                                <a href="/data/etc" class="nav-item">
+                                    <i class="fas fa-folder"></i>
+                                    <span>기타자료</span>
+                                </a>
+                                <a href="/data/ai-report" class="nav-item">
+                                    <i class="fas fa-robot"></i>
+                                    <span>AI 보고서</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 포인트 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-coins"></i>
+                                <span>포인트</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="/points/policy" class="nav-item">
+                                    <i class="fas fa-gem"></i>
+                                    <span>포인트정책</span>
+                                </a>
+                                <a href="/points/ranking" class="nav-item">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>전체랭킹</span>
+                                </a>
+                                <a href="/points/charge" class="nav-item">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>충전하기</span>
+                                </a>
+                                <a href="/points/shop" class="nav-item">
+                                    <i class="fas fa-store"></i>
+                                    <span>상점</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 미니게임 섹션 -->
+                <div class="nav-section minigame-section">
+                    <div class="minigame-header">
+                        <i class="fas fa-gamepad"></i>
+                        <span>미니게임</span>
+                    </div>
+                    <div class="minigame-buttons">
+                        <a href="/game" class="minigame-btn">
+                            <i class="fas fa-gamepad"></i>
+                            <span>모든 게임</span>
+                        </a>
+                        <a href="/game?open=roulette" class="minigame-btn">
+                            <i class="fas fa-circle-notch"></i>
+                            <span>룰렛</span>
+                        </a>
+                        <a href="/game?open=blackjack" class="minigame-btn">
+                            <i class="fas fa-layer-group"></i>
+                            <span>블랙잭</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <div class="main-container">
+            <!-- 헤더 -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+
+                <div class="header-right">
+                    <!-- 검색 버튼 -->
+                    <button class="header-icon-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+
+                    <!-- 알림 버튼 -->
+                    <button class="header-icon-btn notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+
+                    <!-- 사용자 프로필 -->
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <span>박</span>
+                            <div class="user-badge">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">박승학님</p>
+                            <div class="user-meta">
+                                <span class="user-title">소통왕</span>
+                                <span class="user-points">• 1,250P</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down user-dropdown-icon"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="main-content">
+                <!-- 히어로 섹션 -->
+                <section class="hero-section">
+                    <div class="hero-container">
+                        <!-- 히어로 메인 콘텐츠 -->
+                        <div class="hero-content">
+                            <div class="hero-left">
+                                <div class="hero-badge">실무자를 위한 분양 통합 커뮤니티</div>
+                                <h1 class="hero-title">
+                                    <span class="hero-title-gradient">WAVE SPACE</span><br>
+                                    <span class="hero-subtitle">실무자의 흐름이 모이는 전문 공간</span>
+                                </h1>
+                                <p class="hero-description">
+                                    자료부터 구인까지, 분양 실무자들이 모이는 곳<br>
+                                    포인트로 보상받고, 실무 커리어를 쌓는 커뮤니티
+                                </p>
+
+                                <!-- 핵심 가치 포인트 -->
+                                <div class="hero-values">
+                                    <div class="value-item">
+                                        <i class="fas fa-bolt"></i>
+                                        <span>실시간 청약 일정</span>
+                                    </div>
+                                    <div class="value-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>실무자 네트워크</span>
+                                    </div>
+                                    <div class="value-item">
+                                        <i class="fas fa-coins"></i>
+                                        <span>활동 리워드</span>
+                                    </div>
+                                    <div class="value-item">
+                                        <i class="fas fa-rocket"></i>
+                                        <span>커리어 성장</span>
+                                    </div>
+                                </div>
+
+                                <!-- CTA 버튼 -->
+                                <div class="hero-cta-wrapper">
+                                    <a href="/register" class="hero-main-cta">
+                                        <span>지금 시작하기</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                    <a href="/about" class="hero-sub-cta">
+                                        <i class="fas fa-play-circle"></i>
+                                        <span>서비스 둘러보기</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="hero-right">
+                                <div class="hero-visual">
+                                    <!-- 동적 비주얼 요소 -->
+                                    <div class="hero-card-stack">
+                                        <div class="hero-card card-1">
+                                            <i class="fas fa-file-alt"></i>
+                                            <h3>원클릭 보고서</h3>
+                                            <p>주소만 입력하면 자동 생성</p>
+                                        </div>
+                                        <div class="hero-card card-2">
+                                            <i class="fas fa-trophy"></i>
+                                            <h3>명예의 전당</h3>
+                                            <p>활동 랭킹과 뱃지 시스템</p>
+                                        </div>
+                                        <div class="hero-card card-3">
+                                            <i class="fas fa-handshake"></i>
+                                            <h3>구인구직 매칭</h3>
+                                            <p>실무자 전문 채용 연결</p>
+                                        </div>
+                                    </div>
+                                    <div class="hero-glow"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3가지 핵심 흐름 섹션 -->
+                <section class="core-flow-section">
+                    <div class="section-container">
+                        <div class="section-header">
+                            <h2 class="section-title">정보 습득부터 보상까지, 완벽한 생태계</h2>
+                            <p class="section-subtitle">WAVE SPACE의 3가지 핵심 흐름으로 실무 효율성과 성장을 경험하세요</p>
+                        </div>
+                        
+                        <div class="flow-grid">
+                            <!-- 정보 습득 흐름 -->
+                            <div class="flow-card">
+                                <div class="flow-header">
+                                    <div class="flow-icon">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <h3>정보 습득 흐름</h3>
+                                </div>
+                                <div class="flow-items">
+                                    <div class="flow-item">
+                                        <i class="fas fa-folder-open"></i>
+                                        <div>
+                                            <h4>통합 자료실</h4>
+                                            <p>시장조사서, 제안서, 교육자료</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <div>
+                                            <h4>청약 일정</h4>
+                                            <p>실시간 분양 정보 자동 요약</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-robot"></i>
+                                        <div>
+                                            <h4>AI 보고서</h4>
+                                            <p>원클릭 입지분석 자동 생성</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-newspaper"></i>
+                                        <div>
+                                            <h4>뉴스 헤드라인</h4>
+                                            <p>부동산 시장 동향 큐레이션</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 활동 참여 흐름 -->
+                            <div class="flow-card">
+                                <div class="flow-header">
+                                    <div class="flow-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <h3>활동 참여 흐름</h3>
+                                </div>
+                                <div class="flow-items">
+                                    <div class="flow-item">
+                                        <i class="fas fa-comments"></i>
+                                        <div>
+                                            <h4>커뮤니티</h4>
+                                            <p>자유게시판, 유머·재미</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-trophy"></i>
+                                        <div>
+                                            <h4>명예의 전당</h4>
+                                            <p>활동 랭킹과 인정</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <div>
+                                            <h4>출석체크</h4>
+                                            <p>매일 방문 보상</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-question-circle"></i>
+                                        <div>
+                                            <h4>질문답변</h4>
+                                            <p>전문가 네트워킹</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 보상 유도 흐름 -->
+                            <div class="flow-card">
+                                <div class="flow-header">
+                                    <div class="flow-icon">
+                                        <i class="fas fa-gift"></i>
+                                    </div>
+                                    <h3>보상 유도 흐름</h3>
+                                </div>
+                                <div class="flow-items">
+                                    <div class="flow-item">
+                                        <i class="fas fa-coins"></i>
+                                        <div>
+                                            <h4>포인트 시스템</h4>
+                                            <p>모든 활동이 포인트로</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-gamepad"></i>
+                                        <div>
+                                            <h4>미니게임</h4>
+                                            <p>룰렛, 블랙잭 보너스</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-medal"></i>
+                                        <div>
+                                            <h4>뱃지 시스템</h4>
+                                            <p>활동 인증과 자부심</p>
+                                        </div>
+                                    </div>
+                                    <div class="flow-item">
+                                        <i class="fas fa-store"></i>
+                                        <div>
+                                            <h4>포인트 상점</h4>
+                                            <p>특별 혜택 구매</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 핵심 기능 상세 섹션 -->
+                <section class="features-section">
+                    <div class="section-container">
+                        <div class="section-header">
+                            <h2 class="section-title">실무자를 위한 핵심 기능</h2>
+                            <p class="section-subtitle">분양 업무에 필요한 모든 도구를 한 곳에서</p>
+                        </div>
+                        
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <h3>Data Center</h3>
+                                <p>통계, 리서치, 크롤링 데이터까지 분양 시장의 모든 정보를 한눈에 파악</p>
+                                <a href="/data/center" class="feature-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <h3>AI 자동 보고서</h3>
+                                <p>주소만 입력하면 입지 분석, 시세 흐름, 마케팅 제언까지 PDF로 자동 생성</p>
+                                <a href="/data/ai-report" class="feature-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <h3>헤드헌팅 시스템</h3>
+                                <p>분양기획, 영업 전문가를 위한 맞춤형 채용 연결과 경력 관리</p>
+                                <a href="/jobs/headhunting" class="feature-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <h3>실무 교육자료</h3>
+                                <p>현장에서 바로 활용 가능한 실무 교육자료와 정책자료 아카이브</p>
+                                <a href="/data/education" class="feature-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 커뮤니티 가치 섹션 -->
+                <section class="community-section">
+                    <div class="section-container">
+                        <div class="community-content">
+                            <div class="community-left">
+                                <h2 class="section-title">함께 성장하는 실무자 커뮤니티</h2>
+                                <p class="community-description">
+                                    유사 직군 실무자들과 경험을 공유하고, 질문과 답변으로 문제를 해결하며,
+                                    활동에 따른 포인트와 뱃지로 인정받는 공간입니다.
+                                </p>
+                                
+                                <div class="community-stats">
+                                    <div class="community-stat">
+                                        <div class="stat-number">15,847</div>
+                                        <div class="stat-label">활동중인 실무자</div>
+                                    </div>
+                                    <div class="community-stat">
+                                        <div class="stat-number">2,341</div>
+                                        <div class="stat-label">일일 질문답변</div>
+                                    </div>
+                                    <div class="community-stat">
+                                        <div class="stat-number">98.7%</div>
+                                        <div class="stat-label">답변 만족도</div>
+                                    </div>
+                                </div>
+                                
+                                <a href="/community" class="community-cta">
+                                    커뮤니티 참여하기
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="community-right">
+                                <div class="community-cards">
+                                    <div class="community-card">
+                                        <i class="fas fa-comments"></i>
+                                        <h4>자유로운 소통</h4>
+                                        <p>업계 이야기와 고민을 편하게 나누세요</p>
+                                    </div>
+                                    <div class="community-card">
+                                        <i class="fas fa-question-circle"></i>
+                                        <h4>전문가 답변</h4>
+                                        <p>실무 경험이 풍부한 전문가의 도움을 받으세요</p>
+                                    </div>
+                                    <div class="community-card">
+                                        <i class="fas fa-medal"></i>
+                                        <h4>명예와 보상</h4>
+                                        <p>활동량에 따라 뱃지와 포인트를 획득하세요</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 리워드 시스템 섹션 -->
+                <section class="reward-section">
+                    <div class="section-container">
+                        <div class="section-header center">
+                            <h2 class="section-title">활동이 곧 보상이 되는 시스템</h2>
+                            <p class="section-subtitle">출석부터 게시물 작성까지, 모든 활동이 포인트로 전환됩니다</p>
+                        </div>
+                        
+                        <div class="reward-grid">
+                            <div class="reward-card">
+                                <div class="reward-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <h3>일일 출석</h3>
+                                <div class="reward-points">+50P</div>
+                            </div>
+                            
+                            <div class="reward-card">
+                                <div class="reward-icon">
+                                    <i class="fas fa-pen"></i>
+                                </div>
+                                <h3>게시글 작성</h3>
+                                <div class="reward-points">+100P</div>
+                            </div>
+                            
+                            <div class="reward-card">
+                                <div class="reward-icon">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <h3>댓글 작성</h3>
+                                <div class="reward-points">+20P</div>
+                            </div>
+                            
+                            <div class="reward-card">
+                                <div class="reward-icon">
+                                    <i class="fas fa-upload"></i>
+                                </div>
+                                <h3>자료 업로드</h3>
+                                <div class="reward-points">+200P</div>
+                            </div>
+                            
+                            <div class="reward-card">
+                                <div class="reward-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <h3>답변 채택</h3>
+                                <div class="reward-points">+150P</div>
+                            </div>
+                            
+                            <div class="reward-card special">
+                                <div class="reward-icon">
+                                    <i class="fas fa-gamepad"></i>
+                                </div>
+                                <h3>미니게임</h3>
+                                <div class="reward-points">보너스!</div>
+                            </div>
+                        </div>
+                        
+                        <div class="reward-cta">
+                            <p>포인트로 상단노출권, 뱃지, 자유이용권 등을 구매하세요!</p>
+                            <a href="/points/shop" class="reward-shop-btn">
+                                포인트 상점 바로가기
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CTA 섹션 -->
+                <section class="cta-section">
+                    <div class="section-container">
+                        <div class="cta-content">
+                            <h2>지금 WAVE SPACE와 함께<br>실무 경쟁력을 높이세요</h2>
+                            <p>실무자가 주인공이 되는 실전 중심 커뮤니티</p>
+                            <div class="cta-buttons">
+                                <a href="/register" class="cta-primary">
+                                    무료로 시작하기
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a href="/guide" class="cta-secondary">
+                                    <i class="fas fa-book"></i>
+                                    이용 가이드
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 푸터 -->
+                <footer class="main-footer">
+                    <div class="footer-container">
+                        <div class="footer-content">
+                            <div class="footer-left">
+                                <h3 class="footer-logo">WAVE SPACE</h3>
+                                <div class="company-info">
+                                    <p><strong>마케팅인사이트</strong></p>
+                                    <p>대표자: 정은희</p>
+                                    <p>서울시 송파구 충민로 10, 8층 S16~C18호 (문정동, 가든파이브툴)</p>
+                                    <p>사업자등록번호: 712-04-02598</p>
+                                    <p>대표번호: 070-8064-5181</p>
+                                    <p>이메일: insight02598@gmail.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="footer-right">
+                                <div class="footer-links">
+                                    <a href="/terms">이용약관</a>
+                                    <a href="/community-rules">커뮤니티회칙</a>
+                                    <a href="/privacy">개인정보 보호정책</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-bottom">
+                            <p>© 마케팅인사이트 All rights reserved.</p>
+                        </div>
+                    </div>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

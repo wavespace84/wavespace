@@ -1,0 +1,435 @@
+/* 잡코리아 스타일 참고 CSS */
+/* 구인구직 사이트의 일반적인 디자인 패턴을 기반으로 작성 */
+
+/* ===== 색상 변수 정의 ===== */
+:root {
+  /* Primary Colors */
+  --primary-blue: #0066cc;
+  --primary-navy: #003d7a;
+  --primary-light-blue: #e6f2ff;
+  
+  /* Secondary Colors */
+  --secondary-orange: #ff6600;
+  --secondary-green: #00a651;
+  --secondary-red: #dc3545;
+  
+  /* Neutral Colors */
+  --gray-900: #212529;
+  --gray-800: #343a40;
+  --gray-700: #495057;
+  --gray-600: #6c757d;
+  --gray-500: #adb5bd;
+  --gray-400: #ced4da;
+  --gray-300: #dee2e6;
+  --gray-200: #e9ecef;
+  --gray-100: #f8f9fa;
+  --white: #ffffff;
+  
+  /* Semantic Colors */
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --info: #17a2b8;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+}
+
+/* ===== 타이포그래피 ===== */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', 
+               'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gray-800);
+  background-color: var(--gray-100);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  color: var(--gray-900);
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+/* ===== 버튼 스타일 ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-navy);
+  border-color: var(--primary-navy);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background-color: var(--white);
+  color: var(--gray-700);
+  border-color: var(--gray-400);
+}
+
+.btn-secondary:hover {
+  background-color: var(--gray-100);
+  border-color: var(--gray-500);
+}
+
+/* Success Button */
+.btn-success {
+  background-color: var(--success);
+  color: var(--white);
+  border-color: var(--success);
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 12px;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 16px;
+}
+
+/* ===== 카드 컴포넌트 ===== */
+.card {
+  background-color: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.card-header {
+  padding: 1rem 1.5rem;
+  background-color: var(--gray-100);
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-footer {
+  padding: 1rem 1.5rem;
+  background-color: var(--gray-100);
+  border-top: 1px solid var(--gray-300);
+}
+
+/* ===== 구직 카드 스타일 ===== */
+.job-card {
+  background-color: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.job-card:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+}
+
+.job-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.job-card-company {
+  font-size: 16px;
+  color: var(--gray-700);
+  margin-bottom: 0.75rem;
+}
+
+.job-card-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.job-card-meta-item {
+  font-size: 13px;
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.job-card-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.job-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 12px;
+  background-color: var(--gray-200);
+  color: var(--gray-700);
+  border-radius: var(--radius-sm);
+}
+
+/* ===== 네비게이션 스타일 ===== */
+.navbar {
+  background-color: var(--white);
+  border-bottom: 1px solid var(--gray-300);
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar-brand {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-blue);
+  text-decoration: none;
+  padding: 1rem 0;
+}
+
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: var(--gray-700);
+  text-decoration: none;
+  padding: 1rem 0;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary-blue);
+}
+
+.nav-link.active {
+  color: var(--primary-blue);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--primary-blue);
+}
+
+/* ===== 폼 요소 ===== */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gray-700);
+  background-color: var(--white);
+  background-clip: padding-box;
+  border: 1px solid var(--gray-400);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  color: var(--gray-700);
+  background-color: var(--white);
+  border-color: var(--primary-blue);
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+.form-label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.form-select {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gray-700);
+  background-color: var(--white);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  border: 1px solid var(--gray-400);
+  border-radius: var(--radius-md);
+  appearance: none;
+}
+
+/* ===== 검색 박스 ===== */
+.search-box {
+  background-color: var(--primary-light-blue);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+}
+
+.search-form {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+}
+
+.search-input-group {
+  flex: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 16px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+}
+
+.search-input:focus {
+  border-color: var(--primary-blue);
+}
+
+.search-button {
+  padding: 0.75rem 2rem;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ===== 태그/배지 ===== */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: var(--radius-sm);
+}
+
+.badge-primary {
+  background-color: var(--primary-blue);
+  color: var(--white);
+}
+
+.badge-success {
+  background-color: var(--success);
+  color: var(--white);
+}
+
+.badge-warning {
+  background-color: var(--warning);
+  color: var(--gray-900);
+}
+
+.badge-danger {
+  background-color: var(--danger);
+  color: var(--white);
+}
+
+/* ===== 유틸리티 클래스 ===== */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 3rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 3rem; }
+
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 1rem; }
+.p-4 { padding: 1.5rem; }
+.p-5 { padding: 3rem; }
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 768px) {
+  .navbar-nav {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .search-form {
+    flex-direction: column;
+  }
+  
+  .job-card-meta {
+    font-size: 12px;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+}

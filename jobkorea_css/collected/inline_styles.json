@@ -1,0 +1,10 @@
+[
+  {
+    "url": "https://www.jobkorea.co.kr/",
+    "content": "\n    .async-hide {\n        opacity: 0 !important\n    }\n"
+  },
+  {
+    "url": "https://www.jobkorea.co.kr/recruit/joblist",
+    "content": "\n    .async-hide {\n        opacity: 0 !important\n    }\n"
+  }
+]

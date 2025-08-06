@@ -1,0 +1,43 @@
+{
+  "colors": {
+    "primary": "rgb(51, 153, 255)",
+    "text": {
+      "primary": "rgb(0, 0, 0)",
+      "secondary": "rgb(23, 23, 23)",
+      "tertiary": "rgb(106, 106, 106)"
+    },
+    "background": {
+      "primary": "rgb(255, 255, 255)"
+    }
+  },
+  "typography": {
+    "fontFamily": "Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, \"Helvetica Neue\", \"Segoe UI\", \"Apple SD Gothic Neo\", \"Noto Sans KR\", \"Malgun Gothic\", sans-serif",
+    "sizes": {
+      "xs": "12px",
+      "sm": "14px",
+      "base": "16px",
+      "lg": "18px"
+    },
+    "weights": {
+      "normal": "400",
+      "medium": "500"
+    },
+    "lineHeights": {
+      "tight": "20px",
+      "normal": "normal",
+      "relaxed": "26px"
+    }
+  },
+  "spacing": {
+    "xs": "8px",
+    "sm": "12px",
+    "md": "16px",
+    "lg": "20px",
+    "xl": "24px"
+  },
+  "borderRadius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px"
+  }
+}

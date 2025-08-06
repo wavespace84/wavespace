@@ -1,0 +1,40 @@
+{
+  "common_paddings": {
+    "24px 0px 0px": 1
+  },
+  "common_margins": {
+    "0px 0px 0px 20px": 1,
+    "68px 0px 0px": 1
+  },
+  "border_styles": {
+    "0px none rgb(0, 0, 0)": 3,
+    "0px none rgb(23, 23, 23)": 1,
+    "2px solid rgb(0, 60, 255)": 1,
+    "0px none rgb(51, 153, 255)": 1,
+    "0px none rgb(106, 106, 106)": 1
+  },
+  "box_shadows": [],
+  "border_radius": {
+    "8px": 2
+  },
+  "z_index_values": [],
+  "widths": {
+    "1920px": 2,
+    "1260px": 1,
+    "440px": 1,
+    "192px": 1,
+    "80px": 1,
+    "16px": 1,
+    "auto": 1
+  },
+  "heights": {
+    "146px": 1,
+    "26px": 1,
+    "40px": 1,
+    "76px": 1,
+    "80px": 1,
+    "16px": 1,
+    "auto": 1,
+    "431px": 1
+  }
+}

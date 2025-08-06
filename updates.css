@@ -1,0 +1,309 @@
+/* 업데이트 페이지 스타일 */
+.updates-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 80px 80px; /* Fine-tuned alignment with sidebar slogan */
+}
+
+/* 헤더 */
+.updates-header {
+    margin-bottom: 32px;
+}
+
+.updates-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 6px;
+}
+
+.updates-subtitle {
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+/* 검색 및 필터 */
+.updates-controls {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.search-box {
+    flex: 1;
+    position: relative;
+}
+
+.search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--gray-400);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(48, 128, 255, 0.1);
+}
+
+.type-select,
+.category-select {
+    min-width: 180px;
+    padding: 12px 40px 12px 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.type-select:focus,
+.category-select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(48, 128, 255, 0.1);
+}
+
+/* 업데이트 목록 */
+.updates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.update-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--gray-100);
+    position: relative;
+    overflow: hidden;
+}
+
+.update-card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+}
+
+.update-card.latest {
+    border: 2px solid var(--primary-blue);
+}
+
+.update-card:hover .update-arrow {
+    transform: translate(4px, -4px);
+    color: var(--primary-blue);
+}
+
+/* 업데이트 헤더 정보 */
+.update-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.update-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.update-version {
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+}
+
+.update-version.major {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.update-version.minor {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.update-version.patch {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.update-version.hotfix {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.update-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.update-category i {
+    font-size: 12px;
+}
+
+.update-latest {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    color: white;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.update-latest i {
+    font-size: 12px;
+}
+
+.update-arrow {
+    font-size: 20px;
+    color: var(--gray-400);
+    transition: all 0.3s ease;
+}
+
+/* 업데이트 내용 */
+.update-content h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+    transition: color 0.2s ease;
+}
+
+.update-card:hover .update-content h3 {
+    color: var(--primary-blue);
+}
+
+.update-description {
+    font-size: 15px;
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* 변경사항 */
+.update-changes {
+    margin-bottom: 20px;
+}
+
+.update-changes h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 12px;
+}
+
+.change-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.change-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.change-item .bullet {
+    color: var(--primary-blue);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.more-changes {
+    font-size: 14px;
+    color: var(--primary-blue);
+    font-weight: 500;
+}
+
+/* 릴리즈 날짜 */
+.update-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--gray-500);
+}
+
+.update-date i {
+    font-size: 14px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .updates-container {
+        padding: 24px 16px;
+    }
+    
+    .updates-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .updates-rocket {
+        display: none;
+    }
+    
+    .updates-controls {
+        flex-direction: column;
+    }
+    
+    .type-select,
+    .category-select {
+        width: 100%;
+    }
+    
+    .update-card {
+        padding: 24px 20px;
+    }
+    
+    .update-header-info {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .update-arrow {
+        display: none;
+    }
+}

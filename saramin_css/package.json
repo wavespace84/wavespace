@@ -1,0 +1,15 @@
+{
+  "name": "saramin_css",
+  "version": "1.0.0",
+  "main": "collect_saramin_css.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "playwright": "^1.54.1"
+  }
+}

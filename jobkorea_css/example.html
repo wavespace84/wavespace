@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>잡코리아 스타일 예시</title>
+    <link rel="stylesheet" href="jobkorea_inspired_styles.css">
+    <style>
+        /* 추가 레이아웃 스타일 */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .header {
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .main-content {
+            padding: 2rem 0;
+        }
+        
+        .job-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .sidebar {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="navbar-brand">JobKorea</a>
+                <nav>
+                    <ul class="navbar-nav">
+                        <li><a href="#" class="nav-link active">채용정보</a></li>
+                        <li><a href="#" class="nav-link">기업정보</a></li>
+                        <li><a href="#" class="nav-link">인재검색</a></li>
+                        <li><a href="#" class="nav-link">커리어</a></li>
+                    </ul>
+                </nav>
+                <div>
+                    <button class="btn btn-secondary btn-sm">로그인</button>
+                    <button class="btn btn-primary btn-sm">회원가입</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 검색 영역 -->
+            <div class="search-box mb-4">
+                <h2 class="mb-3">나에게 맞는 일자리를 찾아보세요</h2>
+                <form class="search-form">
+                    <div class="search-input-group">
+                        <label class="form-label">직무/회사명</label>
+                        <input type="text" class="search-input" placeholder="원하는 직무나 회사명을 입력하세요">
+                    </div>
+                    <div class="search-input-group">
+                        <label class="form-label">지역</label>
+                        <select class="form-select search-input">
+                            <option>전체</option>
+                            <option>서울</option>
+                            <option>경기</option>
+                            <option>인천</option>
+                            <option>부산</option>
+                            <option>대구</option>
+                            <option>광주</option>
+                            <option>대전</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary search-button">검색</button>
+                </form>
+            </div>
+
+            <!-- 콘텐츠 그리드 -->
+            <div class="content-grid">
+                <!-- 채용 공고 리스트 -->
+                <div class="job-list">
+                    <h3 class="mb-3">추천 채용공고</h3>
+                    
+                    <!-- 채용 카드 1 -->
+                    <div class="job-card">
+                        <div class="badge badge-primary mb-2">HOT</div>
+                        <h3 class="job-card-title">프론트엔드 개발자 (React)</h3>
+                        <p class="job-card-company">테크노바 코리아</p>
+                        <div class="job-card-meta">
+                            <span class="job-card-meta-item">📍 서울 강남구</span>
+                            <span class="job-card-meta-item">💼 경력 3~5년</span>
+                            <span class="job-card-meta-item">💰 연봉 협의</span>
+                            <span class="job-card-meta-item">📅 ~12/31</span>
+                        </div>
+                        <div class="job-card-tags">
+                            <span class="job-tag">React</span>
+                            <span class="job-tag">TypeScript</span>
+                            <span class="job-tag">Next.js</span>
+                            <span class="job-tag">Git</span>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary btn-sm">즉시지원</button>
+                            <button class="btn btn-secondary btn-sm">스크랩</button>
+                        </div>
+                    </div>
+
+                    <!-- 채용 카드 2 -->
+                    <div class="job-card">
+                        <div class="badge badge-success mb-2">신입가능</div>
+                        <h3 class="job-card-title">백엔드 개발자 (Java/Spring)</h3>
+                        <p class="job-card-company">디지털 이노베이션</p>
+                        <div class="job-card-meta">
+                            <span class="job-card-meta-item">📍 서울 판교</span>
+                            <span class="job-card-meta-item">💼 신입~3년</span>
+                            <span class="job-card-meta-item">💰 3,500~4,500만원</span>
+                            <span class="job-card-meta-item">📅 상시채용</span>
+                        </div>
+                        <div class="job-card-tags">
+                            <span class="job-tag">Java</span>
+                            <span class="job-tag">Spring Boot</span>
+                            <span class="job-tag">MySQL</span>
+                            <span class="job-tag">AWS</span>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary btn-sm">즉시지원</button>
+                            <button class="btn btn-secondary btn-sm">스크랩</button>
+                        </div>
+                    </div>
+
+                    <!-- 채용 카드 3 -->
+                    <div class="job-card">
+                        <div class="badge badge-warning mb-2">마감임박</div>
+                        <h3 class="job-card-title">풀스택 개발자</h3>
+                        <p class="job-card-company">스타트업 벤처스</p>
+                        <div class="job-card-meta">
+                            <span class="job-card-meta-item">📍 서울 성수동</span>
+                            <span class="job-card-meta-item">💼 경력무관</span>
+                            <span class="job-card-meta-item">💰 스톡옵션 제공</span>
+                            <span class="job-card-meta-item">📅 ~12/25</span>
+                        </div>
+                        <div class="job-card-tags">
+                            <span class="job-tag">Node.js</span>
+                            <span class="job-tag">Vue.js</span>
+                            <span class="job-tag">MongoDB</span>
+                            <span class="job-tag">Docker</span>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary btn-sm">즉시지원</button>
+                            <button class="btn btn-secondary btn-sm">스크랩</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 사이드바 -->
+                <aside class="sidebar">
+                    <h4 class="mb-3">인기 검색어</h4>
+                    <div class="mb-4">
+                        <button class="btn btn-secondary btn-sm mb-2">프론트엔드</button>
+                        <button class="btn btn-secondary btn-sm mb-2">백엔드</button>
+                        <button class="btn btn-secondary btn-sm mb-2">React</button>
+                        <button class="btn btn-secondary btn-sm mb-2">Spring</button>
+                        <button class="btn btn-secondary btn-sm mb-2">신입</button>
+                        <button class="btn btn-secondary btn-sm mb-2">판교</button>
+                    </div>
+
+                    <h4 class="mb-3">채용 트렌드</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>🔥 이번주 HOT 직무</h5>
+                            <ol>
+                                <li>프론트엔드 개발자</li>
+                                <li>데이터 분석가</li>
+                                <li>DevOps 엔지니어</li>
+                                <li>UI/UX 디자이너</li>
+                                <li>프로덕트 매니저</li>
+                            </ol>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
