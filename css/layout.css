@@ -1,0 +1,145 @@
+/* layout.css - 레이아웃 관련 스타일 */
+
+/* App Container - Flexbox 레이아웃 */
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Sidebar Layout */
+.sidebar {
+    flex: 0 0 var(--sidebar-width);
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--white);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+/* Main Container Layout */
+.main-container {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    background-color: var(--gray-50);
+}
+
+/* Header Layout */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    height: var(--header-height);
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-lg);
+    z-index: 1000;
+}
+
+/* Main Content Layout */
+.main-content {
+    flex: 1;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Container Classes */
+.page-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 72px var(--container-padding) var(--container-padding);
+}
+
+.section-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+.footer-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+/* Responsive Layout */
+@media (max-width: 1024px) {
+    :root {
+        --container-padding: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --container-padding: 24px;
+        --sidebar-width: 280px;
+    }
+    
+    .app-container {
+        position: relative;
+    }
+    
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        transition: left 0.3s ease;
+        z-index: 1001;
+    }
+    
+    .sidebar.mobile-open {
+        left: 0;
+    }
+    
+    .main-container {
+        margin-left: 0;
+    }
+    
+    .main-header {
+        left: 0;
+    }
+    
+    .header-left {
+        display: block;
+    }
+}
+
+/* Scrollbar Styles */
+.sidebar-nav::-webkit-scrollbar,
+.main-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track,
+.main-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb,
+.main-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover,
+.main-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Firefox Scrollbar */
+.sidebar-nav,
+.main-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}

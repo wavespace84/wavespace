@@ -16,37 +16,34 @@ body.loaded {
 /* 사이드바 안정화 및 고정 */
 html, body {
     height: 100%;
-    overflow-x: hidden;
-}
-
-body {
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
+/* 메인 레이아웃 Flexbox 구조 */
 .app-container {
-    min-height: 100vh;
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* 사이드바는 Flexbox 내에서 고정 너비 */
+.sidebar {
+    flex: 0 0 364px;
+    width: 364px;
+    height: 100vh;
+    overflow: hidden;
     position: relative;
 }
 
-.sidebar {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    width: 364px !important;
-    height: 100vh !important;
-    height: 100% !important;
-    will-change: transform;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    z-index: 9999 !important;
-    overflow: hidden !important;
-}
-
+/* 메인 컨테이너는 나머지 공간 차지 */
 .main-container {
-    margin-left: 364px !important;
-    min-height: 100vh;
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
 }
 
