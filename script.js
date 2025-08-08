@@ -130,17 +130,19 @@ document.addEventListener('DOMContentLoaded', function() {
             // 모든 active 제거
             navItems.forEach(navItem => {
                 navItem.classList.remove('active');
-                const existingCheck = navItem.querySelector('.check-mark');
-                if (existingCheck) {
-                    existingCheck.remove();
-                }
             });
             
             // 클릭한 아이템에 active 추가
             this.classList.add('active');
-            const checkMark = document.createElement('span');
-            checkMark.className = 'check-mark';
-            this.appendChild(checkMark);
+            
+            // 체크마크 애니메이션 (이미 있는 체크마크에만 적용)
+            const checkMark = this.querySelector('.check-mark');
+            if (checkMark) {
+                // 애니메이션 재시작
+                checkMark.style.animation = 'none';
+                checkMark.offsetHeight; // 리플로우 트리거
+                checkMark.style.animation = 'checkRotate 0.4s ease-out';
+            }
         });
     });
     
