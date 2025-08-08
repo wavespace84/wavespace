@@ -291,19 +291,19 @@
                                     <i class="fas fa-calendar-alt"></i>
                                     <span class="today-date">2024년 1월 18일 목요일</span>
                                 </div>
-                                <div class="check-status not-checked">
+                                <div class="check-status not-checked" id="checkStatus">
                                     <i class="fas fa-clock"></i>
                                     <span>아직 출석하지 않았습니다</span>
                                 </div>
                             </div>
                             <button class="check-in-btn" id="checkInBtn">
-                                <i class="fas fa-stamp"></i>
-                                <span>출석체크 하기</span>
+                                <i class="fas fa-check-circle"></i>
+                                <span>출석하기</span>
                                 <div class="btn-shine"></div>
                             </button>
                         </div>
                         <div class="status-message">
-                            <input type="text" class="message-input" placeholder="오늘의 한마디를 남겨주세요! (선택사항)" maxlength="100">
+                            <input type="text" class="message-input" placeholder="오늘의 한마디를 남겨주세요! (미입력시 자동 멘트)" maxlength="100">
                         </div>
                     </div>
 
@@ -311,20 +311,20 @@
                     <div class="streak-info">
                         <div class="streak-card">
                             <div class="streak-icon">
-                                <i class="fas fa-fire"></i>
+                                <i class="fas fa-calendar-check"></i>
                             </div>
                             <div class="streak-content">
-                                <span class="streak-label">현재 연속 출석</span>
-                                <span class="streak-count">7일</span>
+                                <span class="streak-label">이번 달 출석일수</span>
+                                <span class="streak-count">0일</span>
                             </div>
                         </div>
                         <div class="streak-card">
                             <div class="streak-icon">
-                                <i class="fas fa-trophy"></i>
+                                <i class="fas fa-fire"></i>
                             </div>
                             <div class="streak-content">
-                                <span class="streak-label">최고 연속 출석</span>
-                                <span class="streak-count">15일</span>
+                                <span class="streak-label">연속 출석일수</span>
+                                <span class="streak-count" id="streakCount">0일</span>
                             </div>
                         </div>
                         <div class="streak-card">
@@ -333,7 +333,7 @@
                             </div>
                             <div class="streak-content">
                                 <span class="streak-label">이번 달 획득 포인트</span>
-                                <span class="streak-count">350P</span>
+                                <span class="streak-count">0P</span>
                             </div>
                         </div>
                         <div class="streak-card">
@@ -342,7 +342,7 @@
                             </div>
                             <div class="streak-content">
                                 <span class="streak-label">이번 달 출석률</span>
-                                <span class="streak-count">85%</span>
+                                <span class="streak-count">0%</span>
                             </div>
                         </div>
                     </div>
@@ -372,25 +372,20 @@
                                 <!-- 이전 달 날짜 -->
                                 <div class="calendar-day other-month">31</div>
                                 <!-- 1월 날짜들 -->
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">1</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">2</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">3</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">4</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">5</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div class="calendar-day">
                                     <span class="day-number">6</span>
@@ -398,25 +393,20 @@
                                 <div class="calendar-day">
                                     <span class="day-number">7</span>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">8</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">9</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">10</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">11</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">12</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div class="calendar-day">
                                     <span class="day-number">13</span>
@@ -424,17 +414,14 @@
                                 <div class="calendar-day">
                                     <span class="day-number">14</span>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">15</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">16</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <div class="calendar-day checked">
+                                <div class="calendar-day">
                                     <span class="day-number">17</span>
-                                    <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div class="calendar-day today">
                                     <span class="day-number">18</span>
@@ -495,20 +482,11 @@
                         <div class="rewards-grid">
                             <div class="reward-card">
                                 <div class="reward-icon">
-                                    <i class="fas fa-coins"></i>
+                                    <i class="fas fa-trophy"></i>
                                 </div>
                                 <div class="reward-info">
-                                    <h3>일일 출석</h3>
-                                    <p>+10 포인트</p>
-                                </div>
-                            </div>
-                            <div class="reward-card">
-                                <div class="reward-icon">
-                                    <i class="fas fa-fire"></i>
-                                </div>
-                                <div class="reward-info">
-                                    <h3>7일 연속</h3>
-                                    <p>+50 포인트 보너스</p>
+                                    <h3>1~3등</h3>
+                                    <p>+1000 포인트</p>
                                 </div>
                             </div>
                             <div class="reward-card">
@@ -516,17 +494,58 @@
                                     <i class="fas fa-medal"></i>
                                 </div>
                                 <div class="reward-info">
-                                    <h3>30일 연속</h3>
-                                    <p>+200 포인트 + 특별 배지</p>
+                                    <h3>4~10등</h3>
+                                    <p>+800 포인트</p>
                                 </div>
                             </div>
                             <div class="reward-card">
                                 <div class="reward-icon">
-                                    <i class="fas fa-crown"></i>
+                                    <i class="fas fa-star"></i>
                                 </div>
                                 <div class="reward-info">
-                                    <h3>완벽 출석</h3>
-                                    <p>월 100% 출석 시 +500 포인트</p>
+                                    <h3>11~30등</h3>
+                                    <p>+500 포인트</p>
+                                </div>
+                            </div>
+                            <div class="reward-card">
+                                <div class="reward-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="reward-info">
+                                    <h3>31등 이하</h3>
+                                    <p>+300 포인트 (일일 출석)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bonus-rewards">
+                            <h3><i class="fas fa-star"></i> 추가 보너스 혜택</h3>
+                            <div class="bonus-grid">
+                                <div class="bonus-item special" id="bonus7days">
+                                    <div class="bonus-icon">
+                                        <i class="fas fa-fire"></i>
+                                    </div>
+                                    <div class="bonus-info">
+                                        <span class="bonus-title">7일 연속 출석</span>
+                                        <span class="bonus-points">+500P 보너스</span>
+                                    </div>
+                                </div>
+                                <div class="bonus-item special" id="bonusMonthly">
+                                    <div class="bonus-icon">
+                                        <i class="fas fa-award"></i>
+                                    </div>
+                                    <div class="bonus-info">
+                                        <span class="bonus-title">이번달 출석률 100%</span>
+                                        <span class="bonus-points">+2000P + 개근상 배지</span>
+                                    </div>
+                                </div>
+                                <div class="bonus-item special" id="bonusTop30">
+                                    <div class="bonus-icon">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                    <div class="bonus-info">
+                                        <span class="bonus-title">이번달 매일 30위 순위권</span>
+                                        <span class="bonus-points">+5000P + 성실검증 배지</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -536,57 +555,39 @@
                     <div class="today-attendance">
                         <h2 class="section-title">
                             <i class="fas fa-users"></i>
-                            오늘의 출석 현황
+                            오늘의 출석 현황 (상위 30명)
                         </h2>
-                        <div class="attendance-list">
-                            <div class="attendance-item">
-                                <span class="rank">1</span>
-                                <div class="user-info">
-                                    <span class="name">김영업</span>
-                                    <span class="time">00:03 출석</span>
-                                </div>
-                                <span class="message">"새해 첫날부터 화이팅!"</span>
-                                <span class="points">+20P</span>
-                            </div>
-                            <div class="attendance-item">
-                                <span class="rank">2</span>
-                                <div class="user-info">
-                                    <span class="name">이기획</span>
-                                    <span class="time">06:15 출석</span>
-                                </div>
-                                <span class="message">"오늘도 열심히!"</span>
-                                <span class="points">+15P</span>
-                            </div>
-                            <div class="attendance-item">
-                                <span class="rank">3</span>
-                                <div class="user-info">
-                                    <span class="name">박팀장</span>
-                                    <span class="time">06:45 출석</span>
-                                </div>
-                                <span class="message">"모두 좋은 하루 되세요~"</span>
-                                <span class="points">+12P</span>
-                            </div>
-                            <div class="attendance-item">
-                                <span class="rank">4</span>
-                                <div class="user-info">
-                                    <span class="name">최전문가</span>
-                                    <span class="time">07:00 출석</span>
-                                </div>
-                                <span class="message">"화이팅!"</span>
-                                <span class="points">+10P</span>
-                            </div>
-                            <div class="attendance-item">
-                                <span class="rank">5</span>
-                                <div class="user-info">
-                                    <span class="name">정과장</span>
-                                    <span class="time">07:30 출석</span>
-                                </div>
-                                <span class="message">"오늘도 분양 대박나세요!"</span>
-                                <span class="points">+10P</span>
-                            </div>
+                        <div class="attendance-list" id="attendanceList">
+                            <!-- JavaScript로 동적 생성됩니다 -->
                         </div>
-                        <div class="total-attendance">
-                            <span>오늘 총 <strong>234명</strong>이 출석했습니다</span>
+                        <div class="coupon-section">
+                            <h4><i class="fas fa-gift"></i> 오늘의 쿠폰 당첨자</h4>
+                            <p class="coupon-desc">상점에서 포인트로 구매 가능한 쿠폰을 등수 구간별로 랜덤하게 추첨합니다!</p>
+                            <div class="coupon-content">
+                                <div class="coupon-rules">
+                                    <div class="rule-item">
+                                        <span class="rule-range">1~3등 구간 (1명)</span>
+                                        <span class="rule-prize">스타벅스 쿠폰</span>
+                                        <span class="winner-badge" id="winner1">추첨 대기중</span>
+                                    </div>
+                                    <div class="rule-item">
+                                        <span class="rule-range">4~10등 구간 (1명)</span>
+                                        <span class="rule-prize">편의점 쿠폰</span>
+                                        <span class="winner-badge" id="winner2">추첨 대기중</span>
+                                    </div>
+                                    <div class="rule-item">
+                                        <span class="rule-range">11~30등 구간 (2명)</span>
+                                        <span class="rule-prize">커피 쿠폰</span>
+                                        <div class="winner-badges">
+                                            <span class="winner-badge" id="winner3-1">추첨 대기중</span>
+                                            <span class="winner-badge" id="winner3-2">추첨 대기중</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="coupon-congratulations">
+                                    <i class="fas fa-trophy"></i> 쿠폰 당첨을 축하합니다!
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -596,5 +597,23 @@
 
     <script src="script.js"></script>
     <script src="js/attendance.js"></script>
+    <script>
+        // 디버그용 - 페이지 로드 확인
+        console.log('attendance.html 페이지 로드됨');
+        
+        // F12 콘솔에서 확인할 수 있도록 전역 변수로 노출
+        window.debugAttendance = function() {
+            console.log('출석 버튼:', document.getElementById('checkInBtn'));
+            console.log('출석 리스트:', document.getElementById('attendanceList'));
+            console.log('메시지 입력:', document.querySelector('.message-input'));
+            console.log('출석 데이터:', typeof attendanceData !== 'undefined' ? attendanceData : 'undefined');
+        };
+        
+        // 3초 후 자동으로 디버그 정보 출력
+        setTimeout(() => {
+            console.log('=== 자동 디버그 정보 ===');
+            window.debugAttendance();
+        }, 3000);
+    </script>
 </body>
 </html>

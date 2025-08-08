@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿠폰 당첨자 디버그</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="attendance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding: 40px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 2px solid #0066ff;
+        }
+        .debug-section h2 {
+            color: #0066ff;
+            margin-top: 0;
+        }
+        .debug-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .debug-btn {
+            padding: 10px 20px;
+            background: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .debug-btn:hover {
+            background: #0055dd;
+        }
+        .console-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .winner-display {
+            padding: 15px;
+            background: #f0f8ff;
+            border: 2px solid #0066ff;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-section">
+        <h2>🔍 쿠폰 당첨자 디버그 테스트</h2>
+        
+        <div class="debug-buttons">
+            <button class="debug-btn" onclick="testCouponSelection()">쿠폰 당첨자 선정 테스트</button>
+            <button class="debug-btn" onclick="checkElements()">요소 존재 확인</button>
+            <button class="debug-btn" onclick="clearConsole()">콘솔 클리어</button>
+            <button class="debug-btn" onclick="renderList()">출석 명단 렌더링</button>
+        </div>
+        
+        <div class="console-output" id="consoleOutput"></div>
+    </div>
+    
+    <!-- 쿠폰 당첨자 섹션 (attendance.html과 동일) -->
+    <div class="coupon-section">
+        <h4><i class="fas fa-gift"></i> 오늘의 쿠폰 당첨자</h4>
+        <p class="coupon-desc">상점에서 포인트로 구매 가능한 쿠폰을 등수 구간별로 랜덤하게 추첨합니다!</p>
+        <div class="coupon-content">
+            <div class="coupon-rules">
+                <div class="rule-item">
+                    <span class="rule-range">1~3등 구간 (1명)</span>
+                    <span class="rule-prize">스타벅스 쿠폰</span>
+                    <span class="winner-badge" id="winner1">추첨 대기중</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-range">4~10등 구간 (1명)</span>
+                    <span class="rule-prize">편의점 쿠폰</span>
+                    <span class="winner-badge" id="winner2">추첨 대기중</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-range">11~30등 구간 (2명)</span>
+                    <span class="rule-prize">커피 쿠폰</span>
+                    <div class="winner-badges">
+                        <span class="winner-badge" id="winner3-1">추첨 대기중</span>
+                        <span class="winner-badge" id="winner3-2">추첨 대기중</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 출석 명단 -->
+    <div class="today-attendance">
+        <h2 class="section-title">
+            <i class="fas fa-users"></i>
+            오늘의 출석 현황 (상위 30명)
+        </h2>
+        <div class="attendance-list" id="attendanceList">
+            <!-- JavaScript로 동적 생성됩니다 -->
+        </div>
+    </div>
+
+    <script>
+        // 콘솔 출력 캡처
+        const consoleOutput = document.getElementById('consoleOutput');
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function addToConsole(message, type = 'log') {
+            const color = type === 'error' ? '#f00' : '#0f0';
+            consoleOutput.innerHTML += `<div style="color: ${color}">[${type.toUpperCase()}] ${message}</div>`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            ).join(' ');
+            addToConsole(message, 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            ).join(' ');
+            addToConsole(message, 'error');
+        };
+        
+        function clearConsole() {
+            consoleOutput.innerHTML = '';
+            console.log('콘솔 클리어됨');
+        }
+        
+        // 테스트 데이터
+        const attendanceData = [
+            { rank: 1, name: '김영업왕', userId: 'kimyoung', time: '07:58', message: '오늘도 첫 출석!', badge: '소통왕', isCouponWinner: false },
+            { rank: 2, name: '이기획신', userId: 'leeplan', time: '08:03', message: '일찍 일어나는 새!', badge: '열정맨', isCouponWinner: false },
+            { rank: 3, name: '박팀장님', userId: 'parkteam', time: '08:12', message: '화이팅!', badge: '베테랑', isCouponWinner: false },
+            { rank: 4, name: '최전문가', userId: 'choiexpert', time: '08:18', message: '전문성!', badge: '전문가', isCouponWinner: false },
+            { rank: 5, name: '정분양스타', userId: 'jungstar', time: '08:25', message: '분양 달인!', badge: '스타', isCouponWinner: false },
+            { rank: 6, name: '한매니저', userId: 'hanmanager', time: '08:31', message: '관리 프로!', badge: '매니저', isCouponWinner: false },
+            { rank: 7, name: '구실장', userId: 'koochief', time: '08:38', message: '실장 카리스마!', badge: '리더', isCouponWinner: false },
+            { rank: 8, name: '송부장', userId: 'songbujang', time: '08:44', message: '부장 리더십!', badge: '부장', isCouponWinner: false },
+            { rank: 9, name: '류차장', userId: 'ryucha', time: '08:51', message: '차장 안정감!', badge: '차장', isCouponWinner: false },
+            { rank: 10, name: '윤대리', userId: 'yoondae', time: '08:57', message: '대리 성실함!', badge: '대리', isCouponWinner: false },
+            { rank: 11, name: '오주임', userId: 'ohjuim', time: '09:04', message: '주임 책임감!', badge: '주임', isCouponWinner: false },
+            { rank: 12, name: '배사원', userId: 'baesa', time: '09:11', message: '신입 패기!', badge: '신입', isCouponWinner: false },
+            { rank: 13, name: '홍과장', userId: 'honggwa', time: '09:18', message: '과장 능력!', badge: '과장', isCouponWinner: false },
+            { rank: 14, name: '임팀장', userId: 'limteam', time: '09:25', message: '팀 리더!', badge: '팀장', isCouponWinner: false },
+            { rank: 15, name: '조실장', userId: 'josil', time: '09:32', message: '실무 경험!', badge: '실장', isCouponWinner: false },
+            { rank: 16, name: '신부장', userId: 'shinbu', time: '09:39', message: '부서 총괄!', badge: '부장', isCouponWinner: false },
+            { rank: 17, name: '문차장', userId: 'mooncha', time: '09:46', message: '차근차근!', badge: '차장', isCouponWinner: false },
+            { rank: 18, name: '유대리', userId: 'yoodae', time: '09:53', message: '젊은 패기!', badge: '대리', isCouponWinner: false },
+            { rank: 19, name: '강주임', userId: 'kangjuim', time: '10:01', message: '강한 의지!', badge: '주임', isCouponWinner: false },
+            { rank: 20, name: '장사원', userId: 'jangsa', time: '10:08', message: '성장하는 사원!', badge: '사원', isCouponWinner: false },
+            { rank: 21, name: '권과장', userId: 'kwongwa', time: '10:15', message: '권위 있는!', badge: '과장', isCouponWinner: false },
+            { rank: 22, name: '노팀장', userId: 'noteam', time: '10:22', message: '노련한 팀!', badge: '팀장', isCouponWinner: false },
+            { rank: 23, name: '서실장', userId: 'seosil', time: '10:29', message: '여유로운!', badge: '실장', isCouponWinner: false },
+            { rank: 24, name: '고부장', userId: 'gobu', time: '10:36', message: '고품격!', badge: '부장', isCouponWinner: false },
+            { rank: 25, name: '박승학', userId: 'parksh', time: '10:43', message: '열심히!', badge: '초보자', isCouponWinner: false },
+            { rank: 26, name: '조대리', userId: 'jodae', time: '10:50', message: '조용히!', badge: '대리', isCouponWinner: false },
+            { rank: 27, name: '민주임', userId: 'minjuim', time: '10:57', message: '민첩한!', badge: '주임', isCouponWinner: false },
+            { rank: 28, name: '안사원', userId: 'ansa', time: '11:04', message: '안정적!', badge: '사원', isCouponWinner: false },
+            { rank: 29, name: '심과장', userId: 'simgwa', time: '11:11', message: '심도 있는!', badge: '과장', isCouponWinner: false },
+            { rank: 30, name: '나팀장', userId: 'nateam', time: '11:18', message: '나만의!', badge: '팀장', isCouponWinner: false }
+        ];
+        
+        // 쿠폰 당첨자 선정 테스트
+        function testCouponSelection() {
+            console.log('===== 쿠폰 당첨자 선정 테스트 시작 =====');
+            
+            // 모든 isCouponWinner를 false로 초기화
+            attendanceData.forEach(user => {
+                user.isCouponWinner = false;
+            });
+            console.log('1. 모든 사용자 isCouponWinner 초기화 완료');
+            
+            // 1~3등 중 1명
+            const group1 = attendanceData.filter(u => u.rank >= 1 && u.rank <= 3);
+            console.log(`2. 1~3등 그룹: ${group1.length}명`, group1.map(u => u.name));
+            
+            if (group1.length > 0) {
+                const winner1 = group1[Math.floor(Math.random() * group1.length)];
+                winner1.isCouponWinner = true;
+                
+                const winner1Element = document.getElementById('winner1');
+                if (winner1Element) {
+                    winner1Element.textContent = `🎉 ${winner1.name}`;
+                    winner1Element.className = 'winner-badge winner-selected';
+                    console.log(`✅ 1~3등 당첨자: ${winner1.name}`);
+                } else {
+                    console.error('❌ winner1 요소를 찾을 수 없음');
+                }
+            }
+            
+            // 4~10등 중 1명
+            const group2 = attendanceData.filter(u => u.rank >= 4 && u.rank <= 10);
+            console.log(`3. 4~10등 그룹: ${group2.length}명`, group2.map(u => u.name));
+            
+            if (group2.length > 0) {
+                const winner2 = group2[Math.floor(Math.random() * group2.length)];
+                winner2.isCouponWinner = true;
+                
+                const winner2Element = document.getElementById('winner2');
+                if (winner2Element) {
+                    winner2Element.textContent = `🎉 ${winner2.name}`;
+                    winner2Element.className = 'winner-badge winner-selected';
+                    console.log(`✅ 4~10등 당첨자: ${winner2.name}`);
+                } else {
+                    console.error('❌ winner2 요소를 찾을 수 없음');
+                }
+            }
+            
+            // 11~30등 중 2명
+            const group3 = attendanceData.filter(u => u.rank >= 11 && u.rank <= 30);
+            console.log(`4. 11~30등 그룹: ${group3.length}명`);
+            
+            if (group3.length > 0) {
+                const winner3_1 = group3[Math.floor(Math.random() * group3.length)];
+                winner3_1.isCouponWinner = true;
+                
+                const winner3_1Element = document.getElementById('winner3-1');
+                if (winner3_1Element) {
+                    winner3_1Element.textContent = `🎉 ${winner3_1.name}`;
+                    winner3_1Element.className = 'winner-badge winner-selected';
+                    console.log(`✅ 11~30등 첫번째 당첨자: ${winner3_1.name}`);
+                } else {
+                    console.error('❌ winner3-1 요소를 찾을 수 없음');
+                }
+                
+                const remainingGroup3 = group3.filter(u => u.name !== winner3_1.name);
+                if (remainingGroup3.length > 0) {
+                    const winner3_2 = remainingGroup3[Math.floor(Math.random() * remainingGroup3.length)];
+                    winner3_2.isCouponWinner = true;
+                    
+                    const winner3_2Element = document.getElementById('winner3-2');
+                    if (winner3_2Element) {
+                        winner3_2Element.textContent = `🎉 ${winner3_2.name}`;
+                        winner3_2Element.className = 'winner-badge winner-selected';
+                        console.log(`✅ 11~30등 두번째 당첨자: ${winner3_2.name}`);
+                    } else {
+                        console.error('❌ winner3-2 요소를 찾을 수 없음');
+                    }
+                }
+            }
+            
+            // 최종 당첨자 확인
+            const winners = attendanceData.filter(u => u.isCouponWinner === true);
+            console.log(`===== 최종 당첨자: ${winners.length}명 =====`);
+            winners.forEach(w => {
+                console.log(`🎁 ${w.rank}등 ${w.name}`);
+            });
+            
+            // 출석 명단 렌더링
+            renderList();
+        }
+        
+        // 요소 존재 확인
+        function checkElements() {
+            console.log('===== 요소 존재 확인 =====');
+            const elements = ['winner1', 'winner2', 'winner3-1', 'winner3-2', 'attendanceList'];
+            
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    console.log(`✅ ${id}: 존재함`, element);
+                } else {
+                    console.error(`❌ ${id}: 없음`);
+                }
+            });
+        }
+        
+        // 출석 명단 렌더링
+        function renderList() {
+            console.log('===== 출석 명단 렌더링 =====');
+            const listElement = document.getElementById('attendanceList');
+            
+            if (!listElement) {
+                console.error('❌ attendanceList 요소를 찾을 수 없음');
+                return;
+            }
+            
+            let html = '';
+            attendanceData.forEach(user => {
+                const points = user.rank <= 3 ? 1000 : user.rank <= 10 ? 800 : user.rank <= 30 ? 500 : 300;
+                
+                html += `
+                    <div class="attendance-item ${user.isCouponWinner ? 'coupon-winner-row' : ''}">
+                        <div class="rank-wrapper">
+                            ${user.rank <= 3 ? `<i class="fas fa-medal medal-${user.rank === 1 ? 'gold' : user.rank === 2 ? 'silver' : 'bronze'}"></i>` : ''}
+                            <span class="rank-number">${user.rank}등</span>
+                        </div>
+                        <div class="check-time">${user.time}</div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-name-wrapper">
+                            <span class="user-id">${user.userId}</span>
+                            <span class="user-badge">${user.badge}</span>
+                        </div>
+                        <div class="user-message">${user.message}</div>
+                        ${user.isCouponWinner ? '<div class="coupon-winner"><i class="fas fa-ticket-alt"></i> 쿠폰 당첨!</div>' : ''}
+                        <div class="points-badge">+${points}P</div>
+                    </div>
+                `;
+            });
+            
+            listElement.innerHTML = html;
+            console.log(`✅ ${attendanceData.length}명 렌더링 완료`);
+            
+            // 당첨자가 표시되었는지 확인
+            const winnerCount = attendanceData.filter(u => u.isCouponWinner).length;
+            console.log(`🎁 출석 명단에 표시된 당첨자: ${winnerCount}명`);
+        }
+        
+        // 페이지 로드 시 자동 실행
+        window.onload = function() {
+            console.log('🚀 디버그 페이지 로드 완료');
+            checkElements();
+        };
+    </script>
+</body>
+</html>

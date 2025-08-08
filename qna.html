@@ -281,10 +281,6 @@
                             <h1 class="qna-title">질문답변</h1>
                             <p class="qna-subtitle">분양 실무 관련 궁금한 점을 질문하고 답변을 받아보세요</p>
                         </div>
-                        <button class="ask-btn">
-                            <i class="fas fa-edit"></i>
-                            질문하기
-                        </button>
                     </div>
 
                     <!-- 검색 섹션 -->
@@ -304,215 +300,40 @@
                         </div>
                     </div>
 
-                    <!-- 카테고리 필터 -->
-                    <div class="category-filter">
-                    <button class="filter-btn active" data-category="all">
-                        <i class="fas fa-th-large"></i>
-                        전체
-                        <span class="count">523</span>
-                    </button>
-                    <button class="filter-btn" data-category="unsolved">
-                        <i class="fas fa-question"></i>
-                        미해결
-                        <span class="count">124</span>
-                    </button>
-                    <button class="filter-btn" data-category="solved">
-                        <i class="fas fa-check-circle"></i>
-                        해결됨
-                        <span class="count">399</span>
-                    </button>
-                    <button class="filter-btn" data-category="hot">
-                        <i class="fas fa-fire"></i>
-                        인기
-                        <span class="count">45</span>
-                    </button>
-                    <button class="filter-btn" data-category="recent">
-                        <i class="fas fa-clock"></i>
-                        최신
-                        <span class="count">32</span>
-                    </button>
+                    <!-- 카테고리 탭 -->
+                    <div class="category-tabs">
+                        <button class="tab-btn active" data-category="all">
+                            <i class="fas fa-th-large"></i>
+                            전체
+                            <span class="count">0</span>
+                        </button>
+                        <button class="tab-btn" data-category="unadopted">
+                            <i class="fas fa-question"></i>
+                            미채택
+                            <span class="count">0</span>
+                        </button>
+                        <button class="tab-btn" data-category="adopted">
+                            <i class="fas fa-check-circle"></i>
+                            채택완료
+                            <span class="count">0</span>
+                        </button>
+                        <button class="tab-btn" data-category="popular">
+                            <i class="fas fa-fire"></i>
+                            인기질문
+                            <span class="count">0</span>
+                        </button>
+                        <button class="tab-btn" data-category="myquestions">
+                            <i class="fas fa-user"></i>
+                            내질문
+                            <span class="count">0</span>
+                        </button>
                     </div>
 
                     <!-- Q&A 콘텐츠 래퍼 -->
                     <div class="qna-content-wrapper">
-                        <!-- Q&A 목록 -->
-                        <div class="qna-list">
-                    <!-- 미해결 질문 (하이라이트) -->
-                    <div class="qna-item unsolved">
-                        <div class="qna-status">
-                            <div class="status-badge unsolved">
-                                <i class="fas fa-question-circle"></i>
-                                미해결
-                            </div>
-                            <div class="reward-badge">
-                                <i class="fas fa-coins"></i>
-                                500P
-                            </div>
-                        </div>
-                        <div class="qna-content">
-                            <h3 class="qna-question-title">
-                                <a href="#">청약통장 가점 계산 관련 문의드립니다</a>
-                                <span class="new-badge">NEW</span>
-                            </h3>
-                            <p class="qna-excerpt">안녕하세요. 청약통장 가점 계산 관련해서 궁금한 점이 있어 질문드립니다. 무주택기간과 부양가족수 계산 시...</p>
-                            <div class="qna-tags">
-                                <span class="tag">#청약통장</span>
-                                <span class="tag">#가점계산</span>
-                                <span class="tag">#무주택기간</span>
-                            </div>
-                            <div class="qna-meta">
-                                <span class="author"><i class="fas fa-user"></i> 김영업</span>
-                                <span class="time"><i class="fas fa-clock"></i> 30분 전</span>
-                                <span class="views"><i class="fas fa-eye"></i> 23</span>
-                                <span class="answers"><i class="fas fa-comment"></i> 답변 2</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 해결된 질문 -->
-                    <div class="qna-item solved">
-                        <div class="qna-status">
-                            <div class="status-badge solved">
-                                <i class="fas fa-check-circle"></i>
-                                해결됨
-                            </div>
-                            <div class="best-answer-badge">
-                                <i class="fas fa-star"></i>
-                                베스트
-                            </div>
-                        </div>
-                        <div class="qna-content">
-                            <h3 class="qna-question-title">
-                                <a href="#">분양가상한제 지역에서의 전매제한 기간은 어떻게 되나요?</a>
-                            </h3>
-                            <p class="qna-excerpt">분양가상한제가 적용되는 지역에서 아파트를 분양받을 경우 전매제한 기간이 일반 지역과 다른지 궁금합니다...</p>
-                            <div class="qna-tags">
-                                <span class="tag">#분양가상한제</span>
-                                <span class="tag">#전매제한</span>
-                                <span class="tag">#규제</span>
-                            </div>
-                            <div class="qna-meta">
-                                <span class="author"><i class="fas fa-user"></i> 박기획</span>
-                                <span class="time"><i class="fas fa-clock"></i> 2시간 전</span>
-                                <span class="views"><i class="fas fa-eye"></i> 156</span>
-                                <span class="answers"><i class="fas fa-comment"></i> 답변 5</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 인기 질문 -->
-                    <div class="qna-item hot">
-                        <div class="qna-status">
-                            <div class="status-badge solved">
-                                <i class="fas fa-check-circle"></i>
-                                해결됨
-                            </div>
-                            <div class="hot-badge">
-                                <i class="fas fa-fire"></i>
-                                인기
-                            </div>
-                        </div>
-                        <div class="qna-content">
-                            <h3 class="qna-question-title">
-                                <a href="#">모델하우스 운영 시 효과적인 고객 응대 방법</a>
-                            </h3>
-                            <p class="qna-excerpt">모델하우스에서 고객 응대 시 자주 받는 질문들과 효과적인 답변 방법에 대해 선배님들의 노하우를 듣고 싶습니다...</p>
-                            <div class="qna-tags">
-                                <span class="tag">#모델하우스</span>
-                                <span class="tag">#고객응대</span>
-                                <span class="tag">#영업노하우</span>
-                            </div>
-                            <div class="qna-meta">
-                                <span class="author"><i class="fas fa-user"></i> 이팀장</span>
-                                <span class="time"><i class="fas fa-clock"></i> 어제</span>
-                                <span class="views"><i class="fas fa-eye"></i> 892</span>
-                                <span class="answers"><i class="fas fa-comment"></i> 답변 12</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 추가 질문들 -->
-                    <div class="qna-item">
-                        <div class="qna-status">
-                            <div class="status-badge unsolved">
-                                <i class="fas fa-question-circle"></i>
-                                미해결
-                            </div>
-                        </div>
-                        <div class="qna-content">
-                            <h3 class="qna-question-title">
-                                <a href="#">특별공급 자격 조건 중 신혼부부 소득기준 계산법</a>
-                            </h3>
-                            <p class="qna-excerpt">신혼부부 특별공급 신청을 준비 중인데, 맞벌이 부부의 경우 소득기준을 어떻게 계산해야 하는지...</p>
-                            <div class="qna-tags">
-                                <span class="tag">#특별공급</span>
-                                <span class="tag">#신혼부부</span>
-                                <span class="tag">#소득기준</span>
-                            </div>
-                            <div class="qna-meta">
-                                <span class="author"><i class="fas fa-user"></i> 최대리</span>
-                                <span class="time"><i class="fas fa-clock"></i> 3시간 전</span>
-                                <span class="views"><i class="fas fa-eye"></i> 67</span>
-                                <span class="answers"><i class="fas fa-comment"></i> 답변 1</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="qna-item solved">
-                        <div class="qna-status">
-                            <div class="status-badge solved">
-                                <i class="fas fa-check-circle"></i>
-                                해결됨
-                            </div>
-                        </div>
-                        <div class="qna-content">
-                            <h3 class="qna-question-title">
-                                <a href="#">분양 계약 시 중도금 대출 관련 서류 준비</a>
-                            </h3>
-                            <p class="qna-excerpt">분양 계약 후 중도금 대출을 받으려고 하는데 필요한 서류와 절차가 어떻게 되는지 알고 싶습니다...</p>
-                            <div class="qna-tags">
-                                <span class="tag">#중도금대출</span>
-                                <span class="tag">#계약</span>
-                                <span class="tag">#서류준비</span>
-                            </div>
-                            <div class="qna-meta">
-                                <span class="author"><i class="fas fa-user"></i> 정과장</span>
-                                <span class="time"><i class="fas fa-clock"></i> 5시간 전</span>
-                                <span class="views"><i class="fas fa-eye"></i> 234</span>
-                                <span class="answers"><i class="fas fa-comment"></i> 답변 7</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="qna-item">
-                        <div class="qna-status">
-                            <div class="status-badge unsolved">
-                                <i class="fas fa-question-circle"></i>
-                                미해결
-                            </div>
-                            <div class="reward-badge">
-                                <i class="fas fa-coins"></i>
-                                300P
-                            </div>
-                        </div>
-                        <div class="qna-content">
-                            <h3 class="qna-question-title">
-                                <a href="#">재개발/재건축 지역 조합원 분양 관련 문의</a>
-                            </h3>
-                            <p class="qna-excerpt">재개발 구역 조합원인데, 일반분양과 조합원 분양의 차이점과 주의사항에 대해 알고 싶습니다...</p>
-                            <div class="qna-tags">
-                                <span class="tag">#재개발</span>
-                                <span class="tag">#조합원분양</span>
-                                <span class="tag">#주의사항</span>
-                            </div>
-                            <div class="qna-meta">
-                                <span class="author"><i class="fas fa-user"></i> 한조합원</span>
-                                <span class="time"><i class="fas fa-clock"></i> 8시간 전</span>
-                                <span class="views"><i class="fas fa-eye"></i> 145</span>
-                                <span class="answers"><i class="fas fa-comment"></i> 답변 3</span>
-                            </div>
-                        </div>
-                    </div>
+                        <!-- Q&A 목록 (JavaScript에서 동적 생성) -->
+                        <div class="qna-list" id="qnaList">
+                            <!-- 질문들이 JavaScript로 동적 생성됩니다 -->
                         </div>
 
                         <!-- 사이드 패널 -->
@@ -525,37 +346,37 @@
                                 </h3>
                                 <div class="best-answerers">
                                     <div class="answerer-item">
-                                        <div class="rank gold">1</div>
+                                        <div class="rank gold">1위</div>
                                         <div class="answerer-info">
-                                            <div class="name">박전문가</div>
+                                            <div class="name" title="부동산전문컨설턴트">부동산전문컨설...</div>
                                             <div class="stats">
-                                                <span class="answers">답변 45</span>
-                                                <span class="likes">채택률 89%</span>
+                                                <div class="answers">답변 45</div>
+                                                <div class="likes">채택률 89%</div>
+                                                <div class="points">+2,340P</div>
                                             </div>
                                         </div>
-                                        <div class="points">+2,340P</div>
                                     </div>
                                     <div class="answerer-item">
-                                        <div class="rank silver">2</div>
+                                        <div class="rank silver">2위</div>
                                         <div class="answerer-info">
-                                            <div class="name">김컨설턴트</div>
+                                            <div class="name" title="김컨설턴트입니다">김컨설턴트입니...</div>
                                             <div class="stats">
-                                                <span class="answers">답변 38</span>
-                                                <span class="likes">채택률 76%</span>
+                                                <div class="answers">답변 38</div>
+                                                <div class="likes">채택률 76%</div>
+                                                <div class="points">+1,890P</div>
                                             </div>
                                         </div>
-                                        <div class="points">+1,890P</div>
                                     </div>
                                     <div class="answerer-item">
-                                        <div class="rank bronze">3</div>
+                                        <div class="rank bronze">3위</div>
                                         <div class="answerer-info">
-                                            <div class="name">이매니저</div>
+                                            <div class="name" title="이매니저">이매니저</div>
                                             <div class="stats">
-                                                <span class="answers">답변 32</span>
-                                                <span class="likes">채택률 72%</span>
+                                                <div class="answers">답변 32</div>
+                                                <div class="likes">채택률 72%</div>
+                                                <div class="points">+1,560P</div>
                                             </div>
                                         </div>
-                                        <div class="points">+1,560P</div>
                                     </div>
                                 </div>
                             </div>
@@ -588,21 +409,9 @@
                         </aside>
                     </div>
 
-                    <!-- 페이지네이션 -->
-                    <div class="pagination">
-                    <button class="page-btn" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">3</button>
-                    <button class="page-btn">4</button>
-                    <button class="page-btn">5</button>
-                    <span class="page-dots">...</span>
-                    <button class="page-btn">52</button>
-                    <button class="page-btn">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+                    <!-- 페이지네이션 (JavaScript에서 동적 생성) -->
+                    <div class="pagination" id="paginationContainer">
+                        <!-- 페이지네이션 버튼들이 JavaScript로 동적 생성됩니다 -->
                     </div>
                 </div>
             </main>
@@ -619,6 +428,244 @@
         <button class="ask-btn-float" aria-label="질문하기">
             <i class="fas fa-question"></i>
         </button>
+    </div>
+    
+    <!-- 질문 상세보기 모달 -->
+    <div class="qna-detail-modal" id="qnaDetailModal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content-large">
+            <div class="modal-header">
+                <div class="question-status">
+                    <span class="status-badge unadopted" id="modalStatus">
+                        <i class="fas fa-question-circle"></i>
+                        미채택
+                    </span>
+                    <span class="reward-badge" id="modalReward">
+                        <i class="fas fa-coins"></i>
+                        5,000P 보상
+                    </span>
+                </div>
+                <button class="modal-close" onclick="closeDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body-scroll">
+                <!-- 질문 섹션 -->
+                <div class="question-section">
+                    <h2 class="question-title" id="modalQuestionTitle">청약통장 가점 계산 관련 문의드립니다</h2>
+                    <div class="question-meta">
+                        <span class="author"><i class="fas fa-user"></i> <span id="modalAuthor">김영업</span></span>
+                        <span class="time"><i class="fas fa-clock"></i> <span id="modalTime">30분 전</span></span>
+                        <span class="views"><i class="fas fa-eye"></i> <span id="modalViews">23</span>회</span>
+                    </div>
+                    <div class="question-content" id="modalQuestionContent">
+                        <p>안녕하세요. 청약통장 가점 계산 관련해서 궁금한 점이 있어 질문드립니다.</p>
+                        <p>무주택기간과 부양가족수 계산 시 주의해야 할 점이 무엇인가요?</p>
+                        <p>특히 부양가족 중 직계존속의 경우 어떤 조건을 만족해야 하는지 자세히 알고 싶습니다.</p>
+                    </div>
+                    <div class="question-tags">
+                        <span class="tag">#청약통장</span>
+                        <span class="tag">#가점계산</span>
+                        <span class="tag">#무주택기간</span>
+                    </div>
+                </div>
+                
+                <!-- 답변 작성 영역 (미채택 상태일 때) -->
+                <div class="answer-write-section" id="answerWriteSection">
+                    <h3 class="section-title">
+                        <i class="fas fa-edit"></i> 답변 작성
+                    </h3>
+                    <div class="answer-form">
+                        <textarea id="answerContent" placeholder="답변을 작성해주세요. 정확하고 도움이 되는 답변을 작성하시면 채택될 확률이 높아집니다." rows="6"></textarea>
+                        <div class="answer-actions">
+                            <div class="answer-tips">
+                                <i class="fas fa-lightbulb"></i>
+                                채택 시 <span class="reward-amount">4,500P</span> 획득 (90%)
+                            </div>
+                            <button class="btn-submit-answer" onclick="submitAnswer()">
+                                <i class="fas fa-paper-plane"></i> 답변 등록
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 답변 목록 -->
+                <div class="answers-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-comments"></i> 답변 
+                        <span class="answer-count" id="answerCount">3</span>
+                    </h3>
+                    
+                    <div class="answer-list" id="answerList">
+                        <!-- 채택된 답변 (있을 경우) -->
+                        <div class="answer-item adopted">
+                            <div class="answer-header">
+                                <div class="answerer-info">
+                                    <span class="answerer-name"><i class="fas fa-user"></i> 박전문가</span>
+                                    <span class="answer-time">2시간 전</span>
+                                </div>
+                                <div class="answer-status">
+                                    <span class="adopted-badge">
+                                        <i class="fas fa-check-circle"></i> 채택됨
+                                    </span>
+                                    <span class="points-earned">+4,500P 획득</span>
+                                </div>
+                            </div>
+                            <div class="answer-content">
+                                <p>청약통장 가점 계산에 대해 설명드리겠습니다.</p>
+                                <p><strong>1. 무주택기간 (32점 만점)</strong><br>
+                                - 만 30세부터 무주택기간 산정<br>
+                                - 30세 미만 미혼자는 가입기간부터 계산</p>
+                                <p><strong>2. 부양가족수 (35점 만점)</strong><br>
+                                - 직계존속: 3년 이상 계속 부양 + 무주택<br>
+                                - 직계비속: 미혼자녀만 인정<br>
+                                - 배우자: 세대분리 상관없이 인정</p>
+                                <p><strong>3. 청약통장 가입기간 (17점 만점)</strong><br>
+                                - 가입 후 24개월 경과 시 최대점수</p>
+                            </div>
+                            <div class="answer-actions">
+                                <button class="btn-helpful active">
+                                    <i class="fas fa-thumbs-up"></i> 도움됨 <span>15</span>
+                                </button>
+                                <button class="btn-report">
+                                    <i class="fas fa-flag"></i> 신고
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 일반 답변들 -->
+                        <div class="answer-item">
+                            <div class="answer-header">
+                                <div class="answerer-info">
+                                    <span class="answerer-name"><i class="fas fa-user"></i> 이매니저</span>
+                                    <span class="answer-time">1시간 전</span>
+                                </div>
+                                <div class="answer-actions-top">
+                                    <button class="btn-adopt" onclick="adoptAnswer(this)">
+                                        <i class="fas fa-check"></i> 채택하기
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="answer-content">
+                                <p>부양가족 관련해서 추가 설명드립니다.</p>
+                                <p>직계존속의 경우 주민등록표상 3년 이상 같이 거주해야 하며, 
+                                주택을 소유한 적이 있으면 만 60세 이상이어야 부양가족으로 인정됩니다.</p>
+                            </div>
+                            <div class="answer-actions">
+                                <button class="btn-helpful">
+                                    <i class="fas fa-thumbs-up"></i> 도움됨 <span>8</span>
+                                </button>
+                                <button class="btn-report">
+                                    <i class="fas fa-flag"></i> 신고
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="answer-item">
+                            <div class="answer-header">
+                                <div class="answerer-info">
+                                    <span class="answerer-name"><i class="fas fa-user"></i> 김컨설턴트</span>
+                                    <span class="answer-time">30분 전</span>
+                                </div>
+                                <div class="answer-actions-top">
+                                    <button class="btn-adopt" onclick="adoptAnswer(this)">
+                                        <i class="fas fa-check"></i> 채택하기
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="answer-content">
+                                <p>가점 계산기를 활용하시면 편리합니다. 
+                                청약홈 홈페이지에서 가점 모의계산을 할 수 있으니 참고하세요.</p>
+                            </div>
+                            <div class="answer-actions">
+                                <button class="btn-helpful">
+                                    <i class="fas fa-thumbs-up"></i> 도움됨 <span>3</span>
+                                </button>
+                                <button class="btn-report">
+                                    <i class="fas fa-flag"></i> 신고
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 질문 작성 모달 -->
+    <div class="ask-modal" id="askModal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>질문하기</h2>
+                <button class="modal-close" onclick="closeAskModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="questionTitle">질문 제목</label>
+                    <input type="text" id="questionTitle" placeholder="질문의 제목을 입력하세요" maxlength="100">
+                </div>
+                
+                <div class="form-group">
+                    <label for="questionContent">질문 내용</label>
+                    <textarea id="questionContent" placeholder="자세한 질문 내용을 작성해주세요" rows="8"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="questionTags">태그</label>
+                    <input type="text" id="questionTags" placeholder="태그를 입력하세요 (예: #청약통장 #가점계산)">
+                    <div class="suggested-tags">
+                        <span class="tag-suggestion">#청약통장</span>
+                        <span class="tag-suggestion">#분양가상한제</span>
+                        <span class="tag-suggestion">#전매제한</span>
+                        <span class="tag-suggestion">#특별공급</span>
+                        <span class="tag-suggestion">#모델하우스</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rewardPoints">
+                        <i class="fas fa-coins"></i> 채택 보상 포인트
+                        <span class="point-info">채택자에게 90% 지급</span>
+                    </label>
+                    <div class="point-selector">
+                        <input type="range" id="pointSlider" min="1000" max="10000" step="500" value="3000">
+                        <div class="point-display">
+                            <span id="selectedPoints">3,000</span>P
+                        </div>
+                    </div>
+                    <div class="point-presets">
+                        <button class="preset-btn" data-points="1000">1,000P</button>
+                        <button class="preset-btn" data-points="3000">3,000P</button>
+                        <button class="preset-btn active" data-points="5000">5,000P</button>
+                        <button class="preset-btn" data-points="10000">10,000P</button>
+                    </div>
+                    <div class="point-calculation">
+                        <div class="calc-row">
+                            <span>내 보유 포인트:</span>
+                            <span class="my-points">15,250P</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>차감 포인트:</span>
+                            <span class="deduct-points" id="deductPoints">-3,000P</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>채택자 획득 포인트:</span>
+                            <span class="reward-points" id="rewardAmount">2,700P (90%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeAskModal()">취소</button>
+                <button class="btn-submit" onclick="submitQuestion()">
+                    <i class="fas fa-paper-plane"></i> 질문 등록
+                </button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

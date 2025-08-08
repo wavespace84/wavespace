@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출석체크 테스트</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="attendance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { padding: 40px; background: #f5f5f5; }
+        .debug-info { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="debug-info">
+        <h2>📋 출석 현황 테스트</h2>
+        <p>콘솔을 열어서 오류를 확인하세요 (F12)</p>
+    </div>
+    
+    <!-- 오늘의 출석 현황 -->
+    <div class="today-attendance">
+        <h2 class="section-title">
+            <i class="fas fa-users"></i>
+            오늘의 출석 현황 (상위 30명)
+        </h2>
+        <div class="attendance-list" id="attendanceList">
+            <p>로딩 중...</p>
+        </div>
+        <div class="my-rank-info" id="myRankInfo">
+            <!-- 내 순위 정보가 표시됩니다 -->
+        </div>
+    </div>
+
+    <script>
+        // 출석 데이터 직접 정의 (테스트용)
+        const attendanceData = [
+            { rank: 1, name: '김영업왕', time: '07:58', message: '오늘도 첫 출석! 좋은 하루 되세요!', points: 300, streak: 25, badge: '🔥' },
+            { rank: 2, name: '이기획신', time: '08:03', message: '일찍 일어나는 새가 벌레를 잡는다!', points: 300, streak: 18, badge: '⚡' },
+            { rank: 3, name: '박팀장님', time: '08:12', message: '오늘도 팀원들과 함께 화이팅!', points: 300, streak: 31, badge: '👑' },
+            { rank: 4, name: '최전문가', time: '08:18', message: '전문성으로 무장한 하루 시작!', points: 300, streak: 12, badge: '💡' },
+            { rank: 5, name: '정분양스타', time: '08:25', message: '분양의 달인이 출석했습니다', points: 300, streak: 22, badge: '⭐' }
+        ];
+
+        const currentUser = {
+            name: '박승학',
+            rank: 25,
+            isCheckedIn: false,
+            streak: 7,
+            badge: '🏃'
+        };
+
+        function renderAttendanceList() {
+            console.log('🎯 출석 목록 렌더링 시작');
+            const attendanceList = document.getElementById('attendanceList');
+            if (!attendanceList) {
+                console.error('❌ attendanceList 요소를 찾을 수 없습니다');
+                return;
+            }
+            
+            console.log('✅ attendanceList 요소 발견:', attendanceList);
+            console.log('📊 출석 데이터 개수:', attendanceData.length);
+            
+            // 상위 5명만 테스트 (전체 30명은 너무 길어서)
+            const top5 = attendanceData.slice(0, 5);
+            
+            const htmlContent = top5.map((user, index) => {
+                const isMyRank = user.name === currentUser.name;
+                const medalClass = user.rank <= 3 ? `medal-${user.rank}` : '';
+                const avatarColorClass = `avatar-${(index % 4) + 1}`;
+                
+                return `
+                    <div class="attendance-item ${isMyRank ? 'my-rank' : ''} ${medalClass}">
+                        <div class="rank-badge">
+                            <span class="rank-number">${user.rank}</span>
+                            ${user.rank <= 3 ? `<i class="fas fa-medal rank-medal"></i>` : ''}
+                        </div>
+                        <div class="user-profile">
+                            <div class="user-avatar-mini ${avatarColorClass}">
+                                <span>${user.name.charAt(0)}</span>
+                                <div class="streak-badge">${user.badge}</div>
+                            </div>
+                            <div class="user-details">
+                                <span class="user-name">${user.name}</span>
+                                <div class="user-meta">
+                                    <span class="check-time">
+                                        <i class="fas fa-clock"></i> ${user.time}
+                                    </span>
+                                    <span class="streak-info">
+                                        <i class="fas fa-fire"></i> ${user.streak}일 연속
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-message">
+                            <i class="fas fa-quote-left"></i>
+                            <span>${user.message}</span>
+                        </div>
+                        <div class="points-badge">
+                            <i class="fas fa-coins"></i>
+                            <span>+${user.points}P</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            console.log('🎨 HTML 생성 완료, 길이:', htmlContent.length);
+            attendanceList.innerHTML = htmlContent;
+            console.log('✅ 렌더링 완료!');
+        }
+
+        function displayMyRankInfo() {
+            console.log('🏆 내 순위 정보 표시 시작');
+            const myRankInfo = document.getElementById('myRankInfo');
+            if (!myRankInfo) return;
+            
+            if (currentUser.rank <= 30) {
+                myRankInfo.innerHTML = `
+                    <div class="my-rank-info in-top30">
+                        <i class="fas fa-star"></i> 축하합니다! 현재 ${currentUser.rank}등으로 상위 30위 안에 위치하고 있습니다!
+                    </div>
+                `;
+            } else {
+                myRankInfo.innerHTML = `
+                    <div class="my-rank-info out-of-top30">
+                        <i class="fas fa-info-circle"></i> 현재 순위가 30등을 넘었습니다. 더 일찍 출석해보세요!
+                    </div>
+                `;
+            }
+            console.log('✅ 내 순위 정보 표시 완료');
+        }
+
+        // 페이지 로드 후 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 테스트 페이지 로드 완료');
+            
+            setTimeout(() => {
+                renderAttendanceList();
+                displayMyRankInfo();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

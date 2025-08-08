@@ -279,7 +279,23 @@
                     <div class="hall-header">
                         <div class="hall-header-left">
                             <h1 class="hall-title">명예의 전당</h1>
-                            <p class="hall-subtitle">최고의 기여자들을 만나보세요</p>
+                            <p class="hall-subtitle">WAVE SPACE 최고의 기여자들을 만나보세요</p>
+                        </div>
+                        <div class="hall-header-right">
+                            <div class="period-selector">
+                                <button class="period-btn active" data-period="monthly">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    이달
+                                </button>
+                                <button class="period-btn" data-period="weekly">
+                                    <i class="fas fa-calendar-week"></i>
+                                    이주
+                                </button>
+                                <button class="period-btn" data-period="all">
+                                    <i class="fas fa-calendar"></i>
+                                    전체
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -296,24 +312,31 @@
                                     <i class="fas fa-medal"></i>
                                     <span class="rank-number">2</span>
                                 </div>
-                                <div class="user-avatar-hero">
+                                <div class="user-avatar-hero has-image">
                                     <span>이</span>
                                     <div class="level-badge">Lv.42</div>
                                 </div>
                                 <h3 class="user-name">이기획</h3>
                                 <p class="user-title">정보의 달인</p>
+                                <div class="achievement-badge">
+                                    <i class="fas fa-star"></i>
+                                    <span>연속 30일 1위</span>
+                                </div>
                                 <div class="user-stats">
                                     <div class="stat">
                                         <i class="fas fa-coins"></i>
                                         <span>8,750P</span>
+                                        <small>+340P (이번 달)</small>
                                     </div>
                                     <div class="stat">
                                         <i class="fas fa-file-alt"></i>
                                         <span>234 게시글</span>
+                                        <small>+12 (이번 주)</small>
                                     </div>
                                     <div class="stat">
                                         <i class="fas fa-thumbs-up"></i>
                                         <span>1,234 좋아요</span>
+                                        <small>채택률 89%</small>
                                     </div>
                                 </div>
                             </div>
@@ -327,24 +350,31 @@
                                     <i class="fas fa-trophy"></i>
                                     <span class="rank-number">1</span>
                                 </div>
-                                <div class="user-avatar-hero winner">
+                                <div class="user-avatar-hero winner has-image">
                                     <span>김</span>
                                     <div class="level-badge">Lv.58</div>
                                 </div>
                                 <h3 class="user-name">김영업</h3>
                                 <p class="user-title">전설의 영업왕</p>
+                                <div class="achievement-badge legendary">
+                                    <i class="fas fa-fire"></i>
+                                    <span>6개월 연속 1위</span>
+                                </div>
                                 <div class="user-stats">
                                     <div class="stat">
                                         <i class="fas fa-coins"></i>
                                         <span>12,450P</span>
+                                        <small>+890P (이번 달)</small>
                                     </div>
                                     <div class="stat">
                                         <i class="fas fa-file-alt"></i>
                                         <span>456 게시글</span>
+                                        <small>+23 (이번 주)</small>
                                     </div>
                                     <div class="stat">
                                         <i class="fas fa-thumbs-up"></i>
                                         <span>2,567 좋아요</span>
+                                        <small>채택률 92%</small>
                                     </div>
                                 </div>
                             </div>
@@ -355,24 +385,31 @@
                                     <i class="fas fa-medal"></i>
                                     <span class="rank-number">3</span>
                                 </div>
-                                <div class="user-avatar-hero">
+                                <div class="user-avatar-hero has-image">
                                     <span>박</span>
                                     <div class="level-badge">Lv.38</div>
                                 </div>
                                 <h3 class="user-name">박팀장</h3>
                                 <p class="user-title">소통의 달인</p>
+                                <div class="achievement-badge">
+                                    <i class="fas fa-comments"></i>
+                                    <span>베스트 댓글러</span>
+                                </div>
                                 <div class="user-stats">
                                     <div class="stat">
                                         <i class="fas fa-coins"></i>
                                         <span>7,230P</span>
+                                        <small>+234P (이번 달)</small>
                                     </div>
                                     <div class="stat">
                                         <i class="fas fa-file-alt"></i>
                                         <span>189 게시글</span>
+                                        <small>+8 (이번 주)</small>
                                     </div>
                                     <div class="stat">
                                         <i class="fas fa-thumbs-up"></i>
                                         <span>987 좋아요</span>
+                                        <small>채택률 76%</small>
                                     </div>
                                 </div>
                             </div>
@@ -437,8 +474,8 @@
                                 <div class="ranking-item">
                                     <span class="rank">7</span>
                                     <div class="user-info">
-                                        <div class="user-avatar-small">
-                                            <!-- 기본 아이콘 표시 -->
+                                        <div class="user-avatar-small has-image">
+                                            <span>신</span>
                                         </div>
                                         <div class="user-details">
                                             <span class="name">신입사원</span>
@@ -579,13 +616,16 @@
                                 <h4 class="badge-name">전설의 시작</h4>
                                 <p class="badge-desc">1년 연속 1위</p>
                                 <div class="achievers">
-                                    <div class="achiever-avatar">
+                                    <div class="achiever-avatar has-image">
                                         <span>김</span>
                                     </div>
-                                    <div class="achiever-avatar">
-                                        <!-- 기본 아이콘 표시 -->
+                                    <div class="achiever-avatar has-image">
+                                        <span>이</span>
                                     </div>
-                                    <span class="achiever-count">+2</span>
+                                    <div class="achiever-avatar has-image">
+                                        <span>박</span>
+                                    </div>
+                                    <span class="achiever-count">+1</span>
                                 </div>
                             </div>
                             <div class="badge-card">
@@ -595,13 +635,16 @@
                                 <h4 class="badge-name">불꽃 영업왕</h4>
                                 <p class="badge-desc">월 100건 달성</p>
                                 <div class="achievers">
-                                    <div class="achiever-avatar">
+                                    <div class="achiever-avatar has-image">
                                         <span>이</span>
                                     </div>
-                                    <div class="achiever-avatar">
+                                    <div class="achiever-avatar has-image">
                                         <span>박</span>
                                     </div>
-                                    <span class="achiever-count">+5</span>
+                                    <div class="achiever-avatar has-image">
+                                        <span>최</span>
+                                    </div>
+                                    <span class="achiever-count">+4</span>
                                 </div>
                             </div>
                             <div class="badge-card">
@@ -611,16 +654,16 @@
                                 <h4 class="badge-name">인기스타</h4>
                                 <p class="badge-desc">좋아요 1만 돌파</p>
                                 <div class="achievers">
-                                    <div class="achiever-avatar">
+                                    <div class="achiever-avatar has-image">
                                         <span>최</span>
                                     </div>
-                                    <div class="achiever-avatar">
+                                    <div class="achiever-avatar has-image">
                                         <span>정</span>
                                     </div>
-                                    <div class="achiever-avatar">
+                                    <div class="achiever-avatar has-image">
                                         <span>강</span>
                                     </div>
-                                    <span class="achiever-count">+12</span>
+                                    <span class="achiever-count">+9</span>
                                 </div>
                             </div>
                             <div class="badge-card">
@@ -630,13 +673,16 @@
                                 <h4 class="badge-name">지식의 전도사</h4>
                                 <p class="badge-desc">답변 500개 달성</p>
                                 <div class="achievers">
-                                    <div class="achiever-avatar">
+                                    <div class="achiever-avatar has-image">
                                         <span>송</span>
                                     </div>
-                                    <div class="achiever-avatar">
+                                    <div class="achiever-avatar has-image">
                                         <span>윤</span>
                                     </div>
-                                    <span class="achiever-count">+8</span>
+                                    <div class="achiever-avatar has-image">
+                                        <span>한</span>
+                                    </div>
+                                    <span class="achiever-count">+5</span>
                                 </div>
                             </div>
                         </div>

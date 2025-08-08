@@ -78,7 +78,7 @@
 }
 
 .check-status.checked {
-    color: var(--success);
+    color: var(--gray-900);
 }
 
 .check-status i {
@@ -188,11 +188,35 @@
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--gray-100);
     transition: var(--transition-normal);
+    position: relative;
 }
 
 .streak-card:hover {
     box-shadow: var(--shadow-md);
     border-color: var(--primary-blue);
+}
+
+/* 퀘스트 달성 카드 스타일 */
+.streak-card.quest-achieved {
+    border: 2px solid var(--primary-blue);
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(0, 102, 255, 0.1));
+    box-shadow: 0 4px 20px rgba(0, 102, 255, 0.15);
+}
+
+.quest-completed {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--primary-blue);
+    color: white;
+    padding: 4px 8px;
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
 }
 
 .streak-icon {
@@ -207,18 +231,18 @@
 }
 
 .streak-card:nth-child(1) .streak-icon {
+    background: rgba(46, 140, 230, 0.1);
+    color: var(--primary-blue);
+}
+
+.streak-card:nth-child(2) .streak-icon {
     background: rgba(255, 107, 53, 0.1);
     color: var(--orange);
 }
 
-.streak-card:nth-child(2) .streak-icon {
+.streak-card:nth-child(3) .streak-icon {
     background: rgba(255, 184, 0, 0.1);
     color: var(--warning);
-}
-
-.streak-card:nth-child(3) .streak-icon {
-    background: rgba(46, 140, 230, 0.1);
-    color: var(--primary-blue);
 }
 
 .streak-card:nth-child(4) .streak-icon {
@@ -348,12 +372,37 @@
 
 .calendar-day.today {
     background: var(--primary-blue);
-    color: white;
     font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+    border: 2px solid var(--primary-blue);
+    animation: today-pulse 2s ease-in-out infinite;
+}
+
+.calendar-day.today .day-number {
+    color: var(--gray-900);
+    font-weight: normal;
+}
+
+@keyframes today-pulse {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 6px 20px rgba(0, 102, 255, 0.5);
+    }
 }
 
 .calendar-day.checked {
     background: rgba(46, 140, 230, 0.1);
+}
+
+.calendar-day.today.checked {
+    background: var(--primary-blue);
+}
+
+.calendar-day.checked i {
+    color: var(--primary-blue);
+    font-size: 16px;
 }
 
 .day-number {
@@ -399,11 +448,32 @@
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--gray-100);
     transition: var(--transition-normal);
+    position: relative;
 }
 
-.reward-card:hover {
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-blue);
+/* 호버 효과 제거됨 */
+
+.reward-card.current-rank {
+    background: linear-gradient(to right, rgba(0, 102, 255, 0.05), rgba(0, 102, 255, 0.02));
+    border: 2px solid var(--primary-blue);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+}
+
+.reward-card .achievement-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--primary-blue);
+    color: white;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+    z-index: 1;
 }
 
 .reward-icon {
@@ -451,6 +521,127 @@
     margin: 0;
 }
 
+/* 보너스 보상 섹션 */
+.bonus-rewards {
+    margin-top: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(123, 97, 255, 0.05));
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--primary-blue);
+}
+
+.bonus-rewards h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0 0 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bonus-rewards h3 i {
+    color: var(--warning);
+}
+
+.bonus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.bonus-item.special {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    transition: var(--transition-normal);
+}
+
+.bonus-item.special:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-blue);
+}
+
+.bonus-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--gray-100);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bonus-icon i {
+    font-size: 18px;
+}
+
+.bonus-item:nth-child(1) .bonus-icon {
+    background: rgba(255, 107, 53, 0.1);
+    color: var(--orange);
+}
+
+.bonus-item:nth-child(2) .bonus-icon {
+    background: rgba(123, 97, 255, 0.1);
+    color: var(--purple);
+}
+
+.bonus-item:nth-child(3) .bonus-icon {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--warning);
+}
+
+.bonus-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bonus-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.bonus-points {
+    font-size: 12px;
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+/* 보너스 달성 상태 */
+.bonus-item.achieved {
+    background: linear-gradient(to right, rgba(0, 102, 255, 0.05), transparent);
+    border: 2px solid var(--primary-blue);
+    position: relative;
+}
+
+.achievement-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--primary-blue);
+    color: white;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+    z-index: 1;
+}
+
+.achievement-badge i {
+    font-size: 10px;
+}
+
 /* 오늘의 출석 현황 */
 .today-attendance {
     background: white;
@@ -470,74 +661,331 @@
 .attendance-item {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px;
-    background: var(--gray-50);
+    gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid var(--gray-200);
     border-radius: var(--radius-lg);
     transition: var(--transition-fast);
 }
 
 .attendance-item:hover {
-    background: var(--gray-100);
+    background: var(--gray-50);
 }
 
-.attendance-item .rank {
+/* 순위 표시 */
+.rank-number {
+    min-width: 40px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+/* 시간 표시 */
+.check-time {
+    min-width: 50px;
+    font-size: 13px;
+    color: var(--gray-500);
+}
+
+/* 기본 회색 아바타 */
+.user-avatar {
     width: 32px;
     height: 32px;
-    background: var(--gray-200);
+    background: var(--gray-400);
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--gray-600);
-}
-
-.attendance-item:nth-child(1) .rank {
-    background: #ffd700;
-    color: #333;
-}
-
-.attendance-item:nth-child(2) .rank {
-    background: #c0c0c0;
-    color: #333;
-}
-
-.attendance-item:nth-child(3) .rank {
-    background: #cd7f32;
     color: white;
 }
 
-.attendance-item .user-info {
-    min-width: 120px;
+.user-avatar i {
+    font-size: 16px;
 }
 
-.attendance-item .name {
-    display: block;
+/* 사용자 이름과 뱃지 래퍼 */
+.user-name-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 150px;
+}
+
+/* 사용자 ID */
+.user-id {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--gray-900);
-    margin-bottom: 2px;
 }
 
-.attendance-item .time {
-    display: block;
-    font-size: 12px;
-    color: var(--gray-500);
+/* 대표 뱃지 - 둥근 테두리 스타일 */
+.user-badge {
+    padding: 3px 10px;
+    background: white;
+    border: 2px solid var(--primary-blue);
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary-blue);
+    white-space: nowrap;
 }
 
-.attendance-item .message {
+
+/* 메시지 */
+.user-message {
     flex: 1;
     font-size: 13px;
     color: var(--gray-600);
-    font-style: italic;
+    padding: 0 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.attendance-item .points {
-    font-size: 14px;
-    font-weight: 700;
+/* 포인트 배지 */
+.points-badge {
+    min-width: 60px;
+    font-size: 13px;
+    font-weight: 600;
     color: var(--primary-blue);
+    text-align: right;
+}
+
+/* 쿠폰 당첨 표시 */
+.coupon-winner {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--warning);
+    color: white;
+    border-radius: var(--radius-md);
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.coupon-winner i {
+    font-size: 12px;
+}
+
+/* 30위 밖 메시지 */
+.out-of-rank-message {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    text-align: center;
+    color: var(--gray-600);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.out-of-rank-message i {
+    color: var(--gray-500);
+}
+
+/* 쿠폰 섹션 통합 */
+.coupon-section {
+    margin-top: 24px;
+    padding: 20px;
+    background: linear-gradient(to right, rgba(255, 184, 0, 0.05), rgba(255, 184, 0, 0.02));
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--warning);
+}
+
+.coupon-congratulations {
+    margin-top: 20px;
+    padding: 12px;
+    background: var(--warning);
+    color: white;
+    text-align: center;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.coupon-congratulations i {
+    font-size: 16px;
+}
+
+.coupon-section h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.coupon-section h4 i {
+    color: var(--warning);
+}
+
+.coupon-desc {
+    font-size: 13px;
+    color: var(--gray-600);
+    margin: 0 0 16px 0;
+    padding: 10px 14px;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-200);
+}
+
+.coupon-content {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 16px;
+}
+
+.coupon-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rule-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-200);
+}
+
+.rule-range {
+    min-width: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.rule-prize {
+    flex: 1;
+    font-size: 13px;
+    color: var(--gray-600);
+    padding: 0 16px;
+}
+
+.winner-badge {
+    padding: 4px 12px;
+    background: var(--gray-100);
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    color: var(--gray-500);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.winner-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.winner-badge.winner-selected {
+    background: white;
+    color: var(--warning);
+    font-weight: 700;
+    border: 2px solid var(--warning);
+    padding: 6px 14px;
+}
+
+@keyframes winner-glow {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(255, 184, 0, 0);
+    }
+    50% {
+        box-shadow: 0 0 10px rgba(255, 184, 0, 0.3);
+    }
+}
+
+/* 등수별 구분선 */
+.rank-divider {
+    margin: 20px 0 12px 0;
+    padding: 8px 16px;
+    background: var(--gray-100);
+    border-left: 4px solid var(--primary-blue);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    border-radius: var(--radius-md);
+}
+
+/* 순위 래퍼 및 메달 스타일 */
+.rank-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 60px;
+}
+
+.medal-gold {
+    color: #FFD700;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3));
+}
+
+.medal-silver {
+    color: #C0C0C0;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(192, 192, 192, 0.3));
+}
+
+.medal-bronze {
+    color: #CD7F32;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(205, 127, 50, 0.3));
+}
+
+/* 1,2,3등 순위 번호 강조 */
+.rank-number.top-three {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.rank-number.rank-1 {
+    color: #FFD700;
+    font-weight: 800;
+}
+
+.rank-number.rank-2 {
+    color: #C0C0C0;
+    font-weight: 800;
+}
+
+.rank-number.rank-3 {
+    color: #CD7F32;
+    font-weight: 800;
+}
+
+/* 내가 30위 안에 있을 때 강조 */
+.attendance-item.my-rank {
+    background: rgba(0, 102, 255, 0.1);
+    border: 2px solid var(--primary-blue);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+    animation: my-rank-highlight 2s infinite;
+}
+
+@keyframes my-rank-highlight {
+    0%, 100% {
+        border-color: var(--primary-blue);
+        box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+    }
+    50% {
+        border-color: rgba(0, 102, 255, 0.8);
+        box-shadow: 0 6px 20px rgba(0, 102, 255, 0.3);
+    }
 }
 
 .total-attendance {
@@ -592,12 +1040,22 @@
     }
     
     .attendance-item {
-        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
     }
     
-    .attendance-item .message {
-        width: 100%;
-        margin-top: 8px;
+    .user-profile {
+        align-self: flex-start;
+        min-width: auto;
+    }
+    
+    .user-message {
+        align-self: stretch;
+    }
+    
+    .points-badge {
+        align-self: flex-end;
     }
 }
 

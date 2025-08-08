@@ -1,11 +1,23 @@
 // 명예의전당 페이지 JavaScript
 
+console.log('hall-of-fame.js 파일 로드 시작');
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('hall-of-fame.js DOMContentLoaded 이벤트 발생');
+    
+    // 초기 애니메이션 실행
+    initializeAnimations();
+    
     // 기간 선택 버튼
     const periodBtns = document.querySelectorAll('.period-btn');
+    console.log('기간 선택 버튼 개수:', periodBtns.length);
     
-    periodBtns.forEach(btn => {
+    periodBtns.forEach((btn, index) => {
+        console.log(`기간 버튼 ${index + 1} 등록:`, btn.textContent.trim());
+        
         btn.addEventListener('click', function() {
+            console.log('기간 버튼 클릭됨:', this.textContent.trim());
+            
             // 모든 버튼에서 active 클래스 제거
             periodBtns.forEach(b => b.classList.remove('active'));
             // 클릭한 버튼에 active 클래스 추가
@@ -14,6 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // 선택한 기간에 따라 데이터 로드
             const period = this.dataset.period;
             loadRankingData(period);
+            
+            // 카드 업데이트 애니메이션
+            animateCardUpdate();
         });
     });
     
@@ -210,16 +225,104 @@ function hideLoadingAnimation() {
     }
 }
 
+// 초기 애니메이션 함수
+function initializeAnimations() {
+    console.log('초기 애니메이션 시작');
+    
+    // TOP 3 카드 애니메이션
+    const topCards = document.querySelectorAll('.top-user-card');
+    topCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = card.classList.contains('first-place') ? 'scale(1.05)' : 'translateY(0)';
+        }, index * 200);
+    });
+    
+    // 배지 카드 애니메이션
+    const badgeCards = document.querySelectorAll('.badge-card');
+    badgeCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 800 + (index * 100));
+    });
+    
+    // 랭킹 아이템 애니메이션
+    const rankingItems = document.querySelectorAll('.ranking-item');
+    rankingItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+        
+        setTimeout(() => {
+            item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+        }, 1000 + (index * 50));
+    });
+}
+
+// 카드 업데이트 애니메이션
+function animateCardUpdate() {
+    console.log('카드 업데이트 애니메이션 실행');
+    
+    const topCards = document.querySelectorAll('.top-user-card');
+    const rankingItems = document.querySelectorAll('.ranking-item');
+    
+    // TOP 3 카드 업데이트 애니메이션
+    topCards.forEach((card, index) => {
+        card.style.transform = 'scale(0.95)';
+        card.style.opacity = '0.7';
+        
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            card.style.opacity = '1';
+            card.style.transform = card.classList.contains('first-place') ? 'scale(1.05)' : 'scale(1)';
+        }, index * 100);
+    });
+    
+    // 랭킹 아이템 업데이트 애니메이션
+    rankingItems.forEach((item, index) => {
+        item.style.opacity = '0.5';
+        
+        setTimeout(() => {
+            item.style.transition = 'opacity 0.3s ease';
+            item.style.opacity = '1';
+        }, 300 + (index * 50));
+    });
+}
+
 // 랭킹 디스플레이 업데이트
 function updateRankingDisplay(period) {
     console.log(`Updating display for ${period} period`);
     
-    // TOP 3 업데이트 애니메이션
-    const rankCards = document.querySelectorAll('.rank-card');
-    rankCards.forEach((card, index) => {
-        card.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            card.style.transform = card.classList.contains('gold') ? 'scale(1.05)' : 'scale(1)';
-        }, 100);
-    });
+    // 기간별 데이터 시뮬레이션
+    const periodData = {
+        monthly: {
+            first: { name: '김영업', points: '12,450P', posts: '456', likes: '2,567' },
+            second: { name: '이기획', points: '8,750P', posts: '234', likes: '1,234' },
+            third: { name: '박팀장', points: '7,230P', posts: '189', likes: '987' }
+        },
+        weekly: {
+            first: { name: '이기획', points: '890P', posts: '23', likes: '156' },
+            second: { name: '김영업', points: '678P', posts: '18', likes: '134' },
+            third: { name: '최전문가', points: '567P', posts: '15', likes: '89' }
+        },
+        all: {
+            first: { name: '김영업', points: '45,890P', posts: '1,234', likes: '8,567' },
+            second: { name: '이기획', points: '38,750P', posts: '987', likes: '6,234' },
+            third: { name: '박팀장', points: '32,230P', posts: '789', likes: '4,987' }
+        }
+    };
+    
+    // 실제 데이터 업데이트는 여기서 구현
+    // 현재는 애니메이션만 실행
+    animateCardUpdate();
 }

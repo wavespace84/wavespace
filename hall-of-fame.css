@@ -15,6 +15,52 @@
     margin-bottom: 32px;
 }
 
+.hall-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* 기간 선택기 */
+.period-selector {
+    display: flex;
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 4px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+}
+
+.period-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--gray-600);
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.period-btn:hover {
+    background: var(--gray-50);
+    color: var(--gray-700);
+}
+
+.period-btn.active {
+    background: var(--primary-blue);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 102, 255, 0.2);
+}
+
+.period-btn i {
+    font-size: 12px;
+}
+
 .hall-header-left {
     flex: 1;
 }
@@ -219,7 +265,7 @@
 
 /* 사용자 이미지가 있는 경우 */
 .user-avatar-hero.has-image {
-    background: var(--gray-400);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-size: cover;
     background-position: center;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -237,13 +283,19 @@
 }
 
 .user-avatar-hero.has-image.winner {
-    background: var(--gray-400);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    animation: winner-pulse 2s ease-in-out infinite;
 }
 
 .user-avatar-hero.has-image.winner span {
     font-size: 40px;
     color: white;
+}
+
+@keyframes winner-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
 }
 
 .user-avatar-hero .level-badge {
@@ -273,7 +325,37 @@
 .top-user-card .user-title {
     font-size: 13px;
     color: var(--gray-600);
-    margin: 0 0 20px 0;
+    margin: 0 0 12px 0;
+}
+
+/* 업적 배지 */
+.achievement-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.achievement-badge.legendary {
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+    animation: legendary-glow 3s ease-in-out infinite;
+    box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
+}
+
+@keyframes legendary-glow {
+    0%, 100% { box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4); }
+    50% { box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6); }
+}
+
+.achievement-badge i {
+    font-size: 10px;
 }
 
 .top-user-card .user-stats {
@@ -284,15 +366,25 @@
 
 .top-user-card .stat {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 8px 12px;
+    gap: 4px;
+    padding: 12px;
     background: var(--gray-50);
     border-radius: var(--radius-lg);
     font-size: 13px;
     color: var(--gray-700);
     transition: var(--transition-fast);
+}
+
+.top-user-card .stat small {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--gray-500);
+    margin-top: 2px;
 }
 
 .top-user-card .stat:hover {
@@ -440,7 +532,7 @@
 
 /* 사용자 이미지가 있는 경우 */
 .user-avatar-small.has-image {
-    background: var(--gray-400);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-size: cover;
     background-position: center;
 }
@@ -454,6 +546,23 @@
     color: white;
     font-size: 14px;
     font-weight: 600;
+}
+
+/* 개인별 아바타 색상 */
+.user-avatar-small.has-image:nth-child(1) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.user-avatar-small.has-image:nth-child(2) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.user-avatar-small.has-image:nth-child(3) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.user-avatar-small.has-image:nth-child(4) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
 }
 
 .user-details {
@@ -626,7 +735,7 @@
 
 /* 사용자 이미지가 있는 경우 */
 .achiever-avatar.has-image {
-    background: var(--gray-400);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-size: cover;
     background-position: center;
 }
@@ -640,6 +749,27 @@
     color: white;
     font-size: 11px;
     font-weight: 600;
+}
+
+/* 개인별 아바타 색상 변화 */
+.achiever-avatar.has-image:nth-child(1) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.achiever-avatar.has-image:nth-child(2) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.achiever-avatar.has-image:nth-child(3) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.achiever-avatar.has-image:nth-child(4) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.achiever-avatar.has-image:nth-child(5) {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
 }
 
 .achiever-count {
