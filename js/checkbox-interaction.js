@@ -128,10 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initCheckboxes();
 });
 
-// 외부에서 사용할 수 있도록 export
-export {
-    initCheckboxTabs,
-    initCheckboxButtons,
-    initSelectableCards,
-    initCheckboxes
-};
+// 외부에서 사용할 수 있도록 전역 객체에 추가
+if (typeof window !== 'undefined') {
+    window.CheckboxInteraction = {
+        initCheckboxTabs,
+        initCheckboxButtons,
+        initSelectableCards,
+        initCheckboxes
+    };
+}
