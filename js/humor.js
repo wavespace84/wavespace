@@ -1,7 +1,13 @@
 // 유머재미 페이지 JavaScript
+
+// 디버그 로그
+console.log('humor.js 파일 로드 시작');
+
 document.addEventListener('DOMContentLoaded', function() {
-    // 카테고리 탭
-    const categoryTabs = document.querySelectorAll('.category-tab');
+    console.log('humor.js DOMContentLoaded 이벤트 발생');
+    
+    // 카테고리 탭 - 클래스명 수정 (.category-tab → .tab-btn)
+    const categoryTabs = document.querySelectorAll('.tab-btn');
     const searchInput = document.querySelector('.search-input');
     const searchBtn = document.querySelector('.search-btn');
     const sortSelect = document.querySelector('.sort-select');
@@ -9,15 +15,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewBtns = document.querySelectorAll('.view-btn');
     const pageBtns = document.querySelectorAll('.page-btn:not(:disabled)');
 
+    console.log('카테고리 탭 개수:', categoryTabs.length);
+
     // 카테고리 탭 클릭 이벤트
-    categoryTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            categoryTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            const category = this.dataset.category;
-            filterPosts(category);
+    if (categoryTabs.length > 0) {
+        categoryTabs.forEach((tab, index) => {
+            console.log(`탭 ${index + 1} 등록:`, tab.textContent.trim());
+            
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('탭 클릭됨:', this.textContent.trim());
+                
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const category = this.dataset.category;
+                filterPosts(category);
+            });
         });
-    });
+    } else {
+        console.error('카테고리 탭을 찾을 수 없습니다!');
+    }
 
     // 검색 기능
     searchBtn.addEventListener('click', performSearch);
@@ -110,8 +129,83 @@ document.addEventListener('DOMContentLoaded', function() {
     // 필터링 함수
     function filterPosts(category) {
         console.log(`Filtering posts by category: ${category}`);
-        // 실제 필터링 로직 구현
+        
+        const posts = document.querySelectorAll('.post-item');
+        let visibleCount = 0;
+        
+        posts.forEach(post => {
+            if (category === 'all') {
+                post.style.display = '';
+                visibleCount++;
+            } else {
+                // data-category 속성으로 필터링
+                const postCategory = post.dataset.category;
+                if (postCategory === category) {
+                    post.style.display = '';
+                    visibleCount++;
+                } else {
+                    post.style.display = 'none';
+                }
+            }
+        });
+        
+        // 게시글이 없을 때 메시지 표시
+        const postsGrid = document.querySelector('.posts-grid');
+        let noPostsMessage = document.querySelector('.no-posts-message');
+        
+        if (visibleCount === 0) {
+            if (!noPostsMessage) {
+                noPostsMessage = document.createElement('div');
+                noPostsMessage.className = 'no-posts-message';
+                noPostsMessage.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #666;';
+                noPostsMessage.innerHTML = `
+                    <i class="fas fa-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 16px; display: block;"></i>
+                    <p style="font-size: 16px;">해당 카테고리에 게시글이 없습니다.</p>
+                `;
+                postsGrid.appendChild(noPostsMessage);
+            }
+            noPostsMessage.style.display = 'block';
+        } else {
+            if (noPostsMessage) {
+                noPostsMessage.style.display = 'none';
+            }
+        }
+        
+        // 카테고리별 게시글 개수 업데이트
+        updateCategoryCounts();
+        
+        console.log(`${category} 카테고리: ${visibleCount}개 게시글 표시`);
     }
+    
+    // 카테고리별 게시글 개수 업데이트
+    function updateCategoryCounts() {
+        const categoryTabs = document.querySelectorAll('.tab-btn');
+        
+        categoryTabs.forEach(tab => {
+            const category = tab.dataset.category;
+            const countSpan = tab.querySelector('.count');
+            
+            if (countSpan) {
+                const posts = document.querySelectorAll('.post-item');
+                let count = 0;
+                
+                if (category === 'all') {
+                    count = posts.length;
+                } else {
+                    posts.forEach(post => {
+                        if (post.dataset.category === category) {
+                            count++;
+                        }
+                    });
+                }
+                
+                countSpan.textContent = count;
+            }
+        });
+    }
+    
+    // 초기 로드시 카테고리 개수 업데이트
+    updateCategoryCounts();
 
     // 페이지 로드 함수
     function loadPage(pageNumber) {
