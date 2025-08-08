@@ -3,8 +3,7 @@
 import { initSidebar } from './modules/sidebar.js';
 import { initHeader } from './modules/header.js';
 import { initPreload } from './modules/preload.js';
-import { initAnimations } from './modules/animations.js';
-import { initUtils } from './modules/utils.js';
+import { initClock } from './modules/clock.js';
 
 // DOM이 로드되면 초기화
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,11 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 헤더 초기화
     initHeader();
     
-    // 애니메이션 초기화
-    initAnimations();
-    
-    // 유틸리티 초기화
-    initUtils();
+    // 시계 초기화
+    initClock();
     
     // 페이지별 초기화
     const currentPage = document.body.dataset.page;

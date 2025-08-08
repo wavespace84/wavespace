@@ -1,3 +1,6 @@
+/* CSS Variables 임포트 */
+@import url('./css/base.css');
+
 /* 페이지 로딩 시 깜빡임 방지 */
 html {
     -webkit-font-smoothing: antialiased;
@@ -38,13 +41,56 @@ html, body {
     position: relative;
 }
 
+/* 사이드바 내부 스크롤 영역만 스크롤 허용 */
+.sidebar-nav {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    height: calc(100vh - 145px); /* 헤더 + 슬로건 높이 제외 */
+}
+
 /* 메인 컨테이너는 나머지 공간 차지 */
-.main-container {
+.main-container,
+.main-content {
     flex: 1;
     height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
+}
+
+/* 스크롤바 스타일링 */
+.sidebar-nav::-webkit-scrollbar,
+.main-container::-webkit-scrollbar,
+.main-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track,
+.main-container::-webkit-scrollbar-track,
+.main-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb,
+.main-container::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover,
+.main-container::-webkit-scrollbar-thumb:hover,
+.main-content::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Firefox 스크롤바 */
+.sidebar-nav,
+.main-container,
+.main-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 /* 링크 클릭 시 깜빡임 방지 */

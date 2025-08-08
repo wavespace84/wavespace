@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판 - WAVE SPACE</title>
+    <script src="preload.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="forum.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 전체 컨테이너 -->
+    <div class="app-container">
+        <!-- 사이드바 (index.html과 동일) -->
+        <aside class="sidebar">
+            <!-- 로고 영역 -->
+            <div class="sidebar-header">
+                <a href="index.html" class="logo-container">
+                    <span class="logo-text">WAVE space</span>
+                    <span class="beta-badge">BETA</span>
+                </a>
+            </div>
+
+            <!-- 슬로건 -->
+            <div class="sidebar-slogan">
+                <p>대한민국 No.1 분양실무자 대표 커뮤니티</p>
+            </div>
+
+            <!-- 네비게이션 -->
+            <nav class="sidebar-nav">
+                <!-- 안내 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-book-open"></i>
+                                <span>안내</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="notice.html" class="nav-item">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span>공지사항</span>
+                                    <span class="check-mark"></span>
+                                </a>
+                                <a href="updates.html" class="nav-item highlighted">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>업데이트</span>
+                                </a>
+                                <a href="support.html" class="nav-item">
+                                    <i class="fas fa-life-ring"></i>
+                                    <span>고객센터</span>
+                                </a>
+                                <a href="plus-membership.html" class="nav-item">
+                                    <i class="fas fa-rocket"></i>
+                                    <span>+Plus Membership</span>
+                                </a>
+                                <a href="events.html" class="nav-item">
+                                    <i class="fas fa-gift"></i>
+                                    <span>이벤트</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 커뮤니티 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category active">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-users"></i>
+                                <span>커뮤니티</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="hall-of-fame.html" class="nav-item">
+                                    <i class="fas fa-trophy"></i>
+                                    <span>명예의전당</span>
+                                </a>
+                                <a href="attendance.html" class="nav-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>출석체크</span>
+                                </a>
+                                <a href="forum.html" class="nav-item active">
+                                    <i class="fas fa-comments"></i>
+                                    <span>자유게시판</span>
+                                </a>
+                                <a href="humor.html" class="nav-item">
+                                    <i class="fas fa-laugh"></i>
+                                    <span>유머재미</span>
+                                </a>
+                                <a href="qna.html" class="nav-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>질문답변</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 구인구직 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-building"></i>
+                                <span>구인구직</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>분양기획</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span>분양영업</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span>헤드헌팅</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 분양자료 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-folder-open"></i>
+                                <span>분양자료</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-database"></i>
+                                    <span>Data Center</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-book"></i>
+                                    <span>시장조사서</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-file-signature"></i>
+                                    <span>제안서</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>교육자료</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>정책자료</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-folder"></i>
+                                    <span>기타자료</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-robot"></i>
+                                    <span>AI 보고서</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 포인트 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-coins"></i>
+                                <span>포인트</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-gem"></i>
+                                    <span>포인트정책</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>전체랭킹</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>충전하기</span>
+                                </a>
+                                <a href="#" class="nav-item">
+                                    <i class="fas fa-store"></i>
+                                    <span>상점</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 미니게임 섹션 -->
+                <div class="minigame-section">
+                    <div class="minigame-header">
+                        <i class="fas fa-gamepad"></i>
+                        <span>미니게임</span>
+                    </div>
+                    <div class="minigame-buttons">
+                        <a href="#" class="minigame-btn">
+                            <i class="fas fa-gamepad"></i>
+                            <span>모든 게임</span>
+                        </a>
+                        <a href="#" class="minigame-btn">
+                            <i class="fas fa-circle-notch"></i>
+                            <span>룰렛</span>
+                        </a>
+                        <a href="#" class="minigame-btn">
+                            <i class="fas fa-layer-group"></i>
+                            <span>블랙잭</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 메인 컨테이너 -->
+        <div class="main-container">
+            <!-- 헤더 -->
+            <header class="main-header">
+                <div class="header-right">
+                    <button class="header-icon-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="header-icon-btn notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <span>박</span>
+                            <div class="user-badge">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">박승학님</p>
+                            <div class="user-meta">
+                                <span class="user-title">소통왕</span>
+                                <span class="user-points">• 1,250P</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down user-dropdown-icon"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="main-content">
+                <div class="forum-container">
+                    <!-- 헤더 -->
+                    <div class="forum-header">
+                        <div class="forum-header-left">
+                            <h1 class="forum-title">자유게시판</h1>
+                            <p class="forum-subtitle">자유롭게 소통하는 분양실무자들의 공간</p>
+                        </div>
+                    </div>
+
+                <!-- 카테고리 탭 -->
+                <div class="category-tabs">
+                    <button class="tab-btn active">
+                        전체
+                        <span class="count">1,234</span>
+                    </button>
+                    <button class="tab-btn">
+                        일반
+                        <span class="count">523</span>
+                    </button>
+                    <button class="tab-btn">
+                        질문
+                        <span class="count">312</span>
+                    </button>
+                    <button class="tab-btn">
+                        정보공유
+                        <span class="count">245</span>
+                    </button>
+                    <button class="tab-btn">
+                        후기
+                        <span class="count">98</span>
+                    </button>
+                    <button class="tab-btn">
+                        구인구직
+                        <span class="count">56</span>
+                    </button>
+                </div>
+
+                    <!-- 검색 및 필터 -->
+                    <div class="forum-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="제목, 내용, 작성자 검색">
+                        </div>
+                        <select class="filter-select">
+                            <option>최신순</option>
+                            <option>인기순</option>
+                            <option>조회순</option>
+                            <option>댓글순</option>
+                        </select>
+                    </div>
+
+                    <!-- 인기 게시글 -->
+                    <div class="hot-posts">
+                        <div class="section-header">
+                            <i class="fas fa-fire hot-icon"></i>
+                            <h2 class="section-title">인기 게시글</h2>
+                        </div>
+                    <div class="hot-posts-grid">
+                        <div class="hot-post-card">
+                            <span class="hot-badge">HOT</span>
+                            <h3 class="hot-post-title">2024년 하반기 분양시장 전망과 대응 전략</h3>
+                            <p class="hot-post-excerpt">최근 금리 인상과 규제 변화로 인한 분양시장의 변화에 대해 현업에서 느끼는 체감도와 대응 방안을 공유합니다...</p>
+                            <div class="hot-post-stats">
+                                <span><i class="fas fa-eye"></i> 1,234</span>
+                                <span><i class="fas fa-comment"></i> 45</span>
+                                <span><i class="fas fa-heart"></i> 89</span>
+                            </div>
+                        </div>
+                        <div class="hot-post-card">
+                            <span class="hot-badge">HOT</span>
+                            <h3 class="hot-post-title">성공적인 모델하우스 운영 노하우 대공개</h3>
+                            <p class="hot-post-excerpt">10년차 분양영업 전문가가 알려주는 모델하우스 운영의 모든 것. 고객 응대부터 계약까지...</p>
+                            <div class="hot-post-stats">
+                                <span><i class="fas fa-eye"></i> 987</span>
+                                <span><i class="fas fa-comment"></i> 32</span>
+                                <span><i class="fas fa-heart"></i> 76</span>
+                            </div>
+                        </div>
+                        <div class="hot-post-card">
+                            <span class="hot-badge">HOT</span>
+                            <h3 class="hot-post-title">분양가 상한제 지역 영업 전략 총정리</h3>
+                            <p class="hot-post-excerpt">분양가 상한제 적용 지역에서의 효과적인 영업 전략과 실제 사례를 바탕으로 한 팁...</p>
+                            <div class="hot-post-stats">
+                                <span><i class="fas fa-eye"></i> 856</span>
+                                <span><i class="fas fa-comment"></i> 28</span>
+                                <span><i class="fas fa-heart"></i> 65</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 게시글 목록 및 사이드바 -->
+                <div class="posts-section">
+                    <!-- 게시글 목록 -->
+                    <div class="posts-list">
+                        <!-- 공지사항 -->
+                        <div class="post-item notice">
+                            <div class="post-number">
+                                <span class="post-badge notice-badge">공지</span>
+                            </div>
+                            <div class="post-category">
+                                <span class="category-badge general">공지</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">[필독] 자유게시판 이용 규칙 및 가이드라인</a>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 관리자</span>
+                                    <span><i class="fas fa-clock"></i> 2024.01.15</span>
+                                    <span><i class="fas fa-eye"></i> 5,234</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 234</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 12</span>
+                            </div>
+                        </div>
+
+                        <!-- 일반 게시글 -->
+                        <div class="post-item">
+                            <div class="post-number">1234</div>
+                            <div class="post-category">
+                                <span class="category-badge question">질문</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">청약통장 가점 계산 관련 질문드립니다</a>
+                                    <span class="new-badge">NEW</span>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 김영업</span>
+                                    <span><i class="fas fa-clock"></i> 10분 전</span>
+                                    <span><i class="fas fa-eye"></i> 23</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 2</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 5</span>
+                            </div>
+                        </div>
+
+                        <div class="post-item">
+                            <div class="post-number">1233</div>
+                            <div class="post-category">
+                                <span class="category-badge info">정보공유</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">서울 강남권 신규 분양 일정 총정리 (2024년 1분기)</a>
+                                    <span class="new-badge">NEW</span>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 박기획</span>
+                                    <span><i class="fas fa-clock"></i> 30분 전</span>
+                                    <span><i class="fas fa-eye"></i> 156</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 12</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 8</span>
+                            </div>
+                        </div>
+
+                        <div class="post-item">
+                            <div class="post-number">1232</div>
+                            <div class="post-category">
+                                <span class="category-badge review">후기</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">힐스테이트 ○○ 분양 현장 후기 및 경쟁률 예상</a>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 이팀장</span>
+                                    <span><i class="fas fa-clock"></i> 1시간 전</span>
+                                    <span><i class="fas fa-eye"></i> 342</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 23</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 15</span>
+                            </div>
+                        </div>
+
+                        <div class="post-item">
+                            <div class="post-number">1231</div>
+                            <div class="post-category">
+                                <span class="category-badge general">일반</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">분양영업 10년차가 말하는 이 업계의 현실</a>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 최전문가</span>
+                                    <span><i class="fas fa-clock"></i> 2시간 전</span>
+                                    <span><i class="fas fa-eye"></i> 567</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 45</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 32</span>
+                            </div>
+                        </div>
+
+                        <div class="post-item">
+                            <div class="post-number">1230</div>
+                            <div class="post-category">
+                                <span class="category-badge job">구인구직</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">[채용] 강남 신규 분양 현장 팀장급 모집</a>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> HR담당자</span>
+                                    <span><i class="fas fa-clock"></i> 3시간 전</span>
+                                    <span><i class="fas fa-eye"></i> 234</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 8</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 4</span>
+                            </div>
+                        </div>
+
+                        <div class="post-item">
+                            <div class="post-number">1229</div>
+                            <div class="post-category">
+                                <span class="category-badge info">정보공유</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">2024년 달라지는 부동산 정책 총정리</a>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 정책분석가</span>
+                                    <span><i class="fas fa-clock"></i> 5시간 전</span>
+                                    <span><i class="fas fa-eye"></i> 892</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 67</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 23</span>
+                            </div>
+                        </div>
+
+                        <div class="post-item">
+                            <div class="post-number">1228</div>
+                            <div class="post-category">
+                                <span class="category-badge question">질문</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">전매제한 관련 법률 해석 도움 부탁드립니다</a>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 신입사원</span>
+                                    <span><i class="fas fa-clock"></i> 8시간 전</span>
+                                    <span><i class="fas fa-eye"></i> 145</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 3</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 12</span>
+                            </div>
+                        </div>
+
+                        <div class="post-item">
+                            <div class="post-number">1227</div>
+                            <div class="post-category">
+                                <span class="category-badge general">일반</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">모델하우스 운영 중 겪은 황당한 에피소드</a>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 웃긴이야기</span>
+                                    <span><i class="fas fa-clock"></i> 어제</span>
+                                    <span><i class="fas fa-eye"></i> 1,234</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 89</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 45</span>
+                            </div>
+                        </div>
+
+                        <div class="post-item">
+                            <div class="post-number">1226</div>
+                            <div class="post-category">
+                                <span class="category-badge review">후기</span>
+                            </div>
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="#">래미안 ○○ 청약 당첨 후기 및 팁 공유</a>
+                                </h3>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-user"></i> 당첨자</span>
+                                    <span><i class="fas fa-clock"></i> 어제</span>
+                                    <span><i class="fas fa-eye"></i> 2,345</span>
+                                </div>
+                            </div>
+                            <div class="post-stats">
+                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 123</span>
+                                <span class="comment-count"><i class="fas fa-comment"></i> 67</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 사이드 위젯 -->
+                    <div class="side-widgets">
+                        <!-- 인기 키워드 -->
+                        <div class="widget">
+                            <h3 class="widget-title">
+                                <i class="fas fa-hashtag"></i>
+                                인기 키워드
+                            </h3>
+                            <div class="keyword-list">
+                                <div class="keyword-item">
+                                    <span class="rank">1</span>
+                                    <span class="keyword">분양가상한제</span>
+                                    <span class="trend up">▲</span>
+                                </div>
+                                <div class="keyword-item">
+                                    <span class="rank">2</span>
+                                    <span class="keyword">청약통장</span>
+                                    <span class="trend same">-</span>
+                                </div>
+                                <div class="keyword-item">
+                                    <span class="rank">3</span>
+                                    <span class="keyword">모델하우스</span>
+                                    <span class="trend up">▲</span>
+                                </div>
+                                <div class="keyword-item">
+                                    <span class="rank">4</span>
+                                    <span class="keyword">전매제한</span>
+                                    <span class="trend down">▼</span>
+                                </div>
+                                <div class="keyword-item">
+                                    <span class="rank">5</span>
+                                    <span class="keyword">특별공급</span>
+                                    <span class="trend up">▲</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 베스트 댓글 -->
+                        <div class="widget">
+                            <h3 class="widget-title">
+                                <i class="fas fa-star"></i>
+                                베스트 댓글
+                            </h3>
+                            <div class="best-comments">
+                                <div class="comment-item">
+                                    <p class="comment-text">"10년 경력자로서 정말 공감되는 내용이네요. 특히 고객 응대 부분은 신입분들 꼭 참고하세요!"</p>
+                                    <div class="comment-meta">
+                                        <span class="comment-author">김전문가</span>
+                                        <span class="comment-likes"><i class="fas fa-thumbs-up"></i> 45</span>
+                                    </div>
+                                </div>
+                                <div class="comment-item">
+                                    <p class="comment-text">"청약 가점 계산 관련해서는 국토부 홈페이지에서 시뮬레이션 가능합니다~"</p>
+                                    <div class="comment-meta">
+                                        <span class="comment-author">도움이</span>
+                                        <span class="comment-likes"><i class="fas fa-thumbs-up"></i> 32</span>
+                                    </div>
+                                </div>
+                                <div class="comment-item">
+                                    <p class="comment-text">"요즘 시장 상황이 정말 어렵긴 하지만 기회는 항상 있습니다. 화이팅!"</p>
+                                    <div class="comment-meta">
+                                        <span class="comment-author">긍정맨</span>
+                                        <span class="comment-likes"><i class="fas fa-thumbs-up"></i> 28</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 페이지네이션 -->
+                <div class="pagination">
+                    <button class="page-btn" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <span class="page-dots">...</span>
+                    <button class="page-btn">123</button>
+                    <button class="page-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 플로팅 글쓰기 버튼 -->
+    <div class="write-btn-wrapper">
+        <div class="write-label">글쓰기</div>
+        <svg class="write-curve" width="60" height="80" viewBox="0 0 60 80">
+            <path d="M 30 10 Q 20 25, 25 35 T 35 50 Q 30 65, 30 75" 
+                  stroke="rgba(46, 140, 230, 0.3)" 
+                  stroke-width="2" 
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-dasharray="4, 6">
+                <animate attributeName="stroke-dashoffset" 
+                         values="0;10" 
+                         dur="3s" 
+                         repeatCount="indefinite"/>
+            </path>
+        </svg>
+        <button class="write-btn" title="글쓰기">
+            <i class="fas fa-pen"></i>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="forum.js"></script>
+</body>
+</html>

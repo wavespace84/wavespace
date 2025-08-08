@@ -1,5 +1,11 @@
 // sidebar.js - 사이드바 관련 기능
 
+// 로컬 스토리지 키
+const STORAGE_KEYS = {
+    SIDEBAR_STATE: 'wave-sidebar-state',
+    ACTIVE_CATEGORY: 'wave-active-category'
+};
+
 export function initSidebar() {
     const sidebar = document.querySelector('.sidebar');
     const sidebarSlogan = document.querySelector('.sidebar-slogan');
@@ -17,6 +23,9 @@ export function initSidebar() {
     // 현재 페이지 확인
     const currentPath = window.location.pathname;
     const currentPage = currentPath.split('/').pop() || 'index.html';
+    
+    // 저장된 상태 복원
+    restoreSidebarState();
     
     // 네비게이션 카테고리 클릭 이벤트
     navCategoryButtons.forEach(button => {
@@ -62,6 +71,9 @@ export function initSidebar() {
                     sidebarSlogan.classList.remove('menu-open');
                 }
             }
+            
+            // 상태 저장
+            saveSidebarState();
         });
     });
     
@@ -116,5 +128,55 @@ export function initSidebar() {
                 sidebarNav.style.setProperty('--scroll-indicator-bottom-opacity', '0');
             }
         });
+    }
+}
+
+// 사이드바 상태 저장
+function saveSidebarState() {
+    const activeCategories = [];
+    document.querySelectorAll('.nav-category.active').forEach(category => {
+        const button = category.querySelector('.nav-category-button');
+        if (button) {
+            const text = button.querySelector('span').textContent;
+            activeCategories.push(text);
+        }
+    });
+    
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_CATEGORY, JSON.stringify(activeCategories));
+}
+
+// 사이드바 상태 복원
+function restoreSidebarState() {
+    try {
+        const savedCategories = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY) || '[]');
+        
+        savedCategories.forEach(categoryText => {
+            document.querySelectorAll('.nav-category-button').forEach(button => {
+                const text = button.querySelector('span').textContent;
+                if (text === categoryText) {
+                    const category = button.closest('.nav-category');
+                    if (category) {
+                        category.classList.add('active');
+                        
+                        // 슬로건 스타일 변경
+                        const sidebarSlogan = document.querySelector('.sidebar-slogan');
+                        if (sidebarSlogan) {
+                            sidebarSlogan.classList.add('menu-open');
+                        }
+                        
+                        // 다음 섹션 확인
+                        const section = category.closest('.nav-section');
+                        if (section) {
+                            const nextSection = section.nextElementSibling;
+                            if (nextSection && nextSection.classList.contains('nav-section')) {
+                                section.classList.add('next-active');
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Failed to restore sidebar state:', error);
     }
 }

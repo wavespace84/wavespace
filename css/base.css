@@ -6,11 +6,11 @@
 /* CSS Variables */
 :root {
     /* Primary Colors */
-    --primary-blue: #3080ff;
-    --deep-blue: #1a4a99;
-    --bright-blue: #4d9fff;
-    --sky-blue: #66b1ff;
-    --light-blue: #e6f2ff;
+    --primary-blue: #2E8CE6;
+    --deep-blue: #1F7FD4;
+    --bright-blue: #4DA3ED;
+    --sky-blue: #6DB8F2;
+    --light-blue: #EBF5FD;
     
     /* Secondary Colors */
     --purple: #7B61FF;
@@ -38,8 +38,8 @@
     --info: #0099FF;
     
     /* Gradients */
-    --primary-gradient: linear-gradient(135deg, #0066FF 0%, #0099FF 100%);
-    --extended-gradient: linear-gradient(135deg, #0066FF 0%, #0099FF 50%, #00CCFF 100%);
+    --primary-gradient: linear-gradient(135deg, #2E8CE6 0%, #4DA3ED 100%);
+    --extended-gradient: linear-gradient(135deg, #2E8CE6 0%, #4DA3ED 50%, #6DB8F2 100%);
     
     /* Spacing */
     --spacing-xs: 4px;
@@ -87,6 +87,7 @@
     --radius-xl: 12px;
     --radius-full: 9999px;
 }
+
 
 /* Reset */
 * {

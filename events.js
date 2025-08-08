@@ -103,27 +103,20 @@ const eventsData = [
 
 // DOM 요소
 const eventsList = document.getElementById('eventsList');
-const tabButtons = document.querySelectorAll('.tab-btn');
 const loadMoreBtn = document.getElementById('loadMoreBtn');
 
 // 상태 관리
 let currentFilter = 'all';
 let displayedCount = 6;
 
-// 탭 버튼 이벤트
-tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // 활성 탭 변경
-        tabButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        // 필터 변경
-        currentFilter = btn.dataset.status;
-        displayedCount = 6;
-        
-        // 이벤트 다시 렌더링
-        renderEvents();
-    });
+// 새로운 체크박스 탭 이벤트 리스너
+document.addEventListener('tabChanged', (e) => {
+    // 필터 변경
+    currentFilter = e.detail.status;
+    displayedCount = 6;
+    
+    // 이벤트 다시 렌더링
+    renderEvents();
 });
 
 // 이벤트 렌더링

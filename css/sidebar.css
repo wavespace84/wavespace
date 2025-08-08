@@ -107,9 +107,9 @@
 }
 
 .nav-category.active .nav-category-wrapper {
-    border: 1px solid rgba(48, 128, 255, 0.5);
-    background-color: rgba(230, 242, 255, 0.3);
-    box-shadow: 0 2px 4px rgba(48, 128, 255, 0.1);
+    border: 1px solid rgba(46, 140, 230, 0.5);
+    background-color: rgba(235, 245, 253, 0.3);
+    box-shadow: 0 2px 4px rgba(46, 140, 230, 0.1);
 }
 
 .nav-category-button {
@@ -135,7 +135,7 @@
 }
 
 .nav-category.active .nav-category-button {
-    background-color: rgba(230, 242, 255, 0.5);
+    background-color: rgba(235, 245, 253, 0.5);
     color: var(--primary-blue);
 }
 

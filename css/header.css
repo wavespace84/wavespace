@@ -93,16 +93,45 @@
 .user-avatar {
     width: 40px;
     height: 40px;
-    background-color: var(--primary-blue);
-    color: var(--white);
+    background-color: var(--gray-400);
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     position: relative;
-    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: var(--transition-normal);
+}
+
+/* 기본 아이콘 표시 (사용자 이미지 업로드 전까지) */
+.user-avatar:before {
+    content: '\f007';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;  /* solid 스타일 */
+    font-size: 20px;
+    color: white;
+}
+
+/* 이니셜이 있어도 숨김 (기본 아이콘 우선 표시) */
+.user-avatar span {
+    display: none;
+}
+
+/* 사용자가 이미지를 업로드한 경우에만 적용 (has-image 클래스 추가 시) */
+.user-avatar.has-image {
+    background-color: var(--primary-blue);
+    background-size: cover;
+    background-position: center;
+}
+
+.user-avatar.has-image:before {
+    display: none;
+}
+
+.user-avatar.has-image span {
+    display: none;
 }
 
 .user-profile:hover .user-avatar {

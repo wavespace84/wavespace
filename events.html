@@ -6,8 +6,9 @@
     <title>이벤트 - WAVE SPACE</title>
     <script src="preload.js"></script>
     <link rel="stylesheet" href="common.css">
-    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="events.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -76,17 +77,25 @@
                                 <i class="fas fa-chevron-down nav-arrow"></i>
                             </button>
                             <div class="nav-items">
-                                <a href="#" class="nav-item">
+                                <a href="hall-of-fame.html" class="nav-item">
                                     <i class="fas fa-trophy"></i>
                                     <span>명예의전당</span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="attendance.html" class="nav-item">
                                     <i class="fas fa-calendar-check"></i>
                                     <span>출석체크</span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="forum.html" class="nav-item">
                                     <i class="fas fa-comments"></i>
                                     <span>자유게시판</span>
+                                </a>
+                                <a href="humor.html" class="nav-item">
+                                    <i class="fas fa-laugh"></i>
+                                    <span>유머재미</span>
+                                </a>
+                                <a href="qna.html" class="nav-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>질문답변</span>
                                 </a>
                             </div>
                         </div>
@@ -260,16 +269,38 @@
                 <div class="events-container">
                     <!-- 헤더 -->
                     <div class="events-header">
-                        <h1 class="events-title">이벤트</h1>
-                        <p class="events-subtitle">WAVE SPACE의 다양한 이벤트에 참여하고 푸짐한 혜택을 받아보세요</p>
+                        <div class="events-header-left">
+                            <h1 class="events-title">이벤트</h1>
+                            <p class="events-subtitle">다양한 이벤트에 참여하고 푸짐한 혜택을 받아보세요</p>
+                        </div>
                     </div>
 
                     <!-- 필터 탭 -->
-                    <div class="event-tabs">
-                        <button class="tab-btn active" data-status="all">전체</button>
-                        <button class="tab-btn" data-status="ongoing">진행중</button>
-                        <button class="tab-btn" data-status="upcoming">예정</button>
-                        <button class="tab-btn" data-status="ended">종료</button>
+                    <div class="event-tabs checkbox-tabs">
+                        <label class="checkbox-tab active" data-status="all">
+                            <input type="radio" name="event-filter" checked>
+                            <span class="tab-check"></span>
+                            <span>전체</span>
+                            <span class="tab-count">15</span>
+                        </label>
+                        <label class="checkbox-tab" data-status="ongoing">
+                            <input type="radio" name="event-filter">
+                            <span class="tab-check"></span>
+                            <span>진행중</span>
+                            <span class="tab-count">8</span>
+                        </label>
+                        <label class="checkbox-tab" data-status="upcoming">
+                            <input type="radio" name="event-filter">
+                            <span class="tab-check"></span>
+                            <span>예정</span>
+                            <span class="tab-count">3</span>
+                        </label>
+                        <label class="checkbox-tab" data-status="ended">
+                            <input type="radio" name="event-filter">
+                            <span class="tab-check"></span>
+                            <span>종료</span>
+                            <span class="tab-count">4</span>
+                        </label>
                     </div>
 
                     <!-- 메인 이벤트 배너 -->
@@ -295,11 +326,107 @@
                     <div class="load-more">
                         <button class="load-more-btn" id="loadMoreBtn">더 많은 이벤트 보기</button>
                     </div>
+
+                    <!-- 이벤트 제안하기 섹션 -->
+                    <div class="suggest-section">
+                        <button class="suggest-toggle" id="suggestToggle">
+                            <div class="toggle-content">
+                                <div class="toggle-left">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <div class="toggle-text">
+                                        <h2 class="suggest-title">이벤트 제안하기</h2>
+                                        <p class="suggest-subtitle">회원님들의 아이디어로 더 나은 이벤트를 만들어갑니다</p>
+                                    </div>
+                                </div>
+                                <div class="toggle-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <div class="suggest-content" id="suggestContent" style="display: none;">
+                            <div class="suggest-form">
+                                <div class="form-group">
+                                    <label class="form-label">이벤트 제목</label>
+                                    <input type="text" class="form-input" placeholder="제안하실 이벤트의 제목을 입력해주세요">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">이벤트 카테고리</label>
+                                    <select class="form-select">
+                                        <option value="">카테고리를 선택하세요</option>
+                                        <option value="point">포인트 이벤트</option>
+                                        <option value="badge">배지 획득 이벤트</option>
+                                        <option value="contest">콘테스트</option>
+                                        <option value="community">커뮤니티 이벤트</option>
+                                        <option value="promotion">프로모션</option>
+                                        <option value="other">기타</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">이벤트 내용</label>
+                                    <textarea class="form-textarea" rows="4" placeholder="이벤트 아이디어를 자세히 설명해주세요"></textarea>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">예상 기간</label>
+                                        <input type="text" class="form-input" placeholder="예: 1주일, 1개월">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">예상 보상</label>
+                                        <input type="text" class="form-input" placeholder="예: 1000P, 특별 배지">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button class="submit-btn">
+                                        <i class="fas fa-paper-plane"></i>
+                                        제안하기
+                                    </button>
+                                    <p class="form-note">
+                                        <i class="fas fa-info-circle"></i>
+                                        제안해주신 이벤트는 검토 후 실제 이벤트로 진행될 수 있습니다
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="suggest-benefits">
+                                <h3 class="benefits-title">이벤트 제안 혜택</h3>
+                                <div class="benefit-list">
+                                    <div class="benefit-item">
+                                        <i class="fas fa-coins"></i>
+                                        <div class="benefit-content">
+                                            <h4>500P 즉시 지급</h4>
+                                            <p>이벤트 제안 시 포인트 획득</p>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i class="fas fa-trophy"></i>
+                                        <div class="benefit-content">
+                                            <h4>채택 시 5,000P</h4>
+                                            <p>실제 이벤트로 채택 시 추가 보상</p>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i class="fas fa-medal"></i>
+                                        <div class="benefit-content">
+                                            <h4>이벤트 기획자 배지</h4>
+                                            <p>3회 이상 채택 시 특별 배지</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>
     </div>
 
+    <script src="js/checkbox-interaction.js"></script>
     <script src="script.js"></script>
     <script src="events.js"></script>
 </body>

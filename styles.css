@@ -13,48 +13,7 @@ html {
     overflow-x: hidden;
 }
 
-:root {
-    /* Primary Colors - 더 부드러운 파란색 */
-    --primary-blue: #3080ff;  /* 기존 #0066FF 보다 부드러운 파란색 */
-    --deep-blue: #1a4a99;
-    --bright-blue: #4d9fff;
-    --sky-blue: #66b1ff;
-    --light-blue: #e6f2ff;
-    
-    /* Secondary Colors */
-    --purple: #7B61FF;
-    --teal: #00D4AA;
-    --orange: #FF6B35;
-    
-    /* Neutral Colors - 더 부드러운 그레이 스케일 */
-    --black: #0A0A0A;
-    --gray-900: #1f2937;  /* 기존 #1A1A1A 보다 부드러운 색상 */
-    --gray-800: #374151;  /* 기존 #333333 보다 부드러운 색상 */
-    --gray-700: #4b5563;  /* 기존 #4D4D4D 보다 부드러운 색상 */
-    --gray-600: #6b7280;  /* 기존 #666666 보다 부드러운 색상 */
-    --gray-500: #9ca3af;
-    --gray-400: #d1d5db;
-    --gray-300: #e5e7eb;
-    --gray-200: #f3f4f6;
-    --gray-100: #f9fafb;
-    --gray-50: #fafbfc;
-    --white: #FFFFFF;
-    
-    /* Semantic Colors */
-    --success: #00D4AA;
-    --warning: #FFB800;
-    --error: #FF3B30;
-    --info: #0099FF;
-    
-    /* Gradients */
-    --primary-gradient: linear-gradient(135deg, #0066FF 0%, #0099FF 100%);
-    --extended-gradient: linear-gradient(135deg, #0066FF 0%, #0099FF 50%, #00CCFF 100%);
-    
-    /* Transitions */
-    --transition-fast: all 0.15s ease;
-    --transition-normal: all 0.3s ease;
-    --transition-slow: all 0.5s ease;
-}
+/* CSS Variables는 base.css에서 관리합니다 */
 
 body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -69,13 +28,7 @@ body {
     position: relative;
 }
 
-/* App Container */
-.app-container {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-}
+/* App Container - common.css로 이동됨 */
 
 /* Sidebar Styles */
 .sidebar {
@@ -656,19 +609,48 @@ body {
 .user-avatar {
     width: 40px;
     height: 40px;
-    background-color: var(--primary-blue);
-    color: var(--white);
+    background-color: var(--gray-400);
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     position: relative;
-    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: var(--transition-normal);
 }
 
-.user-profile:hover .user-avatar {
+/* 기본 아이콘 표시 (사용자 이미지 업로드 전까지) */
+.user-avatar:before {
+    content: '\f007';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;  /* solid 스타일 */
+    font-size: 20px;
+    color: white;
+}
+
+/* 이니셜이 있어도 숨김 (기본 아이콘 우선 표시) */
+.user-avatar span {
+    display: none;
+}
+
+/* 사용자가 이미지를 업로드한 경우에만 적용 (has-image 클래스 추가 시) */
+.user-avatar.has-image {
+    background-color: var(--primary-blue);
+    background-size: cover;
+    background-position: center;
+}
+
+.user-avatar.has-image:before {
+    display: none;
+}
+
+.user-avatar.has-image span {
+    display: none;
+}
+
+.user-profile:hover .user-avatar.has-image {
     box-shadow: 0 4px 16px rgba(0, 102, 255, 0.3);
 }
 
