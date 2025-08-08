@@ -1,18 +1,54 @@
 // forum.js - 자유게시판 페이지 동적 기능
 
+// 즉시 실행되는 디버그 로그
+console.log('forum.js 파일 로드 시작');
+
+// 페이지 로드 후 실행
+window.addEventListener('load', function() {
+    console.log('window load 이벤트 발생');
+    initializeForum();
+});
+
+// DOMContentLoaded 이벤트
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded 이벤트 발생');
+    initializeForum();
+});
+
+// 초기화 함수
+function initializeForum() {
+    console.log('initializeForum 함수 실행');
+    
     // 카테고리 탭 전환
     const categoryTabs = document.querySelectorAll('.tab-btn');
-    categoryTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            // 모든 탭 비활성화
-            categoryTabs.forEach(t => t.classList.remove('active'));
-            // 클릭한 탭 활성화
-            this.classList.add('active');
+    console.log('카테고리 탭 개수:', categoryTabs.length);
+    
+    if (categoryTabs.length === 0) {
+        console.error('카테고리 탭을 찾을 수 없습니다!');
+    }
+    
+    categoryTabs.forEach((tab, index) => {
+        console.log(`탭 ${index + 1} 등록:`, tab.textContent.trim());
+        
+        // 이미 등록된 이벤트 리스너가 있는지 확인
+        if (!tab.hasAttribute('data-listener-attached')) {
+            tab.setAttribute('data-listener-attached', 'true');
             
-            // 여기에 카테고리별 게시글 필터링 로직 추가
-            console.log('카테고리 변경:', this.textContent.trim());
-        });
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('탭 클릭됨:', this.textContent.trim());
+                
+                // 모든 탭 비활성화
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                // 클릭한 탭 활성화
+                this.classList.add('active');
+                
+                // 여기에 카테고리별 게시글 필터링 로직 추가
+                console.log('카테고리 변경 완료:', this.textContent.trim());
+            });
+        }
     });
 
     // 인기 게시글 카드 클릭
@@ -155,4 +191,4 @@ document.addEventListener('DOMContentLoaded', function() {
             // 로딩 완료 후 isLoading = false;
         }
     });
-});
+}
