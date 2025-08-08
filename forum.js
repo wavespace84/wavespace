@@ -3,6 +3,99 @@
 // 즉시 실행되는 디버그 로그
 console.log('forum.js 파일 로드 시작');
 
+// 게시글 필터링 함수
+function filterPosts(category) {
+    const posts = document.querySelectorAll('.post-item:not(.notice)'); // 공지사항 제외
+    let visibleCount = 0;
+    
+    posts.forEach(post => {
+        const postCategory = post.querySelector('.category-badge');
+        
+        if (category === 'all') {
+            // 전체 카테고리면 모든 게시글 표시
+            post.style.display = '';
+            visibleCount++;
+        } else if (postCategory) {
+            // 특정 카테고리 필터링
+            const postCategoryClass = Array.from(postCategory.classList).find(cls => 
+                ['general', 'question', 'info', 'review', 'job'].includes(cls)
+            );
+            
+            if (postCategoryClass === category) {
+                post.style.display = '';
+                visibleCount++;
+            } else {
+                post.style.display = 'none';
+            }
+        }
+    });
+    
+    // 게시글이 없을 때 메시지 표시
+    const postsList = document.querySelector('.posts-list');
+    let noPostsMessage = document.querySelector('.no-posts-message');
+    
+    if (visibleCount === 0) {
+        if (!noPostsMessage) {
+            noPostsMessage = document.createElement('div');
+            noPostsMessage.className = 'no-posts-message';
+            noPostsMessage.style.cssText = 'text-align: center; padding: 60px 20px; color: #666;';
+            noPostsMessage.innerHTML = `
+                <i class="fas fa-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 16px;"></i>
+                <p style="font-size: 16px;">해당 카테고리에 게시글이 없습니다.</p>
+            `;
+            postsList.appendChild(noPostsMessage);
+        }
+        noPostsMessage.style.display = 'block';
+    } else {
+        if (noPostsMessage) {
+            noPostsMessage.style.display = 'none';
+        }
+    }
+    
+    console.log(`${category} 카테고리 게시글 ${visibleCount}개 표시`);
+}
+
+// 카테고리별 게시글 개수 업데이트
+function updateCategoryCounts() {
+    const posts = document.querySelectorAll('.post-item:not(.notice)');
+    const counts = {
+        all: 0,
+        general: 0,
+        question: 0,
+        info: 0,
+        review: 0,
+        job: 0
+    };
+    
+    posts.forEach(post => {
+        const postCategory = post.querySelector('.category-badge');
+        if (postCategory) {
+            const categoryClass = Array.from(postCategory.classList).find(cls => 
+                ['general', 'question', 'info', 'review', 'job'].includes(cls)
+            );
+            
+            if (categoryClass) {
+                counts[categoryClass]++;
+                counts.all++;
+            }
+        }
+    });
+    
+    // 탭의 숫자 업데이트
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(tab => {
+        const category = tab.getAttribute('data-category');
+        if (category && counts[category] !== undefined) {
+            const countSpan = tab.querySelector('.count');
+            if (countSpan) {
+                countSpan.textContent = counts[category];
+            }
+        }
+    });
+    
+    console.log('카테고리별 게시글 개수:', counts);
+}
+
 // 페이지 로드 후 실행
 window.addEventListener('load', function() {
     console.log('window load 이벤트 발생');
@@ -25,7 +118,30 @@ function initializeForum() {
     
     if (categoryTabs.length === 0) {
         console.error('카테고리 탭을 찾을 수 없습니다!');
+        return;
     }
+    
+    // 카테고리 매핑 설정
+    const categoryMap = {
+        '전체': 'all',
+        '일반': 'general',
+        '질문': 'question', 
+        '정보공유': 'info',
+        '후기': 'review',
+        '구인구직': 'job'
+    };
+    
+    // 각 탭에 data-category 속성 추가
+    categoryTabs.forEach((tab) => {
+        const tabText = tab.childNodes[0].textContent.trim();
+        const category = categoryMap[tabText];
+        if (category) {
+            tab.setAttribute('data-category', category);
+        }
+    });
+    
+    // 실제 게시글 개수 계산 및 업데이트
+    updateCategoryCounts();
     
     categoryTabs.forEach((tab, index) => {
         console.log(`탭 ${index + 1} 등록:`, tab.textContent.trim());
@@ -38,14 +154,17 @@ function initializeForum() {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                console.log('탭 클릭됨:', this.textContent.trim());
+                const category = this.getAttribute('data-category');
+                console.log('탭 클릭됨:', this.textContent.trim(), '카테고리:', category);
                 
                 // 모든 탭 비활성화
                 categoryTabs.forEach(t => t.classList.remove('active'));
                 // 클릭한 탭 활성화
                 this.classList.add('active');
                 
-                // 여기에 카테고리별 게시글 필터링 로직 추가
+                // 게시글 필터링
+                filterPosts(category);
+                
                 console.log('카테고리 변경 완료:', this.textContent.trim());
             });
         }
