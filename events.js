@@ -230,6 +230,89 @@ if (bannerBtn) {
     });
 }
 
+// 이벤트 제안하기 토글 기능
+const suggestToggle = document.getElementById('suggestToggle');
+const suggestContent = document.getElementById('suggestContent');
+
+if (suggestToggle && suggestContent) {
+    suggestToggle.addEventListener('click', () => {
+        const isOpen = suggestContent.style.display === 'block';
+        
+        if (isOpen) {
+            suggestContent.style.display = 'none';
+            suggestToggle.classList.remove('active');
+        } else {
+            suggestContent.style.display = 'block';
+            suggestToggle.classList.add('active');
+            
+            // 이벤트 제안하기 섹션을 페이지 상단으로 스크롤
+            setTimeout(() => {
+                const suggestSection = document.querySelector('.suggest-section');
+                if (suggestSection) {
+                    const mainContent = document.querySelector('.main-content');
+                    if (mainContent) {
+                        // 헤더 높이를 고려하여 페이지 상단에 위치하도록
+                        const headerHeight = 80;
+                        const sectionTop = suggestSection.offsetTop - headerHeight;
+                        mainContent.scrollTo({
+                            top: sectionTop,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        // main-content가 없는 경우 window 스크롤 사용
+                        const headerHeight = 80;
+                        const sectionTop = suggestSection.offsetTop - headerHeight;
+                        window.scrollTo({
+                            top: sectionTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            }, 100);
+        }
+    });
+}
+
+// 카테고리 토글 버튼 이벤트
+const categoryToggles = document.querySelectorAll('.category-toggle');
+let selectedCategory = null;
+
+categoryToggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+        // 모든 토글에서 active 클래스 제거
+        categoryToggles.forEach(t => t.classList.remove('active'));
+        
+        // 클릭한 토글에 active 클래스 추가
+        toggle.classList.add('active');
+        selectedCategory = toggle.getAttribute('data-value');
+    });
+});
+
+// 제안하기 폼 제출
+const submitBtn = document.querySelector('.submit-btn');
+if (submitBtn) {
+    submitBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const description = document.getElementById('eventDescription');
+        
+        if (description && description.value.trim() && selectedCategory) {
+            alert('이벤트 제안이 성공적으로 접수되었습니다!\n검토 후 연락드리겠습니다.');
+            
+            // 폼 초기화
+            description.value = '';
+            categoryToggles.forEach(t => t.classList.remove('active'));
+            selectedCategory = null;
+            
+            // 폼 닫기
+            suggestContent.style.display = 'none';
+            suggestToggle.classList.remove('active');
+        } else {
+            alert('카테고리를 선택하고 설명을 입력해주세요.');
+        }
+    });
+}
+
 // 초기 렌더링
 document.addEventListener('DOMContentLoaded', () => {
     renderEvents();

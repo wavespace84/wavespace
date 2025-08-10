@@ -255,7 +255,7 @@
                     </button>
                     <div class="user-profile">
                         <div class="user-avatar">
-                            <span>박</span>
+                            <i class="fas fa-user-circle"></i>
                             <div class="user-badge">
                                 <i class="fas fa-crown"></i>
                             </div>
@@ -289,7 +289,7 @@
                             <div class="today-info">
                                 <div class="date-display">
                                     <i class="fas fa-calendar-alt"></i>
-                                    <span class="today-date">2024년 1월 18일 목요일</span>
+                                    <span class="today-date">날짜 로딩중...</span>
                                 </div>
                                 <div class="check-status not-checked" id="checkStatus">
                                     <i class="fas fa-clock"></i>
@@ -353,7 +353,11 @@
                             <button class="calendar-nav-btn prev">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
-                            <h2 class="calendar-title">2024년 1월</h2>
+                            <h2 class="calendar-title">
+                                <div class="calendar-title-wrapper current">
+                                    <div class="calendar-title-main">로딩중...</div>
+                                </div>
+                            </h2>
                             <button class="calendar-nav-btn next">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
@@ -369,106 +373,7 @@
                                 <div class="weekday">토</div>
                             </div>
                             <div class="calendar-days">
-                                <!-- 이전 달 날짜 -->
-                                <div class="calendar-day other-month">31</div>
-                                <!-- 1월 날짜들 -->
-                                <div class="calendar-day">
-                                    <span class="day-number">1</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">2</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">3</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">4</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">5</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">6</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">7</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">8</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">9</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">10</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">11</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">12</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">13</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">14</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">15</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">16</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">17</span>
-                                </div>
-                                <div class="calendar-day today">
-                                    <span class="day-number">18</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">19</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">20</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">21</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">22</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">23</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">24</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">25</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">26</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">27</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">28</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">29</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">30</span>
-                                </div>
-                                <div class="calendar-day">
-                                    <span class="day-number">31</span>
-                                </div>
-                                <!-- 다음 달 날짜 -->
-                                <div class="calendar-day other-month">1</div>
-                                <div class="calendar-day other-month">2</div>
-                                <div class="calendar-day other-month">3</div>
+                                <!-- JavaScript로 동적 생성됩니다 -->
                             </div>
                         </div>
                     </div>
@@ -584,8 +489,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="coupon-congratulations">
-                                    <i class="fas fa-trophy"></i> 쿠폰 당첨을 축하합니다!
+                                <div class="coupon-congratulations" id="couponMessage">
+                                    <i class="fas fa-info-circle"></i> 30위까지 출석이 완료되면 등수 구간별로 추첨하여 쿠폰이 지급됩니다!
                                 </div>
                             </div>
                         </div>
@@ -596,7 +501,7 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="js/attendance.js"></script>
+    <script src="js/attendance.js?v=4"></script>
     <script>
         // 디버그용 - 페이지 로드 확인
         console.log('attendance.html 페이지 로드됨');

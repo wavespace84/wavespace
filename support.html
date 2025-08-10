@@ -286,58 +286,61 @@
                         <p class="support-subtitle">무엇을 도와드릴까요? 궁금한 점을 빠르게 해결해드립니다</p>
                     </div>
 
-                    <!-- 검색 박스 -->
-                    <div class="support-search">
-                        <div class="search-box-large">
-                            <i class="fas fa-search"></i>
-                            <input type="text" placeholder="궁금하신 내용을 검색해보세요" id="supportSearchInput">
-                            <button class="search-btn">검색</button>
-                        </div>
-                        <div class="popular-keywords">
-                            <span class="keyword-label">인기 검색어</span>
-                            <button class="keyword-tag">포인트 충전</button>
-                            <button class="keyword-tag">회원가입</button>
-                            <button class="keyword-tag">게시글 작성</button>
-                            <button class="keyword-tag">Plus 멤버십</button>
-                            <button class="keyword-tag">자료 다운로드</button>
-                        </div>
-                    </div>
-
                     <!-- 퀵 메뉴 -->
                     <div class="quick-menu">
-                        <a href="#faq" class="quick-item">
+                        <a href="#" class="quick-item" id="openchatQuickItem">
                             <div class="quick-icon">
-                                <i class="fas fa-question-circle"></i>
+                                <i class="fas fa-users"></i>
                             </div>
-                            <h3>자주 묻는 질문</h3>
-                            <p>가장 많이 찾는 질문들을 확인해보세요</p>
+                            <h3>오픈채팅방 안내</h3>
+                            <p>전문가들과 실시간으로 소통하세요</p>
                         </a>
-                        <a href="#contact" class="quick-item">
+                        <a href="#write-inquiry" class="quick-item">
+                            <div class="quick-icon">
+                                <i class="fas fa-pen"></i>
+                            </div>
+                            <h3>문의글쓰기</h3>
+                            <p>궁금한 점을 문의해주세요</p>
+                        </a>
+                        <a href="#live-chat" class="quick-item">
                             <div class="quick-icon">
                                 <i class="fas fa-comments"></i>
                             </div>
-                            <h3>1:1 문의하기</h3>
-                            <p>직접 문의를 남겨주세요</p>
+                            <h3>실시간문의</h3>
+                            <p>실시간으로 상담을 받아보세요</p>
                         </a>
-                        <a href="#guide" class="quick-item">
+                        <a href="#" class="quick-item" id="guideQuickItem">
                             <div class="quick-icon">
                                 <i class="fas fa-book"></i>
                             </div>
                             <h3>이용가이드</h3>
                             <p>서비스 이용방법을 알아보세요</p>
                         </a>
-                        <a href="#notice" class="quick-item">
-                            <div class="quick-icon">
-                                <i class="fas fa-bullhorn"></i>
-                            </div>
-                            <h3>공지사항</h3>
-                            <p>중요한 안내사항을 확인하세요</p>
-                        </a>
                     </div>
 
                     <!-- FAQ 섹션 -->
                     <div class="faq-section" id="faq">
                         <h2 class="section-title">자주 묻는 질문</h2>
+                        
+                        <!-- FAQ 검색 박스 -->
+                        <div class="faq-search">
+                            <div class="search-box-large">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="질문을 검색해보세요" id="supportSearchInput">
+                                <button class="clear-search-btn" id="clearSearchBtn" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="search-btn" id="faqSearchBtn">검색</button>
+                            </div>
+                            <div class="popular-keywords">
+                                <span class="keyword-label">인기 검색어</span>
+                                <button class="keyword-tag" data-search="비밀번호">비밀번호 찾기</button>
+                                <button class="keyword-tag" data-search="포인트">포인트 충전</button>
+                                <button class="keyword-tag" data-search="멤버십">Plus 멤버십</button>
+                                <button class="keyword-tag" data-search="다운로드">자료 다운로드</button>
+                                <button class="keyword-tag" data-search="회원가입">회원가입</button>
+                            </div>
+                        </div>
                         <div class="faq-categories">
                             <button class="faq-category-btn active" data-category="all">전체</button>
                             <button class="faq-category-btn" data-category="account">계정관리</button>
@@ -349,35 +352,459 @@
                         <div class="faq-list" id="faqList">
                             <!-- JavaScript로 동적 생성 -->
                         </div>
+                        <div class="faq-pagination" id="faqPagination">
+                            <!-- JavaScript로 동적 생성 -->
+                        </div>
                     </div>
 
-                    <!-- 문의하기 섹션 -->
-                    <div class="contact-section" id="contact">
-                        <h2 class="section-title">여전히 답을 찾지 못하셨나요?</h2>
-                        <p class="section-desc">고객센터 운영시간: 평일 09:00 ~ 18:00 (주말 및 공휴일 제외)</p>
-                        <div class="contact-methods">
-                            <div class="contact-method">
-                                <i class="fas fa-envelope"></i>
-                                <h3>이메일 문의</h3>
-                                <p>support@wavespace.kr</p>
-                                <p class="response-time">평균 응답시간: 24시간 이내</p>
+                    <!-- 내 문의 관리 섹션 -->
+                    <div class="my-inquiries-section" id="my-inquiries">
+                        <h2 class="section-title">내 문의 관리</h2>
+                        <div class="inquiry-controls">
+                            <div class="inquiry-tabs">
+                                <button class="inquiry-tab active" data-status="all">전체</button>
+                                <button class="inquiry-tab" data-status="waiting">답변대기</button>
+                                <button class="inquiry-tab" data-status="completed">답변완료</button>
                             </div>
-                            <div class="contact-method">
-                                <i class="fas fa-phone"></i>
-                                <h3>전화 문의</h3>
-                                <p>02-1234-5678</p>
-                                <p class="response-time">운영시간: 평일 09:00 ~ 18:00</p>
-                            </div>
-                            <div class="contact-method">
-                                <i class="fas fa-comment-dots"></i>
-                                <h3>채팅 상담</h3>
-                                <p>실시간 채팅 상담</p>
-                                <button class="chat-btn">채팅 시작하기</button>
-                            </div>
+                            <button class="new-inquiry-btn" id="newInquiryBtn">
+                                <i class="fas fa-pen"></i>
+                                <span>새 문의하기</span>
+                            </button>
+                        </div>
+                        <div class="inquiry-list" id="inquiryList">
+                            <!-- JavaScript로 동적 생성 -->
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 이용가이드 팝업 모달 -->
+    <div class="modal-overlay" id="guideModal">
+        <div class="modal-content guide-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-book"></i>
+                    WAVE SPACE 이용가이드
+                </h2>
+                <button class="modal-close" id="guideModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="guide-tabs">
+                    <button class="guide-tab active" data-tab="start">시작하기</button>
+                    <button class="guide-tab" data-tab="point">포인트 활용</button>
+                    <button class="guide-tab" data-tab="community">커뮤니티</button>
+                    <button class="guide-tab" data-tab="data">자료실</button>
+                    <button class="guide-tab" data-tab="membership">멤버십</button>
+                </div>
+                
+                <div class="guide-content">
+                    <!-- 시작하기 탭 -->
+                    <div class="guide-panel active" id="startPanel">
+                        <h3>👋 WAVE SPACE 시작하기</h3>
+                        <div class="guide-section">
+                            <h4>1. 회원가입</h4>
+                            <ul>
+                                <li>우측 상단의 '회원가입' 버튼을 클릭합니다</li>
+                                <li>이메일 인증을 완료합니다</li>
+                                <li>기본 정보를 입력하면 가입이 완료됩니다</li>
+                                <li>신규 가입 시 3,000P 웰컴 포인트가 자동 지급됩니다</li>
+                            </ul>
+                        </div>
+                        <div class="guide-section">
+                            <h4>2. 프로필 설정</h4>
+                            <ul>
+                                <li>마이페이지에서 프로필 사진과 자기소개를 등록하세요</li>
+                                <li>전문 분야를 설정하면 맞춤 콘텐츠를 추천받을 수 있습니다</li>
+                                <li>프로필 완성도에 따라 추가 포인트가 지급됩니다</li>
+                            </ul>
+                        </div>
+                        <div class="guide-section">
+                            <h4>3. 첫 활동 시작하기</h4>
+                            <ul>
+                                <li>출석체크로 매일 포인트를 받아보세요</li>
+                                <li>자유게시판에서 첫 인사를 나눠보세요</li>
+                                <li>관심 있는 분양 자료를 검색해보세요</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 포인트 활용 탭 -->
+                    <div class="guide-panel" id="pointPanel">
+                        <h3>💰 포인트 시스템 가이드</h3>
+                        <div class="guide-section">
+                            <h4>포인트 획득 방법</h4>
+                            <ul>
+                                <li><strong>출석체크</strong>: 매일 100P (연속 출석 시 보너스)</li>
+                                <li><strong>게시글 작성</strong>: 50P</li>
+                                <li><strong>댓글 작성</strong>: 10P</li>
+                                <li><strong>자료 업로드</strong>: 100~500P (품질에 따라 차등)</li>
+                                <li><strong>추천받기</strong>: 20P</li>
+                                <li><strong>이벤트 참여</strong>: 이벤트별 상이</li>
+                            </ul>
+                        </div>
+                        <div class="guide-section">
+                            <h4>포인트 사용처</h4>
+                            <ul>
+                                <li>프리미엄 자료 다운로드</li>
+                                <li>AI 보고서 생성</li>
+                                <li>닉네임 변경</li>
+                                <li>프로필 꾸미기 아이템</li>
+                                <li>광고 제거</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 커뮤니티 탭 -->
+                    <div class="guide-panel" id="communityPanel">
+                        <h3>👥 커뮤니티 이용 가이드</h3>
+                        <div class="guide-section">
+                            <h4>게시판 종류</h4>
+                            <ul>
+                                <li><strong>자유게시판</strong>: 자유로운 소통 공간</li>
+                                <li><strong>질문답변</strong>: 전문 지식 Q&A</li>
+                                <li><strong>유머재미</strong>: 휴식과 재충전</li>
+                                <li><strong>명예의전당</strong>: 우수 회원 소개</li>
+                            </ul>
+                        </div>
+                        <div class="guide-section">
+                            <h4>커뮤니티 에티켓</h4>
+                            <ul>
+                                <li>상호 존중하는 대화를 나눠주세요</li>
+                                <li>욕설, 비방, 광고성 글은 삭제됩니다</li>
+                                <li>개인정보는 공개하지 마세요</li>
+                                <li>저작권을 존중해주세요</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 자료실 탭 -->
+                    <div class="guide-panel" id="dataPanel">
+                        <h3>📚 자료실 이용 가이드</h3>
+                        <div class="guide-section">
+                            <h4>자료 카테고리</h4>
+                            <ul>
+                                <li><strong>시장조사서</strong>: 지역별 시장 분석 자료</li>
+                                <li><strong>제안서</strong>: 분양 제안서 템플릿</li>
+                                <li><strong>교육자료</strong>: 분양 전문가 교육 콘텐츠</li>
+                                <li><strong>정책자료</strong>: 정부 정책 및 법규</li>
+                                <li><strong>AI 보고서</strong>: AI가 생성한 맞춤 보고서</li>
+                            </ul>
+                        </div>
+                        <div class="guide-section">
+                            <h4>자료 업로드 팁</h4>
+                            <ul>
+                                <li>명확한 제목과 설명을 작성하세요</li>
+                                <li>적절한 카테고리를 선택하세요</li>
+                                <li>미리보기 이미지를 추가하면 좋습니다</li>
+                                <li>출처를 명시해주세요</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 멤버십 탭 -->
+                    <div class="guide-panel" id="membershipPanel">
+                        <h3>⭐ Plus 멤버십 가이드</h3>
+                        <div class="guide-section">
+                            <h4>멤버십 혜택</h4>
+                            <ul>
+                                <li>✅ 모든 프리미엄 자료 무제한 다운로드</li>
+                                <li>✅ 포인트 2배 적립</li>
+                                <li>✅ AI 보고서 무제한 생성</li>
+                                <li>✅ 전용 배지 및 프로필 꾸미기</li>
+                                <li>✅ 광고 없는 쾌적한 환경</li>
+                                <li>✅ 우선 고객지원</li>
+                                <li>✅ 멤버십 전용 자료실</li>
+                            </ul>
+                        </div>
+                        <div class="guide-section">
+                            <h4>요금제</h4>
+                            <ul>
+                                <li><strong>월간 멤버십</strong>: 29,000원/월</li>
+                                <li><strong>연간 멤버십</strong>: 290,000원/년 (2개월 무료)</li>
+                                <li>첫 달 50% 할인 이벤트 진행 중!</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </main>
+                
+                <div class="guide-footer">
+                    <p>더 궁금한 점이 있으신가요? 실시간문의를 이용해주세요!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 실시간문의 팝업 모달 -->
+    <div class="modal-overlay" id="liveChatModal">
+        <div class="modal-content live-chat-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-comments"></i>
+                    실시간문의
+                </h2>
+                <button class="modal-close" id="liveChatModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="live-chat-content">
+                    <h3>문의 유형을 선택해주세요</h3>
+                    <div class="inquiry-type-buttons">
+                        <button class="inquiry-type-btn" data-type="오픈채팅방 참여 문의">
+                            <i class="fas fa-users"></i>
+                            <span>오픈채팅방 참여 문의</span>
+                        </button>
+                        <button class="inquiry-type-btn" data-type="기획실무자 인증 문의">
+                            <i class="fas fa-user-check"></i>
+                            <span>기획실무자 인증 문의</span>
+                        </button>
+                        <button class="inquiry-type-btn" data-type="광고문의">
+                            <i class="fas fa-ad"></i>
+                            <span>광고문의</span>
+                        </button>
+                        <button class="inquiry-type-btn" data-type="멤버십문의">
+                            <i class="fas fa-crown"></i>
+                            <span>멤버십문의</span>
+                        </button>
+                        <button class="inquiry-type-btn" data-type="기타문의">
+                            <i class="fas fa-ellipsis-h"></i>
+                            <span>기타문의</span>
+                        </button>
+                    </div>
+                    
+                    <div class="inquiry-form-section" id="inquiryFormSection" style="display: none;">
+                        <h4>문의 기본 양식</h4>
+                        <div class="inquiry-form" id="inquiryForm">
+                            <div class="form-field">
+                                <label>문의유형:</label>
+                                <span id="selectedInquiryType"></span>
+                            </div>
+                            <div class="form-field">
+                                <label>아이디:</label>
+                                <span id="userId">-</span>
+                            </div>
+                            <div class="form-field">
+                                <label>닉네임:</label>
+                                <span id="userNickname">-</span>
+                            </div>
+                            <div class="form-field">
+                                <label>연락처 뒤 4자리:</label>
+                                <span id="phoneLastDigits">-</span>
+                            </div>
+                            <div class="form-field">
+                                <label>회원유형:</label>
+                                <span id="memberType">-</span>
+                            </div>
+                        </div>
+                        
+                        <div class="inquiry-text-box">
+                            <textarea id="inquiryTextArea" placeholder="문의내용을 입력해주세요..."></textarea>
+                        </div>
+                        
+                        <div class="inquiry-buttons">
+                            <button class="copy-btn" id="copyInquiryBtn">
+                                <i class="fas fa-copy"></i>
+                                <span>복사하기</span>
+                            </button>
+                            <button class="kakao-chat-btn" id="kakaoChatBtn">
+                                <i class="fas fa-comment"></i>
+                                <span>1:1 채팅문의</span>
+                            </button>
+                        </div>
+                        
+                        <div class="inquiry-notice">
+                            <i class="fas fa-info-circle"></i>
+                            <p>내용을 입력 후 복사하기를 먼저 눌러주시고 오픈채팅방에 붙여 넣어주세요.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 오픈채팅방 안내 팝업 모달 -->
+    <div class="modal-overlay" id="openchatModal">
+        <div class="modal-content openchat-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-users"></i>
+                    오픈채팅방 안내
+                </h2>
+                <button class="modal-close" id="openchatModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="openchat-content">
+                    <p class="openchat-intro">전문 분야별 오픈채팅방에서 실무자들과 자유롭게 소통하세요</p>
+                    
+                    <div class="openchat-rooms">
+                        <div class="openchat-room">
+                            <div class="room-icon">
+                                <i class="fas fa-drafting-compass"></i>
+                            </div>
+                            <h3>기획실무자 소통방</h3>
+                            <p class="room-desc">기획파트로써 실무자인증을 완료한 회원만 참여 가능</p>
+                            <button class="room-join-btn planning-btn" data-room="planning" data-url="https://open.kakao.com/o/gPLANNING">
+                                <i class="fas fa-key"></i>
+                                <span>인증코드 요청하기</span>
+                            </button>
+                        </div>
+                        <div class="openchat-room">
+                            <div class="room-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h3>영업인 소통방</h3>
+                            <p class="room-desc">영업파트 참여 가능</p>
+                            <button class="room-join-btn" data-room="sales" data-url="https://open.kakao.com/o/gSALES123">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>입장하기</span>
+                            </button>
+                        </div>
+                        <div class="openchat-room">
+                            <div class="room-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <h3>청약상담사방</h3>
+                            <p class="room-desc">청약상담 파트 참여 가능</p>
+                            <button class="room-join-btn" data-room="consultant" data-url="https://open.kakao.com/o/gCONSULT1">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>입장하기</span>
+                            </button>
+                        </div>
+                        <div class="openchat-room">
+                            <div class="room-icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <h3>비즈니스방</h3>
+                            <p class="room-desc">모든 회원 참여 가능</p>
+                            <button class="room-join-btn" data-room="business" data-url="https://open.kakao.com/o/gBUSINESS">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>입장하기</span>
+                            </button>
+                            <div class="room-limit-notice">
+                                <i class="fas fa-info-circle"></i>
+                                <span>최대 500명까지 참여 가능합니다</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="openchat-notice">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <p><strong>오픈채팅방 이용 안내</strong></p>
+                            <ul>
+                                <li>각 채팅방은 전문 분야별로 운영됩니다</li>
+                                <li>기획실무자 소통방은 실무자 인증이 완료된 회원만 참여 가능합니다</li>
+                                <li>건전한 대화 문화를 위해 커뮤니티 가이드라인을 준수해주세요</li>
+                                <li>광고성 메시지는 즉시 퇴장 처리됩니다</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 문의하기 팝업 모달 -->
+    <div class="modal-overlay" id="inquiryModal">
+        <div class="modal-content inquiry-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-pen"></i>
+                    <span id="inquiryModalTitle">새 문의하기</span>
+                </h2>
+                <button class="modal-close" id="inquiryModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="inquirySubmitForm" class="inquiry-form">
+                    <input type="hidden" name="inquiryId" id="inquiryId" value="">
+                    
+                    <div class="form-group">
+                        <label for="inquiryCategory">문의 유형 <span class="required">*</span></label>
+                        <select id="inquiryCategory" name="category" required>
+                            <option value="">문의 유형을 선택하세요</option>
+                            <option value="계정/로그인">계정/로그인</option>
+                            <option value="포인트/결제">포인트/결제</option>
+                            <option value="콘텐츠 이용">콘텐츠 이용</option>
+                            <option value="기술적 문제">기술적 문제</option>
+                            <option value="회원가입/인증">회원가입/인증</option>
+                            <option value="자료 다운로드">자료 다운로드</option>
+                            <option value="플러스 멤버십">플러스 멤버십</option>
+                            <option value="오픈채팅방 참여">오픈채팅방 참여</option>
+                            <option value="기타 문의">기타 문의</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="inquiryTitle">제목 <span class="required">*</span></label>
+                        <input type="text" id="inquiryTitle" name="title" placeholder="문의 제목을 입력하세요" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="inquiryContent">문의 내용 <span class="required">*</span></label>
+                        <textarea id="inquiryContent" name="content" rows="10" placeholder="문의 내용을 상세히 작성해주세요" required></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="inquiryCancel">취소</button>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-check"></i>
+                            <span id="inquirySubmitText">문의 등록</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 문의 상세 보기 모달 -->
+    <div class="modal-overlay" id="inquiryDetailModal">
+        <div class="modal-content inquiry-detail-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-file-alt"></i>
+                    문의 상세
+                </h2>
+                <button class="modal-close" id="detailModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="inquiry-detail">
+                    <div class="inquiry-detail-header">
+                        <span class="inquiry-detail-category" id="detailCategory"></span>
+                        <h3 class="inquiry-detail-title" id="detailTitle"></h3>
+                        <div class="inquiry-detail-meta">
+                            <span><i class="fas fa-calendar"></i> <span id="detailDate"></span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="inquiry-detail-content" id="detailContent"></div>
+                    
+                    <!-- 답변 섹션 -->
+                    <div class="inquiry-answer-section" id="answerSection">
+                    </div>
+                    
+                    <div class="inquiry-actions">
+                        <button class="btn-edit" id="inquiryEditBtn">
+                            <i class="fas fa-edit"></i>
+                            수정
+                        </button>
+                        <button class="btn-delete" id="inquiryDeleteBtn">
+                            <i class="fas fa-trash"></i>
+                            삭제
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

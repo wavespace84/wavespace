@@ -361,38 +361,38 @@
                         <div class="suggest-content" id="suggestContent" style="display: none;">
                             <div class="suggest-form">
                                 <div class="form-group">
-                                    <label class="form-label">이벤트 제목</label>
-                                    <input type="text" class="form-input" placeholder="제안하실 이벤트의 제목을 입력해주세요">
-                                </div>
-                                
-                                <div class="form-group">
                                     <label class="form-label">이벤트 카테고리</label>
-                                    <select class="form-select">
-                                        <option value="">카테고리를 선택하세요</option>
-                                        <option value="point">포인트 이벤트</option>
-                                        <option value="badge">배지 획득 이벤트</option>
-                                        <option value="contest">콘테스트</option>
-                                        <option value="community">커뮤니티 이벤트</option>
-                                        <option value="promotion">프로모션</option>
-                                        <option value="other">기타</option>
-                                    </select>
+                                    <div class="category-toggle-group" id="eventCategory">
+                                        <button type="button" class="category-toggle" data-value="point">
+                                            <i class="fas fa-coins"></i>
+                                            <span>포인트</span>
+                                        </button>
+                                        <button type="button" class="category-toggle" data-value="badge">
+                                            <i class="fas fa-medal"></i>
+                                            <span>배지</span>
+                                        </button>
+                                        <button type="button" class="category-toggle" data-value="contest">
+                                            <i class="fas fa-trophy"></i>
+                                            <span>콘테스트</span>
+                                        </button>
+                                        <button type="button" class="category-toggle" data-value="community">
+                                            <i class="fas fa-users"></i>
+                                            <span>커뮤니티</span>
+                                        </button>
+                                        <button type="button" class="category-toggle" data-value="promotion">
+                                            <i class="fas fa-bullhorn"></i>
+                                            <span>프로모션</span>
+                                        </button>
+                                        <button type="button" class="category-toggle" data-value="other">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                            <span>기타</span>
+                                        </button>
+                                    </div>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">이벤트 내용</label>
-                                    <textarea class="form-textarea" rows="4" placeholder="이벤트 아이디어를 자세히 설명해주세요"></textarea>
-                                </div>
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">예상 기간</label>
-                                        <input type="text" class="form-input" placeholder="예: 1주일, 1개월">
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label class="form-label">예상 보상</label>
-                                        <input type="text" class="form-input" placeholder="예: 1000P, 특별 배지">
-                                    </div>
+                                    <textarea class="form-textarea" id="eventDescription" rows="4" placeholder="이벤트 아이디어를 자세히 설명해주세요"></textarea>
                                 </div>
                                 
                                 <div class="form-actions">
@@ -409,7 +409,7 @@
                             
                             <div class="suggest-benefits">
                                 <h3 class="benefits-title">이벤트 제안 혜택</h3>
-                                <div class="benefit-list">
+                                <div class="benefit-list horizontal">
                                     <div class="benefit-item">
                                         <i class="fas fa-coins"></i>
                                         <div class="benefit-content">

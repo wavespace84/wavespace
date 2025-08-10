@@ -255,7 +255,7 @@
                     </button>
                     <div class="user-profile">
                         <div class="user-avatar">
-                            <span>박</span>
+                            <i class="fas fa-user-circle"></i>
                             <div class="user-badge">
                                 <i class="fas fa-crown"></i>
                             </div>
@@ -281,48 +281,6 @@
                             <h1 class="forum-title">자유게시판</h1>
                             <p class="forum-subtitle">자유롭게 소통하는 분양실무자들의 공간</p>
                         </div>
-                    </div>
-
-                <!-- 카테고리 탭 -->
-                <div class="category-tabs">
-                    <button class="tab-btn active">
-                        전체
-                        <span class="count">1,234</span>
-                    </button>
-                    <button class="tab-btn">
-                        일반
-                        <span class="count">523</span>
-                    </button>
-                    <button class="tab-btn">
-                        질문
-                        <span class="count">312</span>
-                    </button>
-                    <button class="tab-btn">
-                        정보공유
-                        <span class="count">245</span>
-                    </button>
-                    <button class="tab-btn">
-                        후기
-                        <span class="count">98</span>
-                    </button>
-                    <button class="tab-btn">
-                        구인구직
-                        <span class="count">56</span>
-                    </button>
-                </div>
-
-                    <!-- 검색 및 필터 -->
-                    <div class="forum-controls">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" placeholder="제목, 내용, 작성자 검색">
-                        </div>
-                        <select class="filter-select">
-                            <option>최신순</option>
-                            <option>인기순</option>
-                            <option>조회순</option>
-                            <option>댓글순</option>
-                        </select>
                     </div>
 
                     <!-- 인기 게시글 -->
@@ -365,31 +323,79 @@
                     </div>
                 </div>
 
+                <!-- 인기 게시글 토글 버튼 -->
+                <button class="hot-posts-toggle" id="hotPostsToggle">
+                    <i class="fas fa-chevron-down"></i>
+                    <span>인기 게시글 보기</span>
+                </button>
+
+                <!-- 검색 및 필터 -->
+                <div class="forum-controls">
+                    <div class="search-box-large">
+                        <input type="text" placeholder="제목, 내용, 작성자로 검색하세요">
+                        <button class="search-button">
+                            <i class="fas fa-search"></i>
+                            <span>검색</span>
+                        </button>
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active">
+                            <i class="fas fa-clock"></i>
+                            <span>최신순</span>
+                        </button>
+                        <button class="filter-btn">
+                            <i class="fas fa-eye"></i>
+                            <span>조회순</span>
+                        </button>
+                        <button class="filter-btn">
+                            <i class="fas fa-comment"></i>
+                            <span>댓글순</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 카테고리 탭 -->
+                <div class="category-tabs">
+                    <button class="tab-btn active">
+                        전체
+                        <span class="count">1,234</span>
+                    </button>
+                    <button class="tab-btn">
+                        일반
+                        <span class="count">523</span>
+                    </button>
+                    <button class="tab-btn">
+                        질문
+                        <span class="count">312</span>
+                    </button>
+                    <button class="tab-btn">
+                        정보공유
+                        <span class="count">245</span>
+                    </button>
+                    <button class="tab-btn">
+                        후기
+                        <span class="count">98</span>
+                    </button>
+                    <button class="tab-btn">
+                        구인구직
+                        <span class="count">56</span>
+                    </button>
+                </div>
+
                 <!-- 게시글 목록 및 사이드바 -->
                 <div class="posts-section">
                     <!-- 게시글 목록 -->
                     <div class="posts-list">
                         <!-- 공지사항 -->
-                        <div class="post-item notice">
-                            <div class="post-number">
-                                <span class="post-badge notice-badge">공지</span>
+                        <div class="notice-item">
+                            <div class="notice-badge-wrapper">
+                                <span class="notice-badge">공지</span>
                             </div>
-                            <div class="post-category">
-                                <span class="category-badge general">공지</span>
-                            </div>
-                            <div class="post-content">
-                                <h3 class="post-title">
+                            <div class="notice-content">
+                                <h3 class="notice-title">
                                     <a href="#">[필독] 자유게시판 이용 규칙 및 가이드라인</a>
+                                    <i class="fas fa-thumbtack"></i>
                                 </h3>
-                                <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 관리자</span>
-                                    <span><i class="fas fa-clock"></i> 2024.01.15</span>
-                                    <span><i class="fas fa-eye"></i> 5,234</span>
-                                </div>
-                            </div>
-                            <div class="post-stats">
-                                <span class="like-count"><i class="fas fa-thumbs-up"></i> 234</span>
-                                <span class="comment-count"><i class="fas fa-comment"></i> 12</span>
                             </div>
                         </div>
 
@@ -405,7 +411,7 @@
                                     <span class="new-badge">NEW</span>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 김영업</span>
+                                    <span><i class="fas fa-user-circle"></i> 김영업</span>
                                     <span><i class="fas fa-clock"></i> 10분 전</span>
                                     <span><i class="fas fa-eye"></i> 23</span>
                                 </div>
@@ -427,7 +433,7 @@
                                     <span class="new-badge">NEW</span>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 박기획</span>
+                                    <span><i class="fas fa-user-circle"></i> 박기획</span>
                                     <span><i class="fas fa-clock"></i> 30분 전</span>
                                     <span><i class="fas fa-eye"></i> 156</span>
                                 </div>
@@ -448,7 +454,7 @@
                                     <a href="#">힐스테이트 ○○ 분양 현장 후기 및 경쟁률 예상</a>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 이팀장</span>
+                                    <span><i class="fas fa-user-circle"></i> 이팀장</span>
                                     <span><i class="fas fa-clock"></i> 1시간 전</span>
                                     <span><i class="fas fa-eye"></i> 342</span>
                                 </div>
@@ -469,7 +475,7 @@
                                     <a href="#">분양영업 10년차가 말하는 이 업계의 현실</a>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 최전문가</span>
+                                    <span><i class="fas fa-user-circle"></i> 최전문가</span>
                                     <span><i class="fas fa-clock"></i> 2시간 전</span>
                                     <span><i class="fas fa-eye"></i> 567</span>
                                 </div>
@@ -490,7 +496,7 @@
                                     <a href="#">[채용] 강남 신규 분양 현장 팀장급 모집</a>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> HR담당자</span>
+                                    <span><i class="fas fa-user-circle"></i> HR담당자</span>
                                     <span><i class="fas fa-clock"></i> 3시간 전</span>
                                     <span><i class="fas fa-eye"></i> 234</span>
                                 </div>
@@ -511,7 +517,7 @@
                                     <a href="#">2024년 달라지는 부동산 정책 총정리</a>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 정책분석가</span>
+                                    <span><i class="fas fa-user-circle"></i> 정책분석가</span>
                                     <span><i class="fas fa-clock"></i> 5시간 전</span>
                                     <span><i class="fas fa-eye"></i> 892</span>
                                 </div>
@@ -532,7 +538,7 @@
                                     <a href="#">전매제한 관련 법률 해석 도움 부탁드립니다</a>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 신입사원</span>
+                                    <span><i class="fas fa-user-circle"></i> 신입사원</span>
                                     <span><i class="fas fa-clock"></i> 8시간 전</span>
                                     <span><i class="fas fa-eye"></i> 145</span>
                                 </div>
@@ -553,7 +559,7 @@
                                     <a href="#">모델하우스 운영 중 겪은 황당한 에피소드</a>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 웃긴이야기</span>
+                                    <span><i class="fas fa-user-circle"></i> 웃긴이야기</span>
                                     <span><i class="fas fa-clock"></i> 어제</span>
                                     <span><i class="fas fa-eye"></i> 1,234</span>
                                 </div>
@@ -574,7 +580,7 @@
                                     <a href="#">래미안 ○○ 청약 당첨 후기 및 팁 공유</a>
                                 </h3>
                                 <div class="post-meta">
-                                    <span><i class="fas fa-user"></i> 당첨자</span>
+                                    <span><i class="fas fa-user-circle"></i> 당첨자</span>
                                     <span><i class="fas fa-clock"></i> 어제</span>
                                     <span><i class="fas fa-eye"></i> 2,345</span>
                                 </div>
@@ -698,7 +704,106 @@
         </button>
     </div>
 
+    <!-- 글쓰기 모달 -->
+    <div class="write-modal" id="writeModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">게시글 작성</h2>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="write-form" id="writeForm">
+                    <!-- 카테고리 선택 -->
+                    <div class="form-group">
+                        <label for="postCategory">카테고리 <span class="required">*</span></label>
+                        <select id="postCategory" name="category" required>
+                            <option value="">카테고리를 선택하세요</option>
+                            <option value="general">일반</option>
+                            <option value="question">질문</option>
+                            <option value="info">정보공유</option>
+                            <option value="review">후기</option>
+                            <option value="job">구인구직</option>
+                        </select>
+                    </div>
+
+                    <!-- 제목 입력 -->
+                    <div class="form-group">
+                        <label for="postTitle">제목 <span class="required">*</span></label>
+                        <input type="text" id="postTitle" name="title" placeholder="제목을 입력하세요" maxlength="100" required>
+                        <span class="char-count"><span id="titleCount">0</span>/100</span>
+                    </div>
+
+                    <!-- 내용 입력 -->
+                    <div class="form-group">
+                        <label for="postContent">내용 <span class="required">*</span></label>
+                        <div class="editor-toolbar">
+                            <button type="button" class="toolbar-btn" data-command="bold" title="굵게">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-command="italic" title="기울임">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-command="underline" title="밑줄">
+                                <i class="fas fa-underline"></i>
+                            </button>
+                            <div class="toolbar-separator"></div>
+                            <button type="button" class="toolbar-btn" data-command="link" title="링크">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-command="image" title="이미지">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" data-command="code" title="코드">
+                                <i class="fas fa-code"></i>
+                            </button>
+                        </div>
+                        <textarea id="postContent" name="content" placeholder="내용을 입력하세요" rows="12" required></textarea>
+                        <span class="char-count"><span id="contentCount">0</span>/5000</span>
+                    </div>
+
+                    <!-- 파일 첨부 -->
+                    <div class="form-group">
+                        <label for="postFiles">파일 첨부</label>
+                        <div class="file-upload-area">
+                            <input type="file" id="postFiles" name="files" multiple accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx" hidden>
+                            <label for="postFiles" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>클릭하여 파일을 선택하거나 여기에 드래그하세요</span>
+                                <span class="file-info">최대 10MB, jpg/png/gif/pdf/doc/xls 지원</span>
+                            </label>
+                            <div class="file-list" id="fileList"></div>
+                        </div>
+                    </div>
+
+                    <!-- 옵션 설정 -->
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="anonymous">
+                            <span>익명으로 작성</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="allowComments" checked>
+                            <span>댓글 허용</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" id="cancelWrite">취소</button>
+                <button type="button" class="btn-preview" id="previewPost">
+                    <i class="fas fa-eye"></i> 미리보기
+                </button>
+                <button type="submit" class="btn-submit" form="writeForm">
+                    <i class="fas fa-check"></i> 작성 완료
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
-    <script src="forum.js"></script>
+    <script src="forum-enhanced.js"></script>
 </body>
 </html>

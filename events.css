@@ -503,6 +503,80 @@
     padding-right: 40px;
 }
 
+/* 카테고리 토글 그룹 */
+.category-toggle-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.category-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+.category-toggle:hover {
+    border-color: var(--primary-blue);
+    background: var(--light-blue);
+}
+
+.category-toggle.active {
+    background: white;
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
+}
+
+.category-toggle i {
+    font-size: 16px;
+}
+
+.category-toggle.active i {
+    color: var(--primary-blue);
+}
+
+.category-toggle span {
+    font-size: 14px;
+}
+
+/* 체크박스 아이콘 */
+.category-toggle::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease;
+}
+
+.category-toggle.active::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
 .form-textarea {
     resize: vertical;
     min-height: 100px;
@@ -571,6 +645,30 @@
     gap: 20px;
 }
 
+/* 가로형 혜택 리스트 */
+.benefit-list.horizontal {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.benefit-list.horizontal .benefit-item {
+    flex: 1;
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+}
+
+.benefit-list.horizontal .benefit-item i {
+    font-size: 32px;
+    margin-top: 0;
+}
+
+.benefit-list.horizontal .benefit-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .benefit-item {
     display: flex;
     align-items: flex-start;
@@ -620,6 +718,17 @@
     .suggest-section {
         padding: 32px;
     }
+    
+    /* 가로형 혜택 리스트 반응형 */
+    .benefit-list.horizontal {
+        flex-wrap: wrap;
+    }
+    
+    .benefit-list.horizontal .benefit-item {
+        min-width: 200px;
+    }
+    
+    /* 카테고리 토글 태블릿 반응형 - 1줄 유지 */
 }
 
 @media (max-width: 768px) {
@@ -665,5 +774,47 @@
     
     .form-row {
         grid-template-columns: 1fr;
+    }
+    
+    /* 모바일에서 가로형 혜택 리스트 세로로 변경 */
+    .benefit-list.horizontal {
+        flex-direction: column;
+    }
+    
+    .benefit-list.horizontal .benefit-item {
+        flex-direction: row;
+        text-align: left;
+        gap: 16px;
+    }
+    
+    .benefit-list.horizontal .benefit-item i {
+        font-size: 24px;
+    }
+    
+    .benefit-list.horizontal .benefit-content {
+        align-items: flex-start;
+    }
+    
+    /* 카테고리 토글 모바일 반응형 */
+    .category-toggle-group {
+        gap: 6px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 8px;
+    }
+    
+    .category-toggle {
+        padding: 8px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    
+    .category-toggle i {
+        font-size: 14px;
+    }
+    
+    .category-toggle span {
+        font-size: 12px;
     }
 }

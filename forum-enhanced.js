@@ -1,85 +1,210 @@
-// forum.js - 자유게시판 페이지 동적 기능
+// forum-enhanced.js - 50개 테스트 계정 활동이 포함된 자유게시판
 
-// 인기 게시글 데이터
-const popularPosts = [
-    {
-        id: 1,
-        title: "2024년 하반기 분양시장 전망과 대응 전략",
-        excerpt: "최근 금리 인상과 규제 변화로 인한 분양시장의 변화에 대해 현업에서 느끼는 체감도와 대응 방안을 공유합니다...",
-        content: "최근 금리 인상과 규제 변화로 인한 분양시장의 변화에 대해 현업에서 느끼는 체감도와 대응 방안을 공유합니다.\n\n1. 현재 시장 상황\n- 금리 인상으로 인한 대출 수요 감소\n- 청약 경쟁률 하락\n- 분양가 조정 압박\n\n2. 대응 전략\n- 타겟 고객층 재설정\n- 마케팅 메시지 변경\n- 프로모션 강화\n\n3. 실제 현장 사례\n- A 프로젝트: 프로모션 강화로 청약률 20% 상승\n- B 프로젝트: 타겟층 재설정으로 계약 전환율 개선\n\n4. 향후 전망\n- 2024년 하반기 점진적 회복 예상\n- 지역별 차별화 전략 필요\n\n자세한 내용은 본문을 참고해주세요.",
-        author: "김전략",
-        date: "2024.01.20",
-        views: 1234,
-        comments: 45,
-        likes: 89,
-        category: "정보공유",
-        categoryName: "정보공유"
-    },
-    {
-        id: 2,
-        title: "성공적인 모델하우스 운영 노하우 대공개",
-        excerpt: "10년차 분양영업 전문가가 알려주는 모델하우스 운영의 모든 것. 고객 응대부터 계약까지...",
-        content: "10년차 분양영업 전문가가 알려주는 모델하우스 운영의 모든 것을 공유합니다.\n\n1. 오픈 전 준비사항\n- 동선 계획 수립\n- 상담 공간 배치\n- 직원 교육 완료\n\n2. 고객 응대 전략\n- 첫인상의 중요성\n- 니즈 파악 기법\n- 효과적인 프레젠테이션\n\n3. 계약 유도 전략\n- 긴급감 조성\n- 혜택 강조\n- 고객 이의 처리\n\n4. 사후 관리\n- 계약자 관리\n- 추천 유도\n- 재방문 유도",
-        author: "박전문가",
-        date: "2024.01.19",
-        views: 987,
-        comments: 32,
-        likes: 76,
-        category: "정보공유",
-        categoryName: "정보공유"
-    },
-    {
-        id: 3,
-        title: "분양가 상한제 지역 영업 전략 총정리",
-        excerpt: "분양가 상한제 적용 지역에서의 효과적인 영업 전략과 실제 사례를 바탕으로 한 팁...",
-        content: "분양가 상한제 적용 지역에서의 효과적인 영업 전략을 소개합니다.\n\n1. 분양가 상한제 이해\n- 적용 기준\n- 가격 산정 방식\n- 지역별 차이점\n\n2. 영업 전략\n- 가격 경쟁력 강조\n- 실수요자 타겟팅\n- 정부 정책 활용\n\n3. 성공 사례\n- 서울 A지역: 청약 경쟁률 100:1 달성\n- 경기 B지역: 완판 성공 사례\n\n4. 주의사항\n- 과대광고 주의\n- 정확한 정보 전달\n- 컴플라이언스 준수",
-        author: "이매니저",
-        date: "2024.01.18",
-        views: 856,
-        comments: 28,
-        likes: 65,
-        category: "정보공유",
-        categoryName: "정보공유"
+// 실제같은 게시글 데이터 생성
+function generateForumData() {
+    const userNames = [
+        '김철수', '이영희', '박민수', '정수진', '최동현', '김서연', '이준호', '박지영', '홍길동', '김나영',
+        '이상현', '박소영', '정현수', '김태영', '이민정', '박재현', '최수빈', '정다은', '김현우', '이서준',
+        '박하늘', '정유진', '김도윤', '이하린', '박시우', '최지아', '정예준', '김서윤', '이주원', '박지호',
+        '홍민준', '김윤서', '이도현', '박수아', '정건우', '김은지', '이성민', '박예린', '최준서', '정아인',
+        '김태훈', '이소민', '박준영', '홍서영', '김민재', '이지우', '박현서', '정수현', '최민서', '김지안'
+    ];
+
+    const nicknames = [
+        '강남전문가', '부동산여왕', '서초구달인', '송파마스터', '강북전문', '마포구고수', '용산프로', '성동구베테랑', '종로의달인', '중구전문가',
+        '노원구달인', '도봉구마스터', '은평구프로', '서대문전문', '양천구고수', '구로달인', '금천프로', '영등포마스터', '동작구전문', '관악프로',
+        '서초베테랑', '강남구고수', '송파달인', '강동프로', '광진구마스터', '동대문전문', '중랑구고수', '성북달인', '강북프로', '도봉베테랑',
+        '노원구마스터', '은평전문', '서대문프로', '마포달인', '용산구고수', '중구베테랑', '종로프로', '성동구마스터', '광진달인', '동대문프로',
+        '중랑구전문', '성북고수', '강북달인', '도봉프로', '노원베테랑', '은평구마스터', '서대문달인', '마포프로', '양천구전문', '구로구고수'
+    ];
+
+    const postTitles = {
+        question: [
+            "청약통장 가점 계산 관련 질문드립니다",
+            "특별공급 자격 조건이 헷갈려요",
+            "전매제한 기간 중 이사 가능한가요?",
+            "모델하우스 예약 없이 방문 가능한가요?",
+            "청약 당첨 후 대출 거절되면 어떻게 되나요?",
+            "분양권 전매시 세금 계산법 알려주세요",
+            "재당첨 제한 기간 확인 방법이 궁금합니다",
+            "주택청약 1순위 조건이 뭔가요?",
+            "무주택 기간 산정 기준이 어떻게 되나요?",
+            "부부 공동명의 가능한가요?"
+        ],
+        info: [
+            "2024년 1분기 서울 분양 일정 총정리",
+            "금리 인상이 분양시장에 미치는 영향",
+            "청약 가점제 vs 추첨제 완벽 정리",
+            "모델하우스 효율적인 방문 팁 10가지",
+            "분양가 상한제 지역 영업 전략",
+            "2024년 달라지는 부동산 정책 요약",
+            "서울 주요 지역 청약 경쟁률 분석",
+            "신혼부부 특별공급 혜택 총정리",
+            "청약통장 효율적 관리법",
+            "분양 vs 매매 장단점 비교"
+        ],
+        review: [
+            "힐스테이트 OO 청약 후기",
+            "래미안 OO 모델하우스 방문 후기",
+            "청약 당첨 후 계약 과정 상세 후기",
+            "분양 상담사로 1년 일한 후기",
+            "첫 분양 실패 후기와 교훈",
+            "e편한세상 OO 입주 후기",
+            "롯데캐슬 OO 청약 경쟁률 예상",
+            "자이 OO 분양가 협상 성공 후기",
+            "포스코 OO 모델하우스 상담 후기",
+            "푸르지오 OO 당첨 후기"
+        ],
+        general: [
+            "분양영업 10년차가 말하는 이 업계의 현실",
+            "부동산 시장 하락기 생존 전략",
+            "분양 현장에서 겪은 황당한 에피소드",
+            "영업 실적 올리는 나만의 노하우",
+            "이 일 하면서 가장 보람있었던 순간",
+            "분양 영업의 미래는 어떻게 될까요?",
+            "AI가 분양 영업을 대체할 수 있을까?",
+            "MZ세대 고객 응대법",
+            "실적 압박 스트레스 극복법",
+            "워라밸 지키면서 실적 올리기"
+        ],
+        job: [
+            "[채용] 강남 신규 분양 현장 팀장급 모집",
+            "[구직] 분양 상담 경력 3년차 구직중",
+            "[급구] 주말 모델하우스 도우미 구합니다",
+            "분양대행사 신입사원 채용 공고",
+            "[프리랜서] 분양 마케터 모집",
+            "[채용] 온라인 분양 상담사 재택근무",
+            "대형 건설사 분양팀 경력직 채용",
+            "[구직] 부동산 자격증 보유자 구직",
+            "모델하우스 매니저 구인",
+            "[채용] 분양 마케팅 전문가 모집"
+        ]
+    };
+
+    const posts = [];
+    let postNumber = 2500;
+    
+    // 200개의 게시글 생성
+    for (let i = 0; i < 200; i++) {
+        const categories = ['general', 'question', 'info', 'review', 'job'];
+        const category = categories[Math.floor(Math.random() * categories.length)];
+        const categoryNames = {
+            general: '일반',
+            question: '질문',
+            info: '정보공유',
+            review: '후기',
+            job: '구인구직'
+        };
+        
+        const authorIndex = Math.floor(Math.random() * 50);
+        const title = postTitles[category][Math.floor(Math.random() * postTitles[category].length)];
+        const daysAgo = Math.random() * 30;
+        const hoursAgo = daysAgo * 24;
+        
+        let dateStr;
+        if (hoursAgo < 1) {
+            dateStr = `${Math.floor(hoursAgo * 60)}분 전`;
+        } else if (hoursAgo < 24) {
+            dateStr = `${Math.floor(hoursAgo)}시간 전`;
+        } else if (daysAgo < 7) {
+            dateStr = `${Math.floor(daysAgo)}일 전`;
+        } else {
+            const date = new Date();
+            date.setDate(date.getDate() - Math.floor(daysAgo));
+            dateStr = `${date.getMonth() + 1}/${date.getDate()}`;
+        }
+        
+        posts.push({
+            id: 1000 + i,
+            number: postNumber--,
+            category: category,
+            categoryName: categoryNames[category],
+            title: title,
+            author: nicknames[authorIndex],
+            authorName: userNames[authorIndex],
+            date: dateStr,
+            views: Math.floor(Math.random() * 3000) + 10,
+            likes: Math.floor(Math.random() * 100),
+            comments: Math.floor(Math.random() * 50),
+            isNew: hoursAgo < 24 && Math.random() > 0.5,
+            content: `${title}에 대한 상세 내용입니다.\n\n작성자: ${nicknames[authorIndex]} (${userNames[authorIndex]})\n\n이 게시글은 ${categoryNames[category]} 카테고리의 글입니다.\n\n자세한 내용과 토론은 댓글에서 계속됩니다.`
+        });
     }
+    
+    return posts;
+}
+
+// 전체 게시글 데이터
+const allPosts = generateForumData();
+
+// 인기 게시글 선택 (조회수, 좋아요, 댓글 기준)
+const popularPosts = [...allPosts]
+    .sort((a, b) => (b.views + b.likes * 10 + b.comments * 5) - (a.views + a.likes * 10 + a.comments * 5))
+    .slice(0, 6)
+    .map(post => ({
+        ...post,
+        excerpt: post.title.length > 50 ? post.title.substring(0, 50) + '...' : post.title + ' - ' + post.categoryName + ' 게시판의 인기글입니다.'
+    }));
+
+// 댓글 데이터 생성
+const commentsData = {};
+const commentTemplates = [
+    "좋은 정보 감사합니다!",
+    "저도 같은 고민이 있었는데 도움이 되네요.",
+    "자세한 설명 감사드립니다.",
+    "이런 정보 정말 필요했어요!",
+    "경험 공유 감사합니다.",
+    "저도 비슷한 경험이 있습니다.",
+    "추가로 질문드려도 될까요?",
+    "정말 유용한 팁이네요!",
+    "북마크 해두고 참고하겠습니다.",
+    "다음에도 좋은 정보 부탁드려요."
 ];
 
-// 전체 게시글 데이터 (샘플)
-const allPosts = [
-    { id: 101, number: 1234, category: "question", categoryName: "질문", title: "청약통장 가점 계산 관련 질문드립니다", author: "김영업", date: "10분 전", views: 23, likes: 2, comments: 5, isNew: true },
-    { id: 102, number: 1233, category: "info", categoryName: "정보공유", title: "서울 강남권 신규 분양 일정 총정리 (2024년 1분기)", author: "박기획", date: "30분 전", views: 156, likes: 12, comments: 8, isNew: true },
-    { id: 103, number: 1232, category: "review", categoryName: "후기", title: "힐스테이트 ○○ 분양 현장 후기 및 경쟁률 예상", author: "이팀장", date: "1시간 전", views: 342, likes: 23, comments: 15 },
-    { id: 104, number: 1231, category: "general", categoryName: "일반", title: "분양영업 10년차가 말하는 이 업계의 현실", author: "최전문가", date: "2시간 전", views: 567, likes: 45, comments: 32 },
-    { id: 105, number: 1230, category: "job", categoryName: "구인구직", title: "[채용] 강남 신규 분양 현장 팀장급 모집", author: "HR담당자", date: "3시간 전", views: 234, likes: 8, comments: 4 },
-    { id: 106, number: 1229, category: "info", categoryName: "정보공유", title: "2024년 달라지는 부동산 정책 총정리", author: "정책분석가", date: "5시간 전", views: 892, likes: 67, comments: 23 },
-    { id: 107, number: 1228, category: "question", categoryName: "질문", title: "전매제한 관련 법률 해석 도움 부탁드립니다", author: "신입사원", date: "8시간 전", views: 145, likes: 3, comments: 12 },
-    { id: 108, number: 1227, category: "general", categoryName: "일반", title: "모델하우스 운영 중 겪은 황당한 에피소드", author: "웃긴이야기", date: "어제", views: 1234, likes: 89, comments: 45 },
-    { id: 109, number: 1226, category: "review", categoryName: "후기", title: "래미안 ○○ 청약 당첨 후기 및 팁 공유", author: "당첨자", date: "어제", views: 2345, likes: 123, comments: 67 }
-];
+// 각 게시글에 대한 댓글 생성
+allPosts.forEach(post => {
+    if (post.comments > 0) {
+        const comments = [];
+        const commentCount = Math.min(post.comments, 10);
+        
+        for (let i = 0; i < commentCount; i++) {
+            const authorIndex = Math.floor(Math.random() * 50);
+            const hoursAgo = Math.random() * 48;
+            let dateStr;
+            
+            if (hoursAgo < 1) {
+                dateStr = `${Math.floor(hoursAgo * 60)}분 전`;
+            } else if (hoursAgo < 24) {
+                dateStr = `${Math.floor(hoursAgo)}시간 전`;
+            } else {
+                dateStr = `${Math.floor(hoursAgo / 24)}일 전`;
+            }
+            
+            comments.push({
+                id: `${post.id}-${i}`,
+                author: allPosts[Math.floor(Math.random() * 50)].author,
+                content: commentTemplates[Math.floor(Math.random() * commentTemplates.length)],
+                date: dateStr,
+                likes: Math.floor(Math.random() * 30)
+            });
+        }
+        
+        commentsData[post.id] = comments;
+    }
+});
 
-// 현재 표시되는 게시글
-let displayedPosts = [...allPosts];
+// 현재 표시되는 게시글 (최근 50개)
+let displayedPosts = allPosts.slice(0, 50);
 let currentCategory = 'all';
 let currentSort = 'latest';
 
-// 댓글 데이터
-const commentsData = {
-    1: [
-        { id: 1, author: "김전문가", content: "좋은 정보 감사합니다. 정말 도움이 되네요!", date: "5분 전", likes: 12 },
-        { id: 2, author: "박과장", content: "저도 같은 생각입니다. 시장 변화에 대응이 필요하죠.", date: "10분 전", likes: 8 }
-    ],
-    101: [
-        { id: 3, author: "도움이", content: "청약 가점은 국토부 홈페이지에서 계산기로 확인 가능합니다!", date: "2분 전", likes: 5 },
-        { id: 4, author: "전문가", content: "납입 중단 기간도 가점에 포함됩니다. 걱정 마세요.", date: "5분 전", likes: 3 }
-    ]
-};
-
+// 나머지 기존 함수들은 그대로 유지
 // 카테고리별 게시글 필터링
 function filterByCategory(category) {
     currentCategory = category;
     
     if (category === 'all') {
-        displayedPosts = [...allPosts];
-        // 전체 카테고리일 때는 인기 게시글 표시
+        displayedPosts = allPosts.slice(0, 50);
         showHotPosts();
     } else {
         displayedPosts = allPosts.filter(post => {
@@ -91,12 +216,10 @@ function filterByCategory(category) {
                 'job': 'job'
             };
             return post.category === categoryMap[category];
-        });
-        // 특정 카테고리 선택시 인기 게시글 숨김
+        }).slice(0, 50);
         hideHotPosts();
     }
     
-    // 현재 정렬 기준 유지
     sortPosts(currentSort);
     updatePostsList();
     updateCategoryCounts();
@@ -108,20 +231,16 @@ function sortPosts(sortType) {
     
     switch(sortType) {
         case 'latest':
-            // 최신순 (기본)
             displayedPosts.sort((a, b) => b.number - a.number);
             break;
         case 'views':
-            // 조회순
             displayedPosts.sort((a, b) => b.views - a.views);
             break;
         case 'comments':
-            // 댓글순
             displayedPosts.sort((a, b) => b.comments - a.comments);
             break;
     }
     
-    // 정렬 변경시에도 인기 게시글 숨김 (최신순이 아닌 경우)
     if (sortType !== 'latest') {
         hideHotPosts();
     } else if (currentCategory === 'all' && !document.querySelector('.search-box-large input').value.trim()) {
@@ -134,8 +253,7 @@ function sortPosts(sortType) {
 // 게시글 검색
 function searchPosts(searchTerm) {
     if (!searchTerm.trim()) {
-        displayedPosts = [...allPosts];
-        // 검색어가 없으면 인기 게시글 표시
+        displayedPosts = allPosts.slice(0, 50);
         showHotPosts();
     } else {
         const term = searchTerm.toLowerCase();
@@ -143,12 +261,10 @@ function searchPosts(searchTerm) {
             post.title.toLowerCase().includes(term) ||
             post.author.toLowerCase().includes(term) ||
             post.categoryName.toLowerCase().includes(term)
-        );
-        // 검색시 인기 게시글 숨김
+        ).slice(0, 50);
         hideHotPosts();
     }
     
-    // 현재 카테고리와 정렬 유지
     if (currentCategory !== 'all') {
         filterByCategory(currentCategory);
     } else {
@@ -162,7 +278,6 @@ function updatePostsList() {
     const postsList = document.querySelector('.posts-list');
     if (!postsList) return;
     
-    // 공지사항 HTML (고정)
     let postsHTML = `
         <div class="notice-item">
             <div class="notice-badge-wrapper">
@@ -177,7 +292,6 @@ function updatePostsList() {
         </div>
     `;
     
-    // 일반 게시글 추가
     displayedPosts.forEach(post => {
         postsHTML += `
             <div class="post-item" data-id="${post.id}">
@@ -193,7 +307,7 @@ function updatePostsList() {
                     <div class="post-meta">
                         <span><i class="fas fa-user-circle"></i> ${post.author}</span>
                         <span><i class="fas fa-clock"></i> ${post.date}</span>
-                        <span><i class="fas fa-eye"></i> ${post.views}</span>
+                        <span><i class="fas fa-eye"></i> ${post.views.toLocaleString()}</span>
                     </div>
                 </div>
                 <div class="post-stats">
@@ -205,8 +319,6 @@ function updatePostsList() {
     });
     
     postsList.innerHTML = postsHTML;
-    
-    // 이벤트 위임을 사용하므로 재등록 불필요
 }
 
 // 카테고리별 게시글 수 업데이트
@@ -263,7 +375,7 @@ function initializeInfiniteCarousel() {
     function createCard(post) {
         const card = document.createElement('div');
         card.className = 'hot-post-card';
-        card.style.cssText = 'flex: 0 0 calc(33.333% - 11px); cursor: pointer;';
+        card.style.cssText = 'flex: 0 0 280px; cursor: pointer;'; // 고정 너비로 변경
         card.innerHTML = `
             <span class="hot-badge">HOT</span>
             <h3 class="hot-post-title">${post.title}</h3>
@@ -369,14 +481,11 @@ function createModalTemplate() {
     return modalElement;
 }
 
-// 게시글 상세 모달 표시 (최적화)
+// 게시글 상세 모달 표시
 function showPostDetail(post) {
-    // 모달이 없으면 생성
     const modal = createModalTemplate();
     
-    // 빠른 DOM 업데이트
     requestAnimationFrame(() => {
-        // 카테고리 배지
         const categoryBadge = modal.querySelector('.modal-category-badge');
         if (post.isNotice) {
             categoryBadge.className = 'modal-category-badge notice-badge';
@@ -386,10 +495,8 @@ function showPostDetail(post) {
             categoryBadge.textContent = post.categoryName || post.category || '정보공유';
         }
         
-        // 제목
         modal.querySelector('.post-detail-title').textContent = post.title;
         
-        // 메타 정보 (공지사항이 아닐 때만)
         const metaSection = modal.querySelector('.post-detail-meta');
         if (!post.isNotice) {
             metaSection.style.display = '';
@@ -401,12 +508,10 @@ function showPostDetail(post) {
             metaSection.style.display = 'none';
         }
         
-        // 내용
         const contentDiv = modal.querySelector('.post-detail-content-text');
         contentDiv.className = post.isNotice ? 'post-detail-content-text notice-content-text' : 'post-detail-content-text';
         contentDiv.innerHTML = post.content ? post.content.replace(/\n/g, '<br>') : '게시글 내용이 없습니다.';
         
-        // 액션 버튼과 댓글 (공지사항이 아닐 때만)
         const actionsSection = modal.querySelector('.post-actions');
         const commentsSection = modal.querySelector('.comments-section');
         
@@ -414,29 +519,26 @@ function showPostDetail(post) {
             actionsSection.style.display = '';
             commentsSection.style.display = '';
             
-            // 좋아요 버튼 초기화 및 업데이트
             const likeBtn = modal.querySelector('.like-btn');
             const likeIcon = likeBtn.querySelector('i');
-            // 좋아요 상태 초기화
             likeIcon.className = 'far fa-heart';
             likeIcon.style.color = '';
             likeBtn.onclick = () => toggleLike(likeBtn, post.id);
             likeBtn.querySelector('.like-count').textContent = post.likes || 0;
             
-            // 댓글 수 업데이트
             modal.querySelector('.comments-title .comment-count').textContent = post.comments || 0;
-            
-            // 댓글 목록 업데이트
             modal.querySelector('#commentsList').innerHTML = renderComments(post.id);
         } else {
             actionsSection.style.display = 'none';
             commentsSection.style.display = 'none';
         }
         
-        // 모달 표시
+        // 모달 표시 시 깜빡임 방지
         modal.style.display = 'block';
-        // 지연 없이 바로 표시
-        modal.classList.add('active');
+        // requestAnimationFrame을 사용하여 다음 프레임에 active 클래스 추가
+        requestAnimationFrame(() => {
+            modal.classList.add('active');
+        });
     });
 }
 
@@ -467,22 +569,21 @@ function renderComments(postId) {
     `).join('');
 }
 
-// 게시글 상세 모달 닫기 (최적화)
+// 게시글 상세 모달 닫기
 function closePostDetail() {
     const modal = document.getElementById('postDetailModal');
     if (modal) {
         modal.classList.remove('active');
+        // display 속성을 즉시 변경하지 않고 transition 종료 후 변경
         setTimeout(() => {
-            modal.style.display = 'none';
-            // 스타일 초기화
-            modal.style.opacity = '';
-            modal.style.transform = '';
-            modal.style.transition = '';
+            if (!modal.classList.contains('active')) {
+                modal.style.display = 'none';
+            }
         }, 300);
     }
 }
 
-// 인기 게시글 숨기기
+// 인기 게시글 숨기기/표시
 function hideHotPosts() {
     const hotPostsSection = document.querySelector('.hot-posts');
     const toggleBtn = document.getElementById('hotPostsToggle');
@@ -490,7 +591,6 @@ function hideHotPosts() {
     if (hotPostsSection) {
         hotPostsSection.classList.add('collapsed');
         
-        // 토글 버튼 표시 및 텍스트 변경
         if (toggleBtn) {
             toggleBtn.classList.add('show');
             toggleBtn.classList.remove('expanded');
@@ -499,7 +599,6 @@ function hideHotPosts() {
     }
 }
 
-// 인기 게시글 표시
 function showHotPosts() {
     const hotPostsSection = document.querySelector('.hot-posts');
     const toggleBtn = document.getElementById('hotPostsToggle');
@@ -507,7 +606,6 @@ function showHotPosts() {
     if (hotPostsSection) {
         hotPostsSection.classList.remove('collapsed');
         
-        // 토글 버튼 숨김
         if (toggleBtn) {
             toggleBtn.classList.remove('show');
             toggleBtn.classList.remove('expanded');
@@ -515,99 +613,57 @@ function showHotPosts() {
     }
 }
 
-// 토글 버튼으로 인기 게시글 펼치기/접기
 function toggleHotPosts() {
     const hotPostsSection = document.querySelector('.hot-posts');
     const toggleBtn = document.getElementById('hotPostsToggle');
     
     if (hotPostsSection && hotPostsSection.classList.contains('collapsed')) {
-        // 펼치기
         hotPostsSection.classList.remove('collapsed');
         if (toggleBtn) {
             toggleBtn.classList.add('expanded');
             toggleBtn.querySelector('span').textContent = '인기 게시글 숨기기';
-            // 2초 후 버튼 숨김
             setTimeout(() => {
                 toggleBtn.classList.remove('show');
                 toggleBtn.classList.remove('expanded');
             }, 2000);
         }
     } else if (hotPostsSection) {
-        // 접기
         hideHotPosts();
     }
 }
 
-// 게시글 클릭 이벤트 등록 (이벤트 위임 사용)
+// 게시글 클릭 이벤트 등록
 function initializePostClickEvents() {
-    // 이벤트 위임을 사용하여 성능 개선
     const postsList = document.querySelector('.posts-list');
     if (!postsList) return;
     
-    // 기존 이벤트 리스너 제거
     postsList.removeEventListener('click', handlePostClick);
-    // 새로운 이벤트 리스너 등록
     postsList.addEventListener('click', handlePostClick);
 }
 
-// 게시글 클릭 핸들러 (분리)
+// 게시글 클릭 핸들러
 function handlePostClick(e) {
-    // 링크 클릭시는 무시
     if (e.target.closest('a')) return;
     
-    // post-item 찾기
     const postItem = e.target.closest('.post-item');
     if (!postItem) return;
     
-    // 중복 클릭 방지
     if (postItem.dataset.clicking === 'true') return;
     postItem.dataset.clicking = 'true';
     
-    // 약간의 지연 후 처리 (UI 반응성 개선)
     requestAnimationFrame(() => {
         const postId = postItem.dataset.id;
         
         if (postId) {
             const post = allPosts.find(p => p.id == postId);
             if (post) {
-                // content가 없으면 기본 내용 추가
                 if (!post.content) {
                     post.content = `${post.title}\n\n해당 게시글의 상세 내용입니다.\n\n카테고리: ${post.categoryName}\n작성자: ${post.author}\n작성일: ${post.date}`;
                 }
                 showPostDetail(post);
             }
-        } else {
-            // data-id가 없는 경우 임시 게시글 데이터 생성
-            const postNumber = postItem.querySelector('.post-number')?.textContent;
-            if (postNumber && !isNaN(postNumber)) {
-                const titleElement = postItem.querySelector('.post-title a');
-                const categoryElement = postItem.querySelector('.category-badge');
-                const authorElement = postItem.querySelector('.post-meta span:nth-child(1)');
-                const dateElement = postItem.querySelector('.post-meta span:nth-child(2)');
-                const viewsElement = postItem.querySelector('.post-meta span:nth-child(3)');
-                const likesElement = postItem.querySelector('.like-count');
-                const commentsElement = postItem.querySelector('.comment-count');
-                
-                if (titleElement) {
-                    const tempPost = {
-                        id: parseInt(postNumber),
-                        number: parseInt(postNumber),
-                        title: titleElement.textContent.replace('[NEW]', '').trim(),
-                        category: categoryElement?.className.split(' ').find(c => ['general', 'question', 'info', 'review', 'job'].includes(c)) || 'general',
-                        categoryName: categoryElement?.textContent || '일반',
-                        author: authorElement?.textContent.replace(/[^\s]+\s/, '').trim() || '작성자',
-                        date: dateElement?.textContent.replace(/[^\s]+\s/, '').trim() || '방금',
-                        views: parseInt(viewsElement?.textContent.match(/\d+/)?.[0] || '0'),
-                        likes: parseInt(likesElement?.textContent.match(/\d+/)?.[0] || '0'),
-                        comments: parseInt(commentsElement?.textContent.match(/\d+/)?.[0] || '0'),
-                        content: `${titleElement.textContent}\n\n해당 게시글의 상세 내용입니다.`
-                    };
-                    showPostDetail(tempPost);
-                }
-            }
         }
         
-        // 클릭 상태 해제
         setTimeout(() => {
             delete postItem.dataset.clicking;
         }, 300);
@@ -633,7 +689,7 @@ function toggleLike(btn, postId) {
     }
 }
 
-// 글쓰기 모달 관련 함수
+// 글쓰기 모달 관련
 function openWriteModal() {
     const modal = document.getElementById('writeModal');
     if (modal) {
@@ -650,13 +706,10 @@ function closeWriteModal() {
 
 // DOMContentLoaded 이벤트
 document.addEventListener('DOMContentLoaded', function() {
-    // 무한 스크롤 캐러셀 초기화
     initializeInfiniteCarousel();
-    
-    // 초기 카테고리 수 업데이트
     updateCategoryCounts();
+    updatePostsList();
     
-    // 인기 게시글 토글 버튼 이벤트
     const hotPostsToggle = document.getElementById('hotPostsToggle');
     if (hotPostsToggle) {
         hotPostsToggle.addEventListener('click', function() {
@@ -664,15 +717,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 카테고리 탭 이벤트
     const categoryTabs = document.querySelectorAll('.tab-btn');
     categoryTabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            // 활성 탭 변경
             categoryTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
             
-            // 카테고리 필터링
             const tabText = this.childNodes[0].textContent.trim();
             const categoryMap = {
                 '전체': 'all',
@@ -690,14 +740,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // 필터 버튼 이벤트
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
-            // 정렬 타입 결정
             const filterText = this.querySelector('span').textContent;
             const sortMap = {
                 '최신순': 'latest',
@@ -712,7 +760,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // 검색 기능
     const searchButton = document.querySelector('.search-button');
     const searchInput = document.querySelector('.search-box-large input');
     
@@ -729,7 +776,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 검색어 지우기 감지
         searchInput.addEventListener('input', function(e) {
             if (!this.value.trim() && currentCategory === 'all') {
                 showHotPosts();
@@ -737,13 +783,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 글쓰기 버튼 이벤트
     const writeBtn = document.querySelector('.write-btn');
     if (writeBtn) {
         writeBtn.addEventListener('click', openWriteModal);
     }
     
-    // 글쓰기 모달 닫기 버튼
     const closeModalBtn = document.getElementById('closeModal');
     const cancelWriteBtn = document.getElementById('cancelWrite');
     if (closeModalBtn) {
@@ -753,13 +797,11 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelWriteBtn.addEventListener('click', closeWriteModal);
     }
     
-    // 모달 오버레이 클릭시 닫기
     const modalOverlay = document.querySelector('.write-modal .modal-overlay');
     if (modalOverlay) {
         modalOverlay.addEventListener('click', closeWriteModal);
     }
     
-    // 제목 글자수 카운트
     const titleInput = document.getElementById('postTitle');
     const titleCount = document.getElementById('titleCount');
     if (titleInput && titleCount) {
@@ -768,7 +810,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 내용 글자수 카운트
     const contentTextarea = document.getElementById('postContent');
     const contentCount = document.getElementById('contentCount');
     if (contentTextarea && contentCount) {
@@ -777,18 +818,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 게시글 클릭 이벤트 (이벤트 위임 초기화)
     initializePostClickEvents();
     
-    // 공지사항 클릭 이벤트
     document.addEventListener('click', function(e) {
         const noticeItem = e.target.closest('.notice-item');
         if (noticeItem && !e.target.closest('a')) {
-            // 공지사항 상세 팝업
             const noticePost = {
                 id: 'notice-1',
                 title: '[필독] 자유게시판 이용 규칙 및 가이드라인',
-                isNotice: true,  // 공지사항 플래그 추가
+                isNotice: true,
                 content: `안녕하세요, WAVE SPACE 운영진입니다.\n\n
                 자유게시판을 이용하실 때 지켜주셔야 할 규칙을 안내드립니다.\n\n
                 1. 기본 에티켓\n

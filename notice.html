@@ -260,7 +260,7 @@
                     </button>
                     <div class="user-profile">
                         <div class="user-avatar">
-                            <span>박</span>
+                            <i class="fas fa-user-circle"></i>
                             <div class="user-badge">
                                 <i class="fas fa-crown"></i>
                             </div>
@@ -286,19 +286,29 @@
                         <p class="notice-subtitle">새로운 소식과 업데이트를 확인하세요</p>
                     </div>
 
-                    <!-- 검색 및 필터 -->
+                    <!-- 검색 및 카테고리 필터 -->
                     <div class="notice-controls">
+                        <div class="category-tabs">
+                            <button class="category-tab active" data-category="all">
+                                <span>전체</span>
+                            </button>
+                            <button class="category-tab" data-category="공지">
+                                <span>공지</span>
+                            </button>
+                            <button class="category-tab" data-category="이벤트">
+                                <span>이벤트</span>
+                            </button>
+                            <button class="category-tab" data-category="점검">
+                                <span>점검</span>
+                            </button>
+                            <button class="category-tab" data-category="가이드">
+                                <span>이용가이드</span>
+                            </button>
+                        </div>
                         <div class="search-box">
                             <i class="fas fa-search"></i>
                             <input type="text" placeholder="제목 또는 내용으로 검색" id="searchInput">
                         </div>
-                        <select class="category-select" id="categorySelect">
-                            <option value="all">전체</option>
-                            <option value="공지">공지</option>
-                            <option value="업데이트">업데이트</option>
-                            <option value="이벤트">이벤트</option>
-                            <option value="점검">점검</option>
-                        </select>
                     </div>
 
                     <!-- 공지사항 목록 -->
@@ -315,7 +325,188 @@
         </div>
     </div>
 
+    <!-- 플로팅 글쓰기 버튼 -->
+    <button class="floating-write-btn" id="writeNoticeBtn" style="display: none;">
+        <i class="fas fa-pen"></i>
+    </button>
+
+    <!-- 공지사항 모달 -->
+    <div class="modal-overlay" id="noticeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="modal-badges" id="modalBadges">
+                    <!-- 동적 생성 -->
+                </div>
+                <h2 class="modal-title" id="modalTitle">
+                    <!-- 동적 생성 -->
+                </h2>
+            </div>
+            <div class="modal-body">
+                <p class="modal-content-text" id="modalContent">
+                    <!-- 동적 생성 -->
+                </p>
+            </div>
+            <div class="modal-meta">
+                <div class="modal-meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span id="modalDate"><!-- 동적 생성 --></span>
+                </div>
+            </div>
+            
+            <!-- 의견 작성 섹션 -->
+            <div class="modal-feedback">
+                <div class="feedback-header">
+                    <h3 class="feedback-title">
+                        <i class="fas fa-comment-dots"></i>
+                        의견 남기기
+                    </h3>
+                    <p class="feedback-subtitle">본 공지사항에 대한 의견을 남겨주세요. (비공개)</p>
+                </div>
+                <div class="feedback-form">
+                    <textarea class="feedback-textarea" id="feedbackText" 
+                        placeholder="의견을 입력해주세요..." 
+                        rows="3"
+                        maxlength="500"></textarea>
+                    <div class="feedback-actions">
+                        <span class="char-count">
+                            <span id="charCount">0</span> / 500
+                        </span>
+                        <button class="feedback-submit-btn" id="feedbackSubmit">
+                            <i class="fas fa-paper-plane"></i>
+                            의견 제출
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 제출된 의견 (본인 것만 표시) -->
+                <div class="feedback-submitted" id="feedbackSubmitted" style="display: none;">
+                    <div class="feedback-status">
+                        <i class="fas fa-check-circle"></i>
+                        <span>의견이 제출되었습니다.</span>
+                    </div>
+                    <div class="submitted-content" id="submittedContent">
+                        <!-- 동적 생성 -->
+                    </div>
+                    <button class="feedback-edit-btn" id="feedbackEdit">
+                        <i class="fas fa-edit"></i>
+                        수정하기
+                    </button>
+                </div>
+                
+                <!-- 매니저용 의견 목록 -->
+                <div class="admin-feedback-list" id="adminFeedbackList" style="display: none;">
+                    <div class="admin-feedback-header">
+                        <h4>
+                            <i class="fas fa-users"></i>
+                            사용자 의견 목록
+                        </h4>
+                        <span class="feedback-count">총 <span id="feedbackCount">0</span>개</span>
+                    </div>
+                    <div class="feedback-items" id="feedbackItems">
+                        <!-- 동적 생성 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <!-- 글쓰기 모달 -->
+    <div class="modal-overlay" id="writeModal">
+        <div class="modal-content write-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">공지사항 작성</h2>
+                <button class="modal-close" id="writeModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="noticeForm" class="notice-form">
+                    <div class="form-group">
+                        <label>작성 팀 <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="team" value="운영팀" required>
+                                <span class="radio-custom"></span>
+                                <span>운영팀</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="team" value="기획팀" required>
+                                <span class="radio-custom"></span>
+                                <span>기획팀</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="team" value="영업팀" required>
+                                <span class="radio-custom"></span>
+                                <span>영업팀</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="team" value="개발팀" required>
+                                <span class="radio-custom"></span>
+                                <span>개발팀</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>카테고리 <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="category" value="공지" required>
+                                <span class="radio-custom"></span>
+                                <span>공지</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="category" value="이벤트" required>
+                                <span class="radio-custom"></span>
+                                <span>이벤트</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="category" value="점검" required>
+                                <span class="radio-custom"></span>
+                                <span>점검</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="category" value="가이드" required>
+                                <span class="radio-custom"></span>
+                                <span>가이드</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noticeTitle">제목 <span class="required">*</span></label>
+                        <input type="text" id="noticeTitle" name="title" placeholder="공지사항 제목을 입력하세요" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noticeContent">내용 <span class="required">*</span></label>
+                        <textarea id="noticeContent" name="content" rows="10" placeholder="공지사항 내용을 입력하세요" required></textarea>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="noticePinned" name="pinned">
+                            <span class="checkbox-custom"></span>
+                            <span>상단 고정</span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="writeCancel">취소</button>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-check"></i>
+                            <span>공지 등록</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="notice.js"></script>
 </body>
 </html>

@@ -11,6 +11,7 @@
 html {
     height: 100%;
     overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
 /* CSS Variables는 base.css에서 관리합니다 */
@@ -284,14 +285,16 @@ body {
 }
 
 .nav-items {
-    display: none;
-    padding-top: 8px;
+    max-height: 0;
+    overflow: hidden;
     padding-left: 32px;
-    padding-bottom: 16px;
+    transition: max-height 0.3s ease, padding 0.3s ease;
 }
 
 .nav-category.active .nav-items {
-    display: block;
+    max-height: 500px;
+    padding-top: 8px;
+    padding-bottom: 16px;
 }
 
 .nav-item {

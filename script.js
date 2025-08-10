@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 사이드바 외부 클릭 시 닫기
     document.addEventListener('click', function(e) {
-        if (window.innerWidth <= 1024) {
+        if (window.innerWidth <= 1024 && sidebar && mobileMenuBtn) {
             if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                 sidebar.classList.remove('open');
             }
