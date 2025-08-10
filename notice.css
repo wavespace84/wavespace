@@ -15,16 +15,18 @@
     margin-bottom: 32px;
 }
 
-.notice-title {
+.notice-container .notice-header .notice-title {
     font-size: 24px;
     font-weight: 600;
     color: var(--gray-900);
     margin-bottom: 6px;
+    display: block !important; /* forum.css의 flex 오버라이드 */
 }
 
-.notice-subtitle {
+.notice-container .notice-header .notice-subtitle {
     font-size: 14px;
     color: var(--gray-600);
+    display: block !important; /* 명시적으로 block 설정 */
 }
 
 /* 검색 및 카테고리 컨트롤 */
@@ -36,12 +38,12 @@
     margin-bottom: 32px;
 }
 
-/* 카테고리 탭 */
-.category-tabs {
-    display: flex;
+/* 카테고리 탭 - checkbox-interaction.css 사용 */
+/* .category-tabs는 checkbox-interaction.css에서 스타일링됨 */
+.notice-controls .checkbox-tabs {
+    padding-bottom: 0;
+    border-bottom: none;
     align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
 }
 
 /* 검색창 */
@@ -83,40 +85,7 @@
     box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
 }
 
-.category-tab {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    border: 2px solid var(--gray-200);
-    border-radius: 20px;
-    background: white;
-    color: var(--gray-600);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    min-width: 80px;
-}
-
-.category-tab:hover {
-    background: var(--gray-50);
-    border-color: var(--gray-300);
-    color: var(--gray-700);
-}
-
-.category-tab.active {
-    background: var(--primary-blue);
-    border-color: var(--primary-blue);
-    color: white;
-    font-weight: 600;
-}
-
-.category-tab.active:hover {
-    background: var(--deep-blue);
-    border-color: var(--deep-blue);
-}
+/* .category-tab 스타일은 checkbox-interaction.css의 .checkbox-tab으로 대체됨 */
 
 /* 공지사항 목록 */
 .notice-list {
@@ -154,7 +123,7 @@
     background-color: rgba(230, 242, 255, 0.5);
 }
 
-.notice-header {
+.notice-item .notice-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -704,7 +673,7 @@
 
 /* 글쓰기 모달 */
 .write-modal {
-    max-width: 600px;
+    max-width: 720px;
     width: 90%;
 }
 

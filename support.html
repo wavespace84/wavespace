@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="support.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -341,13 +342,37 @@
                                 <button class="keyword-tag" data-search="회원가입">회원가입</button>
                             </div>
                         </div>
-                        <div class="faq-categories">
-                            <button class="faq-category-btn active" data-category="all">전체</button>
-                            <button class="faq-category-btn" data-category="account">계정관리</button>
-                            <button class="faq-category-btn" data-category="point">포인트</button>
-                            <button class="faq-category-btn" data-category="content">콘텐츠</button>
-                            <button class="faq-category-btn" data-category="membership">멤버십</button>
-                            <button class="faq-category-btn" data-category="etc">기타</button>
+                        <div class="checkbox-tabs faq-categories">
+                            <label class="checkbox-tab active" data-category="all">
+                                <input type="radio" name="faq-filter" checked>
+                                <span class="tab-check"></span>
+                                <span>전체</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="account">
+                                <input type="radio" name="faq-filter">
+                                <span class="tab-check"></span>
+                                <span>계정관리</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="point">
+                                <input type="radio" name="faq-filter">
+                                <span class="tab-check"></span>
+                                <span>포인트</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="content">
+                                <input type="radio" name="faq-filter">
+                                <span class="tab-check"></span>
+                                <span>콘텐츠</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="membership">
+                                <input type="radio" name="faq-filter">
+                                <span class="tab-check"></span>
+                                <span>멤버십</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="etc">
+                                <input type="radio" name="faq-filter">
+                                <span class="tab-check"></span>
+                                <span>기타</span>
+                            </label>
                         </div>
                         <div class="faq-list" id="faqList">
                             <!-- JavaScript로 동적 생성 -->

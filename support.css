@@ -261,33 +261,17 @@ html {
     margin-bottom: 0;
 }
 
+/* FAQ 카테고리 - checkbox-interaction.css 사용 */
 .faq-categories {
-    display: flex;
-    gap: 8px;
     margin-bottom: 24px;
 }
 
-.faq-category-btn {
-    padding: 10px 20px;
-    background-color: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--gray-600);
-    cursor: pointer;
-    transition: all 0.2s ease;
+.faq-categories.checkbox-tabs {
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
-.faq-category-btn:hover {
-    border-color: var(--primary-blue);
-    color: var(--primary-blue);
-}
-
-.faq-category-btn.active {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
-    color: var(--white);
-}
+/* .faq-category-btn 스타일은 checkbox-interaction.css의 .checkbox-tab으로 대체됨 */
 
 .faq-list {
     display: flex;

@@ -578,8 +578,8 @@ let filteredQuestions = [];
 document.addEventListener('DOMContentLoaded', function() {
     console.log('qna.js DOMContentLoaded 이벤트 발생');
     
-    // 카테고리 탭
-    const categoryTabs = document.querySelectorAll('.tab-btn');
+    // 카테고리 탭 - checkbox-tab 스타일
+    const categoryTabs = document.querySelectorAll('.checkbox-tab');
     const searchInput = document.querySelector('.search-input');
     const searchBtn = document.querySelector('.search-btn');
     const sortSelect = document.querySelector('.sort-select');
@@ -650,17 +650,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 카테고리 탭 클릭 이벤트
+    // 카테고리 탭 클릭 이벤트 (checkbox-tab 스타일)
     if (categoryTabs.length > 0) {
         // 초기 게시글 개수 업데이트
         updateCategoryCounts();
         
         categoryTabs.forEach((tab, index) => {
+            const input = tab.querySelector('input[type="radio"]');
             console.log(`탭 ${index + 1} 등록:`, tab.textContent.trim());
             
             tab.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
+                // preventDefault 제거 - radio 버튼의 기본 동작 허용
                 
                 console.log('탭 클릭됨:', this.textContent.trim());
                 
@@ -668,8 +668,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectedTag = null;
                 popularTags.forEach(t => t.classList.remove('active'));
                 
-                categoryTabs.forEach(t => t.classList.remove('active'));
+                // 모든 탭에서 active 클래스 제거
+                categoryTabs.forEach(t => {
+                    t.classList.remove('active');
+                    const tInput = t.querySelector('input[type="radio"]');
+                    if (tInput) tInput.checked = false;
+                });
+                // 클릭한 탭에 active 클래스 추가
                 this.classList.add('active');
+                if (input) input.checked = true;
                 
                 const category = this.getAttribute('data-category');
                 filterQuestions(category);
@@ -1464,10 +1471,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 탭의 숫자 업데이트
+        // 탭의 숫자 업데이트 (checkbox-tab 스타일)
         categoryTabs.forEach(tab => {
             const category = tab.getAttribute('data-category');
-            const countSpan = tab.querySelector('.count');
+            const countSpan = tab.querySelector('.tab-count');
             
             if (countSpan && counts[category] !== undefined) {
                 countSpan.textContent = counts[category];
@@ -1694,10 +1701,10 @@ document.addEventListener('DOMContentLoaded', function() {
             myquestions: 0 // 실제로는 로그인 사용자 질문 수
         };
 
-        // 각 탭의 count span 업데이트
+        // 각 탭의 count span 업데이트 (checkbox-tab 스타일)
         categoryTabs.forEach(tab => {
             const category = tab.dataset.category;
-            const countSpan = tab.querySelector('.count');
+            const countSpan = tab.querySelector('.tab-count');
             if (countSpan && counts[category] !== undefined) {
                 countSpan.textContent = counts[category];
             }

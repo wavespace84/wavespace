@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="qna.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -283,50 +284,68 @@
                         </div>
                     </div>
 
-                    <!-- 검색 섹션 -->
-                    <div class="search-section">
-                        <div class="search-container">
-                            <i class="fas fa-search"></i>
-                            <input type="text" class="search-input" placeholder="어떤 도움이 필요하신가요? 키워드로 검색해보세요">
-                            <button class="search-btn">검색</button>
+                    <!-- 필터 및 검색 영역 -->
+                    <div class="qna-filter-section">
+                        <!-- 카테고리 탭 -->
+                        <div class="checkbox-tabs category-tabs">
+                            <label class="checkbox-tab active" data-category="all">
+                                <input type="radio" name="qna-filter" checked>
+                                <span class="tab-check"></span>
+                                <span>전체</span>
+                                <span class="tab-count">0</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="unadopted">
+                                <span class="waiting-bubble">답변을 기다리고 있어요</span>
+                                <input type="radio" name="qna-filter">
+                                <span class="tab-check"></span>
+                                <span>미채택</span>
+                                <span class="tab-count">0</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="adopted">
+                                <input type="radio" name="qna-filter">
+                                <span class="tab-check"></span>
+                                <span>채택완료</span>
+                                <span class="tab-count">0</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="popular">
+                                <input type="radio" name="qna-filter">
+                                <span class="tab-check"></span>
+                                <span>인기질문</span>
+                                <span class="tab-count">0</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="myquestions">
+                                <input type="radio" name="qna-filter">
+                                <span class="tab-check"></span>
+                                <span>내질문</span>
+                                <span class="tab-count">0</span>
+                            </label>
                         </div>
-                        <div class="popular-tags">
-                            <span class="tag-label">인기 태그:</span>
-                            <span class="tag">#청약통장</span>
-                            <span class="tag">#분양가상한제</span>
-                            <span class="tag">#전매제한</span>
-                            <span class="tag">#특별공급</span>
-                            <span class="tag">#모델하우스</span>
+                        
+                        <!-- 검색 및 정렬 행 -->
+                        <div class="search-sort-row">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="어떤 도움이 필요하신가요? 키워드로 검색해보세요" id="searchInput">
+                            </div>
+                            <div class="sort-tabs">
+                                <button class="sort-tab active" data-sort="latest">최신순</button>
+                                <button class="sort-tab" data-sort="views">조회순</button>
+                                <button class="sort-tab" data-sort="answers">답변순</button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 카테고리 탭 -->
-                    <div class="category-tabs">
-                        <button class="tab-btn active" data-category="all">
-                            <i class="fas fa-th-large"></i>
-                            전체
-                            <span class="count">0</span>
-                        </button>
-                        <button class="tab-btn" data-category="unadopted">
-                            <i class="fas fa-question"></i>
-                            미채택
-                            <span class="count">0</span>
-                        </button>
-                        <button class="tab-btn" data-category="adopted">
-                            <i class="fas fa-check-circle"></i>
-                            채택완료
-                            <span class="count">0</span>
-                        </button>
-                        <button class="tab-btn" data-category="popular">
-                            <i class="fas fa-fire"></i>
-                            인기질문
-                            <span class="count">0</span>
-                        </button>
-                        <button class="tab-btn" data-category="myquestions">
-                            <i class="fas fa-user-circle"></i>
-                            내질문
-                            <span class="count">0</span>
-                        </button>
+                    <!-- 공지사항 -->
+                    <div class="notice-item">
+                        <div class="notice-badge-wrapper">
+                            <span class="notice-badge">공지</span>
+                        </div>
+                        <div class="notice-content">
+                            <h3 class="notice-title">
+                                <a href="#">[필독] Q&A 이용 가이드 및 채택 포인트 정책 안내</a>
+                                <i class="fas fa-thumbtack"></i>
+                            </h3>
+                        </div>
                     </div>
 
                     <!-- Q&A 콘텐츠 래퍼 -->
@@ -432,7 +451,7 @@
     
     <!-- 질문 상세보기 모달 -->
     <div class="qna-detail-modal" id="qnaDetailModal" style="display: none;">
-        <div class="modal-backdrop"></div>
+        <div class="modal-overlay"></div>
         <div class="modal-content-large">
             <div class="modal-header">
                 <div class="question-status">
@@ -463,11 +482,6 @@
                         <p>안녕하세요. 청약통장 가점 계산 관련해서 궁금한 점이 있어 질문드립니다.</p>
                         <p>무주택기간과 부양가족수 계산 시 주의해야 할 점이 무엇인가요?</p>
                         <p>특히 부양가족 중 직계존속의 경우 어떤 조건을 만족해야 하는지 자세히 알고 싶습니다.</p>
-                    </div>
-                    <div class="question-tags">
-                        <span class="tag">#청약통장</span>
-                        <span class="tag">#가점계산</span>
-                        <span class="tag">#무주택기간</span>
                     </div>
                 </div>
                 
@@ -595,7 +609,7 @@
     
     <!-- 질문 작성 모달 -->
     <div class="ask-modal" id="askModal" style="display: none;">
-        <div class="modal-backdrop"></div>
+        <div class="modal-overlay"></div>
         <div class="modal-content">
             <div class="modal-header">
                 <h2>질문하기</h2>
@@ -605,56 +619,102 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="questionTitle">질문 제목</label>
+                    <label>카테고리 <span class="required">*</span></label>
+                    <div class="category-radio-group">
+                        <label class="category-radio">
+                            <input type="radio" name="questionCategory" value="청약" id="cat-청약">
+                            <span class="radio-box">
+                                <i class="fas fa-home"></i>
+                                <span>청약통장</span>
+                            </span>
+                        </label>
+                        <label class="category-radio">
+                            <input type="radio" name="questionCategory" value="분양" id="cat-분양">
+                            <span class="radio-box">
+                                <i class="fas fa-building"></i>
+                                <span>분양</span>
+                            </span>
+                        </label>
+                        <label class="category-radio">
+                            <input type="radio" name="questionCategory" value="세금" id="cat-세금">
+                            <span class="radio-box">
+                                <i class="fas fa-receipt"></i>
+                                <span>세금</span>
+                            </span>
+                        </label>
+                        <label class="category-radio">
+                            <input type="radio" name="questionCategory" value="대출" id="cat-대출">
+                            <span class="radio-box">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                <span>대출</span>
+                            </span>
+                        </label>
+                        <label class="category-radio">
+                            <input type="radio" name="questionCategory" value="투자" id="cat-투자">
+                            <span class="radio-box">
+                                <i class="fas fa-chart-line"></i>
+                                <span>투자</span>
+                            </span>
+                        </label>
+                        <label class="category-radio">
+                            <input type="radio" name="questionCategory" value="기타" id="cat-기타">
+                            <span class="radio-box">
+                                <i class="fas fa-ellipsis-h"></i>
+                                <span>기타</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="questionTitle">질문 제목 <span class="required">*</span></label>
                     <input type="text" id="questionTitle" placeholder="질문의 제목을 입력하세요" maxlength="100">
                 </div>
                 
                 <div class="form-group">
-                    <label for="questionContent">질문 내용</label>
+                    <label for="questionContent">질문 내용 <span class="required">*</span></label>
                     <textarea id="questionContent" placeholder="자세한 질문 내용을 작성해주세요" rows="8"></textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label for="questionTags">태그</label>
-                    <input type="text" id="questionTags" placeholder="태그를 입력하세요 (예: #청약통장 #가점계산)">
-                    <div class="suggested-tags">
-                        <span class="tag-suggestion">#청약통장</span>
-                        <span class="tag-suggestion">#분양가상한제</span>
-                        <span class="tag-suggestion">#전매제한</span>
-                        <span class="tag-suggestion">#특별공급</span>
-                        <span class="tag-suggestion">#모델하우스</span>
-                    </div>
-                </div>
-                
-                <div class="form-group">
+                <div class="form-group point-setting-wrapper">
                     <label for="rewardPoints">
-                        <i class="fas fa-coins"></i> 채택 보상 포인트
+                        <i class="fas fa-coins" style="color: #fbbf24;"></i> 채택 보상 포인트
                         <span class="point-info">채택자에게 90% 지급</span>
                     </label>
-                    <div class="point-selector">
-                        <input type="range" id="pointSlider" min="1000" max="10000" step="500" value="3000">
-                        <div class="point-display">
-                            <span id="selectedPoints">3,000</span>P
+                    
+                    <div class="point-simple-box">
+                        <input type="hidden" id="rewardPoints" value="0">
+                        
+                        <div class="point-display-section">
+                            <div class="current-point-value">
+                                <i class="fas fa-coins"></i>
+                                <span id="currentPointDisplay">0P</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="point-presets">
-                        <button class="preset-btn" data-points="1000">1,000P</button>
-                        <button class="preset-btn" data-points="3000">3,000P</button>
-                        <button class="preset-btn active" data-points="5000">5,000P</button>
-                        <button class="preset-btn" data-points="10000">10,000P</button>
-                    </div>
-                    <div class="point-calculation">
-                        <div class="calc-row">
-                            <span>내 보유 포인트:</span>
-                            <span class="my-points">15,250P</span>
+                        
+                        <div class="point-presets">
+                            <button type="button" class="preset-btn" onclick="setPointValue(0)">
+                                <i class="fas fa-gift"></i> 무료
+                            </button>
+                            <button type="button" class="preset-btn" onclick="setPointValue(1000)">1,000P</button>
+                            <button type="button" class="preset-btn" onclick="setPointValue(3000)">3,000P</button>
+                            <button type="button" class="preset-btn" onclick="setPointValue(5000)">5,000P</button>
+                            <button type="button" class="preset-btn" onclick="setPointValue(10000)">10,000P</button>
                         </div>
-                        <div class="calc-row">
-                            <span>차감 포인트:</span>
-                            <span class="deduct-points" id="deductPoints">-3,000P</span>
-                        </div>
-                        <div class="calc-row">
-                            <span>채택자 획득 포인트:</span>
-                            <span class="reward-points" id="rewardAmount">2,700P (90%)</span>
+                        
+                        <div class="point-calculation">
+                            <div class="calc-row">
+                                <span>내 보유 포인트:</span>
+                                <span class="my-points">15,250P</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>차감 포인트:</span>
+                                <span class="deduct-points" id="deductPoints">0P</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>채택자 획득 포인트:</span>
+                                <span class="reward-points" id="rewardAmount">0P</span>
+                            </div>
                         </div>
                     </div>
                 </div>

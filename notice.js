@@ -178,7 +178,7 @@ const hasWritePermission = userRole === 'admin' || userRole === 'staff';
 
 // DOM 요소
 const searchInput = document.getElementById('searchInput');
-const categoryTabs = document.querySelectorAll('.category-tab');
+const categoryTabs = document.querySelectorAll('.checkbox-tab');
 const noticeList = document.getElementById('noticeList');
 const pagination = document.getElementById('pagination');
 
@@ -190,13 +190,20 @@ searchInput.addEventListener('input', (e) => {
 // 카테고리 필터
 let selectedCategory = 'all';
 
-// 카테고리 탭 클릭 이벤트
+// 카테고리 탭 클릭 이벤트 (checkbox-tab 스타일)
 categoryTabs.forEach(tab => {
+    const input = tab.querySelector('input[type="radio"]');
+    
     tab.addEventListener('click', (e) => {
         // 모든 탭에서 active 클래스 제거
-        categoryTabs.forEach(t => t.classList.remove('active'));
+        categoryTabs.forEach(t => {
+            t.classList.remove('active');
+            const tInput = t.querySelector('input[type="radio"]');
+            if (tInput) tInput.checked = false;
+        });
         // 클릭한 탭에 active 클래스 추가
         tab.classList.add('active');
+        if (input) input.checked = true;
         // 선택된 카테고리 업데이트
         selectedCategory = tab.dataset.category;
         filterNotices();

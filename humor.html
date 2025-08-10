@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="humor.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -288,39 +289,44 @@
                     </div>
 
                     <!-- 카테고리 탭 -->
-                    <div class="category-tabs">
-                        <button class="tab-btn active" data-category="all">
-                            <i class="fas fa-th-large"></i>
-                            전체
-                            <span class="count">1,234</span>
-                        </button>
-                        <button class="tab-btn" data-category="meme">
-                            <i class="fas fa-images"></i>
-                            짤방
-                            <span class="count">523</span>
-                        </button>
-                        <button class="tab-btn" data-category="story">
-                            <i class="fas fa-book-open"></i>
-                            썰
-                            <span class="count">312</span>
-                        </button>
-                        <button class="tab-btn" data-category="video">
-                            <i class="fas fa-video"></i>
-                            영상
-                            <span class="count">245</span>
-                        </button>
-                        <button class="tab-btn" data-category="cartoon">
-                            <i class="fas fa-pencil-ruler"></i>
-                            만화
-                            <span class="count">154</span>
-                        </button>
+                    <div class="checkbox-tabs category-tabs">
+                        <label class="checkbox-tab active" data-category="all">
+                            <input type="radio" name="humor-filter" checked>
+                            <span class="tab-check"></span>
+                            <span>전체</span>
+                            <span class="tab-count">1,234</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="meme">
+                            <input type="radio" name="humor-filter">
+                            <span class="tab-check"></span>
+                            <span>짤방</span>
+                            <span class="tab-count">523</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="story">
+                            <input type="radio" name="humor-filter">
+                            <span class="tab-check"></span>
+                            <span>썰</span>
+                            <span class="tab-count">312</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="video">
+                            <input type="radio" name="humor-filter">
+                            <span class="tab-check"></span>
+                            <span>영상</span>
+                            <span class="tab-count">245</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="cartoon">
+                            <input type="radio" name="humor-filter">
+                            <span class="tab-check"></span>
+                            <span>만화</span>
+                            <span class="tab-count">154</span>
+                        </label>
                     </div>
 
-                    <!-- 오늘의 베스트 -->
-                    <div class="today-best">
+                    <!-- 월간 베스트 -->
+                    <div class="monthly-best">
                         <div class="section-header">
-                            <i class="fas fa-crown"></i>
-                            <h2 class="section-title">오늘의 베스트</h2>
+                            <i class="fas fa-trophy"></i>
+                            <h2 class="section-title">월간 베스트</h2>
                         </div>
                         <div class="best-grid">
                             <div class="best-card">
@@ -933,6 +939,288 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- 추가 유머 콘텐츠 -->
+                        <div class="humor-item post-item" data-category="meme">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">GTX 개통 소식 들은 지역주민 반응.jpg</a>
+                                    <span class="hot-badge">HOT</span>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 갓TX믿음</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 30분 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 3,456</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 412</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 89</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="story">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content" data-type="story">
+                                <h3 class="humor-item-title">
+                                    <a href="#">오늘 있었던 역대급 흥정 썰.txt</a>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 협상마스터</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 1시간 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 1,234</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 167</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 45</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="cartoon">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-pencil-ruler"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">[만화] 월세 vs 전세 vs 매매 고민하는 나</a>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 웹툰작가</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 2시간 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 2,890</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 334</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 67</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="video">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">부동산 규제 발표 때마다 하는 짓.mp4</a>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 정책분석가</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 3시간 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 4,567</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 523</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 134</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="meme">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">역세권 청약 경쟁률 보고 놀란 표정.gif</a>
+                                    <span class="new-badge">NEW</span>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 청약러</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 4시간 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 890</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 123</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 28</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="story">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content" data-type="story">
+                                <h3 class="humor-item-title">
+                                    <a href="#">부동산 중개사 시험 떨어진 썰</a>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 수험생</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 5시간 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 567</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 89</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 34</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="cartoon">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-pencil-ruler"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">[웹툰] 모델하우스 방문 일기</a>
+                                    <span class="hot-badge">HOT</span>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 만화가</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 6시간 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 3,789</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 445</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 112</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="video">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">전화상담 중 레전드 멘트 모음.mp4</a>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 상담전문가</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 어제</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 5,432</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 678</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 234</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="meme">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">LH 청약 당첨자 발표날 서버 상태.jpg</a>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 서버관리자</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 어제</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 2,345</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 289</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 78</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="story">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content" data-type="story">
+                                <h3 class="humor-item-title">
+                                    <a href="#">재건축 조합원들 회의 현장.txt</a>
+                                    <span class="new-badge">NEW</span>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 조합원A</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 2일 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 1,678</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 198</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 56</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="video">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">임대인 vs 임차인 실시간 밀당.mp4</a>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 중개인</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 2일 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 3,456</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 412</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 123</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="humor-item post-item" data-category="meme">
+                            <div class="humor-thumbnail">
+                                <img src="https://via.placeholder.com/400x300" alt="썸네일">
+                                <div class="thumbnail-type">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            </div>
+                            <div class="humor-content">
+                                <h3 class="humor-item-title">
+                                    <a href="#">부동산 유튜버 썸네일 스타터팩.jpg</a>
+                                    <span class="hot-badge">HOT</span>
+                                </h3>
+                                <div class="humor-meta">
+                                    <span class="author"><i class="fas fa-user-circle"></i> 구독자</span>
+                                    <span class="time"><i class="fas fa-clock"></i> 3일 전</span>
+                                </div>
+                                <div class="humor-stats">
+                                    <span class="views"><i class="fas fa-eye"></i> 4,890</span>
+                                    <span class="likes"><i class="fas fa-heart"></i> 567</span>
+                                    <span class="comments"><i class="fas fa-comment"></i> 189</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 더보기 버튼 -->
@@ -944,6 +1232,169 @@
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+    
+    <!-- 플로팅 업로드 버튼 -->
+    <div class="upload-btn-wrapper">
+        <button class="floating-upload-btn" id="humorUploadBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="upload-label">나도 추가하기</div>
+        <svg class="upload-curve" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 10 Q25 25, 28 40 T30 70" 
+                  stroke="#0066FF" 
+                  stroke-width="2" 
+                  fill="none" 
+                  stroke-dasharray="3,2"
+                  opacity="0.4">
+                <animate attributeName="d" 
+                         values="M30 10 Q25 25, 28 40 T30 70;
+                                 M30 10 Q35 25, 32 40 T30 70;
+                                 M30 10 Q25 25, 28 40 T30 70"
+                         dur="4s" 
+                         repeatCount="indefinite"/>
+            </path>
+        </svg>
+    </div>
+    
+    <!-- 업로드 모달 -->
+    <div class="upload-modal" id="humorUploadModal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h2>유머 콘텐츠 업로드</h2>
+                <button class="upload-modal-close" id="closeUploadModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="upload-modal-body">
+                <form id="humorUploadForm">
+                    <!-- 카테고리 선택 -->
+                    <div class="upload-form-group">
+                        <label>카테고리 선택</label>
+                        <div class="category-select-group">
+                            <button type="button" class="category-option selected" data-category="meme">
+                                <i class="fas fa-images"></i> 짤방
+                            </button>
+                            <button type="button" class="category-option" data-category="story">
+                                <i class="fas fa-book-open"></i> 썰
+                            </button>
+                            <button type="button" class="category-option" data-category="video">
+                                <i class="fas fa-video"></i> 영상
+                            </button>
+                            <button type="button" class="category-option" data-category="cartoon">
+                                <i class="fas fa-pencil-ruler"></i> 만화
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 제목 입력 -->
+                    <div class="upload-form-group">
+                        <label for="humorTitle">제목 *</label>
+                        <input type="text" id="humorTitle" name="title" placeholder="재미있는 제목을 입력해주세요" required>
+                    </div>
+                    
+                    <!-- 내용 입력 -->
+                    <div class="upload-form-group">
+                        <label for="humorContent">내용</label>
+                        <textarea id="humorContent" name="content" placeholder="내용을 입력해주세요 (선택사항)"></textarea>
+                    </div>
+                    
+                    <!-- 파일 업로드 -->
+                    <div class="upload-form-group">
+                        <label>이미지/동영상 업로드</label>
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="fileInput" accept="image/*,video/*" multiple style="display: none;">
+                            <div class="upload-area-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-area-text">클릭하거나 파일을 드래그하여 업로드</div>
+                            <div class="upload-area-hint">이미지, GIF, 동영상 파일 지원 (최대 10MB)</div>
+                        </div>
+                        <div class="upload-preview" id="uploadPreview"></div>
+                    </div>
+                    
+                    <!-- 태그 입력 -->
+                    <div class="upload-form-group">
+                        <label for="humorTags">태그</label>
+                        <input type="text" id="humorTags" name="tags" placeholder="태그를 입력해주세요 (쉼표로 구분)">
+                    </div>
+                </form>
+            </div>
+            <div class="upload-modal-footer">
+                <button type="button" class="upload-cancel-btn" id="cancelUpload">취소</button>
+                <button type="submit" form="humorUploadForm" class="upload-submit-btn" id="submitUpload">업로드</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 게시글 상세보기 팝업 -->
+    <div class="post-detail-modal" id="postDetailModal">
+        <div class="post-detail-content">
+            <div class="post-detail-header">
+                <button class="post-detail-close" id="closeDetailModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="post-detail-body">
+                <!-- 네비게이션 버튼 -->
+                <button class="post-nav-btn post-nav-prev" id="prevPost">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="post-nav-btn post-nav-next" id="nextPost">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <!-- 콘텐츠 영역 -->
+                <div class="post-detail-wrapper">
+                    <!-- 이미지/비디오 영역 -->
+                    <div class="post-detail-media" id="postDetailMedia">
+                        <img src="" alt="콘텐츠" id="postDetailImage">
+                    </div>
+                    
+                    <!-- 정보 영역 -->
+                    <div class="post-detail-info">
+                        <div class="post-detail-title" id="postDetailTitle"></div>
+                        <div class="post-detail-meta">
+                            <span class="post-detail-author" id="postDetailAuthor"></span>
+                            <span class="post-detail-time" id="postDetailTime"></span>
+                        </div>
+                        <div class="post-detail-content-text" id="postDetailContent"></div>
+                        
+                        <!-- 액션 버튼 -->
+                        <div class="post-detail-actions">
+                            <button class="post-action-btn like-btn">
+                                <i class="far fa-heart"></i>
+                                <span id="postDetailLikes">0</span>
+                            </button>
+                            <button class="post-action-btn comment-btn">
+                                <i class="far fa-comment"></i>
+                                <span id="postDetailComments">0</span>
+                            </button>
+                            <button class="post-action-btn share-btn">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                            <button class="post-action-btn bookmark-btn">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- 댓글 섹션 -->
+                        <div class="post-detail-comments">
+                            <div class="comments-header">
+                                <h3>댓글 <span id="commentCount">0</span></h3>
+                            </div>
+                            <div class="comment-write">
+                                <input type="text" placeholder="댓글을 입력하세요..." class="comment-input">
+                                <button class="comment-submit">등록</button>
+                            </div>
+                            <div class="comments-list" id="commentsList">
+                                <!-- 댓글 목록 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

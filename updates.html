@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="updates.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -286,26 +287,39 @@
                         <p class="updates-subtitle">새로운 기능과 개선사항을 확인하세요</p>
                     </div>
 
-                    <!-- 검색 및 필터 -->
+                    <!-- 검색 및 카테고리 필터 -->
                     <div class="updates-controls">
+                        <div class="checkbox-tabs">
+                            <label class="checkbox-tab active" data-category="all">
+                                <input type="radio" name="update-filter" checked>
+                                <span class="tab-check"></span>
+                                <span>전체</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="major">
+                                <input type="radio" name="update-filter">
+                                <span class="tab-check"></span>
+                                <span>주요 업데이트</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="minor">
+                                <input type="radio" name="update-filter">
+                                <span class="tab-check"></span>
+                                <span>기능 개선</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="patch">
+                                <input type="radio" name="update-filter">
+                                <span class="tab-check"></span>
+                                <span>버그 수정</span>
+                            </label>
+                            <label class="checkbox-tab" data-category="hotfix">
+                                <input type="radio" name="update-filter">
+                                <span class="tab-check"></span>
+                                <span>긴급 패치</span>
+                            </label>
+                        </div>
                         <div class="search-box">
                             <i class="fas fa-search"></i>
                             <input type="text" placeholder="업데이트 내용 검색" id="searchInput">
                         </div>
-                        <select class="type-select" id="typeSelect">
-                            <option value="all">전체 타입</option>
-                            <option value="major">Major</option>
-                            <option value="minor">Minor</option>
-                            <option value="patch">Patch</option>
-                            <option value="hotfix">Hotfix</option>
-                        </select>
-                        <select class="category-select" id="categorySelect">
-                            <option value="all">전체 카테고리</option>
-                            <option value="기능추가">기능추가</option>
-                            <option value="개선">개선</option>
-                            <option value="버그수정">버그수정</option>
-                            <option value="보안">보안</option>
-                        </select>
                     </div>
 
                     <!-- 업데이트 목록 -->
@@ -314,6 +328,158 @@
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- 플로팅 글쓰기 버튼 (관리자용) -->
+    <button class="floating-write-btn" id="writeUpdateBtn" style="display: none;">
+        <i class="fas fa-pen"></i>
+    </button>
+
+    <!-- 업데이트 상세 모달 -->
+    <div class="modal-overlay" id="updateModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <h2 class="modal-title" id="modalTitle">업데이트 제목</h2>
+                    <div class="modal-meta">
+                        <span class="update-category" id="modalCategory">
+                            <i class="fas fa-sparkles"></i>
+                            <span>카테고리</span>
+                        </span>
+                        <span class="modal-date" id="modalDate">
+                            <i class="fas fa-calendar"></i>
+                            <span>2024-01-18</span>
+                        </span>
+                    </div>
+                </div>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-description" id="modalDescription">
+                    업데이트 설명이 여기에 표시됩니다.
+                </div>
+                
+                <div class="modal-changes">
+                    <h3 class="changes-title">
+                        <i class="fas fa-list-check"></i>
+                        변경사항
+                    </h3>
+                    <ul class="modal-changes-list" id="modalChangesList">
+                        <!-- 변경사항이 동적으로 추가됩니다 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 업데이트 글쓰기 모달 -->
+    <div class="modal-overlay" id="writeUpdateModal">
+        <div class="modal-container write-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">업데이트 작성</h2>
+                <button class="modal-close" id="writeModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form class="update-form" id="updateForm">
+                    <div class="form-group">
+                        <label for="updateTitle">제목 <span class="required">*</span></label>
+                        <input type="text" id="updateTitle" name="title" required placeholder="업데이트 제목을 입력하세요">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>카테고리 <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="category" value="기능추가" required>
+                                <span class="radio-custom"></span>
+                                <span>기능추가</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="category" value="개선" required>
+                                <span class="radio-custom"></span>
+                                <span>개선</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="category" value="버그수정" required>
+                                <span class="radio-custom"></span>
+                                <span>버그수정</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="category" value="보안" required>
+                                <span class="radio-custom"></span>
+                                <span>보안</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>업데이트 타입 <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="type" value="major" required>
+                                <span class="radio-custom"></span>
+                                <span>Major (주요 업데이트)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="type" value="minor" required>
+                                <span class="radio-custom"></span>
+                                <span>Minor (기능 개선)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="type" value="patch" required>
+                                <span class="radio-custom"></span>
+                                <span>Patch (버그 수정)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="type" value="hotfix" required>
+                                <span class="radio-custom"></span>
+                                <span>Hotfix (긴급 패치)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="updateDescription">설명 <span class="required">*</span></label>
+                        <textarea id="updateDescription" name="description" rows="4" required placeholder="업데이트에 대한 설명을 입력하세요"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="updateChanges">변경사항 <span class="required">*</span></label>
+                        <div class="changes-input-container">
+                            <div id="changesInputList">
+                                <div class="change-input-item">
+                                    <input type="text" class="change-input" placeholder="변경사항을 입력하세요" required>
+                                    <button type="button" class="remove-change-btn" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="add-change-btn" id="addChangeBtn">
+                                <i class="fas fa-plus"></i>
+                                변경사항 추가
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="cancelWriteBtn">
+                            <i class="fas fa-times"></i>
+                            취소
+                        </button>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-check"></i>
+                            업데이트 등록
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

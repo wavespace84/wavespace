@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Filter Test</title>
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .debug-output {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h2>Forum Filter Debug Test</h2>
+    
+    <!-- 카테고리 탭 -->
+    <div class="checkbox-tabs category-tabs">
+        <label class="checkbox-tab active" data-category="all">
+            <input type="radio" name="forum-filter" checked>
+            <span class="tab-check"></span>
+            <span>전체</span>
+            <span class="tab-count">1,234</span>
+        </label>
+        <label class="checkbox-tab" data-category="general">
+            <input type="radio" name="forum-filter">
+            <span class="tab-check"></span>
+            <span>일반</span>
+            <span class="tab-count">523</span>
+        </label>
+        <label class="checkbox-tab" data-category="question">
+            <input type="radio" name="forum-filter">
+            <span class="tab-check"></span>
+            <span>질문</span>
+            <span class="tab-count">312</span>
+        </label>
+    </div>
+    
+    <div class="debug-output" id="debugOutput">Click a tab to see debug info...</div>
+    
+    <script>
+        const debugOutput = document.getElementById('debugOutput');
+        
+        // 카테고리 탭 이벤트
+        const categoryTabs = document.querySelectorAll('.checkbox-tab');
+        debugOutput.textContent = `Found ${categoryTabs.length} tabs\n`;
+        
+        categoryTabs.forEach((tab, index) => {
+            debugOutput.textContent += `Tab ${index}: data-category="${tab.dataset.category}"\n`;
+            
+            tab.addEventListener('click', function(e) {
+                debugOutput.textContent = `Clicked tab:\n`;
+                debugOutput.textContent += `- this: ${this}\n`;
+                debugOutput.textContent += `- this.dataset: ${JSON.stringify(this.dataset)}\n`;
+                debugOutput.textContent += `- this.dataset.category: ${this.dataset.category}\n`;
+                debugOutput.textContent += `- Active class before: ${this.classList.contains('active')}\n`;
+                
+                // 활성 탭 변경
+                categoryTabs.forEach(t => {
+                    t.classList.remove('active');
+                    const tInput = t.querySelector('input[type="radio"]');
+                    if (tInput) tInput.checked = false;
+                });
+                
+                this.classList.add('active');
+                const input = this.querySelector('input[type="radio"]');
+                if (input) input.checked = true;
+                
+                debugOutput.textContent += `- Active class after: ${this.classList.contains('active')}\n`;
+                debugOutput.textContent += `- Would call filterByCategory("${this.dataset.category}")\n`;
+            });
+        });
+    </script>
+</body>
+</html>

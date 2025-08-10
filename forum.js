@@ -79,21 +79,9 @@ function filterByCategory(category) {
     
     if (category === 'all') {
         displayedPosts = [...allPosts];
-        // 전체 카테고리일 때는 인기 게시글 표시
-        showHotPosts();
     } else {
-        displayedPosts = allPosts.filter(post => {
-            const categoryMap = {
-                'general': 'general',
-                'question': 'question',
-                'info': 'info',
-                'review': 'review',
-                'job': 'job'
-            };
-            return post.category === categoryMap[category];
-        });
-        // 특정 카테고리 선택시 인기 게시글 숨김
-        hideHotPosts();
+        // 직접 카테고리 필터링 (불필요한 매핑 제거)
+        displayedPosts = allPosts.filter(post => post.category === category);
     }
     
     // 현재 정렬 기준 유지
@@ -121,13 +109,6 @@ function sortPosts(sortType) {
             break;
     }
     
-    // 정렬 변경시에도 인기 게시글 숨김 (최신순이 아닌 경우)
-    if (sortType !== 'latest') {
-        hideHotPosts();
-    } else if (currentCategory === 'all' && !document.querySelector('.search-box-large input').value.trim()) {
-        showHotPosts();
-    }
-    
     updatePostsList();
 }
 
@@ -135,8 +116,6 @@ function sortPosts(sortType) {
 function searchPosts(searchTerm) {
     if (!searchTerm.trim()) {
         displayedPosts = [...allPosts];
-        // 검색어가 없으면 인기 게시글 표시
-        showHotPosts();
     } else {
         const term = searchTerm.toLowerCase();
         displayedPosts = allPosts.filter(post => 
@@ -144,8 +123,6 @@ function searchPosts(searchTerm) {
             post.author.toLowerCase().includes(term) ||
             post.categoryName.toLowerCase().includes(term)
         );
-        // 검색시 인기 게시글 숨김
-        hideHotPosts();
     }
     
     // 현재 카테고리와 정렬 유지
@@ -220,8 +197,9 @@ function updateCategoryCounts() {
         job: allPosts.filter(p => p.category === 'job').length
     };
     
-    document.querySelectorAll('.tab-btn').forEach(tab => {
-        const tabText = tab.childNodes[0].textContent.trim();
+    document.querySelectorAll('.checkbox-tab').forEach(tab => {
+        const tabSpan = tab.querySelector('span:not(.tab-check):not(.tab-count)');
+        const tabText = tabSpan ? tabSpan.textContent.trim() : '';
         const categoryMap = {
             '전체': 'all',
             '일반': 'general',
@@ -233,7 +211,7 @@ function updateCategoryCounts() {
         
         const category = categoryMap[tabText];
         if (category && counts[category] !== undefined) {
-            const countSpan = tab.querySelector('.count');
+            const countSpan = tab.querySelector('.tab-count');
             if (countSpan) {
                 countSpan.textContent = counts[category];
             }
@@ -653,6 +631,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 무한 스크롤 캐러셀 초기화
     initializeInfiniteCarousel();
     
+    // 초기 게시글 목록 표시
+    updatePostsList();
+    
     // 초기 카테고리 수 업데이트
     updateCategoryCounts();
     
@@ -665,47 +646,52 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 카테고리 탭 이벤트
-    const categoryTabs = document.querySelectorAll('.tab-btn');
+    const categoryTabs = document.querySelectorAll('.category-tabs .checkbox-tab');
+    
     categoryTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            // 활성 탭 변경
-            categoryTabs.forEach(t => t.classList.remove('active'));
+        tab.addEventListener('click', function(e) {
+            // 이미 활성화된 탭을 다시 클릭한 경우 무시
+            if (this.classList.contains('active')) {
+                return;
+            }
+            
+            // 활성 탭 변경 (카테고리 탭만)
+            categoryTabs.forEach(t => {
+                t.classList.remove('active');
+                const tInput = t.querySelector('input[type="radio"]');
+                if (tInput) tInput.checked = false;
+            });
+            
             this.classList.add('active');
+            const input = this.querySelector('input[type="radio"]');
+            if (input) input.checked = true;
             
-            // 카테고리 필터링
-            const tabText = this.childNodes[0].textContent.trim();
-            const categoryMap = {
-                '전체': 'all',
-                '일반': 'general',
-                '질문': 'question',
-                '정보공유': 'info',
-                '후기': 'review',
-                '구인구직': 'job'
-            };
-            
-            const category = categoryMap[tabText];
+            // 카테고리 필터링 - data-category 속성 사용
+            const category = this.dataset.category;
             if (category) {
                 filterByCategory(category);
             }
         });
     });
     
-    // 필터 버튼 이벤트
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            filterBtns.forEach(b => b.classList.remove('active'));
+    // 정렬 탭 이벤트
+    const sortTabs = document.querySelectorAll('.sort-tab');
+    sortTabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            // 이미 활성화된 탭을 다시 클릭한 경우 무시
+            if (this.classList.contains('active')) {
+                return;
+            }
+            
+            // 활성 탭 변경
+            sortTabs.forEach(t => {
+                t.classList.remove('active');
+            });
+            
             this.classList.add('active');
             
-            // 정렬 타입 결정
-            const filterText = this.querySelector('span').textContent;
-            const sortMap = {
-                '최신순': 'latest',
-                '조회순': 'views',
-                '댓글순': 'comments'
-            };
-            
-            const sortType = sortMap[filterText];
+            // 정렬 타입 결정 - data-sort 속성 사용
+            const sortType = this.dataset.sort;
             if (sortType) {
                 sortPosts(sortType);
             }
@@ -713,26 +699,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // 검색 기능
-    const searchButton = document.querySelector('.search-button');
-    const searchInput = document.querySelector('.search-box-large input');
+    const searchInput = document.getElementById('searchInput');
     
-    if (searchButton && searchInput) {
-        searchButton.addEventListener('click', function() {
-            const searchTerm = searchInput.value.trim();
+    if (searchInput) {
+        // 검색어 입력시 실시간 검색
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = this.value.trim();
             searchPosts(searchTerm);
         });
         
+        // 엔터키로도 검색
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const searchTerm = this.value.trim();
                 searchPosts(searchTerm);
-            }
-        });
-        
-        // 검색어 지우기 감지
-        searchInput.addEventListener('input', function(e) {
-            if (!this.value.trim() && currentCategory === 'all') {
-                showHotPosts();
             }
         });
     }

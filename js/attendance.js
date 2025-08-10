@@ -34,7 +34,7 @@ const randomMessages = [
     '새로운 도약을 위한 준비 완료!'
 ];
 
-// 오늘의 출석현황 - 임의 테스트 회원 50명 중 30명이 출석 (DB 일괄 삭제용)
+// 오늘의 출석현황 - 임의 테스트 회원 50명 중 30명이 출석 (실제 사용자 출석 시 31번째로 추가됨)
 let attendanceData = [
     { rank: 1, name: '테스트1', userId: 'test001', time: '07:58', message: '오늘도 첫 출석! 좋은 하루 되세요!', streak: 25, badge: '소통왕', isCouponWinner: false },
     { rank: 2, name: '테스트2', userId: 'test002', time: '08:03', message: '일찍 일어나는 새가 벌레를 잡는다!', streak: 18, badge: '열정맨', isCouponWinner: false },
@@ -64,8 +64,33 @@ let attendanceData = [
     { rank: 26, name: '테스트26', userId: 'test026', time: '10:50', message: '조용하지만 확실한 업무 처리', streak: 12, badge: '대리', isCouponWinner: false },
     { rank: 27, name: '테스트27', userId: 'test027', time: '10:57', message: '민첩한 업무 처리의 달인', streak: 9, badge: '주임', isCouponWinner: false },
     { rank: 28, name: '테스트28', userId: 'test028', time: '11:04', message: '안정적인 업무 수행의 모범', streak: 15, badge: '사원', isCouponWinner: false },
-    { rank: 29, name: '테스트29', userId: 'test029', time: '11:11', message: '심도 있는 분석의 전문가', streak: 6, badge: '과장', isCouponWinner: false }
+    { rank: 29, name: '테스트29', userId: 'test029', time: '11:11', message: '심도 있는 분석의 전문가', streak: 6, badge: '과장', isCouponWinner: false },
+    { rank: 30, name: '테스트30', userId: 'test030', time: '11:15', message: '늦어도 꾸준히 출석하는 성실함!', streak: 10, badge: '팀장', isCouponWinner: false }
 ];
+
+// 배지 텍스트를 아이콘으로 변환하는 함수
+function getBadgeIcon(badgeText) {
+    const badgeMap = {
+        '소통왕': '<i class="fas fa-comments" style="color: #FF6B6B;"></i>',
+        '열정맨': '<i class="fas fa-fire" style="color: #FF9800;"></i>',
+        '베테랑': '<i class="fas fa-medal" style="color: #FFD700;"></i>',
+        '전문가': '<i class="fas fa-user-graduate" style="color: #4CAF50;"></i>',
+        '스타': '<i class="fas fa-star" style="color: #FFC107;"></i>',
+        '매니저': '<i class="fas fa-user-tie" style="color: #2196F3;"></i>',
+        '리더': '<i class="fas fa-crown" style="color: #9C27B0;"></i>',
+        '부장': '<i class="fas fa-briefcase" style="color: #795548;"></i>',
+        '차장': '<i class="fas fa-user-cog" style="color: #607D8B;"></i>',
+        '대리': '<i class="fas fa-user-check" style="color: #00BCD4;"></i>',
+        '주임': '<i class="fas fa-user-clock" style="color: #8BC34A;"></i>',
+        '사원': '<i class="fas fa-user" style="color: #9E9E9E;"></i>',
+        '신입': '<i class="fas fa-user-plus" style="color: #03A9F4;"></i>',
+        '과장': '<i class="fas fa-user-shield" style="color: #FF5722;"></i>',
+        '팀장': '<i class="fas fa-users" style="color: #673AB7;"></i>',
+        '실장': '<i class="fas fa-user-ninja" style="color: #E91E63;"></i>'
+    };
+    
+    return badgeMap[badgeText] || '<i class="fas fa-certificate" style="color: #999;"></i>';
+}
 
 // 서버 시간 가져오기 (실제 서버 API 호출 시뮬레이션)
 function getServerTime() {
@@ -187,7 +212,7 @@ function getAttendanceDates() {
 const currentUser = {
     name: '박승학',
     userId: 'parksh',
-    rank: 30, // 30등으로 설정 (마지막 순위)
+    rank: null, // 출석 시 동적으로 결정됨
     isCheckedIn: false,
     streak: 7,
     badge: '소통왕'  // 배지 텍스트 변경
@@ -440,10 +465,63 @@ document.addEventListener('DOMContentLoaded', function() {
     // 출석 현황 렌더링 - 테스트용 29명 이미 표시
     setTimeout(() => {
         console.log('출석 현황 렌더링 시작...');
-        // 테스트용으로 29명 데이터는 이미 있음
-        // loadTodayAttendanceData(); // 주석 처리
+        
+        // 저장된 출석 데이터 확인 및 로드
+        const savedAttendance = localStorage.getItem('todayAttendance');
+        const lastCheckIn = localStorage.getItem('lastCheckIn');
+        const today = getServerTime().toDateString();
+        
+        if (savedAttendance && lastCheckIn === today) {
+            // 오늘 이미 출석한 경우, 저장된 데이터 로드
+            attendanceData = JSON.parse(savedAttendance);
+            console.log('저장된 출석 데이터 로드:', attendanceData.length + '명');
+            
+            // 현재 사용자가 출석했는지 확인
+            const myAttendance = attendanceData.find(user => user.name === currentUser.name);
+            if (myAttendance) {
+                currentUser.isCheckedIn = true;
+                currentUser.rank = myAttendance.rank;
+                updateCheckInButton(true);
+            }
+            
+            // 30명 이상이면 쿠폰 당첨자 표시 복원
+            if (attendanceData.length >= 30) {
+                displayCouponWinners();
+            }
+        } else {
+            // 새로운 날짜거나 저장된 데이터가 없는 경우
+            console.log('테스트 데이터 사용 (30명)');
+        }
+        
         // 출석 명단 렌더링
         renderAttendanceList();
+        
+        // 테스트 데이터가 30명이면 쿠폰 추첨 실행 (DOM 렌더링 후 실행)
+        if (!savedAttendance && attendanceData.length >= 30) {
+            setTimeout(() => {
+                console.log('테스트 데이터 30명 확인, 쿠폰 추첨 시작');
+                // DOM 요소가 준비되었는지 확인
+                const checkElements = setInterval(() => {
+                    const winner1 = document.getElementById('winner1');
+                    const winner2 = document.getElementById('winner2');
+                    const winner3_1 = document.getElementById('winner3-1');
+                    const winner3_2 = document.getElementById('winner3-2');
+                    
+                    if (winner1 && winner2 && winner3_1 && winner3_2) {
+                        clearInterval(checkElements);
+                        console.log('DOM 요소 준비 완료, 쿠폰 추첨 실행');
+                        selectCouponWinners();
+                        // 쿠폰 당첨 후 출석 목록 재렌더링
+                        renderAttendanceList();
+                    } else {
+                        console.log('DOM 요소 대기 중...');
+                    }
+                }, 100);
+                
+                // 최대 2초 대기
+                setTimeout(() => clearInterval(checkElements), 2000);
+            }, 300);
+        }
     }, 100);
 });
 
@@ -1270,6 +1348,9 @@ function renderAttendanceListContent(attendanceList) {
             medalIcon = '<i class="fas fa-medal medal-bronze"></i>';
         }
         
+        // 배지 텍스트를 아이콘으로 변환
+        const badgeIcon = getBadgeIcon(user.badge);
+        
         htmlContent += `
             <div class="attendance-item ${isMyRank ? 'my-rank' : ''}">
                 <div class="rank-wrapper">
@@ -1282,7 +1363,7 @@ function renderAttendanceListContent(attendanceList) {
                 </div>
                 <div class="user-name-wrapper">
                     <span class="user-id">${user.name}</span>
-                    <span class="user-badge">${user.badge}</span>
+                    <span class="user-badge" title="${user.badge}">${badgeIcon}</span>
                 </div>
                 <div class="user-message">${user.message}</div>
                 ${user.isCouponWinner ? '<div class="coupon-winner"><i class="fas fa-ticket-alt"></i> 쿠폰 당첨!</div>' : ''}
@@ -1313,9 +1394,77 @@ function renderAttendanceListContent(attendanceList) {
     }
 }
 
+// 쿠폰 당첨자 표시 함수 (페이지 로드 시 복원용)
+function displayCouponWinners() {
+    console.log('=== 쿠폰 당첨자 표시 복원 ===');
+    
+    // 당첨자만 필터링
+    const winners = attendanceData.filter(u => u.isCouponWinner === true);
+    if (winners.length === 0) {
+        console.log('당첨자 정보 없음');
+        return;
+    }
+    
+    // 메시지 변경
+    const couponMessage = document.getElementById('couponMessage');
+    if (couponMessage) {
+        couponMessage.innerHTML = '<i class="fas fa-trophy"></i> 쿠폰 당첨을 축하합니다!';
+        couponMessage.setAttribute('data-winners', 'true');
+    }
+    
+    // 각 당첨자 표시
+    winners.forEach(winner => {
+        if (winner.rank >= 1 && winner.rank <= 3) {
+            const winner1Element = document.getElementById('winner1');
+            if (winner1Element) {
+                winner1Element.textContent = `🎉 ${winner.name}`;
+                winner1Element.className = 'winner-badge winner-selected';
+            }
+        } else if (winner.rank >= 4 && winner.rank <= 10) {
+            const winner2Element = document.getElementById('winner2');
+            if (winner2Element) {
+                winner2Element.textContent = `🎉 ${winner.name}`;
+                winner2Element.className = 'winner-badge winner-selected';
+            }
+        } else if (winner.rank >= 11 && winner.rank <= 30) {
+            // 11~30등 첫 번째 당첨자
+            if (!document.getElementById('winner3-1').textContent.includes('🎉')) {
+                const winner3_1Element = document.getElementById('winner3-1');
+                if (winner3_1Element) {
+                    winner3_1Element.textContent = `🎉 ${winner.name}`;
+                    winner3_1Element.className = 'winner-badge winner-selected';
+                }
+            } else {
+                // 11~30등 두 번째 당첨자
+                const winner3_2Element = document.getElementById('winner3-2');
+                if (winner3_2Element) {
+                    winner3_2Element.textContent = `🎉 ${winner.name}`;
+                    winner3_2Element.className = 'winner-badge winner-selected';
+                }
+            }
+        }
+    });
+    
+    console.log('당첨자 표시 복원 완료:', winners.map(w => `${w.rank}등 ${w.name}`));
+}
+
 // 쿠폰 당첨자 선정 함수 (재렌더링 없음)
 function selectCouponWinners() {
     console.log('=== 쿠폰 당첨자 선정 시작 ===');
+    console.log('현재 출석 인원:', attendanceData.length);
+    
+    // DOM 요소 확인
+    const winner1El = document.getElementById('winner1');
+    const winner2El = document.getElementById('winner2');
+    const winner3_1El = document.getElementById('winner3-1');
+    const winner3_2El = document.getElementById('winner3-2');
+    
+    console.log('DOM 요소 확인:', {
+        winner1: !!winner1El,
+        winner2: !!winner2El,
+        'winner3-1': !!winner3_1El,
+        'winner3-2': !!winner3_2El
+    });
     
     // 먼저 모든 isCouponWinner를 false로 초기화
     attendanceData.forEach(user => {
@@ -1329,6 +1478,8 @@ function selectCouponWinners() {
         if (couponMessage) {
             couponMessage.innerHTML = '<i class="fas fa-trophy"></i> 쿠폰 당첨을 축하합니다!';
             couponMessage.setAttribute('data-winners', 'true');
+        } else {
+            console.error('couponMessage 요소를 찾을 수 없음');
         }
         // 1~3등 중 랜덤 1명
         const group1 = attendanceData.filter(u => u.rank >= 1 && u.rank <= 3);
@@ -1344,9 +1495,9 @@ function selectCouponWinners() {
             
             const winner1Element = document.getElementById('winner1');
             if (winner1Element) {
-                winner1Element.textContent = `🎉 ${winner1.userId}`;  // name 대신 userId 사용
+                winner1Element.textContent = `🎉 ${winner1.name}`;  // name 사용으로 통일
                 winner1Element.className = 'winner-badge winner-selected';
-                console.log('1~3등 당첨자:', winner1.userId);
+                console.log('1~3등 당첨자:', winner1.name);
             } else {
                 console.error('winner1 요소를 찾을 수 없음');
             }
@@ -1366,8 +1517,9 @@ function selectCouponWinners() {
             
             const winner2Element = document.getElementById('winner2');
             if (winner2Element) {
-                winner2Element.textContent = `🎉 ${winner2.userId}`;  // name 대신 userId 사용
+                winner2Element.textContent = `🎉 ${winner2.name}`;  // name 사용으로 통일
                 winner2Element.className = 'winner-badge winner-selected';
+                console.log('4~10등 당첨자:', winner2.name);
             }
         }
         
@@ -1386,8 +1538,9 @@ function selectCouponWinners() {
             
             const winner3_1Element = document.getElementById('winner3-1');
             if (winner3_1Element) {
-                winner3_1Element.textContent = `🎉 ${winner3_1.userId}`;  // name 대신 userId 사용
+                winner3_1Element.textContent = `🎉 ${winner3_1.name}`;  // name 사용으로 통일
                 winner3_1Element.className = 'winner-badge winner-selected';
+                console.log('11~30등 첫번째 당첨자:', winner3_1.name);
             }
             
             // 두 번째 당첨자 (첫 번째와 다른 사람)
@@ -1404,8 +1557,9 @@ function selectCouponWinners() {
                 
                 const winner3_2Element = document.getElementById('winner3-2');
                 if (winner3_2Element) {
-                    winner3_2Element.textContent = `🎉 ${winner3_2.userId}`;  // name 대신 userId 사용
+                    winner3_2Element.textContent = `🎉 ${winner3_2.name}`;  // name 사용으로 통일
                     winner3_2Element.className = 'winner-badge winner-selected';
+                    console.log('11~30등 두번째 당첨자:', winner3_2.name);
                 }
             }
         }
@@ -1415,7 +1569,10 @@ function selectCouponWinners() {
     // 당첨자 확인 로그
     const winners = attendanceData.filter(u => u.isCouponWinner === true);
     console.log('총 당첨자 수:', winners.length);
-    console.log('당첨자 명단:', winners.map(w => `${w.rank}등 ${w.userId}`));  // name 대신 userId
+    console.log('당첨자 명단:', winners.map(w => `${w.rank}등 ${w.name}`));  // name 사용으로 통일
+    
+    // 당첨 정보를 포함한 데이터를 localStorage에 저장
+    localStorage.setItem('todayAttendance', JSON.stringify(attendanceData));
 }
 
 // 내 출석 후 순위 업데이트
@@ -1448,6 +1605,13 @@ function updateMyAttendance() {
             badge: currentUser.badge,
             isCouponWinner: false
         };
+        
+        // 30명이 넘으면 마지막 사람 제거 (30명 유지)
+        if (attendanceData.length >= 30) {
+            // 시간 순으로 추가되므로 제일 늦은 사람 제거
+            attendanceData.pop();
+        }
+        
         attendanceData.push(newUser);
     }
     
@@ -1461,6 +1625,10 @@ function updateMyAttendance() {
     // 순위 재할당
     attendanceData.forEach((user, index) => {
         user.rank = index + 1;
+        // 현재 사용자의 순위 업데이트
+        if (user.name === currentUser.name) {
+            currentUser.rank = user.rank;
+        }
     });
     
     // 출석 상태 업데이트
@@ -1475,7 +1643,7 @@ function updateMyAttendance() {
         selectCouponWinners();
     }
     
-    // 출석 목록 재렌더링
+    // 출석 목록 재렌더링 (당첨 정보 포함)
     renderAttendanceList();
 }
 

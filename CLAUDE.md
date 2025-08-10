@@ -31,6 +31,8 @@ Since this is a static site project without package.json:
 - **Run locally**: Use a local server (e.g., `python -m http.server` or VS Code Live Server)
 - **CSS changes**: Directly edit CSS files, version query strings on link tags for cache busting
 - **JS changes**: Update individual JS files, ensure module imports are correct
+- **Test pages**: Use test-*.html files for component testing (test-attendance.html, test-navigation.html, test-simple.html)
+- **Debug pages**: Use debug-*.html files for debugging specific features
 
 ## Design System Reference
 
@@ -106,10 +108,34 @@ Follow the structured workflow in `docs/WORKFLOW.md`:
 ## Key Implementation Notes
 
 1. **Sidebar State**: Managed via localStorage for persistence
-2. **User Authentication**: Mock data in current implementation
+2. **User Authentication**: Mock data in current implementation (see js/mockUsers.js)
 3. **Responsive Breakpoints**: Mobile (<640px), Tablet (640-1024px), Desktop (>1024px)
 4. **Animation Performance**: Use CSS transforms over position changes
 5. **Color Modes**: CSS variables support dark/light theme switching
+6. **Korean Language**: All UI text should be in Korean for production
+7. **Module System**: ES6 modules used throughout (main entry: js/main.js)
+8. **Page-specific Scripts**: Each HTML page may have corresponding JS file (e.g., events.html → events.js)
+
+## Common Development Tasks
+
+### Adding a New Page
+1. Create new HTML file (e.g., `newpage.html`)
+2. Create corresponding CSS file (e.g., `newpage.css`)
+3. Create corresponding JS file in root or js/ directory
+4. Include common.css and page-specific CSS
+5. Add data-page attribute to body tag for JS initialization
+6. Update sidebar navigation if needed
+
+### Working with Forms and Data
+- Mock user data available in `js/mockUsers.js`
+- Form data typically handled with localStorage for persistence
+- Use Font Awesome icons for UI elements (already included)
+
+### Testing and Debugging
+- Use browser DevTools for debugging
+- Check localStorage for persistent data issues
+- Test responsive design at key breakpoints
+- Verify Korean text rendering properly
 
 ## MCP Servers
 

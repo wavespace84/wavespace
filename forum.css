@@ -133,9 +133,8 @@
     display: flex;
     gap: 4px;
     margin-bottom: 20px;
-    padding: 4px;
-    background: var(--gray-100);
-    border-radius: var(--radius-lg);
+    border-bottom: 2px solid var(--gray-100);
+    padding-bottom: 12px;
     overflow-x: auto;
 }
 
@@ -179,108 +178,114 @@
     color: var(--primary-blue);
 }
 
-/* 검색 및 필터 */
-.forum-controls {
-    display: flex;
-    gap: 16px;
-    align-items: center;
+/* 필터 및 검색 섹션 */
+.forum-filter-section {
     margin-bottom: 20px;
 }
 
-/* 검색 박스 */
-.search-box-large {
-    flex: 1;
-    position: relative;
+/* 카테고리 탭 - 상단에 위치 */
+.forum-filter-section .category-tabs {
+    margin-bottom: 15px;
+}
+
+/* 검색 및 정렬 행 */
+.search-sort-row {
     display: flex;
-    gap: 0;
-    border-radius: var(--radius-xl);
-    background: white;
-    border: 2px solid var(--gray-200);
-    overflow: hidden;
-    transition: var(--transition-fast);
+    gap: 20px;
+    align-items: center;
+}
+
+/* 검색 박스 - 공지사항과 일관성 */
+.forum-filter-section .search-box {
+    position: relative;
+    flex: 1;
     max-width: 500px;
 }
 
-.search-box-large:focus-within {
+.forum-filter-section .search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--gray-400);
+    pointer-events: none;
+}
+
+.forum-filter-section .search-box input {
+    width: 100%;
+    height: 44px;
+    padding: 0 20px 0 44px;
+    border: 2px solid var(--gray-200);
+    border-radius: 22px;
+    font-size: 14px;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.forum-filter-section .search-box input::placeholder {
+    color: var(--gray-400);
+}
+
+.forum-filter-section .search-box input:focus {
+    outline: none;
     border-color: var(--primary-blue);
     box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
 }
 
-.search-box-large input {
-    flex: 1;
-    padding: 12px 16px;
+/* 정렬 탭 - 밑줄 스타일 */
+.sort-tabs {
+    display: flex;
+    gap: 20px;
+}
+
+.sort-tab {
+    position: relative;
+    padding: 8px 0;
+    background: none;
     border: none;
-    font-size: 14px;
-    background: transparent;
-    outline: none;
-}
-
-.search-box-large input::placeholder {
-    color: var(--gray-400);
-}
-
-.search-button {
-    padding: 12px 20px;
-    background: var(--primary-blue);
-    color: white;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: var(--transition-fast);
-}
-
-.search-button:hover {
-    background: var(--deep-blue);
-}
-
-.search-button:active {
-    transform: scale(0.98);
-}
-
-.search-button i {
-    font-size: 14px;
-}
-
-/* 필터 버튼들 */
-.filter-buttons {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 16px;
-    background: white;
-    border: 2px solid var(--gray-200);
-    border-radius: var(--radius-lg);
     color: var(--gray-600);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: var(--transition-fast);
-    white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
-.filter-btn:hover {
-    border-color: var(--gray-300);
-    background: var(--gray-50);
-    color: var(--gray-900);
+.sort-tab:hover {
+    color: var(--primary-blue);
 }
 
-.filter-btn.active {
+.sort-tab.active {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+.sort-tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
     background: var(--primary-blue);
-    border-color: var(--primary-blue);
-    color: white;
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
 }
 
-.filter-btn.active:hover {
+.sort-tab.active::after {
+    transform: scaleX(1);
+}
+
+/* 이전 스타일 제거를 위한 오버라이드 */
+.forum-controls,
+.search-box-large,
+.search-button,
+.filter-buttons,
+.filter-btn,
+.filter-row,
+.sort-filter-row {
+    display: none;
+}
     background: var(--deep-blue);
     border-color: var(--deep-blue);
 }
@@ -519,7 +524,7 @@
     flex: 1;
 }
 
-.notice-title {
+.forum-container .notice-title {
     font-size: 14px;
     font-weight: 500;
     color: var(--gray-800);

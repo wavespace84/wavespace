@@ -297,11 +297,11 @@ function updateCounts() {
     const popularCount = questionsData.filter(q => q.popular === true).length;
     const myCount = questionsData.filter(q => q.id % 5 === 0).length; // 내 질문 (모의)
     
-    // 탭 카운트 업데이트
-    const tabs = document.querySelectorAll('.tab-btn');
+    // 탭 카운트 업데이트 (checkbox-tab 스타일)
+    const tabs = document.querySelectorAll('.checkbox-tab');
     tabs.forEach(tab => {
         const category = tab.dataset.category;
-        const countSpan = tab.querySelector('.count');
+        const countSpan = tab.querySelector('.tab-count');
         if (countSpan) {
             switch(category) {
                 case 'all':
@@ -312,6 +312,18 @@ function updateCounts() {
                     break;
                 case 'unadopted':
                     countSpan.textContent = unadoptedCount;
+                    // 미채택 탭의 말풍선 표시/숨김 처리
+                    const waitingBubble = tab.querySelector('.waiting-bubble');
+                    if (waitingBubble) {
+                        console.log('미채택 카운트:', unadoptedCount); // 디버깅용
+                        if (unadoptedCount > 0) {
+                            waitingBubble.classList.add('show');
+                            waitingBubble.style.display = 'block'; // 직접 스타일 적용
+                        } else {
+                            waitingBubble.classList.remove('show');
+                            waitingBubble.style.display = 'none';
+                        }
+                    }
                     break;
                 case 'popular':
                     countSpan.textContent = popularCount;
@@ -342,28 +354,21 @@ function renderQuestions() {
     }
     
     const html = pageQuestions.map(question => `
-        <div class="question-card ${question.status}" data-id="${question.id}">
+        <div class="question-card ${question.status}" data-id="${question.id}" onclick="showQuestionDetail(${question.id}); return false;" style="cursor: pointer;">
             <div class="question-header">
                 <div class="question-status">
                     <span class="status-badge ${question.status}">
-                        ${question.status === 'adopted' ? '채택완료' : '미채택'}
+                        ${question.status === 'adopted' ? '채택완료' : `미채택 +${question.reward.toLocaleString()}P`}
                     </span>
-                    ${question.popular ? '<span class="hot-badge">인기</span>' : ''}
                     ${question.isNew ? '<span class="new-badge">NEW</span>' : ''}
-                    ${question.reward > 0 && question.status === 'unadopted' ? `<span class="reward-badge"><i class="fas fa-coins"></i> ${question.reward.toLocaleString()}P</span>` : ''}
                 </div>
             </div>
             <div class="question-content">
                 <h3 class="question-title">
-                    <a href="#" onclick="showQuestionDetail(${question.id}); return false;">
-                        ${question.title}
-                    </a>
+                    ${question.title}
                 </h3>
                 <p class="question-excerpt">${question.excerpt}</p>
                 <div class="question-bottom">
-                    <div class="question-tags">
-                        ${question.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
                     <div class="question-meta">
                         <span class="author"><i class="fas fa-user"></i> ${question.author}</span>
                         <span class="answers"><i class="fas fa-comment"></i> ${question.answers}</span>
@@ -381,8 +386,11 @@ function renderQuestions() {
 // 페이지네이션 업데이트
 function updatePagination() {
     const totalPages = Math.ceil(filteredQuestions.length / ITEMS_PER_PAGE);
-    const pagination = document.querySelector('.pagination');
-    if (!pagination) return;
+    const pagination = document.getElementById('paginationContainer');
+    if (!pagination) {
+        console.error('Pagination container not found');
+        return;
+    }
     
     let html = '';
     
@@ -420,85 +428,309 @@ function goToPage(page) {
     window.scrollTo(0, 0);
 }
 
+// 현재 보고 있는 질문 ID 저장
+let currentQuestionId = null;
+
 // 질문 상세 보기
 function showQuestionDetail(questionId) {
     const question = questionsData.find(q => q.id === questionId);
-    if (!question) return;
+    if (!question) {
+        console.error('Question not found with ID:', questionId);
+        return;
+    }
     
+    currentQuestionId = questionId;
     const answers = answersData[questionId] || [];
     
-    const modal = document.createElement('div');
-    modal.className = 'question-detail-modal';
-    modal.innerHTML = `
-        <div class="modal-overlay" onclick="closeQuestionDetail()"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>${question.title}</h2>
-                <button class="close-btn" onclick="closeQuestionDetail()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="question-detail-meta">
-                    <span class="status-badge ${question.status}">
-                        ${question.status === 'adopted' ? '채택완료' : '미채택'}
-                    </span>
-                    <span class="author"><i class="fas fa-user"></i> ${question.author}</span>
-                    <span class="time"><i class="fas fa-clock"></i> ${question.time}</span>
-                    <span class="views"><i class="fas fa-eye"></i> ${question.views}</span>
-                    ${question.reward > 0 ? `<span class="reward"><i class="fas fa-coins"></i> ${question.reward.toLocaleString()}P</span>` : ''}
+    // 기존 HTML의 모달 사용
+    const modal = document.getElementById('qnaDetailModal');
+    
+    if (!modal) {
+        // 모달이 없으면 동적 생성 (fallback)
+        const newModal = document.createElement('div');
+        newModal.className = 'question-detail-modal';
+        newModal.innerHTML = `
+            <div class="modal-overlay" onclick="closeQuestionDetail()"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>${question.title}</h2>
+                    <button class="close-btn" onclick="closeQuestionDetail()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="question-detail-content">
-                    <p>${question.excerpt}</p>
-                    <p>이 질문에 대한 자세한 내용과 배경 설명이 여기에 표시됩니다...</p>
-                </div>
-                <div class="question-tags">
-                    ${question.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                </div>
-                
-                <div class="answers-section">
-                    <h3>답변 ${answers.length}개</h3>
-                    ${answers.length > 0 ? `
-                        <div class="answers-list">
-                            ${answers.map(answer => `
-                                <div class="answer-item ${answer.isAdopted ? 'adopted' : ''}">
-                                    ${answer.isAdopted ? '<span class="adopted-badge">채택된 답변</span>' : ''}
-                                    <div class="answer-author">
-                                        <i class="fas fa-user-circle"></i> ${answer.author}
-                                        <span class="answer-time">${answer.time}</span>
-                                    </div>
-                                    <div class="answer-content">${answer.content}</div>
-                                    <div class="answer-actions">
-                                        <button class="like-btn">
-                                            <i class="fas fa-thumbs-up"></i> ${answer.likes}
-                                        </button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : '<p class="no-answers">아직 답변이 없습니다.</p>'}
+                <div class="modal-body">
+                    <div class="question-detail-meta">
+                        <span class="status-badge ${question.status}">
+                            ${question.status === 'adopted' ? '채택완료' : '미채택'}
+                        </span>
+                        <span class="author"><i class="fas fa-user"></i> ${question.author}</span>
+                        <span class="time"><i class="fas fa-clock"></i> ${question.time}</span>
+                        <span class="views"><i class="fas fa-eye"></i> ${question.views}</span>
+                        ${question.reward > 0 ? `<span class="reward"><i class="fas fa-coins"></i> ${question.reward.toLocaleString()}P</span>` : ''}
+                    </div>
+                    <div class="question-detail-content">
+                        <p>${question.excerpt}</p>
+                        <p>이 질문에 대한 자세한 내용과 배경 설명이 여기에 표시됩니다...</p>
+                    </div>
                     
-                    <div class="answer-write">
-                        <h4>답변 작성</h4>
-                        <textarea placeholder="답변을 작성해주세요..." rows="5"></textarea>
-                        <button class="submit-answer-btn">답변 등록</button>
+                    <div class="answers-section">
+                        <h3>답변 ${answers.length}개</h3>
+                        ${answers.length > 0 ? `
+                            <div class="answers-list">
+                                ${answers.map(answer => `
+                                    <div class="answer-item ${answer.isAdopted ? 'adopted' : ''}">
+                                        ${answer.isAdopted ? '<span class="adopted-badge">채택된 답변</span>' : ''}
+                                        <div class="answer-author">
+                                            <i class="fas fa-user-circle"></i> ${answer.author}
+                                            <span class="answer-time">${answer.time}</span>
+                                        </div>
+                                        <div class="answer-content">${answer.content}</div>
+                                        <div class="answer-actions">
+                                            <button class="like-btn">
+                                                <i class="fas fa-thumbs-up"></i> ${answer.likes}
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<p class="no-answers">아직 답변이 없습니다.</p>'}
+                        
+                        <div class="answer-write">
+                            <h4>답변 작성</h4>
+                            <textarea placeholder="답변을 작성해주세요..." rows="5"></textarea>
+                            <button class="submit-answer-btn">답변 등록</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
+        
+        document.body.appendChild(newModal);
+        setTimeout(() => newModal.classList.add('active'), 10);
+        return;
+    }
     
-    document.body.appendChild(modal);
-    setTimeout(() => modal.classList.add('active'), 10);
+    // HTML 모달의 내용 업데이트
+    const modalStatus = document.getElementById('modalStatus');
+    const modalReward = document.getElementById('modalReward');
+    const modalQuestionTitle = document.getElementById('modalQuestionTitle');
+    const modalAuthor = document.getElementById('modalAuthor');
+    const modalTime = document.getElementById('modalTime');
+    const modalViews = document.getElementById('modalViews');
+    const modalQuestionContent = document.getElementById('modalQuestionContent');
+    const answerWriteSection = document.getElementById('answerWriteSection');
+    const answerList = document.getElementById('answerList');
+    const answerCount = document.getElementById('answerCount');
+    
+    if (modalStatus) {
+        modalStatus.innerHTML = question.status === 'adopted' ? 
+            '<i class="fas fa-check-circle"></i> 채택완료' : 
+            '<i class="fas fa-question-circle"></i> 미채택';
+        modalStatus.className = `status-badge ${question.status}`;
+    }
+    if (modalReward) {
+        if (question.reward > 0 && question.status === 'unadopted') {
+            modalReward.style.display = 'inline-flex';
+            modalReward.innerHTML = `<i class="fas fa-coins"></i> ${question.reward.toLocaleString()}P 보상`;
+        } else {
+            modalReward.style.display = 'none';
+        }
+    }
+    if (modalQuestionTitle) modalQuestionTitle.textContent = question.title;
+    if (modalAuthor) modalAuthor.textContent = question.author;
+    if (modalTime) modalTime.textContent = question.time;
+    if (modalViews) modalViews.textContent = question.views;
+    if (modalQuestionContent) {
+        modalQuestionContent.innerHTML = `
+            <p>${question.excerpt}</p>
+            <p>이 질문에 대한 자세한 내용과 배경 설명이 여기에 표시됩니다...</p>
+        `;
+    }
+    
+    // 태그 업데이트
+    
+    // 답변 작성 섹션 표시/숨김
+    if (answerWriteSection) {
+        answerWriteSection.style.display = question.status === 'unadopted' ? 'block' : 'none';
+    }
+    
+    // 답변 목록 업데이트
+    if (answerList) {
+        if (answers.length > 0) {
+            answerList.innerHTML = answers.map(answer => `
+                <div class="answer-item ${answer.isAdopted ? 'adopted' : ''}">
+                    <div class="answer-header">
+                        <div class="answerer-info">
+                            <span class="answerer-name"><i class="fas fa-user-circle"></i> ${answer.author}</span>
+                            <span class="answer-time">${answer.time}</span>
+                        </div>
+                        ${answer.isAdopted ? 
+                            `<div class="answer-status">
+                                <span class="adopted-badge">
+                                    <i class="fas fa-check-circle"></i> 채택됨
+                                </span>
+                                <span class="points-earned">+${Math.floor(question.reward * 0.9).toLocaleString()}P 획득</span>
+                            </div>` : 
+                            question.status === 'unadopted' && question.author === '현재사용자' ? 
+                            `<div class="answer-actions-top">
+                                <button class="btn-adopt" onclick="adoptAnswer('${answer.id}')">
+                                    <i class="fas fa-check"></i> 채택하기
+                                </button>
+                            </div>` : ''
+                        }
+                    </div>
+                    <div class="answer-content">
+                        <p>${answer.content}</p>
+                    </div>
+                    <div class="answer-actions">
+                        <button class="btn-helpful ${answer.helpful ? 'active' : ''}" onclick="toggleHelpful('${answer.id}')">
+                            <i class="fas fa-thumbs-up"></i> 도움됨 <span>${answer.likes}</span>
+                        </button>
+                        <button class="btn-report">
+                            <i class="fas fa-flag"></i> 신고
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            answerList.innerHTML = '<div class="no-answers">아직 답변이 없습니다. 첫 번째 답변을 작성해보세요!</div>';
+        }
+    }
+    
+    // 답변 개수 업데이트
+    if (answerCount) {
+        answerCount.textContent = answers.length;
+    }
+    
+    // 보상 금액 업데이트
+    const rewardAmount = modal.querySelector('.reward-amount');
+    if (rewardAmount && question.reward > 0) {
+        rewardAmount.textContent = Math.floor(question.reward * 0.9).toLocaleString() + 'P';
+    }
+    
+    // 모달 표시
+    modal.style.display = 'block';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
 }
 
 // 질문 상세 모달 닫기
 function closeQuestionDetail() {
-    const modal = document.querySelector('.question-detail-modal');
+    // HTML 모달 우선 확인
+    let modal = document.getElementById('qnaDetailModal');
+    if (!modal) {
+        // 동적 생성된 모달 확인
+        modal = document.querySelector('.question-detail-modal');
+    }
+    
     if (modal) {
         modal.classList.remove('active');
-        setTimeout(() => modal.remove(), 300);
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 200);
     }
+    
+    currentQuestionId = null;
+}
+
+// 답변 제출
+function submitAnswer() {
+    if (!currentQuestionId) return;
+    
+    const answerContent = document.getElementById('answerContent');
+    if (!answerContent || !answerContent.value.trim()) {
+        alert('답변 내용을 입력해주세요.');
+        return;
+    }
+    
+    const question = questionsData.find(q => q.id === currentQuestionId);
+    if (!question) return;
+    
+    // 새 답변 생성
+    const newAnswer = {
+        id: `${currentQuestionId}-${Date.now()}`,
+        author: '현재사용자',
+        authorName: '박승학',
+        content: answerContent.value.trim(),
+        time: '방금 전',
+        likes: 0,
+        isAdopted: false,
+        helpful: false
+    };
+    
+    // 답변 데이터에 추가
+    if (!answersData[currentQuestionId]) {
+        answersData[currentQuestionId] = [];
+    }
+    answersData[currentQuestionId].unshift(newAnswer);
+    
+    // 질문의 답변 수 증가
+    question.answers = (question.answers || 0) + 1;
+    
+    // 알림
+    alert('답변이 등록되었습니다!');
+    
+    // 입력 필드 초기화
+    answerContent.value = '';
+    
+    // 모달 새로고침
+    showQuestionDetail(currentQuestionId);
+}
+
+// 답변 채택
+function adoptAnswer(answerId) {
+    if (!currentQuestionId) return;
+    
+    const question = questionsData.find(q => q.id === currentQuestionId);
+    if (!question || question.status === 'adopted') return;
+    
+    const answers = answersData[currentQuestionId];
+    if (!answers) return;
+    
+    const answer = answers.find(a => a.id === answerId);
+    if (!answer) return;
+    
+    // 확인 대화상자
+    const reward = question.reward || 0;
+    const rewardAmount = Math.floor(reward * 0.9);
+    
+    if (!confirm(`이 답변을 채택하시겠습니까?\n답변자에게 ${rewardAmount.toLocaleString()}P가 지급됩니다.`)) {
+        return;
+    }
+    
+    // 답변 채택 처리
+    answer.isAdopted = true;
+    question.status = 'adopted';
+    
+    // 알림
+    alert('답변이 채택되었습니다!');
+    
+    // 목록 새로고침
+    filterQuestions();
+    
+    // 모달 새로고침
+    showQuestionDetail(currentQuestionId);
+}
+
+// 도움됨 토글
+function toggleHelpful(answerId) {
+    if (!currentQuestionId) return;
+    
+    const answers = answersData[currentQuestionId];
+    if (!answers) return;
+    
+    const answer = answers.find(a => a.id === answerId);
+    if (!answer) return;
+    
+    // 토글
+    answer.helpful = !answer.helpful;
+    answer.likes = answer.helpful ? answer.likes + 1 : Math.max(0, answer.likes - 1);
+    
+    // 모달 새로고침
+    showQuestionDetail(currentQuestionId);
 }
 
 // 질문하기 모달 표시
@@ -507,6 +739,9 @@ function showAskModal() {
     if (modal) {
         modal.style.display = 'block';
         setTimeout(() => modal.classList.add('active'), 10);
+        
+        // 포인트 초기화
+        setPointValue(0);
     }
 }
 
@@ -517,35 +752,260 @@ function closeAskModal() {
         modal.classList.remove('active');
         setTimeout(() => {
             modal.style.display = 'none';
-        }, 300);
+        }, 200);
     }
+}
+
+// 질문 제출 함수
+function submitQuestion() {
+    // 폼 데이터 수집
+    const titleInput = document.getElementById('questionTitle');
+    const contentInput = document.getElementById('questionContent');
+    const categoryRadios = document.getElementsByName('questionCategory');
+    const tagInput = document.getElementById('questionTags');
+    const pointsInput = document.getElementById('rewardPoints');
+    
+    // 선택된 카테고리 찾기
+    let selectedCategory = null;
+    for (const radio of categoryRadios) {
+        if (radio.checked) {
+            selectedCategory = radio.value;
+            break;
+        }
+    }
+    
+    // 유효성 검사
+    if (!selectedCategory) {
+        alert('카테고리를 선택해주세요.');
+        return;
+    }
+    
+    if (!titleInput || !titleInput.value.trim()) {
+        alert('질문 제목을 입력해주세요.');
+        return;
+    }
+    
+    if (!contentInput || !contentInput.value.trim()) {
+        alert('질문 내용을 입력해주세요.');
+        return;
+    }
+    
+    // 포인트 값 확인 (기본값 0)
+    const points = pointsInput ? parseInt(pointsInput.value) || 0 : 0;
+    
+    // 태그 처리
+    let tags = [];
+    if (tagInput && tagInput.value.trim()) {
+        // 입력된 태그들을 배열로 변환 (공백으로 구분)
+        tags = tagInput.value.trim().split(' ').filter(tag => tag.startsWith('#'));
+    }
+    // 카테고리도 태그로 추가
+    if (selectedCategory) {
+        tags.unshift(`#${selectedCategory}`);
+    }
+    // 태그가 없으면 기본 태그
+    if (tags.length === 0) {
+        tags = [`#일반`];
+    }
+    
+    // 새 질문 데이터 생성
+    const newQuestion = {
+        id: questionsData.length + 1,
+        status: 'unadopted',
+        title: titleInput.value.trim(),
+        excerpt: contentInput.value.trim().substring(0, 100) + '...',
+        tags: tags.slice(0, 5), // 최대 5개 태그만
+        author: '현재사용자',
+        authorName: '박승학',
+        time: '방금 전',
+        views: 0,
+        answers: 0,
+        reward: points,
+        popular: false,
+        isNew: true
+    };
+    
+    // 질문 데이터에 추가
+    questionsData.unshift(newQuestion);
+    
+    // 목록 새로고침
+    filterQuestions();
+    
+    // 성공 메시지
+    alert(`질문이 성공적으로 등록되었습니다!${points > 0 ? `\n${points.toLocaleString()}P가 설정되었습니다.` : ''}`);
+    
+    // 폼 초기화
+    if (titleInput) titleInput.value = '';
+    if (contentInput) contentInput.value = '';
+    
+    // 태그 초기화 (이미 위에서 선언한 tagInput 재사용)
+    if (tagInput) tagInput.value = '';
+    
+    // 태그 제안 활성화 상태 초기화
+    const tagSuggestions = document.querySelectorAll('.tag-suggestion');
+    tagSuggestions.forEach(tag => tag.classList.remove('active'));
+    
+    // 카테고리 라디오 버튼 초기화
+    for (const radio of categoryRadios) {
+        radio.checked = false;
+    }
+    
+    // 포인트 초기화
+    setPointValue(0);
+    
+    // 모달 닫기
+    closeAskModal();
+}
+
+// 포인트 슬라이더 이벤트 핸들러
+function updatePointValue(value) {
+    const pointsInput = document.getElementById('rewardPoints');
+    const pointDisplay = document.getElementById('pointDisplay');
+    const sliderFill = document.getElementById('sliderFill');
+    const slider = document.getElementById('pointSlider');
+    
+    // 값 업데이트
+    if (pointsInput) pointsInput.value = value;
+    
+    // 표시 업데이트
+    if (pointDisplay) {
+        const displayValue = parseInt(value).toLocaleString();
+        pointDisplay.innerHTML = `<i class="fas fa-coins"></i><span>${displayValue}P</span>`;
+        
+        // 포인트 값에 따른 색상 변경
+        if (value == 0) {
+            pointDisplay.style.background = 'linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)';
+        } else if (value <= 3000) {
+            pointDisplay.style.background = 'linear-gradient(135deg, #34d399 0%, #10b981 100%)';
+        } else if (value <= 5000) {
+            pointDisplay.style.background = 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)';
+        } else {
+            pointDisplay.style.background = 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)';
+        }
+    }
+    
+    // 슬라이더 트랙 채우기 업데이트
+    if (slider && sliderFill) {
+        const percent = (value / slider.max) * 100;
+        sliderFill.style.width = percent + '%';
+        
+        // 그라디언트 색상 업데이트
+        const gradient = `linear-gradient(to right, 
+            #6366f1 0%, 
+            #8b5cf6 ${percent}%, 
+            #e0e7ff ${percent}%, 
+            #e0e7ff 100%)`;
+        slider.style.background = gradient;
+    }
+    
+    // 프리셋 버튼 활성화 상태 업데이트
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    presetBtns.forEach(btn => {
+        const btnValue = parseInt(btn.getAttribute('onclick')?.match(/\d+/)?.[0] || 0);
+        if (btnValue == value) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
+
+// 포인트 프리셋 설정
+function setPointValue(value) {
+    // 히든 인풋 업데이트
+    const pointsInput = document.getElementById('rewardPoints');
+    if (pointsInput) {
+        pointsInput.value = value;
+    }
+    
+    // 현재 선택된 포인트 표시
+    const currentDisplay = document.getElementById('currentPointDisplay');
+    if (currentDisplay) {
+        currentDisplay.textContent = value.toLocaleString() + 'P';
+        
+        // 색상 변경
+        const parent = currentDisplay.parentElement;
+        if (parent) {
+            if (value == 0) {
+                parent.style.color = '#94a3b8';
+            } else if (value <= 3000) {
+                parent.style.color = '#10b981';
+            } else if (value <= 5000) {
+                parent.style.color = '#3b82f6';
+            } else {
+                parent.style.color = '#8b5cf6';
+            }
+        }
+    }
+    
+    // 차감 포인트 업데이트
+    const deductPoints = document.getElementById('deductPoints');
+    if (deductPoints) {
+        deductPoints.textContent = value > 0 ? '-' + value.toLocaleString() + 'P' : '0P';
+    }
+    
+    // 채택자 획득 포인트 업데이트 (90%)
+    const rewardAmount = document.getElementById('rewardAmount');
+    if (rewardAmount) {
+        const reward = Math.floor(value * 0.9);
+        rewardAmount.textContent = reward > 0 ? reward.toLocaleString() + 'P (90%)' : '0P';
+    }
+    
+    // 프리셋 버튼 활성화 상태 업데이트
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    presetBtns.forEach(btn => {
+        const btnOnclick = btn.getAttribute('onclick');
+        if (btnOnclick && btnOnclick.includes(`setPointValue(${value})`)) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 }
 
 // 전역 함수로 등록
 window.showQuestionDetail = showQuestionDetail;
 window.closeQuestionDetail = closeQuestionDetail;
+window.closeDetailModal = closeQuestionDetail; // HTML에서 사용하는 이름 추가
 window.goToPage = goToPage;
 window.showAskModal = showAskModal;
 window.closeAskModal = closeAskModal;
+window.submitQuestion = submitQuestion;
+window.submitAnswer = submitAnswer;
+window.adoptAnswer = adoptAnswer;
+window.toggleHelpful = toggleHelpful;
+window.updatePointValue = updatePointValue;
+window.setPointValue = setPointValue;
 
 // DOMContentLoaded 이벤트
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM 로드 완료, 이벤트 리스너 설정 시작');
+    // filteredQuestions 초기화
+    if (filteredQuestions.length === 0) {
+        filteredQuestions = [...questionsData];
+    }
     
     // 초기 렌더링
     renderQuestions();
     updatePagination();
     updateCounts();
     
-    // 탭 버튼 이벤트
-    const tabBtns = document.querySelectorAll('.tab-btn');
+    // 탭 버튼 이벤트 (checkbox-tab 스타일)
+    const tabBtns = document.querySelectorAll('.checkbox-tab');
     tabBtns.forEach(btn => {
+        const input = btn.querySelector('input[type="radio"]');
         btn.addEventListener('click', function() {
             const category = this.dataset.category;
             if (!category) return;
             
-            tabBtns.forEach(b => b.classList.remove('active'));
+            // 모든 탭에서 active 클래스 제거
+            tabBtns.forEach(b => {
+                b.classList.remove('active');
+                const bInput = b.querySelector('input[type="radio"]');
+                if (bInput) bInput.checked = false;
+            });
+            // 클릭한 탭에 active 클래스 추가
             this.classList.add('active');
+            if (input) input.checked = true;
             
             // 탭 카테고리 처리
             if (category === 'all') {
@@ -586,11 +1046,79 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // 검색 기능
-    const searchInput = document.querySelector('.search-input');
-    const searchBtn = document.querySelector('.search-btn');
+    // 포인트 슬라이더 초기화
+    const pointSlider = document.getElementById('pointSlider');
+    if (pointSlider) {
+        pointSlider.addEventListener('input', function() {
+            updatePointValue(this.value);
+        });
+        // 초기값 설정
+        updatePointValue(0);
+    }
     
-    if (searchInput && searchBtn) {
+    // 태그 제안 기능
+    const tagInputElement = document.getElementById('questionTags');
+    const tagSuggestionElements = document.querySelectorAll('.tag-suggestion');
+    
+    if (tagInputElement && tagSuggestionElements.length > 0) {
+        // 태그 제안 클릭 이벤트
+        tagSuggestionElements.forEach(tag => {
+            tag.addEventListener('click', function() {
+                const tagText = this.textContent;
+                const currentValue = tagInputElement.value.trim();
+                
+                // 이미 있는 태그인지 확인
+                if (currentValue.includes(tagText)) {
+                    // 이미 있으면 제거
+                    const tags = currentValue.split(' ').filter(t => t !== tagText);
+                    tagInputElement.value = tags.join(' ');
+                    this.classList.remove('active');
+                } else {
+                    // 없으면 추가
+                    if (currentValue) {
+                        tagInputElement.value = currentValue + ' ' + tagText;
+                    } else {
+                        tagInputElement.value = tagText;
+                    }
+                    this.classList.add('active');
+                }
+                
+                // 포커스 유지
+                tagInputElement.focus();
+            });
+        });
+        
+        // 태그 입력 시 제안 태그 활성화 상태 업데이트
+        tagInputElement.addEventListener('input', function() {
+            const currentTags = this.value.trim().split(' ');
+            tagSuggestionElements.forEach(tag => {
+                if (currentTags.includes(tag.textContent)) {
+                    tag.classList.add('active');
+                } else {
+                    tag.classList.remove('active');
+                }
+            });
+        });
+    }
+    
+    // 정렬 탭 기능
+    const sortTabs = document.querySelectorAll('.sort-tab');
+    sortTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // 활성 탭 변경
+            sortTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // 정렬 방식 변경
+            currentSort = this.dataset.sort || 'latest';
+            filterQuestions();
+        });
+    });
+
+    // 검색 기능
+    const searchInput = document.getElementById('searchInput');
+    
+    if (searchInput) {
         const performSearch = () => {
             const searchTerm = searchInput.value.toLowerCase().trim();
             if (searchTerm) {
@@ -607,11 +1135,12 @@ document.addEventListener('DOMContentLoaded', function() {
             updatePagination();
         };
         
-        searchBtn.addEventListener('click', performSearch);
+        // 실시간 검색
+        searchInput.addEventListener('input', performSearch);
+        
+        // 엔터키로도 검색
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') performSearch();
         });
     }
-    
-    console.log('이벤트 리스너 설정 완료');
 });

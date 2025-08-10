@@ -309,9 +309,25 @@ function filterPosts(category) {
 
 // 게시글 렌더링
 function renderPosts() {
-    const container = document.querySelector('.posts-' + currentView);
+    // 동적 콘텐츠 생성을 비활성화하고 기존 정적 콘텐츠 유지
+    // 필터링 기능만 동작하도록 수정
+    const container = document.querySelector('.humor-grid.posts-grid');
     if (!container) return;
     
+    // 기존 정적 아이템들을 필터링
+    const allItems = container.querySelectorAll('.humor-item, .post-item');
+    allItems.forEach(item => {
+        if (currentCategory === 'all') {
+            item.style.display = '';
+        } else {
+            const itemCategory = item.dataset.category || 'all';
+            item.style.display = itemCategory === currentCategory ? '' : 'none';
+        }
+    });
+    
+    return; // 동적 렌더링 중단
+    
+    // 아래 코드는 실행되지 않음 (기존 코드 보존)
     const startIdx = (currentPage - 1) * postsPerPage;
     const endIdx = startIdx + postsPerPage;
     const pagePosts = filteredPosts.slice(startIdx, endIdx);
@@ -472,23 +488,32 @@ function performSearch() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('humor-enhanced.js DOMContentLoaded 이벤트 발생');
     
-    // 초기 렌더링
-    renderPosts();
+    // 초기 렌더링 비활성화 (정적 콘텐츠 유지)
+    // renderPosts();
     
-    // 카테고리 탭
-    const categoryTabs = document.querySelectorAll('.tab-btn');
+    // 카테고리 탭 - checkbox-tab 스타일
+    const categoryTabs = document.querySelectorAll('.checkbox-tab');
     const searchInput = document.querySelector('.search-input');
     const searchBtn = document.querySelector('.search-btn');
     const sortSelect = document.querySelector('.sort-select');
     const viewBtns = document.querySelectorAll('.view-btn');
     const pageBtns = document.querySelectorAll('.page-btn:not(:disabled)');
     
-    // 카테고리 탭 클릭
+    // 카테고리 탭 클릭 (checkbox-tab 스타일)
     categoryTabs.forEach(tab => {
+        const input = tab.querySelector('input[type="radio"]');
+        
         tab.addEventListener('click', function(e) {
-            e.preventDefault();
-            categoryTabs.forEach(t => t.classList.remove('active'));
+            // 모든 탭에서 active 클래스 제거
+            categoryTabs.forEach(t => {
+                t.classList.remove('active');
+                const tInput = t.querySelector('input[type="radio"]');
+                if (tInput) tInput.checked = false;
+            });
+            // 클릭한 탭에 active 클래스 추가
             this.classList.add('active');
+            if (input) input.checked = true;
+            
             const category = this.dataset.category || 'all';
             filterPosts(category);
         });
@@ -557,4 +582,524 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     console.log('이벤트 리스너 설정 완료');
+    
+    // 업로드 모달 관련 요소들
+    const uploadBtn = document.getElementById('humorUploadBtn');
+    const uploadModal = document.getElementById('humorUploadModal');
+    const closeModalBtn = document.getElementById('closeUploadModal');
+    const cancelUploadBtn = document.getElementById('cancelUpload');
+    const uploadForm = document.getElementById('humorUploadForm');
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const uploadPreview = document.getElementById('uploadPreview');
+    const categoryOptions = document.querySelectorAll('.category-option');
+    
+    // 업로드할 파일들을 저장할 배열
+    let uploadedFiles = [];
+    
+    // 플로팅 버튼 클릭 - 모달 열기
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', function() {
+            uploadModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    
+    // 모달 닫기 함수
+    function closeUploadModal() {
+        uploadModal.classList.remove('active');
+        document.body.style.overflow = '';
+        // 폼 초기화
+        uploadForm.reset();
+        uploadedFiles = [];
+        uploadPreview.innerHTML = '';
+        uploadPreview.classList.remove('active');
+        // 카테고리 초기화
+        categoryOptions.forEach(opt => opt.classList.remove('selected'));
+        categoryOptions[0].classList.add('selected');
+    }
+    
+    // 모달 닫기 버튼들
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeUploadModal);
+    }
+    if (cancelUploadBtn) {
+        cancelUploadBtn.addEventListener('click', closeUploadModal);
+    }
+    
+    // 모달 외부 클릭시 닫기
+    if (uploadModal) {
+        uploadModal.addEventListener('click', function(e) {
+            if (e.target === uploadModal) {
+                closeUploadModal();
+            }
+        });
+    }
+    
+    // 카테고리 선택
+    categoryOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            categoryOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+    
+    // 파일 업로드 영역 클릭
+    if (uploadArea) {
+        uploadArea.addEventListener('click', function(e) {
+            // 클릭 이벤트가 버블링되지 않도록 처리
+            if (e.target === uploadArea || uploadArea.contains(e.target)) {
+                const fileInput = document.getElementById('fileInput');
+                if (fileInput) {
+                    fileInput.click();
+                }
+            }
+        });
+        
+        // 드래그 앤 드롭
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.add('drag-over');
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drag-over');
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                handleFiles(files);
+            }
+        });
+    }
+    
+    // 파일 선택 - fileInput을 DOM에서 다시 찾기
+    const fileInputElement = document.getElementById('fileInput');
+    if (fileInputElement) {
+        fileInputElement.addEventListener('change', function(e) {
+            if (this.files && this.files.length > 0) {
+                handleFiles(this.files);
+            }
+        });
+    }
+    
+    // 파일 처리 함수
+    function handleFiles(files) {
+        console.log('파일 처리 시작:', files);
+        
+        for (let file of files) {
+            console.log('파일 정보:', file.name, file.type, file.size);
+            
+            // 파일 크기 체크 (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('파일 크기는 10MB를 초과할 수 없습니다.');
+                continue;
+            }
+            
+            // 파일 타입 체크
+            if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+                alert('이미지 또는 동영상 파일만 업로드 가능합니다.');
+                continue;
+            }
+            
+            uploadedFiles.push(file);
+            addPreviewItem(file);
+        }
+        
+        if (uploadedFiles.length > 0) {
+            uploadPreview.classList.add('active');
+            console.log('업로드된 파일 수:', uploadedFiles.length);
+        }
+    }
+    
+    // 미리보기 아이템 추가
+    function addPreviewItem(file) {
+        const item = document.createElement('div');
+        item.className = 'upload-preview-item';
+        
+        const thumbnail = document.createElement('div');
+        thumbnail.className = 'upload-preview-thumbnail';
+        thumbnail.style.width = '60px';
+        thumbnail.style.height = '60px';
+        thumbnail.style.borderRadius = 'var(--radius-md)';
+        thumbnail.style.overflow = 'hidden';
+        thumbnail.style.background = 'var(--gray-100)';
+        
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            thumbnail.appendChild(img);
+        } else {
+            thumbnail.innerHTML = '<i class="fas fa-video" style="font-size: 24px; color: var(--gray-500);"></i>';
+            thumbnail.style.display = 'flex';
+            thumbnail.style.alignItems = 'center';
+            thumbnail.style.justifyContent = 'center';
+        }
+        
+        const info = document.createElement('div');
+        info.className = 'upload-preview-info';
+        info.innerHTML = `
+            <div class="upload-preview-name">${file.name}</div>
+            <div class="upload-preview-size">${formatFileSize(file.size)}</div>
+        `;
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'upload-preview-remove';
+        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        removeBtn.onclick = function() {
+            const index = uploadedFiles.indexOf(file);
+            if (index > -1) {
+                uploadedFiles.splice(index, 1);
+            }
+            item.remove();
+            if (uploadedFiles.length === 0) {
+                uploadPreview.classList.remove('active');
+            }
+        };
+        
+        item.appendChild(thumbnail);
+        item.appendChild(info);
+        item.appendChild(removeBtn);
+        uploadPreview.appendChild(item);
+    }
+    
+    // 파일 크기 포맷
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+    
+    // 폼 제출
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedCategory = document.querySelector('.category-option.selected');
+            const category = selectedCategory ? selectedCategory.dataset.category : 'meme';
+            const title = document.getElementById('humorTitle').value;
+            const content = document.getElementById('humorContent').value;
+            const tags = document.getElementById('humorTags').value;
+            
+            // 유효성 검사
+            if (!title.trim()) {
+                alert('제목을 입력해주세요.');
+                return;
+            }
+            
+            // 새 게시글 데이터 생성
+            const newPost = {
+                category: category,
+                title: title,
+                content: content || '',
+                author: '나',
+                time: '방금 전',
+                views: 0,
+                likes: 0,
+                comments: 0,
+                isNew: true,
+                hasImage: uploadedFiles.length > 0,
+                files: uploadedFiles
+            };
+            
+            // 게시글을 맨 앞에 추가 (DOM에 직접 추가)
+            addNewPostToDOM(newPost);
+            
+            // 성공 메시지
+            alert('유머 콘텐츠가 성공적으로 업로드되었습니다!');
+            
+            // 모달 닫기
+            closeUploadModal();
+        });
+    }
+    
+    // 새 게시글을 DOM에 추가하는 함수
+    function addNewPostToDOM(post) {
+        const postsGrid = document.querySelector('.posts-grid') || document.querySelector('.humor-grid');
+        if (!postsGrid) return;
+        
+        // 아이콘 매핑
+        const categoryIcons = {
+            'meme': 'fa-image',
+            'story': 'fa-book-open',
+            'video': 'fa-video',
+            'cartoon': 'fa-pencil-ruler'
+        };
+        
+        // 새 게시글 HTML 생성
+        const postHTML = `
+            <div class="humor-item post-item" data-category="${post.category}">
+                <div class="humor-thumbnail">
+                    ${post.hasImage && post.files.length > 0 ? 
+                        `<img src="${URL.createObjectURL(post.files[0])}" alt="썸네일">` : 
+                        '<img src="" alt="썸네일">'}
+                    <div class="thumbnail-type">
+                        <i class="fas ${categoryIcons[post.category] || 'fa-image'}"></i>
+                    </div>
+                </div>
+                <div class="humor-content" ${post.category === 'story' ? 'data-type="story"' : ''}>
+                    <h3 class="humor-item-title">
+                        <a href="#">${post.title}</a>
+                        <span class="new-badge">NEW</span>
+                    </h3>
+                    <div class="humor-meta">
+                        <span class="author"><i class="fas fa-user-circle"></i> ${post.author}</span>
+                        <span class="time"><i class="fas fa-clock"></i> ${post.time}</span>
+                    </div>
+                    <div class="humor-stats">
+                        <span class="views"><i class="fas fa-eye"></i> ${post.views}</span>
+                        <span class="likes"><i class="fas fa-heart"></i> ${post.likes}</span>
+                        <span class="comments"><i class="fas fa-comment"></i> ${post.comments}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // 첫 번째 게시글로 추가
+        const firstPost = postsGrid.querySelector('.humor-item, .post-item');
+        if (firstPost) {
+            firstPost.insertAdjacentHTML('beforebegin', postHTML);
+        } else {
+            postsGrid.innerHTML = postHTML;
+        }
+    }
+    
+    // 게시글 상세보기 기능
+    const postDetailModal = document.getElementById('postDetailModal');
+    const closeDetailModal = document.getElementById('closeDetailModal');
+    const prevPostBtn = document.getElementById('prevPost');
+    const nextPostBtn = document.getElementById('nextPost');
+    
+    let currentPostIndex = 0;
+    let postsArray = [];
+    
+    // 게시글 데이터 수집
+    function collectPostsData() {
+        const posts = document.querySelectorAll('.humor-item, .post-item');
+        postsArray = Array.from(posts).map((post, index) => {
+            const titleElement = post.querySelector('.humor-item-title a, h3 a');
+            const authorElement = post.querySelector('.humor-meta .author, .author');
+            const timeElement = post.querySelector('.humor-meta .time, .time');
+            const viewsElement = post.querySelector('.humor-stats .views, .views');
+            const likesElement = post.querySelector('.humor-stats .likes, .likes');
+            const commentsElement = post.querySelector('.humor-stats .comments, .comments');
+            const imageElement = post.querySelector('.humor-thumbnail img');
+            
+            return {
+                index: index,
+                element: post,
+                title: titleElement ? titleElement.textContent.trim() : '',
+                author: authorElement ? authorElement.textContent.trim() : '',
+                time: timeElement ? timeElement.textContent.trim() : '',
+                views: viewsElement ? viewsElement.textContent.trim() : '0',
+                likes: likesElement ? likesElement.textContent.trim() : '0',
+                comments: commentsElement ? commentsElement.textContent.trim() : '0',
+                image: imageElement ? imageElement.src : '',
+                content: `이것은 "${titleElement ? titleElement.textContent.trim() : ''}"의 상세 내용입니다.\n\n실제 서비스에서는 서버에서 게시글의 전체 내용을 가져와 표시합니다.\n\n재미있는 부동산 관련 유머 콘텐츠가 여기에 표시됩니다!`
+            };
+        });
+    }
+    
+    // 게시글 상세보기 열기
+    function openPostDetail(index) {
+        if (!postsArray.length) {
+            collectPostsData();
+        }
+        
+        if (index < 0 || index >= postsArray.length) return;
+        
+        currentPostIndex = index;
+        const post = postsArray[index];
+        
+        // 데이터 채우기
+        document.getElementById('postDetailTitle').textContent = post.title;
+        document.getElementById('postDetailAuthor').textContent = post.author;
+        document.getElementById('postDetailTime').textContent = post.time;
+        document.getElementById('postDetailContent').textContent = post.content;
+        document.getElementById('postDetailLikes').textContent = post.likes.replace(/[^\d]/g, '');
+        document.getElementById('postDetailComments').textContent = post.comments.replace(/[^\d]/g, '');
+        document.getElementById('commentCount').textContent = post.comments.replace(/[^\d]/g, '');
+        
+        // 이미지 처리
+        const mediaContainer = document.getElementById('postDetailMedia');
+        const detailImage = document.getElementById('postDetailImage');
+        
+        if (post.image && !post.image.includes('placeholder') && post.image !== '') {
+            detailImage.src = post.image;
+            detailImage.style.display = 'block';
+            mediaContainer.style.display = 'flex';
+        } else {
+            // placeholder 이미지 표시
+            mediaContainer.style.display = 'flex';
+            mediaContainer.style.background = 'linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%)';
+            detailImage.style.display = 'none';
+            
+            // Font Awesome 아이콘 추가
+            let placeholderIcon = mediaContainer.querySelector('.placeholder-icon');
+            if (!placeholderIcon) {
+                placeholderIcon = document.createElement('div');
+                placeholderIcon.className = 'placeholder-icon';
+                placeholderIcon.innerHTML = '<i class="fas fa-image" style="font-size: 72px; color: var(--gray-400); opacity: 0.5;"></i>';
+                mediaContainer.appendChild(placeholderIcon);
+            }
+        }
+        
+        // 네비게이션 버튼 상태 업데이트
+        prevPostBtn.disabled = currentPostIndex === 0;
+        nextPostBtn.disabled = currentPostIndex === postsArray.length - 1;
+        
+        // 모달 열기
+        postDetailModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // 샘플 댓글 추가
+        loadComments();
+    }
+    
+    // 댓글 로드
+    function loadComments() {
+        const commentsList = document.getElementById('commentsList');
+        const sampleComments = [
+            { author: '부동산매니아', text: 'ㅋㅋㅋㅋ 진짜 웃기네요!', time: '30분 전' },
+            { author: '청약전문가', text: '저도 똑같은 경험 있어요 ㅠㅠ', time: '1시간 전' },
+            { author: '분양왕', text: '공감 100% 입니다', time: '2시간 전' }
+        ];
+        
+        commentsList.innerHTML = sampleComments.map(comment => `
+            <div class="comment-item">
+                <div class="comment-author">${comment.author}</div>
+                <div class="comment-text">${comment.text}</div>
+                <div class="comment-time">${comment.time}</div>
+            </div>
+        `).join('');
+    }
+    
+    // 게시글 클릭 이벤트
+    document.addEventListener('click', function(e) {
+        const postItem = e.target.closest('.humor-item, .post-item');
+        if (postItem && !e.target.closest('.floating-upload-btn') && !e.target.closest('.upload-modal')) {
+            e.preventDefault();
+            collectPostsData();
+            const index = postsArray.findIndex(p => p.element === postItem);
+            if (index !== -1) {
+                openPostDetail(index);
+            }
+        }
+    });
+    
+    // 이전/다음 버튼
+    if (prevPostBtn) {
+        prevPostBtn.addEventListener('click', function() {
+            if (currentPostIndex > 0) {
+                openPostDetail(currentPostIndex - 1);
+            }
+        });
+    }
+    
+    if (nextPostBtn) {
+        nextPostBtn.addEventListener('click', function() {
+            if (currentPostIndex < postsArray.length - 1) {
+                openPostDetail(currentPostIndex + 1);
+            }
+        });
+    }
+    
+    // 모달 닫기
+    if (closeDetailModal) {
+        closeDetailModal.addEventListener('click', function() {
+            postDetailModal.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // placeholder 아이콘 제거
+            const placeholderIcon = document.querySelector('.placeholder-icon');
+            if (placeholderIcon) {
+                placeholderIcon.remove();
+            }
+        });
+    }
+    
+    // ESC 키로 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && postDetailModal && postDetailModal.classList.contains('active')) {
+            postDetailModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // 좌우 화살표로 네비게이션
+        if (postDetailModal && postDetailModal.classList.contains('active')) {
+            if (e.key === 'ArrowLeft' && currentPostIndex > 0) {
+                openPostDetail(currentPostIndex - 1);
+            } else if (e.key === 'ArrowRight' && currentPostIndex < postsArray.length - 1) {
+                openPostDetail(currentPostIndex + 1);
+            }
+        }
+    });
+    
+    // 좋아요 버튼
+    const likeBtn = document.querySelector('.like-btn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const likesSpan = document.getElementById('postDetailLikes');
+            const currentLikes = parseInt(likesSpan.textContent);
+            likesSpan.textContent = this.classList.contains('active') ? currentLikes + 1 : currentLikes - 1;
+        });
+    }
+    
+    // 북마크 버튼
+    const bookmarkBtn = document.querySelector('.bookmark-btn');
+    if (bookmarkBtn) {
+        bookmarkBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+    }
+    
+    // 댓글 작성
+    const commentSubmit = document.querySelector('.comment-submit');
+    if (commentSubmit) {
+        commentSubmit.addEventListener('click', function() {
+            const input = document.querySelector('.comment-input');
+            if (input && input.value.trim()) {
+                const commentsList = document.getElementById('commentsList');
+                const newComment = document.createElement('div');
+                newComment.className = 'comment-item';
+                newComment.innerHTML = `
+                    <div class="comment-author">나</div>
+                    <div class="comment-text">${input.value}</div>
+                    <div class="comment-time">방금 전</div>
+                `;
+                commentsList.insertBefore(newComment, commentsList.firstChild);
+                input.value = '';
+                
+                // 댓글 수 업데이트
+                const commentCount = document.getElementById('commentCount');
+                const postDetailComments = document.getElementById('postDetailComments');
+                const currentCount = parseInt(commentCount.textContent);
+                commentCount.textContent = currentCount + 1;
+                postDetailComments.textContent = currentCount + 1;
+            }
+        });
+    }
+    
+    // 엔터키로 댓글 작성
+    const commentInput = document.querySelector('.comment-input');
+    if (commentInput) {
+        commentInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const submitBtn = document.querySelector('.comment-submit');
+                if (submitBtn) submitBtn.click();
+            }
+        });
+    }
 });

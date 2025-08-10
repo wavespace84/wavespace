@@ -6,8 +6,8 @@ console.log('humor.js 파일 로드 시작');
 document.addEventListener('DOMContentLoaded', function() {
     console.log('humor.js DOMContentLoaded 이벤트 발생');
     
-    // 카테고리 탭 - 클래스명 수정 (.category-tab → .tab-btn)
-    const categoryTabs = document.querySelectorAll('.tab-btn');
+    // 카테고리 탭 - checkbox-tab 스타일
+    const categoryTabs = document.querySelectorAll('.checkbox-tab');
     const searchInput = document.querySelector('.search-input');
     const searchBtn = document.querySelector('.search-btn');
     const sortSelect = document.querySelector('.sort-select');
@@ -17,20 +17,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('카테고리 탭 개수:', categoryTabs.length);
 
-    // 카테고리 탭 클릭 이벤트
+    // 카테고리 탭 클릭 이벤트 (checkbox-tab 스타일)
     if (categoryTabs.length > 0) {
         categoryTabs.forEach((tab, index) => {
+            const input = tab.querySelector('input[type="radio"]');
             console.log(`탭 ${index + 1} 등록:`, tab.textContent.trim());
             
             tab.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
+                // preventDefault 제거 - radio 버튼의 기본 동작 허용
                 
                 console.log('탭 클릭됨:', this.textContent.trim());
                 
-                categoryTabs.forEach(t => t.classList.remove('active'));
+                // 모든 탭에서 active 클래스 제거
+                categoryTabs.forEach(t => {
+                    t.classList.remove('active');
+                    const tInput = t.querySelector('input[type="radio"]');
+                    if (tInput) tInput.checked = false;
+                });
+                // 클릭한 탭에 active 클래스 추가
                 this.classList.add('active');
+                if (input) input.checked = true;
+                
                 const category = this.dataset.category;
+                console.log('필터링 카테고리:', category);
                 filterPosts(category);
             });
         });
@@ -131,15 +140,17 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`Filtering posts by category: ${category}`);
         
         const posts = document.querySelectorAll('.post-item');
+        console.log(`Found ${posts.length} posts to filter`);
         let visibleCount = 0;
         
         posts.forEach(post => {
+            const postCategory = post.dataset.category;
+            
             if (category === 'all') {
                 post.style.display = '';
                 visibleCount++;
             } else {
                 // data-category 속성으로 필터링
-                const postCategory = post.dataset.category;
                 if (postCategory === category) {
                     post.style.display = '';
                     visibleCount++;
@@ -179,11 +190,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 카테고리별 게시글 개수 업데이트
     function updateCategoryCounts() {
-        const categoryTabs = document.querySelectorAll('.tab-btn');
+        const categoryTabs = document.querySelectorAll('.checkbox-tab');
         
         categoryTabs.forEach(tab => {
             const category = tab.dataset.category;
-            const countSpan = tab.querySelector('.count');
+            const countSpan = tab.querySelector('.tab-count');
             
             if (countSpan) {
                 const posts = document.querySelectorAll('.post-item');

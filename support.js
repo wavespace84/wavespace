@@ -331,7 +331,7 @@ window.smoothScrollTo = function(targetId, offset = 100) {
 document.addEventListener('DOMContentLoaded', () => {
     // DOM 요소 초기화
     faqList = document.getElementById('faqList');
-    categoryBtns = document.querySelectorAll('.faq-category-btn');
+    categoryBtns = document.querySelectorAll('.checkbox-tab');
     searchInput = document.getElementById('supportSearchInput');
     keywordTags = document.querySelectorAll('.keyword-tag');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
@@ -340,12 +340,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // FAQ 렌더링
     renderFAQ();
     
-    // 카테고리 버튼 이벤트
+    // 카테고리 버튼 이벤트 (checkbox-tab 스타일)
     categoryBtns.forEach(btn => {
+        const input = btn.querySelector('input[type="radio"]');
+        
         btn.addEventListener('click', () => {
             // 활성 버튼 변경
-            categoryBtns.forEach(b => b.classList.remove('active'));
+            categoryBtns.forEach(b => {
+                b.classList.remove('active');
+                const bInput = b.querySelector('input[type="radio"]');
+                if (bInput) bInput.checked = false;
+            });
             btn.classList.add('active');
+            if (input) input.checked = true;
             
             // FAQ 필터링 (페이지를 1로 리셋)
             currentCategory = btn.dataset.category;

@@ -109,33 +109,52 @@ const categoryIcons = {
 
 // 전역 변수
 let filteredUpdates = [...mockUpdates];
+let activeCategory = 'all';
 
 // DOM 요소
 const searchInput = document.getElementById('searchInput');
-const typeSelect = document.getElementById('typeSelect');
-const categorySelect = document.getElementById('categorySelect');
 const updatesList = document.getElementById('updatesList');
+
+// 카테고리 탭 이벤트 리스너 설정 (checkbox-tab 스타일)
+function setupCategoryTabs() {
+    const categoryTabs = document.querySelectorAll('.checkbox-tab');
+    
+    categoryTabs.forEach(tab => {
+        const input = tab.querySelector('input[type="radio"]');
+        
+        tab.addEventListener('click', function() {
+            // 모든 탭에서 active 클래스 제거
+            categoryTabs.forEach(t => {
+                t.classList.remove('active');
+                const tInput = t.querySelector('input[type="radio"]');
+                if (tInput) tInput.checked = false;
+            });
+            // 클릭된 탭에 active 클래스 추가
+            this.classList.add('active');
+            if (input) input.checked = true;
+            // 카테고리 설정
+            activeCategory = this.dataset.category;
+            // 필터링
+            filterUpdates();
+        });
+    });
+}
 
 // 필터 이벤트 리스너
 searchInput.addEventListener('input', filterUpdates);
-typeSelect.addEventListener('change', filterUpdates);
-categorySelect.addEventListener('change', filterUpdates);
 
 // 필터링 함수
 function filterUpdates() {
     const searchTerm = searchInput.value.toLowerCase();
-    const selectedType = typeSelect.value;
-    const selectedCategory = categorySelect.value;
     
     filteredUpdates = mockUpdates.filter(update => {
         const matchesSearch = update.title.toLowerCase().includes(searchTerm) ||
             update.description.toLowerCase().includes(searchTerm) ||
             update.changes.some(change => change.toLowerCase().includes(searchTerm));
         
-        const matchesType = selectedType === 'all' || update.type === selectedType;
-        const matchesCategory = selectedCategory === 'all' || update.category === selectedCategory;
+        const matchesCategory = activeCategory === 'all' || update.type === activeCategory;
         
-        return matchesSearch && matchesType && matchesCategory;
+        return matchesSearch && matchesCategory;
     });
     
     renderUpdates();
@@ -145,36 +164,69 @@ function filterUpdates() {
 function renderUpdates() {
     updatesList.innerHTML = '';
     
-    filteredUpdates.forEach((update, index) => {
-        const updateCard = createUpdateCard(update);
-        // 애니메이션 효과
-        setTimeout(() => {
-            updateCard.style.opacity = '1';
-            updateCard.style.transform = 'translateY(0)';
-        }, index * 100);
-        updatesList.appendChild(updateCard);
-    });
+    if (filteredUpdates.length === 0) {
+        updatesList.innerHTML = '<p class="no-results">검색 결과가 없습니다.</p>';
+        return;
+    }
+    
+    // 최신 업데이트 (첫 번째 아이템)
+    const latestUpdate = filteredUpdates[0];
+    const previousUpdates = filteredUpdates.slice(1);
+    
+    // 최신 업데이트 섹션
+    const latestSection = document.createElement('div');
+    latestSection.className = 'latest-update-section';
+    
+    const latestCard = createLatestUpdateCard(latestUpdate);
+    latestSection.appendChild(latestCard);
+    updatesList.appendChild(latestSection);
+    
+    // 이전 업데이트 섹션
+    if (previousUpdates.length > 0) {
+        const previousSection = document.createElement('div');
+        previousSection.className = 'previous-updates-section';
+        previousSection.innerHTML = `
+            <h3 class="section-title">이전 업데이트</h3>
+            <div class="updates-history"></div>
+        `;
+        
+        const historyContainer = previousSection.querySelector('.updates-history');
+        previousUpdates.forEach((update, index) => {
+            const listItem = createUpdateListItem(update);
+            setTimeout(() => {
+                listItem.style.opacity = '1';
+                listItem.style.transform = 'translateY(0)';
+            }, (index + 1) * 50);
+            historyContainer.appendChild(listItem);
+        });
+        
+        updatesList.appendChild(previousSection);
+    }
 }
 
-// 업데이트 카드 생성
-function createUpdateCard(update) {
-    const card = document.createElement('a');
-    card.href = `update-detail.html?id=${update.id}`;
-    card.className = `update-card ${update.isLatest ? 'latest' : ''}`;
+// 최신 업데이트 카드 생성 (크게 표시)
+function createLatestUpdateCard(update) {
+    const card = document.createElement('div');
+    card.className = 'update-card latest';
+    card.style.cursor = 'pointer';
+    card.onclick = () => showUpdateModal(update);
     card.style.opacity = '0';
     card.style.transform = 'translateY(20px)';
     card.style.transition = 'all 0.3s ease';
+    
+    setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+    }, 100);
     
     card.innerHTML = `
         <div class="update-header-info">
             <div>
                 <div class="update-meta">
-                    <span class="update-version ${update.type}">${update.version}</span>
-                    <span class="update-category">
+                    <span class="update-category highlight">
                         <i class="fas ${categoryIcons[update.category]}"></i>
                         ${update.category}
                     </span>
-                    ${update.isLatest ? '<span class="update-latest"><i class="fas fa-bolt"></i> 최신</span>' : ''}
                 </div>
                 <div class="update-content">
                     <h3>${update.title}</h3>
@@ -185,17 +237,14 @@ function createUpdateCard(update) {
         </div>
         
         <div class="update-changes">
-            <h4>변경사항</h4>
+            <h4>주요 변경사항</h4>
             <ul class="change-list">
-                ${update.changes.slice(0, 3).map(change => `
+                ${update.changes.map(change => `
                     <li class="change-item">
                         <span class="bullet">•</span>
                         <span>${change}</span>
                     </li>
                 `).join('')}
-                ${update.changes.length > 3 ? `
-                    <li class="more-changes">+${update.changes.length - 3}개 더보기</li>
-                ` : ''}
             </ul>
         </div>
         
@@ -208,7 +257,274 @@ function createUpdateCard(update) {
     return card;
 }
 
+// 이전 업데이트 리스트 아이템 생성 (간단하게 표시)
+function createUpdateListItem(update) {
+    const item = document.createElement('div');
+    item.className = 'update-list-item';
+    item.style.cursor = 'pointer';
+    item.onclick = () => showUpdateModal(update);
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(10px)';
+    item.style.transition = 'all 0.3s ease';
+    
+    item.innerHTML = `
+        <div class="update-list-left">
+            <div class="update-list-meta">
+                <span class="update-category">
+                    <i class="fas ${categoryIcons[update.category]}"></i>
+                    ${update.category}
+                </span>
+            </div>
+            <div class="update-list-content">
+                <div class="update-list-title">${update.title}</div>
+                <div class="update-list-description">${update.description}</div>
+            </div>
+        </div>
+        <div class="update-list-date">${update.releaseDate}</div>
+        <i class="fas fa-chevron-right update-list-arrow"></i>
+    `;
+    
+    return item;
+}
+
+// 모달 표시 함수
+function showUpdateModal(update) {
+    const modal = document.getElementById('updateModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalCategory = document.getElementById('modalCategory');
+    const modalDate = document.getElementById('modalDate');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalChangesList = document.getElementById('modalChangesList');
+    
+    // 모달 내용 업데이트
+    modalTitle.textContent = update.title;
+    
+    // 카테고리 업데이트
+    modalCategory.innerHTML = `
+        <i class="fas ${categoryIcons[update.category]}"></i>
+        <span>${update.category}</span>
+    `;
+    
+    // 날짜 업데이트
+    modalDate.innerHTML = `
+        <i class="fas fa-calendar"></i>
+        <span>${update.releaseDate}</span>
+    `;
+    
+    // 설명 업데이트
+    modalDescription.textContent = update.description;
+    
+    // 변경사항 리스트 업데이트
+    modalChangesList.innerHTML = update.changes.map((change, index) => `
+        <li class="modal-change-item">
+            <span class="modal-change-bullet">${index + 1}</span>
+            <span class="modal-change-text">${change}</span>
+        </li>
+    `).join('');
+    
+    // 모달 표시
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// 모달 닫기 함수
+function closeUpdateModal() {
+    const modal = document.getElementById('updateModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// 관리자 권한 체크 (임시 - 실제로는 서버에서 확인)
+function checkAdminPermission() {
+    // 임시로 관리자 권한 부여 (개발 중)
+    return true;
+    
+    // 실제 구현 시:
+    // const currentUser = localStorage.getItem('currentUser');
+    // if (currentUser) {
+    //     const user = JSON.parse(currentUser);
+    //     return user.name === '박승학' || user.isAdmin;
+    // }
+    // return false;
+}
+
+// 글쓰기 모달 열기
+function openWriteModal() {
+    const modal = document.getElementById('writeUpdateModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// 글쓰기 모달 닫기
+function closeWriteModal() {
+    const modal = document.getElementById('writeUpdateModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    // 폼 초기화
+    document.getElementById('updateForm').reset();
+    resetChangeInputs();
+}
+
+// 변경사항 입력 필드 초기화
+function resetChangeInputs() {
+    const container = document.getElementById('changesInputList');
+    container.innerHTML = `
+        <div class="change-input-item">
+            <input type="text" class="change-input" placeholder="변경사항을 입력하세요" required>
+            <button type="button" class="remove-change-btn" style="display: none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+}
+
+// 변경사항 입력 필드 추가
+function addChangeInput() {
+    const container = document.getElementById('changesInputList');
+    const newItem = document.createElement('div');
+    newItem.className = 'change-input-item';
+    newItem.innerHTML = `
+        <input type="text" class="change-input" placeholder="변경사항을 입력하세요" required>
+        <button type="button" class="remove-change-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    container.appendChild(newItem);
+    
+    // 삭제 버튼 이벤트 리스너
+    const removeBtn = newItem.querySelector('.remove-change-btn');
+    removeBtn.addEventListener('click', () => {
+        newItem.remove();
+        updateRemoveButtons();
+    });
+    
+    updateRemoveButtons();
+}
+
+// 삭제 버튼 표시 업데이트
+function updateRemoveButtons() {
+    const items = document.querySelectorAll('.change-input-item');
+    items.forEach((item, index) => {
+        const removeBtn = item.querySelector('.remove-change-btn');
+        if (index === 0 && items.length === 1) {
+            removeBtn.style.display = 'none';
+        } else {
+            removeBtn.style.display = 'flex';
+        }
+    });
+}
+
+// 글쓰기 모달 이벤트 설정
+function setupWriteModal() {
+    const writeModal = document.getElementById('writeUpdateModal');
+    const writeModalClose = document.getElementById('writeModalClose');
+    const cancelBtn = document.getElementById('cancelWriteBtn');
+    const addChangeBtn = document.getElementById('addChangeBtn');
+    const updateForm = document.getElementById('updateForm');
+    
+    // 모달 닫기 버튼들
+    if (writeModalClose) {
+        writeModalClose.addEventListener('click', closeWriteModal);
+    }
+    
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeWriteModal);
+    }
+    
+    // 오버레이 클릭 시 닫기
+    if (writeModal) {
+        writeModal.addEventListener('click', (e) => {
+            if (e.target === writeModal) {
+                closeWriteModal();
+            }
+        });
+    }
+    
+    // 변경사항 추가 버튼
+    if (addChangeBtn) {
+        addChangeBtn.addEventListener('click', addChangeInput);
+    }
+    
+    // 폼 제출
+    if (updateForm) {
+        updateForm.addEventListener('submit', handleUpdateSubmit);
+    }
+}
+
+// 업데이트 폼 제출 처리
+function handleUpdateSubmit(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const changeInputs = document.querySelectorAll('.change-input');
+    const changes = Array.from(changeInputs)
+        .map(input => input.value.trim())
+        .filter(value => value !== '');
+    
+    const newUpdate = {
+        id: mockUpdates.length + 1,
+        title: formData.get('title'),
+        type: formData.get('type'),
+        category: formData.get('category'),
+        description: formData.get('description'),
+        changes: changes,
+        releaseDate: new Date().toISOString().split('T')[0],
+        isLatest: true
+    };
+    
+    // 기존 업데이트의 isLatest를 false로 변경
+    mockUpdates.forEach(update => update.isLatest = false);
+    
+    // 새 업데이트를 맨 앞에 추가
+    mockUpdates.unshift(newUpdate);
+    
+    // 필터 초기화 및 렌더링
+    filteredUpdates = [...mockUpdates];
+    renderUpdates();
+    
+    // 모달 닫기
+    closeWriteModal();
+    
+    // 성공 메시지
+    alert('업데이트가 성공적으로 등록되었습니다!');
+}
+
 // 초기 렌더링
 document.addEventListener('DOMContentLoaded', () => {
+    setupCategoryTabs();
     renderUpdates();
+    
+    // 관리자 권한 체크 및 글쓰기 버튼 표시
+    if (checkAdminPermission()) {
+        const writeBtn = document.getElementById('writeUpdateBtn');
+        if (writeBtn) {
+            writeBtn.style.display = 'flex';
+            writeBtn.addEventListener('click', openWriteModal);
+        }
+    }
+    
+    // 글쓰기 모달 이벤트 설정
+    setupWriteModal();
+    
+    // 모달 닫기 이벤트 리스너
+    const modalClose = document.getElementById('modalClose');
+    const modalOverlay = document.getElementById('updateModal');
+    
+    modalClose.addEventListener('click', closeUpdateModal);
+    
+    // 오버레이 클릭 시 모달 닫기
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            closeUpdateModal();
+        }
+    });
+    
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+            closeUpdateModal();
+        }
+    });
 });

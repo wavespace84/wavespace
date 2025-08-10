@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="notice.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -43,7 +44,6 @@
                                 <a href="notice.html" class="nav-item active">
                                     <i class="fas fa-bullhorn"></i>
                                     <span>공지사항</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="updates.html" class="nav-item highlighted">
                                     <i class="fas fa-info-circle"></i>
@@ -114,17 +114,14 @@
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-briefcase"></i>
                                     <span>분양기획</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-briefcase"></i>
                                     <span>분양영업</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-user-tie"></i>
                                     <span>헤드헌팅</span>
-                                    <span class="check-mark"></span>
                                 </a>
                             </div>
                         </div>
@@ -144,37 +141,30 @@
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-database"></i>
                                     <span>Data Center</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-book"></i>
                                     <span>시장조사서</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-file-signature"></i>
                                     <span>제안서</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-graduation-cap"></i>
                                     <span>교육자료</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-file-alt"></i>
                                     <span>정책자료</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-folder"></i>
                                     <span>기타자료</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-robot"></i>
                                     <span>AI 보고서</span>
-                                    <span class="check-mark"></span>
                                 </a>
                             </div>
                         </div>
@@ -194,22 +184,18 @@
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-gem"></i>
                                     <span>포인트정책</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-chart-bar"></i>
                                     <span>전체랭킹</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-credit-card"></i>
                                     <span>충전하기</span>
-                                    <span class="check-mark"></span>
                                 </a>
                                 <a href="#" class="nav-item">
                                     <i class="fas fa-store"></i>
                                     <span>상점</span>
-                                    <span class="check-mark"></span>
                                 </a>
                             </div>
                         </div>
@@ -288,22 +274,32 @@
 
                     <!-- 검색 및 카테고리 필터 -->
                     <div class="notice-controls">
-                        <div class="category-tabs">
-                            <button class="category-tab active" data-category="all">
+                        <div class="checkbox-tabs">
+                            <label class="checkbox-tab active" data-category="all">
+                                <input type="radio" name="notice-filter" checked>
+                                <span class="tab-check"></span>
                                 <span>전체</span>
-                            </button>
-                            <button class="category-tab" data-category="공지">
+                            </label>
+                            <label class="checkbox-tab" data-category="공지">
+                                <input type="radio" name="notice-filter">
+                                <span class="tab-check"></span>
                                 <span>공지</span>
-                            </button>
-                            <button class="category-tab" data-category="이벤트">
+                            </label>
+                            <label class="checkbox-tab" data-category="이벤트">
+                                <input type="radio" name="notice-filter">
+                                <span class="tab-check"></span>
                                 <span>이벤트</span>
-                            </button>
-                            <button class="category-tab" data-category="점검">
+                            </label>
+                            <label class="checkbox-tab" data-category="점검">
+                                <input type="radio" name="notice-filter">
+                                <span class="tab-check"></span>
                                 <span>점검</span>
-                            </button>
-                            <button class="category-tab" data-category="가이드">
+                            </label>
+                            <label class="checkbox-tab" data-category="가이드">
+                                <input type="radio" name="notice-filter">
+                                <span class="tab-check"></span>
                                 <span>이용가이드</span>
-                            </button>
+                            </label>
                         </div>
                         <div class="search-box">
                             <i class="fas fa-search"></i>

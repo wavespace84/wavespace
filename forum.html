@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="forum.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -329,57 +330,69 @@
                     <span>인기 게시글 보기</span>
                 </button>
 
-                <!-- 검색 및 필터 -->
-                <div class="forum-controls">
-                    <div class="search-box-large">
-                        <input type="text" placeholder="제목, 내용, 작성자로 검색하세요">
-                        <button class="search-button">
+                <!-- 필터 및 검색 영역 -->
+                <div class="forum-filter-section">
+                    <!-- 카테고리 탭 -->
+                    <div class="checkbox-tabs category-tabs">
+                        <label class="checkbox-tab active" data-category="all">
+                            <input type="radio" name="forum-category" checked>
+                            <span class="tab-check"></span>
+                            <span>전체</span>
+                            <span class="tab-count">1,234</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="general">
+                            <input type="radio" name="forum-category">
+                            <span class="tab-check"></span>
+                            <span>일반</span>
+                            <span class="tab-count">523</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="question">
+                            <input type="radio" name="forum-category">
+                            <span class="tab-check"></span>
+                            <span>질문</span>
+                            <span class="tab-count">312</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="info">
+                            <input type="radio" name="forum-category">
+                            <span class="tab-check"></span>
+                            <span>정보공유</span>
+                            <span class="tab-count">245</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="review">
+                            <input type="radio" name="forum-category">
+                            <span class="tab-check"></span>
+                            <span>후기</span>
+                            <span class="tab-count">98</span>
+                        </label>
+                        <label class="checkbox-tab" data-category="job">
+                            <input type="radio" name="forum-category">
+                            <span class="tab-check"></span>
+                            <span>구인구직</span>
+                            <span class="tab-count">56</span>
+                        </label>
+                    </div>
+                    
+                    <!-- 검색 및 정렬 행 -->
+                    <div class="search-sort-row">
+                        <!-- 검색창 -->
+                        <div class="search-box">
                             <i class="fas fa-search"></i>
-                            <span>검색</span>
-                        </button>
+                            <input type="text" placeholder="제목, 내용, 작성자로 검색" id="searchInput">
+                        </div>
+                        
+                        <!-- 정렬 필터 -->
+                        <div class="sort-tabs">
+                            <button class="sort-tab active" data-sort="latest">
+                                최신순
+                            </button>
+                            <button class="sort-tab" data-sort="views">
+                                조회순
+                            </button>
+                            <button class="sort-tab" data-sort="comments">
+                                댓글순
+                            </button>
+                        </div>
                     </div>
-                    <div class="filter-buttons">
-                        <button class="filter-btn active">
-                            <i class="fas fa-clock"></i>
-                            <span>최신순</span>
-                        </button>
-                        <button class="filter-btn">
-                            <i class="fas fa-eye"></i>
-                            <span>조회순</span>
-                        </button>
-                        <button class="filter-btn">
-                            <i class="fas fa-comment"></i>
-                            <span>댓글순</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 카테고리 탭 -->
-                <div class="category-tabs">
-                    <button class="tab-btn active">
-                        전체
-                        <span class="count">1,234</span>
-                    </button>
-                    <button class="tab-btn">
-                        일반
-                        <span class="count">523</span>
-                    </button>
-                    <button class="tab-btn">
-                        질문
-                        <span class="count">312</span>
-                    </button>
-                    <button class="tab-btn">
-                        정보공유
-                        <span class="count">245</span>
-                    </button>
-                    <button class="tab-btn">
-                        후기
-                        <span class="count">98</span>
-                    </button>
-                    <button class="tab-btn">
-                        구인구직
-                        <span class="count">56</span>
-                    </button>
                 </div>
 
                 <!-- 게시글 목록 및 사이드바 -->
@@ -804,6 +817,6 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="forum-enhanced.js"></script>
+    <script src="forum.js"></script>
 </body>
 </html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Debug</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="forum.css">
+    <link rel="stylesheet" href="css/checkbox-interaction.css">
+    <style>
+        #debug {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 400px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 9999;
+            border: 1px solid #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="forum-container">
+        <!-- 카테고리 탭 -->
+        <div class="checkbox-tabs category-tabs">
+            <label class="checkbox-tab active" data-category="all">
+                <input type="radio" name="forum-filter" checked>
+                <span class="tab-check"></span>
+                <span>전체</span>
+                <span class="tab-count">9</span>
+            </label>
+            <label class="checkbox-tab" data-category="general">
+                <input type="radio" name="forum-filter">
+                <span class="tab-check"></span>
+                <span>일반</span>
+                <span class="tab-count">2</span>
+            </label>
+            <label class="checkbox-tab" data-category="question">
+                <input type="radio" name="forum-filter">
+                <span class="tab-check"></span>
+                <span>질문</span>
+                <span class="tab-count">2</span>
+            </label>
+            <label class="checkbox-tab" data-category="info">
+                <input type="radio" name="forum-filter">
+                <span class="tab-check"></span>
+                <span>정보공유</span>
+                <span class="tab-count">2</span>
+            </label>
+        </div>
+
+        <div class="posts-list" id="postsList">
+            <!-- Posts will be displayed here -->
+        </div>
+    </div>
+
+    <div id="debug"></div>
+
+    <script>
+        // Debug logger
+        const debug = document.getElementById('debug');
+        function log(msg) {
+            const time = new Date().toLocaleTimeString();
+            debug.innerHTML = `[${time}] ${msg}<br>` + debug.innerHTML;
+            console.log(msg);
+        }
+
+        // Sample posts
+        const allPosts = [
+            { id: 1, category: "general", title: "일반 게시글 1", views: 100 },
+            { id: 2, category: "question", title: "질문 게시글 1", views: 50 },
+            { id: 3, category: "info", title: "정보공유 게시글 1", views: 200 },
+            { id: 4, category: "general", title: "일반 게시글 2", views: 80 },
+            { id: 5, category: "question", title: "질문 게시글 2", views: 30 },
+            { id: 6, category: "info", title: "정보공유 게시글 2", views: 150 },
+        ];
+
+        let displayedPosts = [...allPosts];
+        let currentCategory = 'all';
+
+        // Filter function
+        function filterByCategory(category) {
+            log(`filterByCategory called with: ${category}`);
+            currentCategory = category;
+            
+            if (category === 'all') {
+                displayedPosts = [...allPosts];
+            } else {
+                displayedPosts = allPosts.filter(post => post.category === category);
+            }
+            
+            log(`Filtered to ${displayedPosts.length} posts`);
+            updatePostsList();
+        }
+
+        // Update posts display
+        function updatePostsList() {
+            const postsList = document.getElementById('postsList');
+            postsList.innerHTML = displayedPosts.map(post => 
+                `<div style="padding: 10px; border: 1px solid #ddd; margin: 5px;">
+                    [${post.category}] ${post.title} - ${post.views} views
+                </div>`
+            ).join('');
+            log(`Updated display with ${displayedPosts.length} posts`);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Page loaded, initializing...');
+            
+            // Show initial posts
+            updatePostsList();
+            
+            // Setup tab events
+            const tabs = document.querySelectorAll('.checkbox-tab');
+            log(`Found ${tabs.length} tabs`);
+            
+            tabs.forEach((tab, index) => {
+                const category = tab.dataset.category;
+                log(`Tab ${index}: category="${category}"`);
+                
+                // Try multiple event approaches
+                tab.onclick = function(e) {
+                    log(`onclick fired for ${this.dataset.category}`);
+                    e.preventDefault();
+                    
+                    if (this.classList.contains('active')) {
+                        log('Already active, skipping');
+                        return;
+                    }
+                    
+                    // Update active states
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        const input = t.querySelector('input');
+                        if (input) input.checked = false;
+                    });
+                    
+                    this.classList.add('active');
+                    const input = this.querySelector('input');
+                    if (input) input.checked = true;
+                    
+                    // Filter
+                    filterByCategory(this.dataset.category);
+                };
+                
+                // Also add addEventListener as backup
+                tab.addEventListener('click', function(e) {
+                    log(`addEventListener click fired for ${this.dataset.category}`);
+                }, true);
+            });
+            
+            log('Setup complete');
+        });
+    </script>
+</body>
+</html>

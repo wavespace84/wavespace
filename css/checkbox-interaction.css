@@ -193,7 +193,7 @@
 /* 탭 스타일 체크박스 그룹 */
 .checkbox-tabs {
     display: flex;
-    gap: 12px;
+    gap: 4px;  /* 탭 그룹 내 간격도 줄임: 12px → 4px */
     padding-bottom: 12px;
     border-bottom: 2px solid var(--gray-100);
     overflow-x: auto;
@@ -204,16 +204,17 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 10px 20px;
-    background: white;
-    border: 2px solid var(--gray-200);
-    border-radius: var(--radius-full);
+    padding: 8px 8px;  /* 좌우 패딩 줄임 */
+    background: transparent;  /* 배경 제거 */
+    border: none;  /* 테두리 제거 */
+    border-radius: 0;  /* 둥근 모서리 제거 */
     color: var(--gray-600);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    margin: 0 4px;  /* 탭 간격 줄임: 8px → 4px */
 }
 
 .checkbox-tab input {
@@ -223,20 +224,19 @@
 }
 
 .checkbox-tab:hover {
-    border-color: var(--primary-blue);
     color: var(--primary-blue);
-    background: var(--light-blue);
+    background: transparent;  /* 호버시에도 배경 없음 */
 }
 
 .checkbox-tab.active {
-    background: white;
-    border-color: var(--primary-blue);
+    background: transparent;  /* 활성 상태에서도 배경 없음 */
     color: var(--primary-blue);
+    font-weight: 700;  /* 활성 상태에서 굵게 */
 }
 
 .checkbox-tab .tab-check {
     width: 0;
-    height: 16px;
+    height: 16px;  /* 체크마크 높이 증가 */
     overflow: hidden;
     transition: width 0.3s ease;
     display: inline-flex;
@@ -245,15 +245,15 @@
 }
 
 .checkbox-tab.active .tab-check {
-    width: 16px;
-    margin-right: 4px;
+    width: 16px;  /* 체크마크 너비 증가 */
+    margin-right: 4px;  /* 간격 조정 */
 }
 
 .checkbox-tab .tab-check::after {
     content: '\2713';
     color: var(--primary-blue);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;  /* 체크마크 크기 증가: 12px → 15px */
     animation: slide-in 0.3s ease-out;
 }
 
@@ -271,19 +271,21 @@
 /* 탭 카운트 배지 */
 .checkbox-tab .tab-count {
     display: inline-block;
-    min-width: 20px;
-    padding: 2px 6px;
-    background: var(--gray-200);
-    border-radius: var(--radius-full);
+    min-width: 18px;  /* 20px → 18px */
+    padding: 1px 5px;  /* 2px 6px → 1px 5px */
+    background: transparent;  /* 배경 제거 */
+    border-radius: 0;
     font-size: 11px;
-    font-weight: 700;
-    margin-left: 4px;
+    font-weight: 600;
+    margin-left: 3px;  /* 4px → 3px */
     transition: all 0.3s ease;
+    color: var(--gray-500);
 }
 
 .checkbox-tab.active .tab-count {
-    background: var(--light-blue);
+    background: transparent;
     color: var(--primary-blue);
+    font-weight: 700;
 }
 
 /* 카드 선택 스타일 */
@@ -377,4 +379,202 @@
     100% {
         opacity: 0;
     }
+}
+
+/* 네비게이터 선택 스타일 (이벤트 카테고리 스타일 참조) */
+.nav-selector {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+.nav-selector:hover {
+    border-color: var(--primary-blue);
+    background: var(--light-blue);
+    color: var(--primary-blue);
+}
+
+/* 선택된 상태 */
+.nav-selector.selected {
+    background: white;
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
+}
+
+/* 체크 마크 */
+.nav-selector::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.nav-selector.selected::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* 사이드바 네비게이션 아이템 체크 마크 - 체크 아이콘만 표시 */
+.sidebar .nav-item.active::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-blue);
+    font-size: 14px;
+    /* 원형 배경 제거 */
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    display: inline-block !important;
+}
+
+/* 네비게이션 아이템 선택 효과 */
+.nav-item {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+    background: var(--light-blue);
+    border-radius: var(--radius-md);
+}
+
+.nav-item.active {
+    background: var(--light-blue);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+}
+
+/* 체크 마크 인라인 스타일 - 사이드바가 아닌 다른 곳에서 사용 */
+.nav-item .check-mark {
+    display: none;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    margin-left: auto;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+}
+
+/* 사이드바에서는 check-mark 클래스 숨김 */
+.sidebar .nav-item .check-mark {
+    display: none !important;
+}
+
+.nav-item.active .check-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-item .check-mark::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
+
+/* 선택 가능한 네비게이션 그룹 */
+.nav-selection-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 16px 0;
+}
+
+.nav-selection-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.nav-selection-item:hover {
+    border-color: var(--primary-blue);
+    background: var(--light-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.nav-selection-item.selected {
+    background: white;
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    box-shadow: 0 0 0 4px rgba(46, 140, 230, 0.12);
+    font-weight: 600;
+}
+
+/* 선택 애니메이션 */
+@keyframes select-bounce {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.nav-selection-item.selected::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    animation: select-bounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 2px 8px rgba(46, 140, 230, 0.4);
 }

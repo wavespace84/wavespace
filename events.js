@@ -109,7 +109,48 @@ const loadMoreBtn = document.getElementById('loadMoreBtn');
 let currentFilter = 'all';
 let displayedCount = 6;
 
-// 새로운 체크박스 탭 이벤트 리스너
+// 체크박스 탭 기능
+const checkboxTabs = document.querySelectorAll('.checkbox-tab input[type="checkbox"]');
+const allCheckbox = document.querySelector('.checkbox-tab input[value="all"]');
+
+// 체크박스 탭 이벤트 리스너
+checkboxTabs.forEach(checkbox => {
+    checkbox.addEventListener('change', (e) => {
+        const value = e.target.value;
+        
+        if (value === 'all') {
+            // '전체' 선택 시 다른 모든 체크박스 해제
+            checkboxTabs.forEach(cb => {
+                if (cb !== allCheckbox) {
+                    cb.checked = false;
+                }
+            });
+            currentFilter = 'all';
+        } else {
+            // 개별 체크박스 선택 시
+            allCheckbox.checked = false;
+            
+            // 선택된 필터 확인
+            const selectedFilters = Array.from(checkboxTabs)
+                .filter(cb => cb.checked && cb.value !== 'all')
+                .map(cb => cb.value);
+            
+            if (selectedFilters.length === 0) {
+                // 아무것도 선택되지 않으면 전체 선택
+                allCheckbox.checked = true;
+                currentFilter = 'all';
+            } else {
+                currentFilter = selectedFilters;
+            }
+        }
+        
+        // 이벤트 다시 렌더링
+        displayedCount = 6;
+        renderEvents();
+    });
+});
+
+// 새로운 체크박스 탭 이벤트 리스너 (기존 코드와 호환성 유지)
 document.addEventListener('tabChanged', (e) => {
     // 필터 변경
     currentFilter = e.detail.status;
@@ -124,7 +165,13 @@ function renderEvents() {
     // 필터링
     let filteredEvents = eventsData;
     if (currentFilter !== 'all') {
-        filteredEvents = eventsData.filter(event => event.status === currentFilter);
+        if (Array.isArray(currentFilter)) {
+            // 배열인 경우 (다중 선택)
+            filteredEvents = eventsData.filter(event => currentFilter.includes(event.status));
+        } else {
+            // 단일 선택
+            filteredEvents = eventsData.filter(event => event.status === currentFilter);
+        }
     }
     
     // 표시할 이벤트

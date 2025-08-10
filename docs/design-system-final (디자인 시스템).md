@@ -157,6 +157,36 @@ const colors = {
 </GlassCard>
 ```
 
+### 네비게이터 선택 스타일
+이벤트 카테고리와 동일한 선택 패턴을 네비게이션에 적용:
+
+```html
+<!-- 기본 네비게이션 아이템 (선택 시 체크마크 표시) -->
+<a href="#" class="nav-item active">
+    <i class="fas fa-gift"></i>
+    <span>이벤트</span>
+    <span class="check-mark"></span>
+</a>
+
+<!-- 선택 가능한 네비게이션 그룹 -->
+<div class="nav-selection-group">
+    <div class="nav-selection-item selected">
+        <i class="fas fa-coins"></i>
+        <span>포인트</span>
+    </div>
+    <div class="nav-selection-item">
+        <i class="fas fa-medal"></i>
+        <span>배지</span>
+    </div>
+</div>
+```
+
+**특징:**
+- 선택 시 파란색 테두리 강조
+- 우측 상단 체크마크 애니메이션
+- 3px 그림자 효과로 선택 상태 강조
+- hover 시 배경색 변경
+
 ## 📱 반응형 전략
 
 ### 브레이크포인트

@@ -30,12 +30,15 @@
 }
 
 /* 필터 탭 */
+/* 이벤트 탭 - checkbox-interaction.css 사용 */
 .event-tabs {
-    display: flex;
-    gap: 12px;
+    margin-top: -16px;  /* 공지사항과 일관성 있게 위치 조정 */
     margin-bottom: 32px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--gray-100);
+}
+
+.event-tabs.checkbox-tabs {
+    padding-bottom: 0;
+    border-bottom: none;
     overflow-x: auto;
 }
 
