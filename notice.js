@@ -295,21 +295,27 @@ function renderPagination() {
     
     if (totalPages <= 1) return;
     
-    // 첫 페이지 버튼
-    const firstBtn = createPaginationButton('<i class="fas fa-angle-double-left"></i>', () => {
+    pagination.className = 'pagination-underline';
+    
+    // 처음 버튼
+    const firstBtn = createPaginationLink('처음', () => {
         currentPage = 1;
         renderNotices();
         renderPagination();
     }, currentPage === 1);
     pagination.appendChild(firstBtn);
     
-    // 이전 페이지 버튼
-    const prevBtn = createPaginationButton('<i class="fas fa-angle-left"></i>', () => {
+    // 이전 버튼
+    const prevBtn = createPaginationLink('이전', () => {
         currentPage = Math.max(currentPage - 1, 1);
         renderNotices();
         renderPagination();
     }, currentPage === 1);
     pagination.appendChild(prevBtn);
+    
+    // 페이지 번호들을 담을 컨테이너
+    const pageNumbers = document.createElement('div');
+    pageNumbers.className = 'page-numbers';
     
     // 페이지 번호 버튼들
     const maxVisiblePages = 5;
@@ -321,24 +327,26 @@ function renderPagination() {
     }
     
     for (let i = startPage; i <= endPage; i++) {
-        const pageBtn = createPaginationButton(i, () => {
+        const pageLink = createPaginationLink(i, () => {
             currentPage = i;
             renderNotices();
             renderPagination();
         }, false, currentPage === i);
-        pagination.appendChild(pageBtn);
+        pageNumbers.appendChild(pageLink);
     }
     
-    // 다음 페이지 버튼
-    const nextBtn = createPaginationButton('<i class="fas fa-angle-right"></i>', () => {
+    pagination.appendChild(pageNumbers);
+    
+    // 다음 버튼
+    const nextBtn = createPaginationLink('다음', () => {
         currentPage = Math.min(currentPage + 1, totalPages);
         renderNotices();
         renderPagination();
     }, currentPage === totalPages);
     pagination.appendChild(nextBtn);
     
-    // 마지막 페이지 버튼
-    const lastBtn = createPaginationButton('<i class="fas fa-angle-double-right"></i>', () => {
+    // 끝 버튼
+    const lastBtn = createPaginationLink('끝', () => {
         currentPage = totalPages;
         renderNotices();
         renderPagination();
@@ -346,14 +354,18 @@ function renderPagination() {
     pagination.appendChild(lastBtn);
 }
 
-// 페이지네이션 버튼 생성
-function createPaginationButton(content, onClick, disabled, active = false) {
-    const button = document.createElement('button');
-    button.innerHTML = content;
-    button.disabled = disabled;
-    if (active) button.classList.add('active');
-    button.addEventListener('click', onClick);
-    return button;
+// 페이지네이션 링크 생성
+function createPaginationLink(content, onClick, disabled, active = false) {
+    const link = document.createElement('a');
+    link.href = '#';
+    link.textContent = content;
+    if (disabled) link.className = 'disabled';
+    if (active) link.className = 'active';
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!disabled) onClick();
+    });
+    return link;
 }
 
 // 모달 관련 DOM 요소

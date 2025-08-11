@@ -1582,6 +1582,20 @@ document.addEventListener('DOMContentLoaded', function() {
         return questionElement;
     }
 
+    // 페이지네이션 링크 생성 헬퍼 함수
+    function createPaginationLink(text, onClick, disabled, active = false) {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.textContent = text;
+        if (disabled) link.className = 'disabled';
+        if (active) link.className = 'active';
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!disabled) onClick();
+        });
+        return link;
+    }
+
     // 페이지네이션 렌더링 함수
     function renderPagination() {
         const paginationContainer = document.getElementById('paginationContainer');
@@ -1589,38 +1603,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const totalPages = Math.ceil(filteredQuestions.length / itemsPerPage);
         paginationContainer.innerHTML = '';
+        paginationContainer.className = 'pagination-underline';
+
+        if (totalPages <= 1) return;
+
+        // 처음 버튼
+        const firstBtn = createPaginationLink('처음', () => {
+            changePage(1);
+        }, currentPage === 1);
+        paginationContainer.appendChild(firstBtn);
 
         // 이전 버튼
-        const prevBtn = document.createElement('button');
-        prevBtn.className = 'page-btn';
-        if (currentPage === 1) {
-            prevBtn.disabled = true;
-        }
-        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-        prevBtn.onclick = () => changePage(currentPage - 1);
+        const prevBtn = createPaginationLink('이전', () => {
+            if (currentPage > 1) changePage(currentPage - 1);
+        }, currentPage === 1);
         paginationContainer.appendChild(prevBtn);
 
+        // 페이지 번호들을 담을 컨테이너
+        const pageNumbers = document.createElement('div');
+        pageNumbers.className = 'page-numbers';
+
         // 페이지 번호 버튼들
-        for (let i = 1; i <= totalPages; i++) {
-            const pageBtn = document.createElement('button');
-            pageBtn.className = 'page-btn';
-            pageBtn.textContent = i;
-            if (i === currentPage) {
-                pageBtn.classList.add('active');
-            }
-            pageBtn.onclick = () => changePage(i);
-            paginationContainer.appendChild(pageBtn);
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, startPage + 4);
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageLink = createPaginationLink(i, () => {
+                changePage(i);
+            }, false, currentPage === i);
+            pageNumbers.appendChild(pageLink);
         }
 
+        paginationContainer.appendChild(pageNumbers);
+
         // 다음 버튼
-        const nextBtn = document.createElement('button');
-        nextBtn.className = 'page-btn';
-        if (currentPage === totalPages) {
-            nextBtn.disabled = true;
-        }
-        nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        nextBtn.onclick = () => changePage(currentPage + 1);
+        const nextBtn = createPaginationLink('다음', () => {
+            if (currentPage < totalPages) changePage(currentPage + 1);
+        }, currentPage === totalPages);
         paginationContainer.appendChild(nextBtn);
+
+        // 끝 버튼
+        const lastBtn = createPaginationLink('끝', () => {
+            changePage(totalPages);
+        }, currentPage === totalPages);
+        paginationContainer.appendChild(lastBtn);
     }
 
     // 페이지 변경 함수

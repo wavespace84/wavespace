@@ -897,6 +897,8 @@
     transform: translateY(0);
 }
 
+/* 페이지네이션 스타일 제거 - common.css의 .pagination-underline 사용 */
+
 /* 반응형 */
 @media (max-width: 768px) {
     .updates-container {

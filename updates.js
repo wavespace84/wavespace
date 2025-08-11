@@ -110,6 +110,8 @@ const categoryIcons = {
 // 전역 변수
 let filteredUpdates = [...mockUpdates];
 let activeCategory = 'all';
+let currentPage = 1;
+const itemsPerPage = 10;
 
 // DOM 요소
 const searchInput = document.getElementById('searchInput');
@@ -157,7 +159,9 @@ function filterUpdates() {
         return matchesSearch && matchesCategory;
     });
     
+    currentPage = 1; // 필터링 시 페이지 초기화
     renderUpdates();
+    renderPagination();
 }
 
 // 업데이트 목록 렌더링
@@ -169,17 +173,24 @@ function renderUpdates() {
         return;
     }
     
-    // 최신 업데이트 (첫 번째 아이템)
-    const latestUpdate = filteredUpdates[0];
-    const previousUpdates = filteredUpdates.slice(1);
+    // 페이지에 표시할 업데이트 범위 계산
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedUpdates = filteredUpdates.slice(startIndex, endIndex);
     
-    // 최신 업데이트 섹션
-    const latestSection = document.createElement('div');
-    latestSection.className = 'latest-update-section';
+    // 첫 페이지인 경우 최신 업데이트를 크게 표시
+    const latestUpdate = currentPage === 1 ? paginatedUpdates[0] : null;
+    const previousUpdates = currentPage === 1 ? paginatedUpdates.slice(1) : paginatedUpdates;
     
-    const latestCard = createLatestUpdateCard(latestUpdate);
-    latestSection.appendChild(latestCard);
-    updatesList.appendChild(latestSection);
+    // 최신 업데이트 섹션 (첫 페이지에만 표시)
+    if (latestUpdate) {
+        const latestSection = document.createElement('div');
+        latestSection.className = 'latest-update-section';
+        
+        const latestCard = createLatestUpdateCard(latestUpdate);
+        latestSection.appendChild(latestCard);
+        updatesList.appendChild(latestSection);
+    }
     
     // 이전 업데이트 섹션
     if (previousUpdates.length > 0) {
@@ -491,10 +502,91 @@ function handleUpdateSubmit(e) {
     alert('업데이트가 성공적으로 등록되었습니다!');
 }
 
+// 페이지네이션 렌더링
+function renderPagination() {
+    const paginationContainer = document.getElementById('paginationContainer');
+    if (!paginationContainer) return;
+    
+    const totalPages = Math.ceil(filteredUpdates.length / itemsPerPage);
+    paginationContainer.innerHTML = '';
+    
+    if (totalPages <= 1) return;
+    
+    // 처음 버튼
+    const firstBtn = createPaginationLink('처음', () => {
+        currentPage = 1;
+        renderUpdates();
+        renderPagination();
+    }, currentPage === 1);
+    paginationContainer.appendChild(firstBtn);
+    
+    // 이전 버튼
+    const prevBtn = createPaginationLink('이전', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderUpdates();
+            renderPagination();
+        }
+    }, currentPage === 1);
+    paginationContainer.appendChild(prevBtn);
+    
+    // 페이지 번호들을 담을 컨테이너
+    const pageNumbers = document.createElement('div');
+    pageNumbers.className = 'page-numbers';
+    
+    // 페이지 번호 버튼들
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, startPage + 4);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const pageLink = createPaginationLink(i, () => {
+            currentPage = i;
+            renderUpdates();
+            renderPagination();
+        }, false, currentPage === i);
+        pageNumbers.appendChild(pageLink);
+    }
+    
+    paginationContainer.appendChild(pageNumbers);
+    
+    // 다음 버튼
+    const nextBtn = createPaginationLink('다음', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderUpdates();
+            renderPagination();
+        }
+    }, currentPage === totalPages);
+    paginationContainer.appendChild(nextBtn);
+    
+    // 끝 버튼
+    const lastBtn = createPaginationLink('끝', () => {
+        currentPage = totalPages;
+        renderUpdates();
+        renderPagination();
+    }, currentPage === totalPages);
+    paginationContainer.appendChild(lastBtn);
+}
+
+// 페이지네이션 링크 생성
+function createPaginationLink(text, onClick, disabled, active = false) {
+    const link = document.createElement('a');
+    link.href = '#';
+    link.textContent = text;
+    if (disabled) link.className = 'disabled';
+    if (active) link.className = 'active';
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!disabled) onClick();
+    });
+    return link;
+}
+
 // 초기 렌더링
 document.addEventListener('DOMContentLoaded', () => {
     setupCategoryTabs();
     renderUpdates();
+    renderPagination();
     
     // 관리자 권한 체크 및 글쓰기 버튼 표시
     if (checkAdminPermission()) {

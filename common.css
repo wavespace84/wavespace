@@ -98,3 +98,47 @@ a {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
 }
+
+/* 페이지네이션 밑줄 스타일 */
+.pagination-underline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    font-size: 16px;
+    margin: 48px 0;
+}
+
+.pagination-underline a {
+    color: #6b7280;
+    text-decoration: none;
+    padding: 8px 4px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+    min-width: 32px;
+    text-align: center;
+}
+
+.pagination-underline a:hover:not(.disabled) {
+    color: #3080FF;
+    border-bottom-color: #3080FF;
+}
+
+.pagination-underline a.active {
+    color: #3080FF;
+    font-weight: 600;
+    border-bottom-color: #3080FF;
+}
+
+.pagination-underline a.disabled {
+    color: #9ca3af;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination-underline .page-numbers {
+    display: flex;
+    gap: 24px;
+}

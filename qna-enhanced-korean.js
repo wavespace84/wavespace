@@ -344,6 +344,9 @@ function renderQuestions() {
         return;
     }
     
+    // 미채택 질문 알림 업데이트
+    updateUnadoptedBubble();
+    
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const pageQuestions = filteredQuestions.slice(startIndex, endIndex);
@@ -354,33 +357,47 @@ function renderQuestions() {
     }
     
     const html = pageQuestions.map(question => `
-        <div class="question-card ${question.status}" data-id="${question.id}" onclick="showQuestionDetail(${question.id}); return false;" style="cursor: pointer;">
+        <div class="question-card ${question.status}" data-id="${question.id}" onclick="showQuestionDetail(${question.id}); return false;">
             <div class="question-header">
                 <div class="question-status">
                     <span class="status-badge ${question.status}">
-                        ${question.status === 'adopted' ? '채택완료' : `미채택 +${question.reward.toLocaleString()}P`}
+                        ${question.status === 'adopted' ? '채택완료' : '미채택'}
                     </span>
+                    ${question.status === 'unadopted' && question.reward > 0 ? 
+                        `<span class="reward-points">+${question.reward.toLocaleString()}P</span>` : ''}
                     ${question.isNew ? '<span class="new-badge">NEW</span>' : ''}
                 </div>
             </div>
             <div class="question-content">
-                <h3 class="question-title">
-                    ${question.title}
-                </h3>
+                <h3 class="question-title">${question.title}</h3>
                 <p class="question-excerpt">${question.excerpt}</p>
-                <div class="question-bottom">
-                    <div class="question-meta">
-                        <span class="author"><i class="fas fa-user"></i> ${question.author}</span>
-                        <span class="answers"><i class="fas fa-comment"></i> ${question.answers}</span>
-                        <span class="views"><i class="fas fa-eye"></i> ${question.views}</span>
-                        <span class="time"><i class="fas fa-clock"></i> ${question.time}</span>
-                    </div>
+            </div>
+            <div class="question-bottom">
+                <div class="question-meta">
+                    <span class="author"><i class="fas fa-user"></i> ${question.author}</span>
+                    <span class="answers"><i class="fas fa-comment"></i> ${question.answers}</span>
+                    <span class="views"><i class="fas fa-eye"></i> ${question.views}</span>
+                    <span class="time"><i class="fas fa-clock"></i> ${question.time}</span>
                 </div>
             </div>
         </div>
     `).join('');
     
     container.innerHTML = html;
+}
+
+// 미채택 질문 알림 업데이트
+function updateUnadoptedBubble() {
+    const unadoptedCount = questionsData.filter(q => q.status === 'unadopted').length;
+    const bubble = document.getElementById('unadoptedBubble');
+    
+    if (bubble) {
+        if (unadoptedCount > 0) {
+            bubble.classList.add('show');
+        } else {
+            bubble.classList.remove('show');
+        }
+    }
 }
 
 // 페이지네이션 업데이트
@@ -977,6 +994,7 @@ window.toggleHelpful = toggleHelpful;
 window.updatePointValue = updatePointValue;
 window.setPointValue = setPointValue;
 
+
 // DOMContentLoaded 이벤트
 document.addEventListener('DOMContentLoaded', function() {
     // filteredQuestions 초기화
@@ -988,6 +1006,11 @@ document.addEventListener('DOMContentLoaded', function() {
     renderQuestions();
     updatePagination();
     updateCounts();
+    
+    // 미채택 알림 말풍선 업데이트 - 약간의 지연 후 실행
+    setTimeout(() => {
+        updateUnadoptedBubble();
+    }, 100);
     
     // 탭 버튼 이벤트 (checkbox-tab 스타일)
     const tabBtns = document.querySelectorAll('.checkbox-tab');

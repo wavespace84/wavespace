@@ -9,7 +9,14 @@
 
 /* 헤더 - 다른 페이지와 일관성 */
 .hall-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 32px;
+}
+
+.hall-header-left {
+    flex: 1;
 }
 
 .hall-title {
@@ -76,11 +83,11 @@
 /* 순위 보상 안내 */
 .reward-info {
     background: white;
-    border: 1px solid var(--gray-200);
     border-radius: var(--radius-xl);
-    padding: 24px;
+    padding: 32px;
     margin-bottom: 32px;
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-100);
 }
 
 .reward-header {
@@ -88,8 +95,8 @@
     align-items: center;
     gap: 12px;
     margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--gray-100);
 }
 
 .reward-header i {

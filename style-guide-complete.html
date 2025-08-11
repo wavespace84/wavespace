@@ -2326,6 +2326,139 @@
                     </div>
                 </div>
             </div>
+            
+            <h3 class="subsection-title">컨텍스트별 네임카드 스타일</h3>
+            
+            <!-- 상단 고정 마이페이지 네임카드 -->
+            <h4 style="font-size: 14px; font-weight: 600; color: #4b5563; margin: 20px 0 12px 0;">헤더 마이페이지 네임카드</h4>
+            <div class="component-demo" style="background: #f9fafb; padding: 16px; border-radius: 8px;">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;">
+                    <div style="position: relative; width: 40px; height: 40px; flex-shrink: 0;">
+                        <div style="width: 40px; height: 40px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 18px; font-weight: 700; color: #6b7280;">박</span>
+                        </div>
+                        <div style="position: absolute; bottom: -2px; right: -2px; width: 20px; height: 20px; background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white;">
+                            <i class="fas fa-crown" style="font-size: 10px; color: white;"></i>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <p style="font-size: 14px; font-weight: 600; color: #1f2937; margin: 0 0 2px 0;">박승학님</p>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <span style="font-size: 12px; color: #6b7280;">소통왕</span>
+                            <span style="font-size: 12px; color: #6b7280;">•</span>
+                            <span style="font-size: 12px; color: #2E8CE6; font-weight: 600;">1,250P</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down" style="font-size: 12px; color: #9ca3af;"></i>
+                </div>
+            </div>
+            
+            <!-- 출석체크 명단 네임카드 -->
+            <h4 style="font-size: 14px; font-weight: 600; color: #4b5563; margin: 20px 0 12px 0;">출석체크 명단 네임카드</h4>
+            <div class="component-demo" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: white; border: 1px solid #e5e7eb; border-radius: 8px;">
+                    <div style="width: 36px; height: 36px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-user" style="font-size: 18px; color: #9ca3af;"></i>
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <p style="font-size: 13px; font-weight: 600; color: #1f2937; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">김철수</p>
+                        <p style="font-size: 11px; color: #6b7280; margin: 0;">오전 09:15</p>
+                    </div>
+                    <span style="padding: 2px 6px; background: #d1fae5; color: #059669; border-radius: 8px; font-size: 10px; font-weight: 600;">출석</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: white; border: 1px solid #e5e7eb; border-radius: 8px;">
+                    <div style="width: 36px; height: 36px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <span style="font-size: 16px; font-weight: 700; color: #6b7280;">이</span>
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <p style="font-size: 13px; font-weight: 600; color: #1f2937; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">이영희</p>
+                        <p style="font-size: 11px; color: #6b7280; margin: 0;">오전 08:45</p>
+                    </div>
+                    <span style="padding: 2px 6px; background: #fef3c7; color: #d97706; border-radius: 8px; font-size: 10px; font-weight: 600;">1등</span>
+                </div>
+            </div>
+            
+            <!-- 유머재미 게시자 네임카드 -->
+            <h4 style="font-size: 14px; font-weight: 600; color: #4b5563; margin: 20px 0 12px 0;">유머재미 게시자 네임카드</h4>
+            <div class="component-demo" style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <div style="position: relative; width: 80px; height: 80px; margin: 0 auto 12px;">
+                        <div style="width: 80px; height: 80px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="font-size: 40px; color: #9ca3af;"></i>
+                        </div>
+                        <!-- 유머 아이콘 -->
+                        <div style="position: absolute; bottom: -4px; right: -4px; width: 32px; height: 32px; background: #fef3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white;">
+                            <span style="font-size: 16px;">😂</span>
+                        </div>
+                    </div>
+                    <h4 style="font-size: 16px; font-weight: 700; color: #1f2937; margin: 0 0 4px 0;">웃긴친구</h4>
+                    <p style="font-size: 12px; color: #6b7280; margin: 0 0 8px 0;">유머 게시글 24개</p>
+                    <div style="display: flex; justify-content: center; gap: 4px;">
+                        <span style="padding: 3px 10px; background: #fef3c7; color: #d97706; border-radius: 12px; font-size: 11px; font-weight: 600;">웃음제조기</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                    <div style="text-align: center;">
+                        <p style="font-size: 20px; font-weight: 700; color: #1f2937; margin: 0;">1.2K</p>
+                        <p style="font-size: 11px; color: #6b7280; margin: 0;">좋아요</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <p style="font-size: 20px; font-weight: 700; color: #1f2937; margin: 0;">342</p>
+                        <p style="font-size: 11px; color: #6b7280; margin: 0;">댓글</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <p style="font-size: 20px; font-weight: 700; color: #1f2937; margin: 0;">89</p>
+                        <p style="font-size: 11px; color: #6b7280; margin: 0;">공유</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 마우스 호버/클릭 팝업 네임카드 -->
+            <h4 style="font-size: 14px; font-weight: 600; color: #4b5563; margin: 20px 0 12px 0;">마우스 호버/클릭 팝업 네임카드</h4>
+            <div class="component-demo" style="position: relative; display: inline-block;">
+                <!-- 호버 대상 -->
+                <span style="color: #2E8CE6; font-weight: 600; cursor: pointer; text-decoration: underline;">김영업</span>
+                
+                <!-- 팝업 네임카드 -->
+                <div style="position: absolute; bottom: 100%; left: 0; margin-bottom: 8px; width: 280px; padding: 16px; background: white; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 1000;">
+                    <div style="display: flex; gap: 16px; margin-bottom: 12px;">
+                        <div style="position: relative; width: 60px; height: 60px; flex-shrink: 0;">
+                            <div style="width: 60px; height: 60px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user" style="font-size: 30px; color: #9ca3af;"></i>
+                            </div>
+                            <!-- 회원유형 배지 -->
+                            <span style="position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); padding: 2px 8px; background: white; color: #6b7280; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 10px; font-weight: 600;">분양영업</span>
+                        </div>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 16px; font-weight: 700; color: #1f2937; margin: 0 0 4px 0;">김영업</h4>
+                            <p style="font-size: 12px; color: #6b7280; margin: 0 0 8px 0;">가입일: 2024.01.15</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                <span style="padding: 2px 8px; background: #fef3c7; color: #d97706; border-radius: 10px; font-size: 10px; font-weight: 600;">Plus</span>
+                                <span style="padding: 3px 10px; background: #dbeafe; color: #2563eb; border-radius: 12px; font-size: 11px; font-weight: 600;">정보왕</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+                        <div style="text-align: center;">
+                            <p style="font-size: 18px; font-weight: 700; color: #1f2937; margin: 0;">152</p>
+                            <p style="font-size: 11px; color: #6b7280; margin: 0;">게시글</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <p style="font-size: 18px; font-weight: 700; color: #1f2937; margin: 0;">3.2K</p>
+                            <p style="font-size: 11px; color: #6b7280; margin: 0;">포인트</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <p style="font-size: 18px; font-weight: 700; color: #1f2937; margin: 0;">45</p>
+                            <p style="font-size: 11px; color: #6b7280; margin: 0;">팔로워</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button style="flex: 1; padding: 8px; background: #2E8CE6; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">팔로우</button>
+                        <button style="flex: 1; padding: 8px; background: #f3f4f6; color: #6b7280; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">메시지</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- 8. 배지 & 라벨 -->
@@ -2765,6 +2898,137 @@
             </div>
         </div>
     </div>
+
+    <!-- 페이지네이션 섹션 -->
+    <div style="background: #f9fafb; padding: 60px 0;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+            <h2 style="font-size: 32px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">페이지네이션</h2>
+            <p style="font-size: 16px; color: #6b7280; margin-bottom: 48px; line-height: 1.6;">
+                다양한 스타일의 페이지네이션 컴포넌트입니다. 미니멀 도트 스타일과 텍스트 밑줄 스타일로 구성되어 있습니다.
+            </p>
+
+
+            <!-- 미니멀 페이지네이션 -->
+            <div style="background: white; border-radius: 16px; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 24px;">미니멀 페이지네이션</h3>
+                
+                <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                    <button style="width: 8px; height: 8px; border: none; background: #3080FF; border-radius: 50%; cursor: pointer; transition: all 0.3s;" onclick="this.style.width='24px'; this.style.borderRadius='12px';"></button>
+                    <button style="width: 8px; height: 8px; border: none; background: #e5e7eb; border-radius: 50%; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#9ca3af';" onmouseout="this.style.background='#e5e7eb';"></button>
+                    <button style="width: 8px; height: 8px; border: none; background: #e5e7eb; border-radius: 50%; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#9ca3af';" onmouseout="this.style.background='#e5e7eb';"></button>
+                    <button style="width: 8px; height: 8px; border: none; background: #e5e7eb; border-radius: 50%; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#9ca3af';" onmouseout="this.style.background='#e5e7eb';"></button>
+                    <button style="width: 8px; height: 8px; border: none; background: #e5e7eb; border-radius: 50%; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#9ca3af';" onmouseout="this.style.background='#e5e7eb';"></button>
+                </div>
+
+                <!-- 슬라이드 카운터 스타일 -->
+                <div style="display: flex; align-items: center; justify-content: center; margin-top: 32px;">
+                    <div style="position: relative; background: #f3f4f6; border-radius: 20px; padding: 2px; width: 200px;">
+                        <div style="position: absolute; left: 2px; top: 2px; width: 36px; height: 36px; background: white; border-radius: 18px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s; transform: translateX(0);"></div>
+                        <div style="display: flex; position: relative; z-index: 1;">
+                            <button style="flex: 1; padding: 8px; border: none; background: transparent; color: #3080FF; font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 18px; transition: all 0.2s;">1</button>
+                            <button style="flex: 1; padding: 8px; border: none; background: transparent; color: #6b7280; font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 18px; transition: all 0.2s;">2</button>
+                            <button style="flex: 1; padding: 8px; border: none; background: transparent; color: #6b7280; font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 18px; transition: all 0.2s;">3</button>
+                            <button style="flex: 1; padding: 8px; border: none; background: transparent; color: #6b7280; font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 18px; transition: all 0.2s;">4</button>
+                            <button style="flex: 1; padding: 8px; border: none; background: transparent; color: #6b7280; font-weight: 500; font-size: 14px; cursor: pointer; border-radius: 18px; transition: all 0.2s;">5</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 코드 예시 -->
+                <div style="margin-top: 32px; padding: 20px; background: #f3f4f6; border-radius: 8px; font-family: monospace; font-size: 14px; color: #374151; overflow-x: auto;">
+                    <pre style="margin: 0;">&lt;!-- 도트 스타일 --&gt;
+&lt;div class="pagination-dots"&gt;
+  &lt;button class="dot active"&gt;&lt;/button&gt;
+  &lt;button class="dot"&gt;&lt;/button&gt;
+  &lt;button class="dot"&gt;&lt;/button&gt;
+  &lt;button class="dot"&gt;&lt;/button&gt;
+  &lt;button class="dot"&gt;&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- 슬라이드 카운터 스타일 --&gt;
+&lt;div class="pagination-slider"&gt;
+  &lt;div class="slider-track"&gt;
+    &lt;div class="slider-thumb"&gt;&lt;/div&gt;
+    &lt;button class="active"&gt;1&lt;/button&gt;
+    &lt;button&gt;2&lt;/button&gt;
+    &lt;button&gt;3&lt;/button&gt;
+    &lt;button&gt;4&lt;/button&gt;
+    &lt;button&gt;5&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+                </div>
+            </div>
+
+            <!-- 텍스트 페이지네이션 -->
+            <div style="background: white; border-radius: 16px; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 24px;">텍스트 페이지네이션</h3>
+                
+                <div style="display: flex; align-items: center; justify-content: center; gap: 16px; font-size: 16px;">
+                    <a href="#" style="color: #9ca3af; text-decoration: none; cursor: not-allowed; pointer-events: none;">‹‹</a>
+                    <a href="#" style="color: #9ca3af; text-decoration: none; cursor: not-allowed; pointer-events: none;">‹</a>
+                    
+                    <div style="display: flex; gap: 12px;">
+                        <a href="#" style="color: #3080FF; text-decoration: none; font-weight: 600;">1</a>
+                        <a href="#" style="color: #6b7280; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#3080FF';" onmouseout="this.style.color='#6b7280';">2</a>
+                        <a href="#" style="color: #6b7280; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#3080FF';" onmouseout="this.style.color='#6b7280';">3</a>
+                        <a href="#" style="color: #6b7280; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#3080FF';" onmouseout="this.style.color='#6b7280';">4</a>
+                        <a href="#" style="color: #6b7280; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#3080FF';" onmouseout="this.style.color='#6b7280';">5</a>
+                    </div>
+                    
+                    <a href="#" style="color: #374151; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#3080FF';" onmouseout="this.style.color='#374151';">›</a>
+                    <a href="#" style="color: #374151; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#3080FF';" onmouseout="this.style.color='#374151';">››</a>
+                </div>
+
+                <!-- 밑줄 스타일 -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 20px; font-size: 16px; margin-top: 32px;">
+                    <a href="#" style="color: #9ca3af; text-decoration: none; cursor: not-allowed; pointer-events: none;">처음</a>
+                    <a href="#" style="color: #9ca3af; text-decoration: none; cursor: not-allowed; pointer-events: none;">이전</a>
+                    
+                    <div style="display: flex; gap: 16px;">
+                        <a href="#" style="color: #3080FF; text-decoration: none; font-weight: 600; padding-bottom: 2px; border-bottom: 2px solid #3080FF;">1</a>
+                        <a href="#" style="color: #6b7280; text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.color='#3080FF'; this.style.borderBottomColor='#3080FF';" onmouseout="this.style.color='#6b7280'; this.style.borderBottomColor='transparent';">2</a>
+                        <a href="#" style="color: #6b7280; text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.color='#3080FF'; this.style.borderBottomColor='#3080FF';" onmouseout="this.style.color='#6b7280'; this.style.borderBottomColor='transparent';">3</a>
+                        <a href="#" style="color: #6b7280; text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.color='#3080FF'; this.style.borderBottomColor='#3080FF';" onmouseout="this.style.color='#6b7280'; this.style.borderBottomColor='transparent';">4</a>
+                        <a href="#" style="color: #6b7280; text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; transition: all 0.2s;" onmouseover="this.style.color='#3080FF'; this.style.borderBottomColor='#3080FF';" onmouseout="this.style.color='#6b7280'; this.style.borderBottomColor='transparent';">5</a>
+                    </div>
+                    
+                    <a href="#" style="color: #374151; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#3080FF';" onmouseout="this.style.color='#374151';">다음</a>
+                    <a href="#" style="color: #374151; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#3080FF';" onmouseout="this.style.color='#374151';">끝</a>
+                </div>
+
+                <!-- 코드 예시 -->
+                <div style="margin-top: 32px; padding: 20px; background: #f3f4f6; border-radius: 8px; font-family: monospace; font-size: 14px; color: #374151; overflow-x: auto;">
+                    <pre style="margin: 0;">&lt;!-- 심플 텍스트 스타일 --&gt;
+&lt;div class="pagination-text"&gt;
+  &lt;a href="#" class="disabled"&gt;&amp;#8249;&amp;#8249;&lt;/a&gt;
+  &lt;a href="#" class="disabled"&gt;&amp;#8249;&lt;/a&gt;
+  &lt;a href="#" class="active"&gt;1&lt;/a&gt;
+  &lt;a href="#"&gt;2&lt;/a&gt;
+  &lt;a href="#"&gt;3&lt;/a&gt;
+  &lt;a href="#"&gt;4&lt;/a&gt;
+  &lt;a href="#"&gt;5&lt;/a&gt;
+  &lt;a href="#"&gt;&amp;#8250;&lt;/a&gt;
+  &lt;a href="#"&gt;&amp;#8250;&amp;#8250;&lt;/a&gt;
+&lt;/div&gt;
+
+&lt;!-- 밑줄 스타일 --&gt;
+&lt;div class="pagination-underline"&gt;
+  &lt;a href="#" class="disabled"&gt;처음&lt;/a&gt;
+  &lt;a href="#" class="disabled"&gt;이전&lt;/a&gt;
+  &lt;a href="#" class="active"&gt;1&lt;/a&gt;
+  &lt;a href="#"&gt;2&lt;/a&gt;
+  &lt;a href="#"&gt;3&lt;/a&gt;
+  &lt;a href="#"&gt;4&lt;/a&gt;
+  &lt;a href="#"&gt;5&lt;/a&gt;
+  &lt;a href="#"&gt;다음&lt;/a&gt;
+  &lt;a href="#"&gt;끝&lt;/a&gt;
+&lt;/div&gt;</pre>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 
     <style>
         @keyframes spin {

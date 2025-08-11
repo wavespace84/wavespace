@@ -241,11 +241,19 @@ function renderPagination(totalItems) {
     
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     pagination.innerHTML = '';
+    pagination.className = 'pagination-underline';
     
     if (totalPages <= 1) return;
     
-    // 이전 페이지 버튼
-    const prevBtn = createPaginationButton('이전', () => {
+    // 처음 버튼
+    const firstBtn = createPaginationLink('처음', () => {
+        currentPage = 1;
+        renderFAQ(currentCategory, searchInput.value, true);
+    }, currentPage === 1);
+    pagination.appendChild(firstBtn);
+    
+    // 이전 버튼
+    const prevBtn = createPaginationLink('이전', () => {
         if (currentPage > 1) {
             currentPage--;
             renderFAQ(currentCategory, searchInput.value, true);
@@ -253,35 +261,53 @@ function renderPagination(totalItems) {
     }, currentPage === 1);
     pagination.appendChild(prevBtn);
     
+    // 페이지 번호들을 담을 컨테이너
+    const pageNumbers = document.createElement('div');
+    pageNumbers.className = 'page-numbers';
+    
     // 페이지 번호 버튼들
-    for (let i = 1; i <= totalPages; i++) {
-        const pageBtn = createPaginationButton(i, () => {
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, startPage + 4);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const pageLink = createPaginationLink(i, () => {
             currentPage = i;
             renderFAQ(currentCategory, searchInput.value, true);
         }, false, currentPage === i);
-        pagination.appendChild(pageBtn);
+        pageNumbers.appendChild(pageLink);
     }
     
-    // 다음 페이지 버튼
-    const nextBtn = createPaginationButton('다음', () => {
+    pagination.appendChild(pageNumbers);
+    
+    // 다음 버튼
+    const nextBtn = createPaginationLink('다음', () => {
         if (currentPage < totalPages) {
             currentPage++;
             renderFAQ(currentCategory, searchInput.value, true);
         }
     }, currentPage === totalPages);
     pagination.appendChild(nextBtn);
+    
+    // 끝 버튼
+    const lastBtn = createPaginationLink('끝', () => {
+        currentPage = totalPages;
+        renderFAQ(currentCategory, searchInput.value, true);
+    }, currentPage === totalPages);
+    pagination.appendChild(lastBtn);
 }
 
-// 페이지네이션 버튼 생성
-function createPaginationButton(text, onClick, disabled, active = false) {
-    const button = document.createElement('button');
-    button.className = 'pagination-btn';
-    button.textContent = text;
-    button.disabled = disabled;
-    if (active) button.classList.add('active');
-    if (disabled) button.classList.add('disabled');
-    button.addEventListener('click', onClick);
-    return button;
+// 페이지네이션 링크 생성
+function createPaginationLink(text, onClick, disabled, active = false) {
+    const link = document.createElement('a');
+    link.href = '#';
+    link.textContent = text;
+    if (disabled) link.className = 'disabled';
+    if (active) link.className = 'active';
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!disabled) onClick();
+    });
+    return link;
 }
 
 // 부드러운 스크롤 함수 - 전역 스코프로 이동

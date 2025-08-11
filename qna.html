@@ -7,7 +7,7 @@
     <script src="preload.js"></script>
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
-    <link rel="stylesheet" href="qna.css">
+    <link rel="stylesheet" href="qna.css?v=10">
     <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -295,7 +295,10 @@
                                 <span class="tab-count">0</span>
                             </label>
                             <label class="checkbox-tab" data-category="unadopted">
-                                <span class="waiting-bubble">답변을 기다리고 있어요</span>
+                                <!-- 미채택 질문 알림 말풍선 -->
+                                <div id="unadoptedBubble">
+                                    답변을 기다리는 질문이 있어요
+                                </div>
                                 <input type="radio" name="qna-filter">
                                 <span class="tab-check"></span>
                                 <span>미채택</span>
@@ -367,22 +370,26 @@
                                     <div class="answerer-item">
                                         <div class="rank gold">1위</div>
                                         <div class="answerer-info">
-                                            <div class="name" title="부동산전문컨설턴트">부동산전문컨설...</div>
+                                            <div class="name" title="부동산전문컨설턴트">부동산전문컨설턴트</div>
                                             <div class="stats">
-                                                <div class="answers">답변 45</div>
-                                                <div class="likes">채택률 89%</div>
-                                                <div class="points">+2,340P</div>
+                                                <div class="answers">45개</div>
+                                                <div class="likes-points">
+                                                    <div class="likes">89%</div>
+                                                    <div class="points">+2,340P</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="answerer-item">
                                         <div class="rank silver">2위</div>
                                         <div class="answerer-info">
-                                            <div class="name" title="김컨설턴트입니다">김컨설턴트입니...</div>
+                                            <div class="name" title="김컨설턴트입니다">김컨설턴트입니다</div>
                                             <div class="stats">
-                                                <div class="answers">답변 38</div>
-                                                <div class="likes">채택률 76%</div>
-                                                <div class="points">+1,890P</div>
+                                                <div class="answers">38개</div>
+                                                <div class="likes-points">
+                                                    <div class="likes">76%</div>
+                                                    <div class="points">+1,890P</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -391,9 +398,11 @@
                                         <div class="answerer-info">
                                             <div class="name" title="이매니저">이매니저</div>
                                             <div class="stats">
-                                                <div class="answers">답변 32</div>
-                                                <div class="likes">채택률 72%</div>
-                                                <div class="points">+1,560P</div>
+                                                <div class="answers">32개</div>
+                                                <div class="likes-points">
+                                                    <div class="likes">72%</div>
+                                                    <div class="points">+1,560P</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -429,7 +438,7 @@
                     </div>
 
                     <!-- 페이지네이션 (JavaScript에서 동적 생성) -->
-                    <div class="pagination" id="paginationContainer">
+                    <div class="pagination-underline" id="paginationContainer">
                         <!-- 페이지네이션 버튼들이 JavaScript로 동적 생성됩니다 -->
                     </div>
                 </div>
