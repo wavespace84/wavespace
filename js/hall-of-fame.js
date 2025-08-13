@@ -74,76 +74,32 @@ function simulateRealtimeUpdate() {
     const randomCategory = categories[Math.floor(Math.random() * categories.length)];
     const categoryData = rankingData[randomCategory];
     
-    // 랜덤하게 순위 변동 시뮬레이션 (더 현실적으로)
-    if (Math.random() > 0.4) {
-        // 랜덤하게 두 순위 선택 (1-5위 중)
-        const positions = [0, 1, 2, 3, 4];
-        const idx1 = positions[Math.floor(Math.random() * positions.length)];
-        let idx2;
-        
-        // 인접한 순위끼리 바뀔 확률이 높도록 설정
-        if (Math.random() > 0.3 && idx1 > 0 && idx1 < 4) {
-            // 70% 확률로 인접한 순위와 교체
-            idx2 = Math.random() > 0.5 ? idx1 + 1 : idx1 - 1;
-        } else {
-            // 30% 확률로 랜덤한 순위와 교체
-            do {
-                idx2 = positions[Math.floor(Math.random() * positions.length)];
-            } while (idx2 === idx1);
-        }
-        
-        if (idx1 !== idx2 && idx2 >= 0 && idx2 < 5) {
-            // 순위 교체
-            [categoryData[idx1], categoryData[idx2]] = [categoryData[idx2], categoryData[idx1]];
-            
-            // 변동 정보 업데이트
-            const change = Math.abs(idx1 - idx2);
-            categoryData[idx1].change = change;
-            categoryData[idx1].changeType = idx1 > idx2 ? 'down' : 'up';
-            categoryData[idx2].change = change;
-            categoryData[idx2].changeType = idx2 > idx1 ? 'down' : 'up';
-            
-            // 변동이 없는 다른 순위들은 same으로 설정
-            categoryData.forEach((user, index) => {
-                if (index !== idx1 && index !== idx2) {
-                    user.changeType = 'same';
-                    user.change = 0;
-                }
-            });
-            
-            // UI 업데이트 (애니메이션 적용)
-            updateCategoryRankings(randomCategory, true);
-        }
-    }
+    // 이전 순위 저장
+    const prevRanking = categoryData.map((user, idx) => ({
+        name: user.name,
+        index: idx
+    }));
     
-    // 점수 업데이트 시뮬레이션 (순위 변경 가능)
-    if (Math.random() > 0.5) {
-        // 점수 변경으로 순위 재정렬
-        const randomIndex = Math.floor(Math.random() * 5); // 상위 5명 중 랜덤
+    // 점수 변경 시뮬레이션
+    if (Math.random() > 0.3) {
+        // 2-5위 중에서 랜덤하게 선택 (1등은 제외)
+        const candidateIndices = [1, 2, 3, 4]; // 2위~5위
+        const randomIndex = candidateIndices[Math.floor(Math.random() * candidateIndices.length)];
         let scoreIncrease;
         
-        // 이전 순위 저장
-        const prevRanking = categoryData.map((user, idx) => ({
-            name: user.name,
-            index: idx
-        }));
-        
         if (randomCategory === 'referral') {
-            scoreIncrease = Math.floor(Math.random() * 3 + 1) * 10; // 1~3명 추천
-            categoryData[randomIndex].score += scoreIncrease;
+            scoreIncrease = Math.floor(Math.random() * 5 + 1) * 10; // 1~5명 추천
         } else if (randomCategory === 'communication') {
-            scoreIncrease = Math.floor(Math.random() * 5 + 1) * 5; // 게시글/댓글 활동
-            categoryData[randomIndex].score += scoreIncrease;
+            scoreIncrease = Math.floor(Math.random() * 8 + 1) * 5; // 게시글/댓글 활동
         } else if (randomCategory === 'answer') {
-            scoreIncrease = Math.random() > 0.5 ? 30 : 10; // 채택 또는 일반 답변
-            categoryData[randomIndex].score += scoreIncrease;
+            scoreIncrease = Math.random() > 0.5 ? 50 : 20; // 채택 또는 일반 답변
         } else if (randomCategory === 'information') {
-            scoreIncrease = Math.random() > 0.7 ? 40 : 10; // 업로드 또는 다운로드
-            categoryData[randomIndex].score += scoreIncrease;
+            scoreIncrease = Math.random() > 0.7 ? 60 : 20; // 업로드 또는 다운로드
         } else if (randomCategory === 'attendance') {
-            scoreIncrease = Math.floor(Math.random() * 3 + 1) * 5; // 출석 점수
-            categoryData[randomIndex].score += scoreIncrease;
+            scoreIncrease = Math.floor(Math.random() * 3 + 1) * 15; // 출석 점수
         }
+        
+        categoryData[randomIndex].score += scoreIncrease;
         
         // 점수 기준으로 정렬
         categoryData.sort((a, b) => b.score - a.score);
@@ -163,7 +119,12 @@ function simulateRealtimeUpdate() {
             }
         });
         
-        updateCategoryRankings(randomCategory, true);
+        // 실제로 순위 변동이 있었을 때만 업데이트
+        const hasChange = categoryData.some(user => user.change > 0);
+        if (hasChange) {
+            console.log(`${randomCategory} 카테고리 순위 변동 발생!`);
+            updateCategoryRankings(randomCategory, true);
+        }
     }
 }
 
@@ -174,6 +135,14 @@ function updateCategoryRankings(category, animate = false) {
     
     const rankingList = categoryElement.querySelector('.ranking-list-new');
     const data = rankingData[category];
+    
+    // 애니메이션 시 카테고리 섹션에 updating 클래스 추가
+    if (animate) {
+        categoryElement.classList.add('updating');
+        setTimeout(() => {
+            categoryElement.classList.remove('updating');
+        }, 500);
+    }
     
     // 점수 기준으로 정렬 (높은 점수가 상위)
     data.sort((a, b) => b.score - a.score);
@@ -187,7 +156,6 @@ function updateCategoryRankings(category, animate = false) {
         // 각 아이템의 현재 위치 저장
         existingItems.forEach((item, index) => {
             const name = item.querySelector('.name').textContent;
-            const scoreElement = item.querySelector('.score-display');
             const rect = item.getBoundingClientRect();
             
             oldPositions.set(name, {
@@ -196,12 +164,6 @@ function updateCategoryRankings(category, animate = false) {
                 oldIndex: index,
                 element: item
             });
-            
-            if (scoreElement) {
-                const scoreText = scoreElement.textContent;
-                const scoreNum = parseInt(scoreText.replace(/[^0-9]/g, ''));
-                oldScores.set(name, scoreNum);
-            }
         });
     }
     
@@ -217,6 +179,20 @@ function updateCategoryRankings(category, animate = false) {
         const userBadge = getUserBadge(category, index);
         const changeIcon = getChangeIcon(user.changeType);
         
+        // 카테고리별 점수 표시 텍스트 생성
+        let scoreText = '';
+        if (category === 'attendance') {
+            scoreText = `${Math.floor(user.score / 15)}일 연속`;
+        } else if (category === 'communication') {
+            scoreText = `게시글 ${Math.floor(user.score / 5.5)}개`;
+        } else if (category === 'answer') {
+            scoreText = `채택 ${Math.floor(user.score / 10.8)}개`;
+        } else if (category === 'information') {
+            scoreText = `자료 ${Math.floor(user.score / 22)}개`;
+        } else if (category === 'referral') {
+            scoreText = `추천 ${Math.floor(user.score / 10)}명`;
+        }
+        
         const rankIcon = index === 0 ? '<i class="fas fa-crown"></i>' : 
                         index === 1 ? '<i class="fas fa-medal"></i>' : 
                         index === 2 ? '<i class="fas fa-award"></i>' :
@@ -225,6 +201,7 @@ function updateCategoryRankings(category, animate = false) {
         const rankingItem = document.createElement('div');
         rankingItem.className = `ranking-item-new ${rankClass}`;
         rankingItem.setAttribute('data-category', category);
+        rankingItem.setAttribute('data-name', user.name);
         rankingItem.innerHTML = `
             <div class="rank-badge ${badgeClass}">${rankIcon}</div>
             <div class="user-info-new">
@@ -233,17 +210,14 @@ function updateCategoryRankings(category, animate = false) {
                 </div>
                 <div class="user-details">
                     <span class="name">${user.name}</span>
-                    <div class="user-badge-display badge-${userBadge.color}">
-                        <i class="fas ${userBadge.icon}"></i>
-                        <span>${userBadge.label}</span>
-                    </div>
+                    <span class="score">${scoreText}</span>
                 </div>
             </div>
             <div class="change-indicator ${user.changeType}">
                 ${changeIcon}
                 ${user.change > 0 ? `<span>${user.change}</span>` : ''}
             </div>
-            <div class="score-display">${user.score}점</div>
+            <div class="reward">${reward > 0 ? reward.toLocaleString() + 'P' : ''}</div>
         `;
         
         newElements.push({ element: rankingItem, user: user, index: index });
@@ -262,14 +236,7 @@ function updateCategoryRankings(category, animate = false) {
                 // 기존 사용자
                 rankingList.appendChild(newItem);
                 
-                // 점수 변경 애니메이션
-                const oldScore = oldScores.get(user.name) || 0;
-                if (oldScore !== user.score) {
-                    const scoreDisplay = newItem.querySelector('.score-display');
-                    if (scoreDisplay) {
-                        animateScoreCount(scoreDisplay, oldScore, user.score);
-                    }
-                }
+                // 점수 변경 애니메이션은 제거 (HTML 구조와 다름)
                 
                 // 순위 변경 애니메이션
                 if (oldData.oldIndex !== index) {
@@ -280,6 +247,7 @@ function updateCategoryRankings(category, animate = false) {
                     
                     // 이동 거리 계산
                     const deltaY = oldData.top - newRect.top;
+                    console.log(`이동 거리: ${deltaY}px`);
                     
                     // 즉시 이전 위치로 이동 (transition 없이)
                     newItem.style.transition = 'none';
@@ -295,8 +263,10 @@ function updateCategoryRankings(category, animate = false) {
                         
                         // 강조 효과
                         newItem.classList.add('rank-changed');
+                        console.log(`${user.name}에 rank-changed 클래스 추가됨`);
                         setTimeout(() => {
                             newItem.classList.remove('rank-changed');
+                            console.log(`${user.name}에서 rank-changed 클래스 제거됨`);
                         }, 1500);
                     });
                 }
@@ -559,14 +529,10 @@ function initializeHallOfFame() {
         updateCategoryRankings(category);
     });
     
-    // 5초마다 실시간 업데이트 시뮬레이션 (순위 변동 확인)
-    setInterval(simulateRealtimeUpdate, 5000);
+    // 2초마다 실시간 업데이트 시뮬레이션 (순위 변동 확인)
+    setInterval(simulateRealtimeUpdate, 2000);
     
-    // 실시간 표시 점멸 효과
-    const pulseElements = document.querySelectorAll('.pulse');
-    pulseElements.forEach(pulse => {
-        pulse.style.animation = 'pulse 2s ease-in-out infinite';
-    });
+    // 실시간 표시 (효과 제거)
     
     // 역대 랭킹 기능 초기화
     initializeHistoryFeature();

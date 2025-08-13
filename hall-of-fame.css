@@ -65,7 +65,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--success);
+    color: var(--gray-500);
     font-size: 14px;
     font-weight: 600;
 }
@@ -144,8 +144,30 @@
 }
 
 .reward-item.gold {
-    background: rgba(255, 215, 0, 0.05);
-    border-color: rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.08);
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.reward-item.gold::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+    border-radius: var(--radius-lg);
+    opacity: 0.3;
+    z-index: -1;
+    animation: goldShine 3s linear infinite;
+}
+
+@keyframes goldShine {
+    0% { transform: translateX(-100%) translateY(-100%); }
+    100% { transform: translateX(100%) translateY(100%); }
 }
 
 .reward-item.silver {
@@ -194,6 +216,25 @@
     color: var(--gray-900);
 }
 
+.special-badge {
+    font-size: 13px;
+    font-weight: 600;
+    color: #FFD700;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.reward-item.gold .special-badge {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
 /* 5개 분야별 월간 순위 섹션 */
 .category-rankings-new {
     display: grid;
@@ -214,6 +255,17 @@
 .category-section:hover {
     box-shadow: var(--shadow-md);
     /* 호버시 움직임 제거 */
+}
+
+/* 카테고리 업데이트 애니메이션 */
+.category-section.updating {
+    animation: categoryPulse 0.5s ease-in-out;
+}
+
+@keyframes categoryPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
 }
 
 .category-header {
@@ -290,14 +342,40 @@
     /* 호버시 움직임 제거 */
 }
 
+/* 순위 변경 강조 애니메이션 */
+.ranking-item-new.rank-changed {
+    animation: rankChangeHighlight 1.5s ease-in-out;
+}
+
+@keyframes rankChangeHighlight {
+    0% { 
+        box-shadow: none;
+        background: var(--gray-50);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
+        background: rgba(0, 102, 255, 0.05);
+    }
+    100% { 
+        box-shadow: none;
+        background: var(--gray-50);
+    }
+}
+
 /* 4, 5등 기본 배경색 */
 .ranking-item-new.fourth-fifth {
     background: var(--gray-50);
     border: 1px solid var(--gray-200);
 }
 
-/* 1,2,3등 카드 - 테두리 강조만 */
-.ranking-item-new.first,
+/* 1등 카드 - 금색 테두리 강조 */
+.ranking-item-new.first {
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.08);
+}
+
+/* 2,3등 카드 - 테두리 강조 */
 .ranking-item-new.second,
 .ranking-item-new.third {
     border: 1px solid rgba(0, 102, 255, 0.5);
