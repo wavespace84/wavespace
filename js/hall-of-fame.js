@@ -2,46 +2,46 @@
 
 // 5개 분야별 데이터
 // 점수 집계 기준:
-// - 추천왕: 해당 월 추천 인원수 * 10점
-// - 소통왕: (게시글 * 5점) + (댓글 * 2점) + (좋아요 받은 수 * 1점)
-// - 답변왕: (채택된 답변 * 10점) + (답변 * 3점)
-// - 정보왕: (업로드 자료 * 20점) + (다운로드된 횟수 * 2점)
-// - 출첵왕: (연속 출석일 * 10점) + (월간 출석일 * 5점)
+// - 출첵왕: 1일부터 매일 점수 집계 (1등 3000점, 2등 2900점 ~ 30등 1000점, 30등 밖 0점)
+// - 소통왕: (게시글 * 3점) + (댓글 * 1점)
+// - 답변왕: (답변 * 1점) + (채택 * 5점)
+// - 정보왕: 월간 자료 업로드 포인트 획득 순위
+// - 추천왕: 추천인당 2500점
 const rankingData = {
-    referral: [
-        { name: '김영업', score: 320, change: 2, changeType: 'up' },  // 32명 추천
-        { name: '이기획', score: 280, change: 1, changeType: 'down' },
-        { name: '박팀장', score: 240, change: 0, changeType: 'same' },
-        { name: '최전문가', score: 220, change: 3, changeType: 'up' },
-        { name: '정과장', score: 200, change: 1, changeType: 'down' }
+    attendance: [
+        { name: '장성실', score: 3000, change: 0, changeType: 'same' },  // 1등
+        { name: '서매일', score: 2900, change: 1, changeType: 'up' },   // 2등
+        { name: '남부지런', score: 2800, change: 1, changeType: 'down' }, // 3등
+        { name: '강출석', score: 2700, change: 2, changeType: 'up' },    // 4등
+        { name: '박정시', score: 2600, change: 1, changeType: 'down' }   // 5등
     ],
     communication: [
-        { name: '최전문가', score: 485, change: 1, changeType: 'up' },  // 게시글 89개 기준
-        { name: '정과장', score: 420, change: 1, changeType: 'down' },
-        { name: '강대리', score: 365, change: 3, changeType: 'up' },
-        { name: '김영업', score: 330, change: 0, changeType: 'same' },
-        { name: '이기획', score: 290, change: 2, changeType: 'down' }
+        { name: '최전문가', score: 356, change: 1, changeType: 'up' },  // 게시글 89개(267점) + 댓글 89개(89점)
+        { name: '정과장', score: 307, change: 1, changeType: 'down' },  // 게시글 76개(228점) + 댓글 79개(79점)
+        { name: '강대리', score: 260, change: 3, changeType: 'up' },    // 게시글 65개(195점) + 댓글 65개(65점)
+        { name: '김영업', score: 234, change: 0, changeType: 'same' },  // 게시글 58개(174점) + 댓글 60개(60점)
+        { name: '이기획', score: 203, change: 2, changeType: 'down' }   // 게시글 51개(153점) + 댓글 50개(50점)
     ],
     answer: [
-        { name: '송선생', score: 1680, change: 0, changeType: 'same' },  // 채택 156개 기준
-        { name: '윤멘토', score: 1530, change: 1, changeType: 'up' },
-        { name: '한교수', score: 1420, change: 1, changeType: 'down' },
-        { name: '최전문가', score: 1380, change: 2, changeType: 'up' },
-        { name: '정멘토', score: 1250, change: 1, changeType: 'down' }
+        { name: '송선생', score: 936, change: 0, changeType: 'same' },  // 답변 156개(156점) + 채택 156개(780점)
+        { name: '윤멘토', score: 858, change: 1, changeType: 'up' },    // 답변 143개(143점) + 채택 143개(715점)
+        { name: '한교수', score: 792, change: 1, changeType: 'down' },  // 답변 132개(132점) + 채택 132개(660점)
+        { name: '최전문가', score: 726, change: 2, changeType: 'up' },  // 답변 121개(121점) + 채택 121개(605점)
+        { name: '정멘토', score: 660, change: 1, changeType: 'down' }   // 답변 110개(110점) + 채택 110개(550점)
     ],
     information: [
-        { name: '오데이터', score: 990, change: 2, changeType: 'up' },  // 자료 45개 기준
-        { name: '유분석', score: 920, change: 0, changeType: 'same' },
-        { name: '구리서치', score: 840, change: 2, changeType: 'down' },
-        { name: '김정보', score: 770, change: 1, changeType: 'up' },
-        { name: '이자료', score: 730, change: 1, changeType: 'down' }
+        { name: '오데이터', score: 45000, change: 2, changeType: 'up' },  // 월간 포인트 획득량
+        { name: '유분석', score: 42000, change: 0, changeType: 'same' },
+        { name: '구리서치', score: 38000, change: 2, changeType: 'down' },
+        { name: '김정보', score: 35000, change: 1, changeType: 'up' },
+        { name: '이자료', score: 32000, change: 1, changeType: 'down' }
     ],
-    attendance: [
-        { name: '장성실', score: 465, change: 0, changeType: 'same' },  // 연속 31일 기준
-        { name: '서매일', score: 450, change: 1, changeType: 'up' },
-        { name: '남부지런', score: 435, change: 1, changeType: 'down' },
-        { name: '강출석', score: 420, change: 2, changeType: 'up' },
-        { name: '박정시', score: 405, change: 1, changeType: 'down' }
+    referral: [
+        { name: '김영업', score: 80000, change: 2, changeType: 'up' },   // 32명 추천
+        { name: '이기획', score: 70000, change: 1, changeType: 'down' }, // 28명 추천
+        { name: '박팀장', score: 60000, change: 0, changeType: 'same' }, // 24명 추천
+        { name: '최전문가', score: 55000, change: 3, changeType: 'up' }, // 22명 추천
+        { name: '정과장', score: 50000, change: 1, changeType: 'down' }  // 20명 추천
     ]
 };
 
@@ -87,16 +87,21 @@ function simulateRealtimeUpdate() {
         const randomIndex = candidateIndices[Math.floor(Math.random() * candidateIndices.length)];
         let scoreIncrease;
         
-        if (randomCategory === 'referral') {
-            scoreIncrease = Math.floor(Math.random() * 5 + 1) * 10; // 1~5명 추천
+        if (randomCategory === 'attendance') {
+            // 출석왕은 점수가 고정되어 있으므로 변동 없음
+            return;
         } else if (randomCategory === 'communication') {
-            scoreIncrease = Math.floor(Math.random() * 8 + 1) * 5; // 게시글/댓글 활동
+            // 게시글 작성(3점) 또는 댓글(1점)
+            scoreIncrease = Math.random() > 0.7 ? 3 : 1;
         } else if (randomCategory === 'answer') {
-            scoreIncrease = Math.random() > 0.5 ? 50 : 20; // 채택 또는 일반 답변
+            // 답변(1점) 또는 채택(5점)
+            scoreIncrease = Math.random() > 0.8 ? 5 : 1;
         } else if (randomCategory === 'information') {
-            scoreIncrease = Math.random() > 0.7 ? 60 : 20; // 업로드 또는 다운로드
-        } else if (randomCategory === 'attendance') {
-            scoreIncrease = Math.floor(Math.random() * 3 + 1) * 15; // 출석 점수
+            // 자료 업로드 포인트 (1000~5000점)
+            scoreIncrease = Math.floor(Math.random() * 5 + 1) * 1000;
+        } else if (randomCategory === 'referral') {
+            // 추천 1명 (2500점)
+            scoreIncrease = 2500;
         }
         
         categoryData[randomIndex].score += scoreIncrease;
@@ -135,6 +140,9 @@ function updateCategoryRankings(category, animate = false) {
     
     const rankingList = categoryElement.querySelector('.ranking-list-new');
     const data = rankingData[category];
+    
+    // 이전 1등 이름 저장
+    const previousFirst = rankingList.querySelector('.ranking-item-new.first .name')?.textContent;
     
     // 애니메이션 시 카테고리 섹션에 updating 클래스 추가
     if (animate) {
@@ -179,19 +187,8 @@ function updateCategoryRankings(category, animate = false) {
         const userBadge = getUserBadge(category, index);
         const changeIcon = getChangeIcon(user.changeType);
         
-        // 카테고리별 점수 표시 텍스트 생성
-        let scoreText = '';
-        if (category === 'attendance') {
-            scoreText = `${Math.floor(user.score / 15)}일 연속`;
-        } else if (category === 'communication') {
-            scoreText = `게시글 ${Math.floor(user.score / 5.5)}개`;
-        } else if (category === 'answer') {
-            scoreText = `채택 ${Math.floor(user.score / 10.8)}개`;
-        } else if (category === 'information') {
-            scoreText = `자료 ${Math.floor(user.score / 22)}개`;
-        } else if (category === 'referral') {
-            scoreText = `추천 ${Math.floor(user.score / 10)}명`;
-        }
+        // 카테고리별 점수 표시
+        let scoreText = `${user.score.toLocaleString()}점`;
         
         const rankIcon = index === 0 ? '<i class="fas fa-crown"></i>' : 
                         index === 1 ? '<i class="fas fa-medal"></i>' : 
@@ -210,14 +207,13 @@ function updateCategoryRankings(category, animate = false) {
                 </div>
                 <div class="user-details">
                     <span class="name">${user.name}</span>
-                    <span class="score">${scoreText}</span>
                 </div>
             </div>
+            <div class="score-display">${scoreText}</div>
             <div class="change-indicator ${user.changeType}">
                 ${changeIcon}
                 ${user.change > 0 ? `<span>${user.change}</span>` : ''}
             </div>
-            <div class="reward">${reward > 0 ? reward.toLocaleString() + 'P' : ''}</div>
         `;
         
         newElements.push({ element: rankingItem, user: user, index: index });
@@ -269,6 +265,15 @@ function updateCategoryRankings(category, animate = false) {
                             console.log(`${user.name}에서 rank-changed 클래스 제거됨`);
                         }, 1500);
                     });
+                }
+                
+                // 1등이 변경되었는지 확인
+                if (index === 0 && previousFirst && previousFirst !== user.name) {
+                    newItem.classList.add('new-champion');
+                    console.log(`새로운 1등 탄생! ${user.name}`);
+                    setTimeout(() => {
+                        newItem.classList.remove('new-champion');
+                    }, 2000);
                 }
             } else {
                 // 새로 진입한 사용자

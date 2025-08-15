@@ -1,0 +1,551 @@
+/* 분양기획 페이지 스타일 - 자유게시판과 동일한 디자인 */
+
+/* 메인 콘텐츠 레이아웃 */
+.planning-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 80px 80px;
+}
+
+/* 헤더 영역 */
+.planning-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.planning-header-left {
+    flex: 1;
+}
+
+.planning-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 6px;
+}
+
+.planning-subtitle {
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+/* 필터 및 검색 섹션 */
+.planning-filter-section {
+    margin-bottom: 20px;
+}
+
+/* 카테고리 탭 (지역 필터) */
+.planning-filter-section .category-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--gray-100);
+    padding-bottom: 12px;
+    overflow-x: auto;
+    flex-wrap: wrap;
+}
+
+/* 직급 필터 탭 */
+.planning-filter-section .position-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    overflow-x: auto;
+}
+
+/* 검색 및 정렬 행 */
+.search-sort-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* 검색 박스 */
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 500px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--gray-400);
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    height: 44px;
+    padding: 0 20px 0 44px;
+    border: 2px solid var(--gray-200);
+    border-radius: 22px;
+    font-size: 14px;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.search-box input::placeholder {
+    color: var(--gray-400);
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
+}
+
+/* 정렬 탭 - 밑줄 스타일 */
+.sort-tabs {
+    display: flex;
+    gap: 20px;
+}
+
+.sort-tab {
+    position: relative;
+    padding: 8px 0;
+    background: none;
+    border: none;
+    color: var(--gray-600);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sort-tab:hover {
+    color: var(--primary-blue);
+}
+
+.sort-tab.active {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+.sort-tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary-blue);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+.sort-tab.active::after {
+    transform: scaleX(1);
+}
+
+/* 구인공고 리스트 */
+.jobs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 40px;
+}
+
+/* 구인공고 아이템 - 자유게시판 게시글과 동일한 스타일 */
+.job-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    background: white;
+    border-bottom: 1px solid var(--gray-100);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.job-item:first-child {
+    border-top: 1px solid var(--gray-100);
+}
+
+.job-item:hover {
+    background: var(--gray-50);
+}
+
+/* 프리미엄 공고 강조 */
+.job-item.premium {
+    background: linear-gradient(to right, rgba(245, 158, 11, 0.05), transparent);
+}
+
+.job-item.premium::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+/* 구인 번호 */
+.job-number {
+    width: 60px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--gray-500);
+    flex-shrink: 0;
+}
+
+/* 카테고리 배지 */
+.job-category {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+.category-badge.recruiting {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.category-badge.closing {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.category-badge.closed {
+    background: #f3f4f6;
+    color: #9ca3af;
+}
+
+/* 공고 내용 */
+.job-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.job-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.job-title a {
+    color: var(--gray-900);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.job-title a:hover {
+    color: var(--primary-blue);
+}
+
+/* 배지들 */
+.new-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.premium-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+/* 메타 정보 */
+.job-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--gray-500);
+}
+
+.job-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.job-meta i {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* 통계 정보 */
+.job-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.like-count,
+.comment-count {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--gray-600);
+}
+
+.like-count i {
+    color: #ef4444;
+    font-size: 12px;
+}
+
+.comment-count i {
+    color: var(--primary-blue);
+    font-size: 12px;
+}
+
+/* 플로팅 글쓰기 버튼 */
+.floating-write-btn {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(46, 140, 230, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.floating-write-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 24px rgba(46, 140, 230, 0.4);
+    background: var(--deep-blue, #1e5ab8);
+}
+
+.floating-write-btn:active {
+    transform: scale(0.95);
+}
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-top: 40px;
+}
+
+.pagination a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-600);
+    transition: all 0.2s ease;
+}
+
+.pagination a:hover:not(.disabled) {
+    background: var(--gray-100);
+    color: var(--gray-900);
+}
+
+.pagination a.active {
+    background: var(--primary-blue);
+    color: white;
+    font-weight: 600;
+}
+
+.pagination a.disabled {
+    color: var(--gray-300);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 4px;
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--gray-100);
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: var(--gray-200);
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .planning-container {
+        padding: 32px 24px;
+    }
+    
+    .search-sort-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .search-box {
+        max-width: none;
+    }
+    
+    .sort-tabs {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .planning-container {
+        padding: 24px 16px;
+    }
+    
+    .planning-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .category-tabs,
+    .position-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+    }
+    
+    .job-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+    }
+    
+    .job-number {
+        width: auto;
+    }
+    
+    .job-category {
+        width: auto;
+    }
+    
+    .job-stats {
+        margin-top: 8px;
+    }
+    
+    .floating-write-btn {
+        width: 56px;
+        height: 56px;
+        bottom: 24px;
+        right: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .planning-title {
+        font-size: 20px;
+    }
+    
+    .planning-subtitle {
+        font-size: 13px;
+    }
+    
+    .sort-tabs {
+        gap: 12px;
+        font-size: 13px;
+    }
+    
+    .job-title a {
+        font-size: 14px;
+    }
+    
+    .job-meta {
+        font-size: 12px;
+        gap: 12px;
+    }
+}

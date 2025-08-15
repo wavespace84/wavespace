@@ -94,6 +94,18 @@ body .main-content .notice-container .notice-header .notice-subtitle {
     min-height: 400px; /* 최소 높이 설정으로 레이아웃 안정성 확보 */
 }
 
+/* 스크롤바 공간 예약으로 레이아웃 이동 방지 */
+.main-content {
+    scrollbar-gutter: stable;
+}
+
+/* scrollbar-gutter를 지원하지 않는 브라우저를 위한 대체 방법 */
+@supports not (scrollbar-gutter: stable) {
+    .main-content {
+        overflow-y: scroll; /* 항상 스크롤바 영역 표시 */
+    }
+}
+
 .notice-item {
     background: white;
     border-radius: 12px;

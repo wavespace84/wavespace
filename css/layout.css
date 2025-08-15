@@ -115,30 +115,25 @@
     }
 }
 
-/* Scrollbar Styles */
-.sidebar-nav::-webkit-scrollbar,
+/* Scrollbar Styles - 메인 컨테이너만 */
 .main-container::-webkit-scrollbar {
     width: 8px;
 }
 
-.sidebar-nav::-webkit-scrollbar-track,
 .main-container::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.sidebar-nav::-webkit-scrollbar-thumb,
 .main-container::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
 }
 
-.sidebar-nav::-webkit-scrollbar-thumb:hover,
 .main-container::-webkit-scrollbar-thumb:hover {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* Firefox Scrollbar */
-.sidebar-nav,
+/* Firefox Scrollbar - 메인 컨테이너만 */
 .main-container {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;

@@ -314,6 +314,7 @@
     font-size: 13px;
     color: var(--gray-600);
     margin: 0;
+    line-height: 1.6;
 }
 
 
@@ -373,6 +374,38 @@
     border: 2px solid #FFD700;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
     background: rgba(255, 215, 0, 0.08);
+}
+
+/* 1등 변경 시 반짝 효과 */
+.ranking-item-new.first.new-champion {
+    animation: championShine 2s ease-in-out;
+}
+
+@keyframes championShine {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        transform: scale(1);
+    }
+    20% {
+        box-shadow: 0 0 50px rgba(255, 215, 0, 0.8), 0 0 100px rgba(255, 215, 0, 0.4);
+        transform: scale(1.05);
+    }
+    40% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.3);
+        transform: scale(1.02);
+    }
+    60% {
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.7), 0 0 80px rgba(255, 215, 0, 0.35);
+        transform: scale(1.03);
+    }
+    80% {
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+        transform: scale(1.01);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        transform: scale(1);
+    }
 }
 
 /* 2,3등 카드 - 테두리 강조 */
@@ -471,6 +504,28 @@
     font-size: 15px;
     font-weight: 600;
     color: var(--gray-900);
+}
+
+/* 점수 표시 - 순위 변동 왼쪽에 위치 */
+.score-display {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    padding: 6px 12px;
+    background: var(--primary-light);
+    border-radius: var(--radius-md);
+    min-width: 80px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    margin-left: auto;
+}
+
+/* 4,5등은 점수 강조하지 않음 */
+.ranking-item-new.fourth-fifth .score-display {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    font-weight: 600;
 }
 
 /* 사용자 배지 표시 - 스타일가이드 배지 시스템 적용 */
@@ -575,11 +630,22 @@
 .change-indicator {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
     font-size: 12px;
     font-weight: 600;
     position: relative;
     z-index: 1;
+    min-width: 60px;
+    flex-shrink: 0;
+}
+
+/* 순위 변동이 없을 때도 동일한 정렬 유지 */
+.ranking-item-new .change-indicator.same {
+    min-width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .change-indicator.up {
@@ -598,19 +664,6 @@
     font-size: 10px;
 }
 
-/* 점수 표시 */
-.score-display {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--gray-900);
-    padding: 6px 12px;
-    background: var(--gray-50);
-    border-radius: var(--radius-md);
-    min-width: 60px;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-}
 
 
 
@@ -1165,6 +1218,164 @@
 .summary-list-item.rare {
     background: linear-gradient(135deg, rgba(96, 165, 250, 0.05), rgba(59, 130, 246, 0.05));
     border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* 올스타 섹션 스타일 */
+.allstar-section {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    position: relative;
+}
+
+.allstar-section .category-header {
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.category-icon.allstar {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.category-icon.allstar img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+/* 올스타 메인 콘텐츠 */
+.allstar-main-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* 올스타 배지 디스플레이 */
+.allstar-badge-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+.allstar-badge-display img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.badge-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin: 0;
+}
+
+/* 올스타 혜택 */
+.allstar-benefits {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    border: 1px solid var(--gray-200);
+}
+
+.allstar-benefits h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0 0 16px 0;
+    text-align: center;
+}
+
+.allstar-benefits ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.allstar-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    font-size: 14px;
+    color: var(--gray-700);
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+}
+
+.allstar-benefits li i {
+    color: #FFD700;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* 올스타 액션 버튼 */
+.allstar-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.allstar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 32px;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+}
+
+.allstar-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+}
+
+/* 반응형 - 올스타 섹션 */
+@media (max-width: 768px) {
+    .allstar-main-content {
+        padding: 16px;
+        gap: 16px;
+    }
+    
+    .allstar-badge-display {
+        max-width: 160px;
+    }
+    
+    .allstar-badge-display img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .allstar-benefits ul {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .allstar-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* 반응형 */

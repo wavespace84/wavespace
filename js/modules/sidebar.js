@@ -12,6 +12,30 @@ export function initSidebar() {
     const navCategories = document.querySelectorAll('.nav-category');
     const navCategoryButtons = document.querySelectorAll('.nav-category-button');
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    
+    // 스크롤 필요 여부 체크 함수
+    function checkScrollNeeded() {
+        if (sidebarNav) {
+            // 디버깅을 위한 로그
+            const scrollHeight = sidebarNav.scrollHeight;
+            const clientHeight = sidebarNav.clientHeight;
+            console.log('Scroll check:', { scrollHeight, clientHeight, needsScroll: scrollHeight > clientHeight });
+            
+            // 1픽셀의 여유를 두고 체크 (반올림 오차 방지)
+            if (scrollHeight > clientHeight + 1) {
+                sidebarNav.classList.add('has-overflow');
+            } else {
+                sidebarNav.classList.remove('has-overflow');
+            }
+        }
+    }
+    
+    // 초기 체크
+    checkScrollNeeded();
+    
+    // 리사이즈 시 체크
+    window.addEventListener('resize', checkScrollNeeded);
     
     // 모바일 메뉴 토글
     if (mobileMenuBtn) {
@@ -74,6 +98,9 @@ export function initSidebar() {
             
             // 상태 저장
             saveSidebarState();
+            
+            // 카테고리 토글 후 스크롤 체크
+            setTimeout(checkScrollNeeded, 300);
         });
     });
     
@@ -107,7 +134,6 @@ export function initSidebar() {
     });
     
     // 사이드바 네비게이션 스크롤 인디케이터
-    const sidebarNav = document.querySelector('.sidebar-nav');
     if (sidebarNav) {
         sidebarNav.addEventListener('scroll', () => {
             const scrollTop = sidebarNav.scrollTop;
@@ -129,6 +155,9 @@ export function initSidebar() {
             }
         });
     }
+    
+    // 페이지 로드 완료 후 최종 체크
+    window.addEventListener('load', checkScrollNeeded);
 }
 
 // 사이드바 상태 저장

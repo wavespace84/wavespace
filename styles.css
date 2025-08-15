@@ -111,12 +111,17 @@ body {
 /* Sidebar Navigation */
 .sidebar-nav {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: hidden; /* 기본적으로 스크롤 비활성화 */
     overflow-x: hidden;
-    padding: 24px 32px 24px 28px; /* 스크롤바 공간을 위해 우측 패딩 조정 */
+    padding: 24px 32px 24px 28px;
     position: relative;
     min-height: 0;
     -webkit-overflow-scrolling: touch;
+}
+
+/* 내용이 넘칠 때만 스크롤 활성화 */
+.sidebar-nav.has-overflow {
+    overflow-y: auto;
 }
 
 /* 스크롤 인디케이터 - 상단 그라데이션 */
@@ -157,49 +162,45 @@ body {
     opacity: 1;
 }
 
-.sidebar-nav::-webkit-scrollbar {
+.sidebar-nav.has-overflow::-webkit-scrollbar {
     width: 4px;
     height: 4px;
 }
 
-.sidebar-nav::-webkit-scrollbar-track {
+.sidebar-nav.has-overflow::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.sidebar-nav::-webkit-scrollbar-thumb {
+.sidebar-nav.has-overflow::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.15);
     border-radius: 2px;
     transition: all 0.3s ease;
 }
 
-.sidebar-nav:hover::-webkit-scrollbar-thumb {
+.sidebar-nav.has-overflow:hover::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.25);
 }
 
-.sidebar-nav::-webkit-scrollbar-thumb:hover {
+.sidebar-nav.has-overflow::-webkit-scrollbar-thumb:hover {
     background-color: rgba(0, 0, 0, 0.35);
 }
 
-.sidebar-nav::-webkit-scrollbar-thumb:active {
+.sidebar-nav.has-overflow::-webkit-scrollbar-thumb:active {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Firefox */
-.sidebar-nav {
+/* Firefox - has-overflow 클래스가 있을 때만 */
+.sidebar-nav.has-overflow {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
 
-/* 스크롤바 오토하이드 효과 */
-.sidebar-nav {
-    overflow-y: overlay;
-}
-
-.sidebar-nav:not(:hover)::-webkit-scrollbar-thumb {
+/* 스크롤바 오토하이드 효과 - has-overflow 클래스가 있을 때만 */
+.sidebar-nav.has-overflow:not(:hover)::-webkit-scrollbar-thumb {
     background-color: transparent;
 }
 
-.sidebar-nav:not(:hover) {
+.sidebar-nav.has-overflow:not(:hover) {
     scrollbar-color: transparent transparent;
 }
 

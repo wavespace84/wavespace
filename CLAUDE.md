@@ -6,6 +6,111 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 WAVE SPACE is a comprehensive community platform for real estate sales professionals in Korea. It combines information sharing, career development, and gamification elements to create an engaging ecosystem for industry practitioners.
 
+## ⚠️ CRITICAL DEVELOPMENT RULE
+
+**DO NOT modify, remove, or refactor any existing functionality unless explicitly requested by the user.**
+
+This rule is **extremely important** and must be followed at all times during development.
+
+- No assumptions.
+- No optimizations.
+- No cleanups.
+- No deletions.
+
+Only implement changes that are **clearly and directly requested** by the user.  
+Any deviation from this rule may result in breaking expected behavior or violating business requirements.
+
+> 🔒 Treat all existing code as intentional and required unless the user says otherwise.
+
+---
+
+## 🧩 MULTI-REQUEST & COMPLEX TASK STRATEGY
+
+**When the user provides more than one request, the system must reason and execute step-by-step.**
+
+- Break down multiple requests into logical, sequential steps
+- Ensure each step is fully understood before execution
+- Maintain clarity and traceability throughout the process
+
+**For complex or layered tasks, sub-agents must be activated to analyze in parallel and converge on the optimal solution.**
+
+- Use distributed reasoning across specialized sub-agents
+- Integrate findings to produce the most effective and context-aware result
+- Prioritize precision, scalability, and user intent alignment
+
+> 🧠 Structured thinking and parallel analysis are required to handle multi-dimensional tasks with excellence.
+
+---
+
+## 🗣️ RESPONSE LANGUAGE RULE
+
+**All responses must be written in Korean.**
+
+- Do not use English (except for code or proper nouns)
+- All explanations, messages, and guidance must be in Korean
+- Do not switch languages unless explicitly requested by the user
+
+> 🇰🇷 The user communicates in Korean by default. All interactions must respect this preference.
+
+---
+
+## 🎭 PERSONA & CONTEXT ENGINEERING RULE
+
+**When requested by the user, assign a persona and generate output optimized for context engineering.**
+
+- Persona must reflect the user's intent and tone
+- Output should be context-aware, high-quality, and tailored to the scenario
+- Maintain consistency with the assigned persona throughout the task
+
+> 🧠 The system must produce top-tier results that align with the user's contextual goals and creative direction.
+
+---
+
+## 🎨 DESIGN CONSISTENCY RULE
+
+**All design work must strictly follow the existing design tone and style already implemented.**
+
+- Do not introduce new design directions unless explicitly requested
+- Maintain visual, structural, and thematic consistency
+- Respect the original design language and user expectations
+
+> 🧩 Design integrity is critical. Consistency builds trust and coherence.
+
+---
+
+## 🛠️ ERROR HANDLING RULE
+
+**When correcting errors, think thoroughly before applying any fix.**
+
+- Analyze root causes carefully
+- Avoid quick patches or assumptions
+- Ensure the fix aligns with the broader system logic and user intent
+
+> 🧪 Every correction must be deliberate, thoughtful, and context-aware.
+
+---
+
+## 🧠 ULTRA-THINK MODE & SUB-AGENT STRATEGY
+
+**For complex tasks, activate Ultra-Think Mode and divide the task into manageable subtasks using sub-agents.**
+
+- Break down the problem into logical stages
+- Assign sub-agents to handle each stage with clarity and precision
+- Integrate results step-by-step to ensure coherence and completeness
+
+> 🚀 Ultra-Think Mode ensures deep reasoning and structured execution for high-stakes or multi-layered tasks.
+
+## 📄 SPEC vs IMPLEMENTATION PRIORITY RULE
+
+**Even if the current implementation differs from the MD specification, DO NOT modify or delete the implemented functionality.**
+
+- The MD file is a large, high-level planning document and cannot be updated in real time
+- Treat the MD file as an initial blueprint, not a live source of truth
+- The actual implemented features take precedence over written specs
+- Never change or remove existing behavior just because it seems inconsistent with the MD file
+
+> 🛡️ Protect implemented features. The MD file may lag behind development and should not override working code.
+
 ## Architecture
 
 ### Frontend Structure
