@@ -433,6 +433,64 @@ body {
     width: 4px;
 }
 
+/* 고객센터 푸른색 강조 클래스 - 업그레이드 */
+.nav-item.highlighted-blue {
+    background: linear-gradient(90deg, rgba(33, 150, 243, 0.25) 0%, rgba(135, 206, 250, 0.15) 100%);
+    border-left: 3px solid #2196f3;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+    color: #1976d2;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 반짝이는 효과 추가 */
+.nav-item.highlighted-blue::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* 아이콘 펄스 애니메이션 */
+.nav-item.highlighted-blue i {
+    animation: pulse 2s infinite;
+    color: #2196f3;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 호버 효과 강화 */
+.nav-item.highlighted-blue:hover {
+    background: linear-gradient(90deg, rgba(33, 150, 243, 0.35) 0%, rgba(135, 206, 250, 0.25) 100%);
+    transform: translateX(3px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.25);
+    color: #0d47a1;
+}
+
+.nav-item.highlighted-blue:hover i {
+    color: #0d47a1;
+    transform: scale(1.1);
+}
+
+.nav-item.active.highlighted-blue::before {
+    background: linear-gradient(180deg, #2196f3 0%, #1976d2 100%); /* 푸른색 그라데이션 포인트 */
+    width: 4px;
+}
+
 /* Minigame Section */
 .minigame-section {
     margin-top: 32px;

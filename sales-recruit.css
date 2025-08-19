@@ -1,5 +1,300 @@
 /* 분양영업 구인구직 페이지 스타일 */
 
+/* 구인공고 상세 팝업 스타일 */
+.job-detail-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.job-detail-popup {
+    background: white;
+    border-radius: 20px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.popup-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--gray-100);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--gray-600);
+    z-index: 10;
+    transition: all 0.2s ease;
+}
+
+.popup-close:hover {
+    background: var(--gray-200);
+    color: var(--gray-800);
+}
+
+.popup-header {
+    padding: 32px 32px 20px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.popup-title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.popup-company-info h2.popup-site-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0 0 4px 0;
+}
+
+.popup-company-info p.popup-company-name {
+    font-size: 16px;
+    color: var(--gray-600);
+    margin: 0;
+}
+
+.popup-badges {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.popup-job-title h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.popup-content {
+    padding: 24px 32px 32px;
+}
+
+.popup-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.popup-stats .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--gray-600);
+    font-size: 14px;
+}
+
+.popup-stats .stat-item i {
+    font-size: 12px;
+}
+
+.popup-stats .stat-item.deadline {
+    color: var(--primary-blue);
+    font-weight: 500;
+}
+
+.popup-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+    margin-bottom: 24px;
+}
+
+.popup-info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.popup-info-item i {
+    width: 20px;
+    color: var(--primary-blue);
+    font-size: 16px;
+}
+
+.popup-info-item span {
+    font-size: 14px;
+    color: var(--gray-600);
+    min-width: 60px;
+}
+
+.popup-info-item strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.popup-info-item.contact {
+    grid-column: 1 / -1;
+}
+
+.popup-description {
+    margin-bottom: 24px;
+}
+
+.popup-description h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 12px 0;
+}
+
+.popup-description .description-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--gray-700);
+    white-space: pre-line;
+}
+
+.popup-tags {
+    margin-bottom: 0;
+}
+
+.popup-tags h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 8px 0;
+}
+
+.popup-tags .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.popup-tags .tag {
+    background: var(--primary-blue-light);
+    color: var(--primary-blue);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.popup-footer {
+    padding: 20px 32px 32px;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    gap: 12px;
+}
+
+.btn-bookmark-large,
+.btn-apply-large,
+.btn-contact-large {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-bookmark-large {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
+.btn-bookmark-large:hover {
+    background: var(--gray-200);
+}
+
+.btn-bookmark-large.active {
+    background: var(--primary-blue-light);
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-apply-large {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.btn-apply-large:hover {
+    background: var(--primary-blue-dark);
+}
+
+.btn-contact-large {
+    background: var(--green-500);
+    color: white;
+}
+
+.btn-contact-large:hover {
+    background: var(--green-600);
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .job-detail-popup {
+        margin: 10px;
+        max-width: calc(100vw - 20px);
+    }
+    
+    .popup-header,
+    .popup-content,
+    .popup-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .popup-info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .popup-footer {
+        flex-direction: column;
+    }
+    
+    .popup-stats {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
 /* 메인 컨테이너 */
 .recruit-container {
     max-width: 1200px;
@@ -98,17 +393,7 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
 }
 
 
-/* 지역선택2(시군구)의 전체 버튼만 하늘색 스타일 */
-.sub-region-tabs .checkbox-tab[data-value="all"] {
-    background: rgba(135, 206, 250, 0.15) !important; /* 연한 하늘색 배경 */
-    border-color: rgba(135, 206, 250, 0.6) !important;
-    color: var(--primary-blue) !important;
-}
-
-.sub-region-tabs .checkbox-tab[data-value="all"]:hover {
-    background: rgba(135, 206, 250, 0.25) !important;
-    border-color: var(--primary-blue) !important;
-}
+/* 지역선택2(시군구) 스타일 - 시장조사서와 동일하게 적용 */
 
 /* 세로 막대 제거 - 아이콘과 충돌 방지 */
 
@@ -184,6 +469,7 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
     width: 14px;
     text-align: center;
 }
+
 
 /* 검색창 */
 .search-box {
@@ -491,6 +777,19 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
     min-width: auto;
 }
 
+/* 지역1 선택 시 파란색 배경 제거 */
+.region-tabs .checkbox-tab.active,
+.region-tabs .checkbox-tab:has(input:checked) {
+    background: white !important;
+    border-color: var(--primary-blue) !important;
+    color: var(--primary-blue) !important;
+}
+
+.region-tabs .checkbox-tab.active span,
+.region-tabs .checkbox-tab:has(input:checked) span {
+    color: var(--primary-blue) !important;
+}
+
 /* 하위 지역 행 */
 .sub-region-row {
     background: var(--gray-50);
@@ -656,6 +955,8 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
     color: white !important;
     font-weight: 500 !important;
 }
+
+/* 키워드 필터도 모집유형과 동일한 스타일 사용 */
 
 /* 기존 CSS 충돌 해결 대응 */
 .recruit-filters .checkbox-tab.active {
@@ -1078,7 +1379,7 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
 
 .ad-banner {
     position: relative;
-    background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* 보라색 그라데이션 */
     border-radius: 16px;
     padding: 24px 32px;
     color: white;
@@ -1173,7 +1474,7 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
     background: #f8fafc;
     border-radius: 16px;
     position: relative;
-    height: 280px;
+    height: 240px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -1191,6 +1492,12 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
     align-items: center;
     padding: 0 20px;
     transform: translateX(0);
+    justify-content: flex-start;
+}
+
+/* 4개 이하인 경우 가운데 정렬 */
+.pinned-banner-track:not(.animate) {
+    justify-content: center;
 }
 
 .pinned-banner-track.animate {
@@ -1209,11 +1516,12 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
 .pinned-banner-item {
     display: flex;
     flex-direction: column;
-    min-width: 280px;
-    height: 240px;
+    min-width: 235px;
+    width: calc(25% - 12px);
+    height: 220px;
     background: white;
     border-radius: 12px;
-    padding: 20px;
+    padding: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     border: 1px solid var(--gray-200);
     cursor: pointer;
@@ -1552,27 +1860,35 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
 
 .job-card {
     background: white !important;
-    border-radius: 12px;
-    padding: 16px 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     border: 1px solid var(--gray-100);
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     position: relative;
     cursor: pointer;
     display: flex;
     flex-direction: row;
     align-items: center;
-    height: 100px;
-    min-height: 100px;
+    gap: 16px;
+    min-height: 110px;
 }
 
-/* 호버 효과 제거 */
+.job-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-blue);
+}
+
+.job-card:hover .site-name {
+    color: var(--primary-blue);
+}
 
 .job-card.premium {
     position: relative;
-    background: white !important;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.03), rgba(255, 183, 0, 0.03)) !important;
     border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 102, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(255, 183, 0, 0.15);
     border: 2px solid transparent !important;
 }
 
@@ -1582,38 +1898,44 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
     inset: -2px;
     z-index: -1;
     border-radius: 18px;
-    background: linear-gradient(135deg, #0066FF, #00CCFF);
+    background: linear-gradient(135deg, #ffd700, #ffb700);
 }
 
-/* 호버 효과 제거 */
+.job-card.premium:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255, 183, 0, 0.25);
+}
 
 /* 구인공고 카드 목록형 구조 */
 .job-card .job-badges {
     display: flex;
-    gap: 4px;
+    gap: 6px;
     flex-wrap: wrap;
-    min-width: 100px;
-    align-items: flex-start;
-    margin-right: 20px;
-    align-self: flex-start;
-    padding-top: 4px;
+    min-width: 120px;
+    align-items: center;
+    margin-right: 16px;
+    flex-shrink: 0;
 }
 
 .job-card .job-left {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    flex: 1;
-    gap: 8px;
+    flex: 1.5;
+    gap: 10px;
     min-width: 0;
+    padding-right: 16px;
 }
 
 .job-card .site-name {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--gray-900);
     margin: 0;
-    white-space: nowrap;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
@@ -1622,9 +1944,12 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
 .job-card .job-title {
     font-size: 14px;
     font-weight: 500;
-    color: var(--gray-600);
+    color: var(--gray-700);
     margin: 0;
-    white-space: nowrap;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
@@ -1633,76 +1958,108 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
 .job-card .job-right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
     flex-shrink: 0;
+    flex: 2;
+    justify-content: space-between;
 }
 
 .job-card .job-location {
-    font-size: 13px;
-    color: var(--gray-500);
+    font-size: 14px;
+    color: var(--gray-600);
     margin: 0;
     white-space: nowrap;
-    text-align: center;
-    min-width: 100px;
+    text-align: left;
+    min-width: 110px;
+    font-weight: 500;
 }
 
 .job-card .job-employment {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--primary-blue);
-    background: rgba(46, 140, 230, 0.1);
-    padding: 6px 12px;
-    border-radius: 12px;
+    background: rgba(46, 140, 230, 0.08);
+    padding: 8px 16px;
+    border-radius: 20px;
     margin: 0;
     white-space: nowrap;
     font-weight: 600;
     text-align: center;
-    min-width: 60px;
+    min-width: 70px;
+    border: 1px solid rgba(46, 140, 230, 0.2);
 }
 
 .job-card .company-name {
     font-size: 13px;
-    color: var(--gray-600);
+    color: var(--gray-500);
     margin: 0;
     white-space: nowrap;
-    text-align: center;
-    min-width: 120px;
+    text-align: left;
+    min-width: 140px;
+    line-height: 1.4;
 }
 
 .job-card .job-actions {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-left: 10px;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
 .badge {
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .badge.urgent {
-    background: #ff4444;
+    background: linear-gradient(135deg, #ff4757, #ff6b7a);
     color: white;
+    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.25);
 }
 
 .badge.hot {
-    background: #ff8c42;
+    background: linear-gradient(135deg, #ff9f43, #ffc048);
     color: white;
+    box-shadow: 0 2px 8px rgba(255, 159, 67, 0.25);
 }
 
 .badge.new {
-    background: #4facfe;
+    background: linear-gradient(135deg, #48dbfb, #6dd5fa);
     color: white;
+    box-shadow: 0 2px 8px rgba(72, 219, 251, 0.25);
 }
 
 .badge.premium {
     background: linear-gradient(135deg, #ffd700, #ffb700);
     color: white;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.badge.premium::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(200%) rotate(45deg); }
 }
 
 .info-item {
@@ -1743,28 +2100,43 @@ body .main-content .recruit-container .recruit-header .recruit-helper {
 }
 
 .btn-bookmark {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background: white;
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    color: var(--gray-400);
 }
 
-/* 호버 효과 제거 */
+.btn-bookmark:hover {
+    transform: scale(1.1);
+    border-color: var(--primary-blue);
+    box-shadow: 0 4px 12px rgba(46, 140, 230, 0.2);
+}
+
+.btn-bookmark:hover i {
+    color: var(--primary-blue);
+}
 
 .btn-bookmark.active {
-    background: var(--light-blue);
+    background: linear-gradient(135deg, var(--primary-blue), var(--deep-blue));
     border-color: var(--primary-blue);
+    box-shadow: 0 4px 12px rgba(46, 140, 230, 0.3);
 }
 
 .btn-bookmark.active i {
-    color: var(--primary-blue);
+    color: white;
+}
+
+.btn-bookmark.active:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(46, 140, 230, 0.4);
 }
 
 .btn-apply {

@@ -249,7 +249,7 @@
     margin-right: 4px;  /* 간격 조정 */
 }
 
-.checkbox-tab .tab-check::after {
+.checkbox-tab.active .tab-check::after {
     content: '\2713';
     color: var(--primary-blue);
     font-weight: 700;

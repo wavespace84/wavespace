@@ -334,14 +334,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('실제 모드: 기존 출석 정보 유지');
         
         // 테스트를 위해 샘플 출석 데이터 추가 (필요시 주석 처리)
-        const existingDates = getAttendanceDates();
-        if (existingDates.length === 0) {
-            // 이번달 1일 출석 데이터 추가 (테스트용)
-            const serverTime = getServerTime();
-            const testDate = new Date(serverTime.getFullYear(), serverTime.getMonth(), 1);
-            saveAttendanceDate(testDate);
-            console.log('테스트용 출석 데이터 추가: 이번달 1일');
-        }
+        // const existingDates = getAttendanceDates();
+        // if (existingDates.length === 0) {
+        //     // 이번달 1일 출석 데이터 추가 (테스트용)
+        //     const serverTime = getServerTime();
+        //     const testDate = new Date(serverTime.getFullYear(), serverTime.getMonth(), 1);
+        //     saveAttendanceDate(testDate);
+        //     console.log('테스트용 출석 데이터 추가: 이번달 1일');
+        // }
     }
     
     // 로컬 스토리지에서 출석 정보 가져오기 (서버 시간 기준)
@@ -550,9 +550,9 @@ function initializeStatistics() {
     // 획득 포인트 계산
     const totalPoints = monthlyCount * 500;
     
-    // 출석률 계산
-    const currentDate = serverTime.getDate();
-    const attendanceRate = currentDate > 0 ? Math.round((monthlyCount / currentDate) * 100) : 0;
+    // 출석률 계산 - 이번달 전체 일수 기준
+    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const attendanceRate = lastDayOfMonth > 0 ? Math.round((monthlyCount / lastDayOfMonth) * 100) : 0;
     
     // 통계 카드들을 왼쪽부터 순서대로 애니메이션
     const cards = [
@@ -741,9 +741,9 @@ function updateAllStatisticsAfterCheckIn() {
         pointsElement.textContent = totalPoints + 'P';
     }
     
-    // 출석률 업데이트
-    const currentDate = serverTime.getDate();
-    const attendanceRate = currentDate > 0 ? Math.round((monthlyCount / currentDate) * 100) : 0;
+    // 출석률 업데이트 - 이번달 전체 일수 기준
+    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const attendanceRate = lastDayOfMonth > 0 ? Math.round((monthlyCount / lastDayOfMonth) * 100) : 0;
     const rateElement = document.querySelector('.streak-info .streak-card:nth-child(4) .streak-count');
     if (rateElement) {
         rateElement.textContent = attendanceRate + '%';
@@ -820,16 +820,20 @@ function updateStatistics() {
     const rateElement = document.querySelector('.streak-info .streak-card:nth-child(4) .streak-count');
     if (rateElement) {
         const today = getServerTime(); // 서버 시간 사용
-        const currentDate = today.getDate();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        
+        // 이번달의 전체 일수 계산
+        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
         
         // 현재 출석일수 가져오기 (방금 출석한 것 포함)
         const monthlyCount = parseInt(document.querySelector('.streak-info .streak-card:nth-child(1) .streak-count')?.textContent || '0') + 1;
         
-        // 새로운 출석률 계산
-        const newRate = currentDate > 0 ? Math.round((monthlyCount / currentDate) * 100) : 0;
+        // 새로운 출석률 계산 - 이번달 전체 일수 기준
+        const newRate = lastDayOfMonth > 0 ? Math.round((monthlyCount / lastDayOfMonth) * 100) : 0;
         const currentRate = parseInt(rateElement.textContent.replace('%', '') || '0');
         
-        console.log(`출석 후 출석률: ${monthlyCount}일 / ${currentDate}일 = ${newRate}%`);
+        console.log(`출석 후 출석률: ${monthlyCount}일 / ${lastDayOfMonth}일 = ${newRate}%`);
         
         // 애니메이션으로 업데이트
         animateCount(rateElement, currentRate, newRate, '%');
@@ -1780,7 +1784,11 @@ function addAchievementBadge(card) {
 // 출석률 계산 함수 (값만 반환)
 function calculateAttendanceRate() {
     const today = getServerTime(); // 서버 시간 기준
-    const currentDate = today.getDate();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    
+    // 이번달의 전체 일수 계산
+    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     
     // 이번달 출석일수를 직접 계산 (localStorage에서 확인)
     let attendanceDays = 0;
@@ -1795,19 +1803,16 @@ function calculateAttendanceRate() {
     // 저장된 출석 날짜들 확인
     const attendanceDates = getAttendanceDates();
     if (attendanceDates.length > 0) {
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
-        
         attendanceDays = attendanceDates.filter(dateString => {
             const date = new Date(dateString);
             return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
         }).length;
     }
     
-    // 출석률 = (출석일수 / 현재까지의 일수) * 100
-    const rate = currentDate > 0 ? Math.round((attendanceDays / currentDate) * 100) : 0;
+    // 출석률 = (출석일수 / 이번달 전체 일수) * 100
+    const rate = lastDayOfMonth > 0 ? Math.round((attendanceDays / lastDayOfMonth) * 100) : 0;
     
-    console.log(`출석률 계산: ${attendanceDays}일 / ${currentDate}일 = ${rate}%`);
+    console.log(`출석률 계산: ${attendanceDays}일 / ${lastDayOfMonth}일 = ${rate}%`);
     
     return rate;
 }

@@ -27,6 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTime();
     setInterval(updateTime, 1000);
     
+    console.log('[SCRIPT.JS] 사이드바 초기화 시작');
+    
+    // 사이드바 디버깅 스크립트가 있으면 그것을 우선 사용
+    if (window.debugSidebar && window.debugSidebar.isInitialized()) {
+        console.log('[SCRIPT.JS] 디버깅 사이드바가 이미 초기화됨, 중복 실행 건너뜀');
+        return;
+    }
+    
     // 사이드바 네비게이션 토글
     const navCategoryButtons = document.querySelectorAll('.nav-category-button');
     const sidebarSlogan = document.querySelector('.sidebar-slogan');
@@ -241,6 +249,77 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 초기 로드 시 애니메이션 체크
     handleScrollAnimation();
+    
+    // 히어로 카드 자동 회전 캐러셀
+    const heroCards = document.querySelectorAll('.hero-card');
+    if (heroCards.length >= 4) {
+        let currentIndex = 0;
+        const totalCards = heroCards.length;
+        
+        // 카드 위치 설정 함수
+        function updateCardPositions() {
+            heroCards.forEach((card, index) => {
+                // 현재 인덱스로부터의 상대 위치 계산
+                const relativeIndex = (index - currentIndex + totalCards) % totalCards;
+                
+                // 카드 위치와 스타일 업데이트
+                card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                
+                if (relativeIndex === 0) {
+                    // 앞쪽 카드 (활성화)
+                    card.style.zIndex = '3';
+                    card.style.transform = 'translateX(0) translateY(0) scale(1) rotate(-5deg)';
+                    card.style.opacity = '1';
+                    card.style.left = '0';
+                    card.style.top = '20px';
+                } else if (relativeIndex === 1) {
+                    // 중간 카드
+                    card.style.zIndex = '2';
+                    card.style.transform = 'translateX(40px) translateY(40px) scale(0.95) rotate(0deg)';
+                    card.style.opacity = '0.8';
+                    card.style.left = '40px';
+                    card.style.top = '60px';
+                } else if (relativeIndex === 2) {
+                    // 뒤쪽 카드
+                    card.style.zIndex = '1';
+                    card.style.transform = 'translateX(80px) translateY(80px) scale(0.9) rotate(5deg)';
+                    card.style.opacity = '0.6';
+                    card.style.left = '80px';
+                    card.style.top = '100px';
+                } else {
+                    // 숨겨진 카드들
+                    card.style.zIndex = '0';
+                    card.style.transform = 'translateX(120px) translateY(120px) scale(0.85) rotate(10deg)';
+                    card.style.opacity = '0';
+                    card.style.left = '120px';
+                    card.style.top = '140px';
+                }
+            });
+        }
+        
+        // 다음 카드로 이동
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % totalCards;
+            updateCardPositions();
+        }
+        
+        // 초기 위치 설정
+        updateCardPositions();
+        
+        // 3초마다 자동 회전
+        setInterval(nextCard, 3000);
+        
+        // 카드 호버 시 일시정지 (선택사항)
+        let isPaused = false;
+        heroCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                isPaused = true;
+            });
+            card.addEventListener('mouseleave', () => {
+                isPaused = false;
+            });
+        });
+    }
 });
 
 // 애니메이션을 위한 CSS 클래스 추가

@@ -995,20 +995,25 @@ function initializeProgressSteps() {
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Headhunting page initializing...');
+    console.log('[HEADHUNTING.JS] 페이지 초기화 시작');
     
-    // 초기 상태 설정 (개인회원 기본 선택)
-    switchMemberType('personal');
-    
-    // 모든 초기화 함수 실행
-    try {
-        initializeFilters();
-        renderTalents();
-        initializeFAQ(); // FAQ 초기화 추가
-        initializeCharacterCounter(); // 글자수 카운터 초기화
-        initializeProgressSteps(); // 진행 단계 초기화
-        console.log('Headhunting page initialized successfully');
-    } catch (error) {
-        console.error('Error initializing headhunting page:', error);
-    }
+    // script.js의 사이드바 초기화가 완료될 때까지 잠시 대기
+    setTimeout(() => {
+        console.log('[HEADHUNTING.JS] 메인 기능 초기화 시작');
+        
+        // 초기 상태 설정 (개인회원 기본 선택)
+        switchMemberType('personal');
+        
+        // 모든 초기화 함수 실행
+        try {
+            initializeFilters();
+            renderTalents();
+            initializeFAQ(); // FAQ 초기화 추가
+            initializeCharacterCounter(); // 글자수 카운터 초기화
+            initializeProgressSteps(); // 진행 단계 초기화
+            console.log('[HEADHUNTING.JS] 페이지 초기화 완료');
+        } catch (error) {
+            console.error('[HEADHUNTING.JS] 초기화 중 오류:', error);
+        }
+    }, 200);
 });

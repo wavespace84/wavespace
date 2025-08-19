@@ -228,18 +228,20 @@ function filterNotices() {
 
 // 공지사항 렌더링
 function renderNotices() {
-    // 최신순으로 정렬
-    const sortedNotices = [...filteredNotices].sort((a, b) => {
-        // 먼저 상단고정 여부로 정렬
-        if (a.isPinned && !b.isPinned) return -1;
-        if (!a.isPinned && b.isPinned) return 1;
-        // 같은 그룹 내에서는 날짜순으로 정렬
-        return new Date(b.createdAt) - new Date(a.createdAt);
-    });
+    // 상단 고정 게시물과 일반 게시물 분리
+    const pinnedNotices = filteredNotices.filter(notice => notice.isPinned)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
+    const regularNotices = filteredNotices.filter(notice => !notice.isPinned)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    // 일반 게시물만 페이지네이션 적용
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const displayedNotices = sortedNotices.slice(startIndex, endIndex);
+    const paginatedRegularNotices = regularNotices.slice(startIndex, endIndex);
+    
+    // 상단 고정 + 현재 페이지의 일반 게시물
+    const displayedNotices = [...pinnedNotices, ...paginatedRegularNotices];
     
     noticeList.innerHTML = '';
     
@@ -290,7 +292,9 @@ function createNoticeElement(notice) {
 
 // 페이지네이션 렌더링
 function renderPagination() {
-    const totalPages = Math.ceil(filteredNotices.length / itemsPerPage);
+    // 일반 게시물만으로 페이지 수 계산 (상단 고정 제외)
+    const regularNotices = filteredNotices.filter(notice => !notice.isPinned);
+    const totalPages = Math.ceil(regularNotices.length / itemsPerPage);
     pagination.innerHTML = '';
     
     if (totalPages <= 1) return;

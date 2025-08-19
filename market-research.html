@@ -4,33 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>시장조사서 - WAVE SPACE</title>
-    <!-- preload.js 제거 - 빈 화면 문제 해결 -->
-    <!-- <script src="preload.js"></script> -->
+    <script src="preload.js"></script>
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
-    <link rel="stylesheet" href="market-research-shopping.css">
+    <link rel="stylesheet" href="market-research.css">
+    <link rel="stylesheet" href="market-research-minimal.css">
     <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* 페이지 강제 표시 - 사이드바 제외 */
-        html, body {
-            visibility: visible !important;
-            display: block !important;
-            opacity: 1 !important;
-        }
-        .app-container {
-            visibility: visible !important;
-            display: flex !important;
-            opacity: 1 !important;
-        }
-        .main-container,
-        .main-content {
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-    </style>
+    <!-- PDF.js 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // PDF.js 워커 설정
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
 </head>
-<body style="visibility: visible !important; display: block !important;">
+<body>
     <!-- 전체 컨테이너 -->
     <div class="app-container">
         <!-- 사이드바 -->
@@ -64,7 +53,7 @@
                                     <i class="fas fa-bullhorn"></i>
                                     <span>공지사항</span>
                                 </a>
-                                <a href="updates.html" class="nav-item highlighted">
+                                <a href="updates.html" class="nav-item">
                                     <i class="fas fa-info-circle"></i>
                                     <span>업데이트</span>
                                 </a>
@@ -95,7 +84,7 @@
                                 <i class="fas fa-chevron-down nav-arrow"></i>
                             </button>
                             <div class="nav-items">
-                                <a href="hall-of-fame.html" class="nav-item">
+                                <a href="hall-of-fame.html" class="nav-item highlighted">
                                     <i class="fas fa-trophy"></i>
                                     <span>명예의전당</span>
                                 </a>
@@ -130,17 +119,16 @@
                                 <i class="fas fa-chevron-down nav-arrow"></i>
                             </button>
                             <div class="nav-items">
-                                <a href="#" class="nav-item">
-                                    <i class="fas fa-briefcase"></i>
+                                <a href="planning-recruitment.html" class="nav-item">
+                                    <i class="fas fa-project-diagram"></i>
                                     <span>분양기획</span>
-                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="sales-recruit.html" class="nav-item">
+                                <a href="sales-recruit.html" class="nav-item highlighted">
                                     <i class="fas fa-briefcase"></i>
                                     <span>분양영업</span>
                                 </a>
-                                <a href="#" class="nav-item">
-                                    <i class="fas fa-search"></i>
+                                <a href="headhunting.html" class="nav-item">
+                                    <i class="fas fa-user-tie"></i>
                                     <span>헤드헌팅</span>
                                 </a>
                             </div>
@@ -158,7 +146,7 @@
                                 <i class="fas fa-chevron-down nav-arrow"></i>
                             </button>
                             <div class="nav-items">
-                                <a href="data-center.html" class="nav-item">
+                                <a href="data-center.html" class="nav-item highlighted">
                                     <i class="fas fa-database"></i>
                                     <span>Data Center</span>
                                     <span class="check-mark"></span>
@@ -208,22 +196,22 @@
                                 <i class="fas fa-chevron-down nav-arrow"></i>
                             </button>
                             <div class="nav-items">
-                                <a href="#" class="nav-item">
+                                <a href="points-policy.html" class="nav-item highlighted">
                                     <i class="fas fa-gem"></i>
                                     <span>포인트정책</span>
                                     <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="points-ranking.html" class="nav-item">
                                     <i class="fas fa-chart-bar"></i>
                                     <span>전체랭킹</span>
                                     <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="points-charge.html" class="nav-item">
                                     <i class="fas fa-credit-card"></i>
                                     <span>충전하기</span>
                                     <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="points-shop.html" class="nav-item">
                                     <i class="fas fa-store"></i>
                                     <span>상점</span>
                                     <span class="check-mark"></span>
@@ -234,21 +222,21 @@
                 </div>
 
                 <!-- 미니게임 섹션 -->
-                <div class="minigame-section">
+                <div class="nav-section minigame-section">
                     <div class="minigame-header">
                         <i class="fas fa-gamepad"></i>
                         <span>미니게임</span>
                     </div>
                     <div class="minigame-buttons">
-                        <a href="#" class="minigame-btn">
+                        <a href="/game" class="minigame-btn">
                             <i class="fas fa-gamepad"></i>
                             <span>모든 게임</span>
                         </a>
-                        <a href="#" class="minigame-btn">
+                        <a href="/game?open=roulette" class="minigame-btn">
                             <i class="fas fa-circle-notch"></i>
                             <span>룰렛</span>
                         </a>
-                        <a href="#" class="minigame-btn">
+                        <a href="/game?open=blackjack" class="minigame-btn">
                             <i class="fas fa-layer-group"></i>
                             <span>블랙잭</span>
                         </a>
@@ -280,7 +268,7 @@
                             <p class="user-name">박승학님</p>
                             <div class="user-meta">
                                 <span class="user-title">소통왕</span>
-                                <span class="user-points">• 1,250P</span>
+                                <span class="user-points">• 100,000P</span>
                             </div>
                         </div>
                         <i class="fas fa-chevron-down user-dropdown-icon"></i>
@@ -310,7 +298,7 @@
                         <!-- 필터 행 1: 지역 선택 -->
                         <div class="filter-row">
                             <!-- 광역시도 선택 -->
-                            <div class="filter-group">
+                            <div class="filter-group region-filter">
                                 <div class="filter-title">
                                     <i class="fas fa-map-marker-alt"></i>
                                     지역선택
@@ -381,6 +369,14 @@
                             </div>
                         </div>
 
+                        <!-- 선택된 지역 표시 -->
+                        <div class="selected-regions" id="selectedRegions" style="display: none;">
+                            <span class="selected-label">선택된 지역:</span>
+                            <div class="selected-tags" id="selectedTags">
+                                <!-- 선택된 지역 태그가 여기 표시됨 -->
+                            </div>
+                        </div>
+
                         <!-- 필터 행 2: 상품유형 -->
                         <div class="filter-row">
                             <div class="filter-group">
@@ -388,51 +384,103 @@
                                     <i class="fas fa-building"></i>
                                     상품유형
                                 </div>
-                                <div class="nav-selection-group">
-                                    <div class="nav-selector selected" data-value="all">
+                                <div class="checkbox-tabs employment-tabs" id="productTypeFilters">
+                                    <label class="checkbox-tab active" data-type="all">
+                                        <input type="radio" name="product-type-filter" checked>
+                                        <span class="tab-check"></span>
                                         <span>전체</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="apartment">
+                                    </label>
+                                    <label class="checkbox-tab" data-type="apartment">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
                                         <span>아파트</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="officetel-residential">
-                                        <span>오피스텔(주거형)</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="officetel-profit">
-                                        <span>오피스텔(수익형)</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="urban">
-                                        <span>도시형생활주택</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="commercial">
+                                    </label>
+                                    <label class="checkbox-tab" data-type="residential-ot">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>주거형 OT</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="profit-ot">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>수익형 OT</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="urban">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>도생</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="commercial">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
                                         <span>상가</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="knowledge">
-                                        <span>지식산업센터</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="townhouse">
-                                        <span>타운하우스</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="accommodation">
+                                    </label>
+                                    <label class="checkbox-tab" data-type="lifestyle-lodge">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
                                         <span>생활형숙박시설</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="hotel">
+                                    </label>
+                                    <label class="checkbox-tab" data-type="knowledge">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>지식산업센터</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="hotel">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
                                         <span>호텔</span>
-                                    </div>
-                                    <div class="nav-selector" data-value="other">
+                                    </label>
+                                    <label class="checkbox-tab" data-type="other">
+                                        <input type="radio" name="product-type-filter">
+                                        <span class="tab-check"></span>
                                         <span>기타</span>
-                                    </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 선택된 지역 표시 -->
-                        <div class="selected-regions" id="selectedRegions" style="display: none;">
-                            <span class="selected-label">선택된 지역:</span>
-                            <div class="selected-tags" id="selectedTags">
-                                <!-- 동적으로 생성될 선택된 지역 태그 -->
+                        <!-- 필터 행 3: 공급유형 -->
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <div class="filter-title">
+                                    <i class="fas fa-home"></i>
+                                    공급유형
+                                </div>
+                                <div class="checkbox-tabs employment-tabs" id="supplyTypeFilters">
+                                    <label class="checkbox-tab active" data-type="all">
+                                        <input type="radio" name="supply-type-filter" checked>
+                                        <span class="tab-check"></span>
+                                        <span>전체</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="private-sale">
+                                        <input type="radio" name="supply-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>민간분양</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="public-sale">
+                                        <input type="radio" name="supply-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>공공분양</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="private-rental">
+                                        <input type="radio" name="supply-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>민간임대</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="public-rental">
+                                        <input type="radio" name="supply-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>공공임대</span>
+                                    </label>
+                                    <label class="checkbox-tab" data-type="other">
+                                        <input type="radio" name="supply-type-filter">
+                                        <span class="tab-check"></span>
+                                        <span>기타</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
                     <!-- 광고 배너 영역 -->
@@ -456,192 +504,18 @@
                         <!-- 통계 및 정렬 바 -->
                         <div class="content-header">
                             <div class="result-summary">
-                                <span class="result-count">총 <strong id="totalCount">1,234</strong>개의 시장조사서</span>
+                                <span class="result-count">총 <strong id="totalCount">3</strong>개의 시장조사서</span>
                                 <span class="result-region" id="resultRegion"></span>
                             </div>
                             <div class="sort-controls">
                                 <button class="sort-btn active" data-sort="latest">최신순</button>
-                                <button class="sort-btn" data-sort="popular">인기순</button>
-                                <button class="sort-btn" data-sort="downloads">다운로드순</button>
-                                <button class="sort-btn" data-sort="views">조회순</button>
+                                <button class="sort-btn" data-sort="filesize">파일크기순</button>
                             </div>
                         </div>
 
                             <!-- 문서 그리드 -->
                             <div class="document-grid" id="documentGrid">
-                                <!-- 문서 카드 1 -->
-                                <div class="document-card" data-doc-id="1">
-                                    <div class="document-header">
-                                        <span class="document-type apartment">아파트</span>
-                                        <div class="document-menu">
-                                            <button class="menu-btn">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h3 class="document-title">강남구 삼성동 아파트 시장조사서</h3>
-                                    <div class="document-location">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>서울 강남구 삼성동</span>
-                                    </div>
-                                    <div class="document-actions">
-                                        <button class="btn-preview" onclick="openPreview(1)">
-                                            <i class="fas fa-eye"></i>
-                                            미리보기
-                                        </button>
-                                    </div>
-                                    <div class="document-meta">
-                                        <span class="document-date">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            2024.01.15 생성
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- 문서 카드 2 -->
-                                <div class="document-card" data-doc-id="2">
-                                    <div class="document-header">
-                                        <span class="document-type officetel">오피스텔</span>
-                                        <div class="document-menu">
-                                            <button class="menu-btn">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h3 class="document-title">판교 테크노밸리 오피스텔 시장분석</h3>
-                                    <div class="document-location">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>경기 성남시 분당구</span>
-                                    </div>
-                                    <div class="document-actions">
-                                        <button class="btn-preview" onclick="openPreview(2)">
-                                            <i class="fas fa-eye"></i>
-                                            미리보기
-                                        </button>
-                                    </div>
-                                    <div class="document-meta">
-                                        <span class="document-date">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            2024.01.14 생성
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- 문서 카드 3 -->
-                                <div class="document-card" data-doc-id="3">
-                                    <div class="document-header">
-                                        <span class="document-type commercial">상가</span>
-                                        <div class="document-menu">
-                                            <button class="menu-btn">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h3 class="document-title">홍대입구역 상권 분석 보고서</h3>
-                                    <div class="document-location">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>서울 마포구 서교동</span>
-                                    </div>
-                                    <div class="document-actions">
-                                        <button class="btn-preview" onclick="openPreview(3)">
-                                            <i class="fas fa-eye"></i>
-                                            미리보기
-                                        </button>
-                                    </div>
-                                    <div class="document-meta">
-                                        <span class="document-date">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            2024.01.13 생성
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- 문서 카드 4 -->
-                                <div class="document-card" data-doc-id="4">
-                                    <div class="document-header">
-                                        <span class="document-type knowledge">지식산업센터</span>
-                                        <div class="document-menu">
-                                            <button class="menu-btn">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h3 class="document-title">가산디지털단지 지식산업센터 현황</h3>
-                                    <div class="document-location">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>서울 금천구 가산동</span>
-                                    </div>
-                                    <div class="document-actions">
-                                        <button class="btn-preview" onclick="openPreview(4)">
-                                            <i class="fas fa-eye"></i>
-                                            미리보기
-                                        </button>
-                                    </div>
-                                    <div class="document-meta">
-                                        <span class="document-date">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            2024.01.12 생성
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- 문서 카드 5 -->
-                                <div class="document-card" data-doc-id="5">
-                                    <div class="document-header">
-                                        <span class="document-type apartment">아파트</span>
-                                        <div class="document-menu">
-                                            <button class="menu-btn">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h3 class="document-title">해운대 신도시 아파트 시장 동향</h3>
-                                    <div class="document-location">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>부산 해운대구</span>
-                                    </div>
-                                    <div class="document-actions">
-                                        <button class="btn-preview" onclick="openPreview(5)">
-                                            <i class="fas fa-eye"></i>
-                                            미리보기
-                                        </button>
-                                    </div>
-                                    <div class="document-meta">
-                                        <span class="document-date">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            2024.01.11 생성
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- 문서 카드 6 -->
-                                <div class="document-card" data-doc-id="6">
-                                    <div class="document-header">
-                                        <span class="document-type officetel">오피스텔</span>
-                                        <div class="document-menu">
-                                            <button class="menu-btn">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h3 class="document-title">여의도 IFC 오피스텔 투자 분석</h3>
-                                    <div class="document-location">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>서울 영등포구 여의도동</span>
-                                    </div>
-                                    <div class="document-actions">
-                                        <button class="btn-preview" onclick="openPreview(6)">
-                                            <i class="fas fa-eye"></i>
-                                            미리보기
-                                        </button>
-                                    </div>
-                                    <div class="document-meta">
-                                        <span class="document-date">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            2024.01.10 생성
-                                        </span>
-                                    </div>
-                                </div>
+                                <!-- JavaScript에서 동적으로 생성됨 -->
                             </div>
 
                             <!-- 페이지네이션 -->
@@ -671,270 +545,890 @@
         </button>
     </div>
 
-    <!-- 미리보기 모달 (쇼핑몰 스타일) -->
+    <!-- 미리보기 모달 (미니멀 스타일) -->
     <div class="preview-modal" id="previewModal">
         <div class="preview-overlay"></div>
         <div class="preview-container">
             <button class="preview-close" id="previewClose">
                 <i class="fas fa-times"></i>
             </button>
+            <!-- 문서 카운터 -->
+            <div class="preview-document-counter" id="previewCounter">1 / 6</div>
+            <!-- 좌우 네비게이션 버튼 -->
+            <button class="preview-nav preview-nav-prev" id="previewPrev" title="이전 문서">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="preview-nav preview-nav-next" id="previewNext" title="다음 문서">
+                <i class="fas fa-chevron-right"></i>
+            </button>
             <div class="preview-wrapper">
-                <!-- 쇼핑몰 스타일 레이아웃 -->
-                <div class="preview-product-layout">
-                    <!-- 왼쪽: 썸네일 리스트 -->
-                    <div class="preview-thumbnail-list">
-                        <div class="thumbnail-item active" onclick="changePreviewImage(this, 1)">
-                            <img src="https://via.placeholder.com/80x110/2E8CE6/FFFFFF?text=페이지1" alt="페이지 1">
-                        </div>
-                        <div class="thumbnail-item" onclick="changePreviewImage(this, 2)">
-                            <img src="https://via.placeholder.com/80x110/e5e7eb/6b7280?text=페이지2" alt="페이지 2">
-                        </div>
-                        <div class="thumbnail-item" onclick="changePreviewImage(this, 3)">
-                            <img src="https://via.placeholder.com/80x110/e5e7eb/6b7280?text=페이지3" alt="페이지 3">
-                        </div>
-                        <div class="thumbnail-item" onclick="changePreviewImage(this, 4)">
-                            <img src="https://via.placeholder.com/80x110/e5e7eb/6b7280?text=페이지4" alt="페이지 4">
-                        </div>
-                        <div class="thumbnail-item" onclick="changePreviewImage(this, 5)">
-                            <img src="https://via.placeholder.com/80x110/e5e7eb/6b7280?text=페이지5" alt="페이지 5">
-                        </div>
-                    </div>
-                    
-                    <!-- 중앙: 메인 이미지 -->
-                    <div class="preview-main-image">
-                        <img id="previewMainImage" src="https://via.placeholder.com/500x700/2E8CE6/FFFFFF?text=시장조사서+미리보기" alt="문서 미리보기">
-                        <div class="zoom-hint">
-                            <i class="fas fa-search-plus"></i>
-                            이미지 클릭하여 확대
+                <!-- 미니멀 레이아웃 -->
+                <div class="preview-minimal-layout">
+                    <!-- 왼쪽: 문서 미리보기 (3페이지 레이아웃) -->
+                    <div class="preview-document-area">
+                        <div class="preview-pages-layout">
+                            <!-- 4페이지 (위, 작게) -->
+                            <div class="preview-page-small preview-page-top">
+                                <canvas id="previewCanvas4" width="120" height="160"></canvas>
+                                <div class="page-label">페이지 4</div>
+                            </div>
+                            
+                            <!-- 5페이지 (중앙, 크게 - 메인) -->
+                            <div class="preview-page-main">
+                                <canvas id="previewCanvas5" width="200" height="280"></canvas>
+                                <div class="page-label main">페이지 5 (메인)</div>
+                            </div>
+                            
+                            <!-- 6페이지 (아래, 작게) -->
+                            <div class="preview-page-small preview-page-bottom">
+                                <canvas id="previewCanvas6" width="120" height="160"></canvas>
+                                <div class="page-label">페이지 6</div>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- 오른쪽: 상품 정보 -->
-                    <div class="preview-info">
-                    <div class="preview-badge-group">
-                        <span class="preview-badge" id="previewType">아파트</span>
-                        <span class="preview-badge premium">Premium</span>
-                        <span class="preview-badge new">NEW</span>
-                    </div>
-                    
-                    <h1 class="preview-title" id="previewTitle">강남구 삼성동 아파트 시장조사서</h1>
-                    
-                    <div class="preview-rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
+                    <!-- 오른쪽: 핵심 정보 -->
+                    <div class="preview-info-panel">
+                        <!-- 문서 타입 배지 -->
+                        <span class="preview-type-badge" id="previewType">아파트</span>
+                        
+                        <!-- 문서 제목 -->
+                        <h1 class="preview-doc-title" id="previewTitle">강남구 삼성동 아파트 시장조사서</h1>
+                        
+                        <!-- 핵심 정보 -->
+                        <div class="preview-key-info">
+                            <div class="key-info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="previewLocation">서울 강남구 삼성동</span>
+                            </div>
+                            <div class="key-info-item">
+                                <i class="fas fa-file-pdf"></i>
+                                <span>PDF • <span id="previewFileSize">15.2MB</span></span>
+                            </div>
+                            <div class="key-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span id="previewDate">2024.01.15</span>
+                            </div>
                         </div>
-                        <span class="rating-text">4.5 (128개 리뷰)</span>
-                    </div>
-                    
-                    <div class="preview-price">
-                        <div class="price-row">
-                            <span class="price-label">다운로드 포인트</span>
-                            <span class="price-value">
-                                <span class="point-amount">500</span>
-                                <span class="point-unit">P</span>
-                            </span>
+                        
+                        <!-- 다운로드 포인트 -->
+                        <div class="preview-point-section">
+                            <div class="point-display">
+                                <span class="point-label">다운로드 포인트</span>
+                                <div class="point-value-display">
+                                    <span class="point-number" id="previewPoints">10,000</span>
+                                    <span class="point-suffix">P</span>
+                                </div>
+                            </div>
+                            <div class="point-breakdown">
+                                <div class="point-breakdown-item">
+                                    <span class="point-breakdown-label">
+                                        <i class="fas fa-calendar-check"></i>
+                                        최신성 지수
+                                    </span>
+                                    <span class="point-breakdown-value" id="freshnessIndex">6개월 이내 (120%)</span>
+                                </div>
+                                <div class="point-breakdown-item">
+                                    <span class="point-breakdown-label">
+                                        <i class="fas fa-hdd"></i>
+                                        파일크기 지수
+                                    </span>
+                                    <span class="point-breakdown-value" id="fileSizeIndex">15.2MB (110%)</span>
+                                </div>
+                                <div class="point-formula" id="pointFormula">
+                                    기준 7,000P × 1.2 × 1.1 = 9,240P
+                                </div>
+                            </div>
                         </div>
-                        <div class="price-benefits">
-                            <span class="benefit-tag">
-                                <i class="fas fa-percentage"></i>
-                                Plus 회원 30% 할인
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="preview-info-grid">
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span class="info-label">지역</span>
-                            <span class="info-value" id="previewLocation">서울 강남구 삼성동</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span class="info-label">작성일</span>
-                            <span class="info-value" id="previewDate">2024.01.15</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-file-pdf"></i>
-                            <span class="info-label">파일 형식</span>
-                            <span class="info-value">PDF</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-hdd"></i>
-                            <span class="info-label">파일 크기</span>
-                            <span class="info-value">12.5 MB</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-file-alt"></i>
-                            <span class="info-label">페이지 수</span>
-                            <span class="info-value">48 페이지</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-download"></i>
-                            <span class="info-label">다운로드</span>
-                            <span class="info-value">1,234회</span>
-                        </div>
-                    </div>
-                    
-                    <div class="preview-description">
-                        <h3>문서 설명</h3>
-                        <p>강남구 삼성동 일대의 아파트 시장 현황을 심층 분석한 전문 보고서입니다. 최신 거래 동향, 가격 추이, 수요 예측 등 투자 결정에 필요한 모든 정보를 담았습니다.</p>
-                        <ul class="description-list">
-                            <li><i class="fas fa-check"></i> 최근 3년간 실거래가 분석</li>
-                            <li><i class="fas fa-check"></i> 주변 개발 계획 및 영향 분석</li>
-                            <li><i class="fas fa-check"></i> 학군 및 교통 접근성 평가</li>
-                            <li><i class="fas fa-check"></i> 투자 수익률 예측 모델</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="preview-actions">
-                        <button class="btn-download-main">
-                            <i class="fas fa-download"></i>
-                            <span>500P로 다운로드</span>
-                        </button>
-                        <button class="btn-add-cart">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span>장바구니 담기</span>
-                        </button>
-                        <button class="btn-favorite">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="preview-share">
-                        <span class="share-label">공유하기</span>
-                        <div class="share-buttons">
-                            <button class="share-btn" title="링크 복사">
-                                <i class="fas fa-link"></i>
+                        
+                        <!-- 버튼 그룹 -->
+                        <div class="preview-button-group">
+                            <button class="btn-add-cart" id="previewCartBtn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>장바구니</span>
                             </button>
-                            <button class="share-btn" title="카카오톡">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                            <button class="share-btn" title="페이스북">
-                                <i class="fab fa-facebook-f"></i>
-                            </button>
-                            <button class="share-btn" title="트위터">
-                                <i class="fab fa-twitter"></i>
+                            <button class="btn-download-primary" id="previewDownloadBtn">
+                                <i class="fas fa-download"></i>
+                                <span>다운로드</span>
                             </button>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 업로드 모달 -->
-    <div class="upload-modal" id="uploadModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">시장조사서 업로드</h2>
-                <button class="modal-close" id="modalClose">
+    <!-- 개선된 업로드 모달 -->
+    <div class="simple-upload-modal" id="uploadModal">
+        <div class="simple-upload-content">
+            <div class="simple-modal-header">
+                <h2 class="simple-modal-title">시장조사서 업로드</h2>
+                <button class="simple-modal-close" id="modalClose">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="uploadForm">
-                    <div class="form-group">
-                        <label for="documentTitle">제목 *</label>
-                        <input type="text" id="documentTitle" required placeholder="예: 강남구 삼성동 아파트 시장조사서">
+            
+            <div class="simple-modal-body">
+                <!-- 파일 업로드 -->
+                <div class="simple-upload-zone" id="uploadZone">
+                    <i class="fas fa-cloud-upload-alt simple-upload-icon"></i>
+                    <p class="simple-upload-text">파일을 드래그하거나 클릭하여 선택</p>
+                    <p class="simple-upload-hint">PDF, PPT, DOC, XLS • 최대 50MB</p>
+                    <p class="upload-warning-text">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>24개월이 경과된 자료는 업로드할 수 없습니다.</span>
+                    </p>
+                    <input type="file" hidden id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx">
+                </div>
+
+                <!-- 파일 정보 -->
+                <div class="simple-file-info" id="fileInfo">
+                    <div class="file-thumbnail" id="fileThumbnail" style="display: none;">
+                        <canvas id="thumbnailCanvas" width="120" height="160"></canvas>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="documentType">상품유형 *</label>
-                        <select id="documentType" required>
-                            <option value="">선택하세요</option>
-                            <option value="apartment">아파트</option>
-                            <option value="officetel-residential">오피스텔(주거형)</option>
-                            <option value="officetel-profit">오피스텔(수익형)</option>
-                            <option value="urban">도시형생활주택</option>
-                            <option value="commercial">상가</option>
-                            <option value="knowledge">지식산업센터</option>
-                            <option value="townhouse">타운하우스</option>
-                            <option value="accommodation">생활형숙박시설</option>
-                            <option value="hotel">호텔</option>
-                            <option value="other">기타</option>
-                        </select>
+                    <div class="simple-file-icon" id="fileIconDiv">
+                        <i class="fas fa-file-pdf" style="color: #dc2626;"></i>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="documentLocation">지역 *</label>
-                        <input type="text" id="documentLocation" required placeholder="예: 서울 강남구 삼성동">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="documentDesc">설명</label>
-                        <textarea id="documentDesc" rows="3" placeholder="시장조사서에 대한 간단한 설명을 입력하세요"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>파일 업로드 *</label>
-                        <div class="file-upload-area" id="fileUploadArea">
-                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                            <p class="upload-text">파일을 드래그하거나 클릭하여 업로드</p>
-                            <p class="upload-hint">PDF, PPT, PPTX, DOC, DOCX, XLS, XLSX (최대 50MB)</p>
-                            <input type="file" id="fileInput" hidden accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx">
+                    <div class="simple-file-details">
+                        <div class="simple-file-name" id="fileName"></div>
+                        <div class="simple-file-size" id="fileSize"></div>
+                        <div class="file-date-select" style="margin-top: 12px;">
+                            <label style="font-size: 13px; color: #374151; font-weight: 600; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-calendar-check" style="color: #6b7280; margin-right: 4px;"></i>
+                                파일 생성 날짜 <span style="color: #dc2626;">*</span>
+                            </label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <select id="fileYear" class="date-select" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 80px;">
+                                    <option value="">연도</option>
+                                    <option value="2025">2025년</option>
+                                    <option value="2024">2024년</option>
+                                    <option value="2023">2023년</option>
+                                </select>
+                                <select id="fileMonth" class="date-select" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 65px;">
+                                    <option value="">월</option>
+                                    <option value="1">1월</option>
+                                    <option value="2">2월</option>
+                                    <option value="3">3월</option>
+                                    <option value="4">4월</option>
+                                    <option value="5">5월</option>
+                                    <option value="6">6월</option>
+                                    <option value="7">7월</option>
+                                    <option value="8">8월</option>
+                                    <option value="9">9월</option>
+                                    <option value="10">10월</option>
+                                    <option value="11">11월</option>
+                                    <option value="12">12월</option>
+                                </select>
+                                <select id="fileDay" class="date-select" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 65px;">
+                                    <option value="">일</option>
+                                    <option value="1">1일</option>
+                                    <option value="2">2일</option>
+                                    <option value="3">3일</option>
+                                    <option value="4">4일</option>
+                                    <option value="5">5일</option>
+                                    <option value="6">6일</option>
+                                    <option value="7">7일</option>
+                                    <option value="8">8일</option>
+                                    <option value="9">9일</option>
+                                    <option value="10">10일</option>
+                                    <option value="11">11일</option>
+                                    <option value="12">12일</option>
+                                    <option value="13">13일</option>
+                                    <option value="14">14일</option>
+                                    <option value="15">15일</option>
+                                    <option value="16">16일</option>
+                                    <option value="17">17일</option>
+                                    <option value="18">18일</option>
+                                    <option value="19">19일</option>
+                                    <option value="20">20일</option>
+                                    <option value="21">21일</option>
+                                    <option value="22">22일</option>
+                                    <option value="23">23일</option>
+                                    <option value="24">24일</option>
+                                    <option value="25">25일</option>
+                                    <option value="26">26일</option>
+                                    <option value="27">27일</option>
+                                    <option value="28">28일</option>
+                                    <option value="29">29일</option>
+                                    <option value="30">30일</option>
+                                    <option value="31">31일</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" id="cancelBtn">취소</button>
-                <button class="btn-submit" id="submitBtn">
-                    <i class="fas fa-upload"></i>
-                    업로드
-                </button>
+                    <button class="simple-file-remove" id="fileRemove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- 중복 검수 안내 (파일생성날짜 바로 아래) -->
+                <div class="duplicate-check-info" id="duplicateCheckInfo" style="display: none; margin-top: 8px; padding: 8px 12px; background: #fef3c7; border: 1px solid #fbbf24; border-radius: 6px;">
+                    <i class="fas fa-exclamation-triangle" style="color: #f59e0b; margin-right: 6px; font-size: 12px;"></i>
+                    <span style="font-size: 12px; color: #92400e;" id="duplicateCheckMessage">중복 파일 검사를 진행합니다...</span>
+                </div>
+
+                <!-- 개선된 정보 입력 -->
+                <div class="simple-quick-info">
+                    <!-- 제목 (자동 생성) -->
+                    <div class="simple-form-group">
+                        <label class="simple-form-label">
+                            <i class="fas fa-heading" style="color: #6b7280; margin-right: 4px;"></i>
+                            제목 (자동 생성)
+                        </label>
+                        <input type="text" class="simple-form-input" id="documentTitle" readonly style="background: #f9fafb; color: #374151; font-weight: 500;">
+                    </div>
+
+                    <!-- 지역 선택 (2단계 드롭다운) -->
+                    <div class="simple-form-group">
+                        <label class="simple-form-label">
+                            <i class="fas fa-map-marker-alt" style="color: #6b7280; margin-right: 4px;"></i>
+                            지역 선택 <span style="color: #dc2626;">*</span>
+                        </label>
+                        <div class="upload-region-selectors">
+                            <select id="uploadRegion1" class="simple-form-input" required>
+                                <option value="">광역시도 선택</option>
+                                <option value="seoul">서울특별시</option>
+                                <option value="gyeonggi">경기도</option>
+                                <option value="incheon">인천광역시</option>
+                                <option value="busan">부산광역시</option>
+                                <option value="daegu">대구광역시</option>
+                                <option value="gwangju">광주광역시</option>
+                                <option value="daejeon">대전광역시</option>
+                                <option value="ulsan">울산광역시</option>
+                                <option value="sejong">세종특별자치시</option>
+                                <option value="gangwon">강원도</option>
+                                <option value="chungbuk">충청북도</option>
+                                <option value="chungnam">충청남도</option>
+                                <option value="jeonbuk">전라북도</option>
+                                <option value="jeonnam">전라남도</option>
+                                <option value="gyeongbuk">경상북도</option>
+                                <option value="gyeongnam">경상남도</option>
+                                <option value="jeju">제주특별자치도</option>
+                            </select>
+                            <select id="uploadRegion2" class="simple-form-input" disabled required>
+                                <option value="">시/군/구 선택</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 상품유형 (아이콘 포함) -->
+                    <div class="simple-form-group">
+                        <label class="simple-form-label">
+                            <i class="fas fa-building" style="color: #6b7280; margin-right: 4px;"></i>
+                            상품유형 <span style="color: #dc2626;">*</span>
+                        </label>
+                        <div class="upload-product-types">
+                            <button type="button" class="upload-type-btn" data-type="apartment" data-name="아파트">
+                                <span>아파트</span>
+                            </button>
+                            <button type="button" class="upload-type-btn" data-type="officetel-residential" data-name="주거형OT">
+                                <span>주거형OT</span>
+                            </button>
+                            <button type="button" class="upload-type-btn" data-type="officetel-profit" data-name="수익형OT">
+                                <span>수익형OT</span>
+                            </button>
+                            <button type="button" class="upload-type-btn" data-type="urban" data-name="도생">
+                                <span>도생</span>
+                            </button>
+                            <button type="button" class="upload-type-btn" data-type="commercial" data-name="상가">
+                                <span>상가</span>
+                            </button>
+                            <button type="button" class="upload-type-btn" data-type="lifestyle-lodge" data-name="생활형숙박시설">
+                                <span>생활형숙박시설</span>
+                            </button>
+                            <button type="button" class="upload-type-btn" data-type="knowledge" data-name="지식산업센터">
+                                <span>지식산업센터</span>
+                            </button>
+                            <button type="button" class="upload-type-btn" data-type="hotel" data-name="호텔">
+                                <span>호텔</span>
+                            </button>
+                            <button type="button" class="upload-type-btn" data-type="other" data-name="기타">
+                                <span>기타</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 공급유형 (아이콘 포함) -->
+                    <div class="simple-form-group">
+                        <label class="simple-form-label">
+                            <i class="fas fa-handshake" style="color: #6b7280; margin-right: 4px;"></i>
+                            공급유형 <span style="color: #dc2626;">*</span>
+                        </label>
+                        <div class="upload-supply-types">
+                            <button type="button" class="upload-type-btn supply-btn" data-type="private-sale" data-name="민간분양">
+                                <span>민간분양</span>
+                            </button>
+                            <button type="button" class="upload-type-btn supply-btn" data-type="public-sale" data-name="공공분양">
+                                <span>공공분양</span>
+                            </button>
+                            <button type="button" class="upload-type-btn supply-btn" data-type="private-rental" data-name="민간임대">
+                                <span>민간임대</span>
+                            </button>
+                            <button type="button" class="upload-type-btn supply-btn" data-type="public-rental" data-name="공공임대">
+                                <span>공공임대</span>
+                            </button>
+                            <button type="button" class="upload-type-btn supply-btn" data-type="other" data-name="기타">
+                                <span>기타</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 포인트 규정 안내 (간소화) -->
+                <div class="points-rules-info" style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 1px solid #bfdbfe; margin-top: 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 14px; font-weight: 600; color: #1e40af; margin: 0; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-info-circle" style="font-size: 13px; color: #3b82f6;"></i>
+                                최대 4,000P 획득 가능
+                            </h4>
+                            <p style="font-size: 12px; color: #64748b; margin-top: 4px; margin-bottom: 0;">
+                                기본 3,000P × 최신성% × 파일크기%
+                            </p>
+                        </div>
+                        <button type="button" onclick="togglePointDetails()" style="padding: 6px 12px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; color: #6b7280; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <span id="detailsToggleText">자세히보기</span>
+                            <i class="fas fa-chevron-down" id="detailsToggleIcon" style="font-size: 10px; transition: transform 0.2s;"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 드롭다운 상세 내용 (포인트 규정 박스 밖) -->
+                <div id="pointDetailsDropdown" style="display: none; margin-top: 8px; padding: 12px; background: white; border: 1px solid #e5e7eb; border-radius: 8px;">
+                        <div style="display: flex; gap: 12px;">
+                            <!-- 최신성 지수 표 (우선) -->
+                            <div style="flex: 1;">
+                                <h5 style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px;">
+                                    <i class="fas fa-calendar-check" style="color: #6b7280; margin-right: 4px; font-size: 10px;"></i>
+                                    최신성 지수
+                                </h5>
+                                <table class="point-detail-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                    <tr>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="fresh-6m">6개월 이내</td>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #dc2626;" id="fresh-6m-value">120%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="fresh-1y">1년 이내</td>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #0066FF;" id="fresh-1y-value">100%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="fresh-2y">2년 이내</td>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #6b7280;" id="fresh-2y-value">70%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="fresh-over2y">2년 초과</td>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #dc2626;" id="fresh-over2y-value">업로드 불가</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- 파일크기 지수 표 -->
+                            <div style="flex: 1;">
+                                <h5 style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px;">
+                                    <i class="fas fa-hdd" style="color: #6b7280; margin-right: 4px; font-size: 10px;"></i>
+                                    파일크기 지수
+                                </h5>
+                                <table class="point-detail-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                    <tr>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="size-5mb">5MB 이상</td>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #059669;" id="size-5mb-value">110%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="size-2mb">2~5MB</td>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #0066FF;" id="size-2mb-value">100%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="size-under2mb">2MB 미만</td>
+                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #6b7280;" id="size-under2mb-value">70%</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                
+                <script>
+                    function togglePointDetails() {
+                        const dropdown = document.getElementById('pointDetailsDropdown');
+                        const toggleText = document.getElementById('detailsToggleText');
+                        const toggleIcon = document.getElementById('detailsToggleIcon');
+                        
+                        if (dropdown.style.display === 'none') {
+                            dropdown.style.display = 'block';
+                            toggleText.textContent = '접기';
+                            toggleIcon.style.transform = 'rotate(180deg)';
+                        } else {
+                            dropdown.style.display = 'none';
+                            toggleText.textContent = '자세히보기';
+                            toggleIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                </script>
+
+                <!-- 예상 포인트 표시 -->
+                <div class="simple-points-info" id="estimatedPoints">
+                    <i class="fas fa-coins"></i>
+                    <span class="simple-points-text">획득 포인트</span>
+                    <span class="simple-points-value" id="pointsValue">+0P</span>
+                </div>
+
+                <!-- 액션 버튼 -->
+                <div class="simple-modal-actions">
+                    <button type="button" class="simple-btn simple-btn-cancel" id="btnCancel">취소</button>
+                    <button type="button" class="simple-btn simple-btn-upload" disabled id="uploadSubmitBtn" style="display: none;">
+                        <span id="uploadBtnText">업로드 완료</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
-    <script>
-        // 페이지 강제 표시 (빈 화면 문제 해결)
-        document.documentElement.style.visibility = 'visible';
-        document.documentElement.style.display = 'block';
-        document.body.style.visibility = 'visible';
-        document.body.style.display = 'block';
-        console.log('페이지 강제 표시 완료');
-    </script>
+                    <!-- 2. 자동 분석 및 정보 입력 섹션 -->
+                    <div class="upload-step" data-step="2">
+                        <div class="step-header">
+                            <h3><i class="fas fa-magic"></i> 자동 분석 결과</h3>
+                            <p>AI가 문서를 분석하여 정보를 자동으로 추출했습니다</p>
+                        </div>
+                        
+                        <!-- AI 분석 결과 -->
+                        <div class="analysis-results">
+                            <div class="analysis-loading" id="analysisLoading">
+                                <div class="loading-spinner"></div>
+                                <p>문서를 분석하고 있습니다...</p>
+                            </div>
+                            
+                            <div class="analysis-complete" id="analysisComplete" style="display: none;">
+                                <!-- 기본 정보 -->
+                                <div class="form-section">
+                                    <h4>기본 정보</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="documentTitle">제목 *</label>
+                                            <input type="text" id="documentTitle" name="title" placeholder="분석된 제목이 표시됩니다" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 지역 정보 -->
+                                <div class="form-section">
+                                    <h4>지역 정보</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="region1">지역1 (시/도) *</label>
+                                            <div class="region-selector">
+                                                <div class="region-dropdown" id="region1Dropdown">
+                                                    <button type="button" class="dropdown-btn" id="region1Btn">
+                                                        <span>시/도 선택</span>
+                                                        <i class="fas fa-chevron-down"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" id="region1Menu">
+                                                        <div class="dropdown-item" data-value="서울">서울특별시</div>
+                                                        <div class="dropdown-item" data-value="경기">경기도</div>
+                                                        <div class="dropdown-item" data-value="인천">인천광역시</div>
+                                                        <div class="dropdown-item" data-value="부산">부산광역시</div>
+                                                        <div class="dropdown-item" data-value="대구">대구광역시</div>
+                                                        <div class="dropdown-item" data-value="광주">광주광역시</div>
+                                                        <div class="dropdown-item" data-value="대전">대전광역시</div>
+                                                        <div class="dropdown-item" data-value="울산">울산광역시</div>
+                                                        <div class="dropdown-item" data-value="세종">세종특별자치시</div>
+                                                        <div class="dropdown-item" data-value="강원">강원도</div>
+                                                        <div class="dropdown-item" data-value="충북">충청북도</div>
+                                                        <div class="dropdown-item" data-value="충남">충청남도</div>
+                                                        <div class="dropdown-item" data-value="전북">전라북도</div>
+                                                        <div class="dropdown-item" data-value="전남">전라남도</div>
+                                                        <div class="dropdown-item" data-value="경북">경상북도</div>
+                                                        <div class="dropdown-item" data-value="경남">경상남도</div>
+                                                        <div class="dropdown-item" data-value="제주">제주특별자치도</div>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" id="region1" name="region1" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="region2">지역2 (시/군/구) *</label>
+                                            <div class="region-selector">
+                                                <div class="region-dropdown" id="region2Dropdown">
+                                                    <button type="button" class="dropdown-btn" id="region2Btn" disabled>
+                                                        <span>시/군/구 선택</span>
+                                                        <i class="fas fa-chevron-down"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" id="region2Menu">
+                                                        <!-- 지역1 선택에 따라 동적으로 생성됩니다 -->
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" id="region2" name="region2" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 상품 유형 -->
+                                <div class="form-section">
+                                    <h4>상품 유형</h4>
+                                    <div class="product-type-selector">
+                                        <div class="product-type-grid">
+                                            <div class="product-type-item" data-type="아파트">
+                                                <i class="fas fa-building"></i>
+                                                <span>아파트</span>
+                                            </div>
+                                            <div class="product-type-item" data-type="오피스텔">
+                                                <i class="fas fa-city"></i>
+                                                <span>오피스텔</span>
+                                            </div>
+                                            <div class="product-type-item" data-type="상가">
+                                                <i class="fas fa-store"></i>
+                                                <span>상가</span>
+                                            </div>
+                                            <div class="product-type-item" data-type="지식산업센터">
+                                                <i class="fas fa-industry"></i>
+                                                <span>지식산업센터</span>
+                                            </div>
+                                            <div class="product-type-item" data-type="도시형생활주택">
+                                                <i class="fas fa-home"></i>
+                                                <span>도시형생활주택</span>
+                                            </div>
+                                            <div class="product-type-item" data-type="원룸/투룸">
+                                                <i class="fas fa-bed"></i>
+                                                <span>원룸/투룸</span>
+                                            </div>
+                                            <div class="product-type-item" data-type="빌라/연립">
+                                                <i class="fas fa-house"></i>
+                                                <span>빌라/연립</span>
+                                            </div>
+                                            <div class="product-type-item" data-type="토지">
+                                                <i class="fas fa-map"></i>
+                                                <span>토지</span>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="productType" name="productType" required>
+                                    </div>
+                                </div>
+
+                                <!-- 공급 유형 -->
+                                <div class="form-section">
+                                    <h4>공급 유형</h4>
+                                    <div class="supply-type-selector">
+                                        <div class="supply-type-grid">
+                                            <div class="supply-type-item" data-type="민간분양">
+                                                <i class="fas fa-handshake"></i>
+                                                <span>민간분양</span>
+                                            </div>
+                                            <div class="supply-type-item" data-type="공공분양">
+                                                <i class="fas fa-landmark"></i>
+                                                <span>공공분양</span>
+                                            </div>
+                                            <div class="supply-type-item" data-type="민간임대">
+                                                <i class="fas fa-key"></i>
+                                                <span>민간임대</span>
+                                            </div>
+                                            <div class="supply-type-item" data-type="공공임대">
+                                                <i class="fas fa-house-user"></i>
+                                                <span>공공임대</span>
+                                            </div>
+                                            <div class="supply-type-item" data-type="기타">
+                                                <i class="fas fa-ellipsis-h"></i>
+                                                <span>기타</span>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="supplyType" name="supplyType" required>
+                                    </div>
+                                </div>
+
+                                <!-- 키워드 -->
+                                <div class="form-section">
+                                    <h4>키워드</h4>
+                                    <div class="keyword-section">
+                                        <div class="auto-keywords" id="autoKeywords">
+                                            <p class="keyword-label">자동 추출된 키워드:</p>
+                                            <div class="keyword-tags" id="extractedKeywords">
+                                                <!-- 자동 추출 키워드가 여기에 표시됩니다 -->
+                                            </div>
+                                        </div>
+                                        <div class="manual-keywords">
+                                            <label for="manualKeywordInput">추가 키워드 입력</label>
+                                            <div class="keyword-input-group">
+                                                <input type="text" id="manualKeywordInput" placeholder="키워드를 입력하고 Enter를 누르세요">
+                                                <button type="button" class="btn-add-keyword" id="btnAddKeyword">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div class="manual-keyword-tags" id="manualKeywords">
+                                                <!-- 사용자 추가 키워드가 여기에 표시됩니다 -->
+                                            </div>
+                                            <p class="keyword-hint">최대 10개까지 키워드를 추가할 수 있습니다</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 설명 -->
+                                <div class="form-section">
+                                    <h4>설명</h4>
+                                    <div class="form-group">
+                                        <textarea id="documentDescription" name="description" placeholder="문서에 대한 추가 설명을 입력하세요 (선택사항)"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- 포인트 정보 -->
+                                <div class="form-section">
+                                    <h4>포인트 지급 기준</h4>
+                                    <div class="point-info">
+                                        <div class="point-calculation">
+                                            <div class="point-item">
+                                                <span class="point-label">기본 업로드</span>
+                                                <span class="point-value">+100P</span>
+                                            </div>
+                                            <div class="point-item">
+                                                <span class="point-label">고품질 문서 보너스</span>
+                                                <span class="point-value" id="qualityBonus">+0P</span>
+                                            </div>
+                                            <div class="point-item">
+                                                <span class="point-label">완전한 정보 입력</span>
+                                                <span class="point-value" id="completionBonus">+0P</span>
+                                            </div>
+                                            <div class="point-total">
+                                                <span class="point-label">획득 포인트</span>
+                                                <span class="point-value total" id="totalPoints">100P</span>
+                                            </div>
+                                        </div>
+                                        <div class="point-details">
+                                            <p><i class="fas fa-info-circle"></i> 고품질 문서 보너스: 20페이지 이상, 명확한 제목/지역 정보</p>
+                                            <p><i class="fas fa-info-circle"></i> 완전한 정보 입력: 모든 필수 정보 + 키워드 3개 이상</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-actions">
+                            <button type="button" class="btn-prev" id="btnPrev2">
+                                <i class="fas fa-arrow-left"></i> 이전
+                            </button>
+                            <button type="button" class="btn-next" id="btnNext2">
+                                업로드 완료 <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="market-research.js"></script>
     <script>
+        // 현재 미리보기 중인 문서 ID
+        let currentPreviewId = 1;
+        
         // 미리보기 함수 강제 정의
         function openPreview(docId) {
             console.log('인라인 openPreview 호출, docId:', docId);
             const modal = document.getElementById('previewModal');
             if (modal) {
+                currentPreviewId = parseInt(docId);
                 modal.style.display = 'block';
                 modal.classList.add('active');
                 console.log('미리보기 모달 표시됨');
                 
-                // 문서 정보 업데이트
-                const documents = {
-                    1: { title: '강남구 삼성동 아파트 시장조사서', type: '아파트', location: '서울 강남구 삼성동', date: '2024.01.15' },
-                    2: { title: '판교 테크노밸리 오피스텔 시장분석', type: '오피스텔', location: '경기 성남시 분당구', date: '2024.01.14' },
-                    3: { title: '홍대입구역 상권 분석 보고서', type: '상가', location: '서울 마포구 서교동', date: '2024.01.13' },
-                    4: { title: '가산디지털단지 지식산업센터 현황', type: '지식산업센터', location: '서울 금천구 가산동', date: '2024.01.12' },
-                    5: { title: '해운대 신도시 아파트 시장 동향', type: '아파트', location: '부산 해운대구', date: '2024.01.11' },
-                    6: { title: '여의도 IFC 오피스텔 투자 분석', type: '오피스텔', location: '서울 영등포구 여의도동', date: '2024.01.10' }
-                };
-                
-                const doc = documents[docId];
-                if (doc) {
-                    const titleEl = document.getElementById('previewTitle');
-                    const typeEl = document.getElementById('previewType');
-                    const locationEl = document.getElementById('previewLocation');
-                    const dateEl = document.getElementById('previewDate');
-                    
-                    if (titleEl) titleEl.textContent = doc.title;
-                    if (typeEl) typeEl.textContent = doc.type;
-                    if (locationEl) locationEl.textContent = doc.location;
-                    if (dateEl) dateEl.textContent = doc.date;
+                // market-research.js에서 정의된 sampleDocuments 사용
+                if (typeof sampleDocuments !== 'undefined') {
+                    const doc = sampleDocuments.find(d => d.id == docId);
+                    if (doc) {
+                        updatePreviewContent(doc);
+                        // PDF 렌더링 (pdfPath 전달)
+                        if (typeof renderPreviewPDF === 'function') {
+                            renderPreviewPDF(doc.pdfPath, docId);
+                        }
+                    }
                 }
+                
+                // 네비게이션 버튼 상태 업데이트
+                updatePreviewNavButtons();
+                
+                // 키보드 네비게이션 설정
+                setupModalKeyboardNavigation();
             } else {
                 alert('미리보기 모달을 찾을 수 없습니다!');
+            }
+        }
+        
+        // 미리보기 내용 업데이트 함수
+        function updatePreviewContent(doc) {
+            const productType = typeof productTypes !== 'undefined' ? 
+                productTypes.find(t => t.id === doc.type) : null;
+            
+            const titleEl = document.getElementById('previewTitle');
+            const typeEl = document.getElementById('previewType');
+            const locationEl = document.getElementById('previewLocation');
+            const dateEl = document.getElementById('previewDate');
+            const pointsEl = document.getElementById('previewPoints');
+            const fileSizeEl = document.getElementById('previewFileSize');
+            
+            if (titleEl) titleEl.textContent = doc.title;
+            if (typeEl) typeEl.textContent = productType ? productType.name : doc.type;
+            if (locationEl) locationEl.textContent = doc.location;
+            if (dateEl) dateEl.textContent = doc.createDate || doc.date;
+            if (pointsEl) pointsEl.textContent = doc.points ? doc.points.toLocaleString() : '10,000';
+            if (fileSizeEl) fileSizeEl.textContent = doc.fileSize || '15.2';
+            
+            // 포인트 계산 설명 업데이트
+            updatePointBreakdown(doc);
+            
+            // 다운로드 버튼 업데이트
+            const downloadBtn = document.getElementById('previewDownloadBtn');
+            if (downloadBtn) {
+                downloadBtn.onclick = () => {
+                    if (typeof handleDownload !== 'undefined') {
+                        handleDownload(doc.id, doc.points);
+                    }
+                };
+            }
+        }
+        
+        // 포인트 계산 설명 업데이트
+        function updatePointBreakdown(doc) {
+            const freshnessEl = document.getElementById('freshnessIndex');
+            const fileSizeEl = document.getElementById('fileSizeIndex');
+            const formulaEl = document.querySelector('.point-formula');
+            
+            // 파일 크기 파싱
+            const fileSize = parseFloat(doc.fileSize) || 15.2;
+            let sizeMultiplier = 1.0;
+            let sizeText = '';
+            if (fileSize >= 5) {
+                sizeMultiplier = 1.1;
+                sizeText = `${fileSize}MB (110%)`;
+            } else if (fileSize >= 2) {
+                sizeMultiplier = 1.0;
+                sizeText = `${fileSize}MB (100%)`;
+            } else {
+                sizeMultiplier = 0.7;
+                sizeText = `${fileSize}MB (70%)`;
+            }
+            
+            // 날짜 계산
+            const createDate = new Date(doc.createDate || doc.date);
+            const today = new Date();
+            const daysDiff = Math.floor((today - createDate) / (1000 * 60 * 60 * 24));
+            
+            let freshnessMultiplier = 1.0;
+            let freshnessText = '';
+            if (daysDiff <= 180) {
+                freshnessMultiplier = 1.2;
+                freshnessText = '6개월 이내 (120%)';
+            } else if (daysDiff <= 365) {
+                freshnessMultiplier = 1.0;
+                freshnessText = '1년 이내 (100%)';
+            } else if (daysDiff <= 730) {
+                freshnessMultiplier = 0.7;
+                freshnessText = '2년 이내 (70%)';
+            } else {
+                freshnessMultiplier = 0;
+                freshnessText = '2년 초과 (0P)';
+            }
+            
+            // UI 업데이트
+            if (freshnessEl) freshnessEl.textContent = freshnessText;
+            if (fileSizeEl) fileSizeEl.textContent = sizeText;
+            
+            // 계산식 업데이트 - 기준 포인트를 3000P로 변경
+            const basePoints = 3000;
+            const totalPoints = Math.round(basePoints * freshnessMultiplier * sizeMultiplier);
+            if (formulaEl) {
+                formulaEl.textContent = `기준 3,000P × ${freshnessMultiplier} × ${sizeMultiplier} = ${totalPoints.toLocaleString()}P`;
+            }
+        }
+        
+        // 네비게이션 버튼 상태 업데이트
+        function updatePreviewNavButtons() {
+            const prevBtn = document.getElementById('previewPrev');
+            const nextBtn = document.getElementById('previewNext');
+            const maxId = typeof sampleDocuments !== 'undefined' ? sampleDocuments.length : 6;
+            
+            if (prevBtn) {
+                prevBtn.disabled = currentPreviewId <= 1;
+                prevBtn.style.opacity = currentPreviewId <= 1 ? '0.5' : '1';
+                prevBtn.style.cursor = currentPreviewId <= 1 ? 'not-allowed' : 'pointer';
+            }
+            
+            if (nextBtn) {
+                nextBtn.disabled = currentPreviewId >= maxId;
+                nextBtn.style.opacity = currentPreviewId >= maxId ? '0.5' : '1';
+                nextBtn.style.cursor = currentPreviewId >= maxId ? 'not-allowed' : 'pointer';
+            }
+            
+            // 현재 문서 번호 표시
+            updateDocumentCounter();
+        }
+        
+        // 문서 카운터 업데이트
+        function updateDocumentCounter() {
+            const counterEl = document.getElementById('previewCounter');
+            if (counterEl) {
+                const maxId = typeof sampleDocuments !== 'undefined' ? sampleDocuments.length : 6;
+                counterEl.textContent = `${currentPreviewId} / ${maxId}`;
+            }
+        }
+        
+        // 썸네일 업데이트 함수
+        function updatePreviewThumbnails(doc) {
+            const thumbnailList = document.querySelector('.preview-thumbnail-list');
+            const mainImage = document.getElementById('previewMainImage');
+            
+            if (thumbnailList && mainImage) {
+                // 썸네일 리스트 업데이트 (예시로 5개 페이지 표시)
+                const pageCount = Math.min(doc.pages || 5, 5);
+                thumbnailList.innerHTML = '';
+                
+                for (let i = 1; i <= pageCount; i++) {
+                    const thumbDiv = document.createElement('div');
+                    thumbDiv.className = `thumbnail-item ${i === 1 ? 'active' : ''}`;
+                    thumbDiv.onclick = function() { changePreviewImage(this, i); };
+                    thumbDiv.innerHTML = `
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='110'%3E%3Crect width='80' height='110' fill='%232E8CE6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='white' font-size='14'%3E페이지${i}%3C/text%3E%3C/svg%3E" alt="페이지 ${i}">
+                    `;
+                    thumbnailList.appendChild(thumbDiv);
+                }
+                
+                // 메인 이미지 초기화
+                mainImage.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='700'%3E%3Crect width='500' height='700' fill='%232E8CE6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='white' font-size='24'%3E${encodeURIComponent(doc.title)}%3C/text%3E%3Ctext x='50%25' y='60%25' text-anchor='middle' fill='white' font-size='16'%3E페이지 1%3C/text%3E%3C/svg%3E`;
+            }
+        }
+        
+        // 키보드 네비게이션 설정
+        function setupModalKeyboardNavigation() {
+            // 기존 이벤트 리스너 제거 (중복 방지)
+            document.removeEventListener('keydown', handleModalKeyboard);
+            
+            // 새 이벤트 리스너 추가
+            document.addEventListener('keydown', handleModalKeyboard);
+        }
+        
+        // 키보드 이벤트 핸들러
+        function handleModalKeyboard(e) {
+            const modal = document.getElementById('previewModal');
+            if (modal && modal.style.display === 'block') {
+                const maxId = typeof sampleDocuments !== 'undefined' ? sampleDocuments.length : 6;
+                
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (currentPreviewId > 1) {
+                            currentPreviewId--;
+                            openPreview(currentPreviewId);
+                        }
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (currentPreviewId < maxId) {
+                            currentPreviewId++;
+                            openPreview(currentPreviewId);
+                        }
+                        break;
+                    case 'Escape':
+                        e.preventDefault();
+                        modal.style.display = 'none';
+                        modal.classList.remove('active');
+                        document.removeEventListener('keydown', handleModalKeyboard);
+                        break;
+                }
             }
         }
         
@@ -943,12 +1437,16 @@
             const closeBtn = document.getElementById('previewClose');
             const modal = document.getElementById('previewModal');
             const overlay = document.querySelector('.preview-overlay');
+            const prevBtn = document.getElementById('previewPrev');
+            const nextBtn = document.getElementById('previewNext');
             
             if (closeBtn) {
                 closeBtn.onclick = function() {
                     if (modal) {
                         modal.style.display = 'none';
                         modal.classList.remove('active');
+                        // 키보드 이벤트 리스너 제거
+                        document.removeEventListener('keydown', handleModalKeyboard);
                     }
                 };
             }
@@ -958,23 +1456,52 @@
                     if (modal) {
                         modal.style.display = 'none';
                         modal.classList.remove('active');
+                        // 키보드 이벤트 리스너 제거
+                        document.removeEventListener('keydown', handleModalKeyboard);
+                    }
+                };
+            }
+            
+            // 이전/다음 버튼 이벤트 (리스트 기준: 위 = 이전, 아래 = 다음)
+            if (prevBtn) {
+                prevBtn.onclick = function() {
+                    // 리스트에서 위로 이동 (작은 ID로)
+                    if (currentPreviewId > 1) {
+                        currentPreviewId--;
+                        openPreview(currentPreviewId);
+                        // 버튼 애니메이션 효과
+                        this.style.transform = 'translateX(-2px)';
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 200);
+                    }
+                };
+            }
+            
+            if (nextBtn) {
+                nextBtn.onclick = function() {
+                    const maxId = typeof sampleDocuments !== 'undefined' ? sampleDocuments.length : 6;
+                    // 리스트에서 아래로 이동 (큰 ID로)
+                    if (currentPreviewId < maxId) {
+                        currentPreviewId++;
+                        openPreview(currentPreviewId);
+                        // 버튼 애니메이션 효과  
+                        this.style.transform = 'translateX(2px)';
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 200);
                     }
                 };
             }
         });
         
-        // 썸네일 클릭 함수
+        // 썸네일 클릭 함수 (미니멀 버전에서는 사용하지 않음)
         function changePreviewImage(element, pageNum) {
-            document.querySelectorAll('.thumbnail-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            element.classList.add('active');
-            
-            const mainImage = document.getElementById('previewMainImage');
-            if (mainImage) {
-                mainImage.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='700'%3E%3Crect width='500' height='700' fill='%232E8CE6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='white' font-size='24'%3E페이지 ${pageNum}%3C/text%3E%3C/svg%3E`;
-            }
+            // 미니멀 버전에서는 썸네일 기능을 사용하지 않음
         }
     </script>
+    <script src="script.js"></script>
+    <script src="sidebar-debug.js"></script>
+    <script src="sidebar-diagnosis.js"></script>
 </body>
 </html>

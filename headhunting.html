@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/checkbox-interaction.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body data-page="headhunting">
     <!-- 전체 컨테이너 -->
     <div class="app-container">
         <!-- 사이드바 -->
@@ -45,7 +45,7 @@
                                     <i class="fas fa-bullhorn"></i>
                                     <span>공지사항</span>
                                 </a>
-                                <a href="updates.html" class="nav-item highlighted">
+                                <a href="updates.html" class="nav-item">
                                     <i class="fas fa-info-circle"></i>
                                     <span>업데이트</span>
                                 </a>
@@ -76,7 +76,7 @@
                                 <i class="fas fa-chevron-down nav-arrow"></i>
                             </button>
                             <div class="nav-items">
-                                <a href="hall-of-fame.html" class="nav-item hall-of-fame">
+                                <a href="hall-of-fame.html" class="nav-item hall-of-fame highlighted">
                                     <i class="fas fa-trophy"></i>
                                     <span>명예의전당</span>
                                 </a>
@@ -115,7 +115,7 @@
                                     <i class="fas fa-project-diagram"></i>
                                     <span>분양기획</span>
                                 </a>
-                                <a href="sales-recruit.html" class="nav-item">
+                                <a href="sales-recruit.html" class="nav-item highlighted">
                                     <i class="fas fa-briefcase"></i>
                                     <span>분양영업</span>
                                 </a>
@@ -138,33 +138,40 @@
                                 <i class="fas fa-chevron-down nav-arrow"></i>
                             </button>
                             <div class="nav-items">
-                                <a href="#" class="nav-item">
+                                <a href="data-center.html" class="nav-item highlighted">
                                     <i class="fas fa-database"></i>
                                     <span>Data Center</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="market-research.html" class="nav-item">
                                     <i class="fas fa-chart-line"></i>
                                     <span>시장조사서</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="proposal.html" class="nav-item">
                                     <i class="fas fa-file-alt"></i>
                                     <span>제안서</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="education.html" class="nav-item">
                                     <i class="fas fa-graduation-cap"></i>
                                     <span>교육자료</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="policy.html" class="nav-item">
                                     <i class="fas fa-gavel"></i>
                                     <span>정책자료</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="other-docs.html" class="nav-item">
                                     <i class="fas fa-archive"></i>
                                     <span>기타자료</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="ai-reports.html" class="nav-item">
                                     <i class="fas fa-robot"></i>
                                     <span>AI 보고서</span>
+                                    <span class="check-mark"></span>
                                 </a>
                             </div>
                         </div>
@@ -181,21 +188,25 @@
                                 <i class="fas fa-chevron-down nav-arrow"></i>
                             </button>
                             <div class="nav-items">
-                                <a href="#" class="nav-item">
+                                <a href="points-policy.html" class="nav-item highlighted">
                                     <i class="fas fa-gem"></i>
                                     <span>포인트정책</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="points-ranking.html" class="nav-item">
                                     <i class="fas fa-chart-bar"></i>
                                     <span>전체랭킹</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="points-charge.html" class="nav-item">
                                     <i class="fas fa-credit-card"></i>
                                     <span>충전하기</span>
+                                    <span class="check-mark"></span>
                                 </a>
-                                <a href="#" class="nav-item">
+                                <a href="points-shop.html" class="nav-item">
                                     <i class="fas fa-store"></i>
                                     <span>상점</span>
+                                    <span class="check-mark"></span>
                                 </a>
                             </div>
                         </div>
@@ -203,21 +214,21 @@
                 </div>
 
                 <!-- 미니게임 섹션 -->
-                <div class="minigame-section">
+                <div class="nav-section minigame-section">
                     <div class="minigame-header">
                         <i class="fas fa-gamepad"></i>
                         <span>미니게임</span>
                     </div>
                     <div class="minigame-buttons">
-                        <a href="#" class="minigame-btn">
+                        <a href="/game" class="minigame-btn">
                             <i class="fas fa-gamepad"></i>
                             <span>모든 게임</span>
                         </a>
-                        <a href="#" class="minigame-btn">
+                        <a href="/game?open=roulette" class="minigame-btn">
                             <i class="fas fa-circle-notch"></i>
                             <span>룰렛</span>
                         </a>
-                        <a href="#" class="minigame-btn">
+                        <a href="/game?open=blackjack" class="minigame-btn">
                             <i class="fas fa-layer-group"></i>
                             <span>블랙잭</span>
                         </a>
@@ -255,7 +266,7 @@
                             <p class="user-name">박승학님</p>
                             <div class="user-meta">
                                 <span class="user-title">소통왕</span>
-                                <span class="user-points">• 1,250P</span>
+                                <span class="user-points">• 100,000P</span>
                             </div>
                         </div>
                         <i class="fas fa-chevron-down user-dropdown-icon"></i>
