@@ -1,63 +1,20 @@
 // 시장조사서 페이지 JavaScript - PRD 요구사항 완전 구현
 
-// 지역 데이터 (광역시도 -> 시군구) - 분양영업 페이지와 동일
-const regionData = {
-    'all': [],
-    'seoul': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
-    'gyeonggi': ['가평군', '고양시', '과천시', '광명시', '광주시', '구리시', '군포시', '김포시', '남양주시', '동두천시', '부천시', '성남시', '수원시', '시흥시', '안산시', '안성시', '안양시', '양주시', '양평군', '여주시', '연천군', '오산시', '용인시', '의왕시', '의정부시', '이천시', '파주시', '평택시', '포천시', '하남시', '화성시'],
-    'incheon': ['강화군', '계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '옹진군', '중구'],
-    'busan': ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
-    'daegu': ['남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
-    'gwangju': ['광산구', '남구', '동구', '북구', '서구'],
-    'daejeon': ['대덕구', '동구', '서구', '유성구', '중구'],
-    'ulsan': ['남구', '동구', '북구', '울주군', '중구'],
-    'sejong': ['세종시'],
-    'gangwon': ['강릉시', '고성군', '동해시', '삼척시', '속초시', '양구군', '양양군', '영월군', '원주시', '인제군', '정선군', '철원군', '춘천시', '태백시', '평창군', '홍천군', '화천군', '횡성군'],
-    'chungbuk': ['괴산군', '단양군', '보은군', '영동군', '옥천군', '음성군', '제천시', '증평군', '진천군', '청주시', '충주시'],
-    'chungnam': ['계룡시', '공주시', '금산군', '논산시', '당진시', '보령시', '부여군', '서산시', '서천군', '아산시', '예산군', '천안시', '청양군', '태안군', '홍성군'],
-    'jeonbuk': ['고창군', '군산시', '김제시', '남원시', '무주군', '부안군', '순창군', '완주군', '익산시', '임실군', '장수군', '전주시', '정읍시', '진안군'],
-    'jeonnam': ['강진군', '고흥군', '곡성군', '광양시', '구례군', '나주시', '담양군', '목포시', '무안군', '보성군', '순천시', '신안군', '여수시', '영광군', '영암군', '완도군', '장성군', '장흥군', '진도군', '함평군', '해남군', '화순군'],
-    'gyeongbuk': ['경산시', '경주시', '고령군', '구미시', '군위군', '김천시', '문경시', '봉화군', '상주시', '성주군', '안동시', '영덕군', '영양군', '영주시', '영천시', '예천군', '울릉군', '울진군', '의성군', '청도군', '청송군', '칠곡군', '포항시'],
-    'gyeongnam': ['거제시', '거창군', '고성군', '김해시', '남해군', '밀양시', '사천시', '산청군', '양산시', '의령군', '진주시', '창녕군', '창원시', '통영시', '하동군', '함안군', '함양군', '합천군'],
-    'jeju': ['서귀포시', '제주시']
-};
+// 공통 데이터는 js/modules/common-data.js에서 로드됨
+// 사용 방법: window.WaveSpaceData.regionData, window.WaveSpaceData.regionNames 등
 
-// 지역 이름 매핑
-const regionNames = {
-    'all': '전국',
-    'seoul': '서울',
-    'gyeonggi': '경기',
-    'incheon': '인천',
-    'busan': '부산',
-    'daegu': '대구',
-    'gwangju': '광주',
-    'daejeon': '대전',
-    'ulsan': '울산',
-    'sejong': '세종',
-    'gangwon': '강원',
-    'chungbuk': '충북',
-    'chungnam': '충남',
-    'jeonbuk': '전북',
-    'jeonnam': '전남',
-    'gyeongbuk': '경북',
-    'gyeongnam': '경남',
-    'jeju': '제주'
-};
-
-// 상품 유형 데이터 (PRD 8개 유형 + 오피스텔 세분화)
+// 상품 유형 정의
 const productTypes = [
     { id: 'apartment', name: '아파트', color: '#3b82f6' },
-    { id: 'officetel-residential', name: '주거형 OT', color: '#8b5cf6' },
-    { id: 'officetel-profit', name: '수익형 OT', color: '#9333ea' },
-    { id: 'commercial', name: '상가', color: '#ec4899' },
-    { id: 'knowledge', name: '지식산업센터', color: '#10b981' },
-    { id: 'urban', name: '도시형생활주택', color: '#f59e0b' },
-    { id: 'studio', name: '원룸/투룸', color: '#ef4444' },
-    { id: 'villa', name: '빌라/연립', color: '#06b6d4' },
-    { id: 'land', name: '토지', color: '#84cc16' },
-    { id: 'lifestyle-lodge', name: '생활형숙박시설', color: '#14b8a6' },
-    { id: 'hotel', name: '호텔', color: '#f97316' }
+    { id: 'officetel-profit', name: '수익형 오피스텔', color: '#8b5cf6' },
+    { id: 'officetel-residential', name: '주거형 오피스텔', color: '#10b981' },
+    { id: 'office', name: '오피스', color: '#f59e0b' },
+    { id: 'shop', name: '상가/상업시설', color: '#ef4444' },
+    { id: 'knowledge', name: '지식산업센터', color: '#06b6d4' }
 ];
+
+// 업로드된 파일을 관리하는 변수
+let uploadedFile = null;
 
 // 샘플 문서 데이터 (자료 마켓플레이스용)
 const sampleDocuments = [
@@ -77,9 +34,10 @@ const sampleDocuments = [
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['프리미엄', '투자가치', '신축'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
         description: '삼성동 일대 아파트 시장 동향 및 가격 분석',
-        pdfPath: null // 실제 PDF 파일 없음 (테스트용)
+        pdfPath: null, // 실제 PDF 파일 없음 (테스트용)
     },
     {
         id: 2,
@@ -97,9 +55,10 @@ const sampleDocuments = [
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['테크노밸리', '오피스텔', '임대수익'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
         description: '판교 테크노밸리 오피스텔 투자 가치 분석',
-        pdfPath: null // PDF 파일 없음
+        pdfPath: null, // PDF 파일 없음
     },
     {
         id: 3,
@@ -117,9 +76,10 @@ const sampleDocuments = [
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['홍대상권', '상가투자', '젠트리피케이션'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fce7f3"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23ec4899" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fce7f3"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23ec4899" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
         description: '홍대 상권 분석 및 상가 투자 전략',
-        pdfPath: '/samples/sample3.pdf' // 실제 PDF 파일 경로 있음 (데모용 이미지 표시)
+        pdfPath: '/samples/sample3.pdf', // 실제 PDF 파일 경로 있음 (데모용 이미지 표시)
     },
     {
         id: 4,
@@ -137,9 +97,10 @@ const sampleDocuments = [
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['지식산업센터', 'IT산업', '임대현황'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23d4f4e6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%2310b981" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23d4f4e6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%2310b981" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
         description: '가산디지털단지 지식산업센터 시장 현황 및 투자 전망',
-        pdfPath: null // PDF 파일 없음
+        pdfPath: null, // PDF 파일 없음
     },
     {
         id: 5,
@@ -157,9 +118,10 @@ const sampleDocuments = [
         supplyType: '공공분양',
         isPremium: false,
         keywords: ['해운대', '신도시', '공공분양'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23e0e7ff"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%235b5fc7" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23e0e7ff"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%235b5fc7" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
         description: '해운대 신도시 공공분양 아파트 시장 분석',
-        pdfPath: null // PDF 파일 없음
+        pdfPath: null, // PDF 파일 없음
     },
     {
         id: 6,
@@ -177,9 +139,10 @@ const sampleDocuments = [
         supplyType: '민간임대',
         isPremium: false,
         keywords: ['여의도', 'IFC', '프리미엄오피스'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fef3c7"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23f59e0b" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fef3c7"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23f59e0b" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
         description: '여의도 IFC 주변 오피스텔 투자 가치 분석',
-        pdfPath: null // PDF 파일 없음
+        pdfPath: null, // PDF 파일 없음
     },
     {
         id: 7,
@@ -197,9 +160,10 @@ const sampleDocuments = [
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['송파', '헬리오시티', '주거형'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
         description: '송파 헬리오시티 주거형 오피스텔 시장 분석',
-        pdfPath: null // PDF 파일 없음
+        pdfPath: null, // PDF 파일 없음
     },
     {
         id: 8,
@@ -217,9 +181,10 @@ const sampleDocuments = [
         supplyType: '민간분양',
         isPremium: true,
         keywords: ['강남역', '수익형', '투자'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23e0f2fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%230284c7" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23e0f2fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%230284c7" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
         description: '강남역 일대 수익형 오피스텔 투자 전략',
-        pdfPath: null // PDF 파일 없음
+        pdfPath: null, // PDF 파일 없음
     },
     {
         id: 9,
@@ -237,28 +202,29 @@ const sampleDocuments = [
         supplyType: '공공분양',
         isPremium: false,
         keywords: ['분당', '정자동', '주거형'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fee2e2"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23dc2626" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        thumbnail:
+            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fee2e2"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23dc2626" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
         description: '분당 정자동 주거형 오피스텔 입지 분석',
-        pdfPath: null // PDF 파일 없음
-    }
+        pdfPath: null, // PDF 파일 없음
+    },
 ];
 
 // 전역 상태 관리
 let currentFilters = {
     type: 'all',
     region: 'all',
-    currentRegion: 'all',  // 현재 선택된 광역시도
-    selectedRegions: [],   // 선택된 지역들 (문자열 배열로 변경)
+    currentRegion: 'all', // 현재 선택된 광역시도
+    selectedRegions: [], // 선택된 지역들 (문자열 배열로 변경)
     keyword: '',
     productType: 'all',
-    supplyType: 'all'
+    supplyType: 'all',
 };
 
 // 유저 데이터 (모의 데이터)
 const userData = {
     isLoggedIn: true,
     points: 2850,
-    role: 'planning' // planning, sales, general
+    role: 'planning', // planning, sales, general
 };
 
 // ===========================================
@@ -267,24 +233,24 @@ const userData = {
 
 function initializeFilters() {
     console.log('Initializing filters...');
-    
+
     // 지역 선택 이벤트 초기화 - nav-selector 사용
     const regionSelectors = document.querySelectorAll('.region-filter .nav-selector');
     console.log('Initializing region selectors:', regionSelectors.length);
-    
-    regionSelectors.forEach(selector => {
-        selector.addEventListener('click', function() {
+
+    regionSelectors.forEach((selector) => {
+        selector.addEventListener('click', function () {
             console.log('Region selector clicked:', this.dataset.value);
             const value = this.dataset.value;
-            
+
             // 기존 선택 제거
-            this.parentElement.querySelectorAll('.nav-selector').forEach(s => {
+            this.parentElement.querySelectorAll('.nav-selector').forEach((s) => {
                 s.classList.remove('selected');
             });
-            
+
             // 현재 선택 추가
             this.classList.add('selected');
-            
+
             // 지역 변경 처리
             handleRegionChange(value, this);
         });
@@ -292,18 +258,18 @@ function initializeFilters() {
 
     // 상품 유형 필터 초기화
     const productTypeFilters = document.querySelectorAll('#productTypeFilters .checkbox-tab');
-    productTypeFilters.forEach(tab => {
-        tab.addEventListener('click', function() {
+    productTypeFilters.forEach((tab) => {
+        tab.addEventListener('click', function () {
             const type = this.dataset.type;
-            
+
             // 라디오 버튼 체크
             const radio = this.querySelector('input[type="radio"]');
             if (radio) radio.checked = true;
-            
+
             // 활성 상태 업데이트
-            productTypeFilters.forEach(t => t.classList.remove('active'));
+            productTypeFilters.forEach((t) => t.classList.remove('active'));
             this.classList.add('active');
-            
+
             // 필터 적용
             currentFilters.productType = type;
             applyFilters();
@@ -312,18 +278,18 @@ function initializeFilters() {
 
     // 공급 유형 필터 초기화
     const supplyTypeFilters = document.querySelectorAll('#supplyTypeFilters .checkbox-tab');
-    supplyTypeFilters.forEach(tab => {
-        tab.addEventListener('click', function() {
+    supplyTypeFilters.forEach((tab) => {
+        tab.addEventListener('click', function () {
             const type = this.dataset.type;
-            
+
             // 라디오 버튼 체크
             const radio = this.querySelector('input[type="radio"]');
             if (radio) radio.checked = true;
-            
+
             // 활성 상태 업데이트
-            supplyTypeFilters.forEach(t => t.classList.remove('active'));
+            supplyTypeFilters.forEach((t) => t.classList.remove('active'));
             this.classList.add('active');
-            
+
             // 필터 적용
             currentFilters.supplyType = type;
             applyFilters();
@@ -333,19 +299,26 @@ function initializeFilters() {
     // 키워드 검색
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
-        searchInput.addEventListener('input', debounce(function() {
-            currentFilters.keyword = this.value;
-            applyFilters();
-        }, 300));
+        console.log('검색 입력 필드 찾음:', searchInput);
+        searchInput.addEventListener(
+            'input',
+            debounce(function () {
+                console.log('검색어 입력:', this.value);
+                currentFilters.keyword = this.value;
+                applyFilters();
+            }, 300)
+        );
+    } else {
+        console.error('검색 입력 필드를 찾을 수 없음');
     }
 
     // 정렬 버튼
     const sortBtns = document.querySelectorAll('.sort-btn');
-    sortBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            sortBtns.forEach(b => b.classList.remove('active'));
+    sortBtns.forEach((btn) => {
+        btn.addEventListener('click', function () {
+            sortBtns.forEach((b) => b.classList.remove('active'));
             this.classList.add('active');
-            
+
             const sortBy = this.dataset.sort;
             const sortedDocuments = sortDocuments(filterDocuments(), sortBy);
             renderDocuments(sortedDocuments);
@@ -357,18 +330,18 @@ function initializeFilters() {
 function handleRegionChange(value, selectedElement) {
     const subRegionRow = document.getElementById('subRegionRow');
     const subRegionFilters = document.getElementById('subRegionFilters');
-    
+
     if (!subRegionRow || !subRegionFilters) return;
-    
+
     // 현재 선택된 광역시도 저장
     currentFilters.currentRegion = value;
-    
+
     // 광역시도 nav-selector active 상태 업데이트
-    document.querySelectorAll('.nav-selector').forEach(btn => {
+    document.querySelectorAll('.nav-selector').forEach((btn) => {
         btn.classList.remove('active');
     });
     selectedElement.classList.add('active');
-    
+
     if (value === 'all') {
         // '전체' 선택 시 모든 지역 선택 해제
         currentFilters.selectedRegions = [];
@@ -377,13 +350,13 @@ function handleRegionChange(value, selectedElement) {
         applyFilters();
         return;
     }
-    
+
     // 선택된 광역시도에 해당하는 하위 지역 가져오기
-    const subRegions = regionData[value];
-    
+    const subRegions = window.WaveSpaceData?.regionData?.[value] || [];
+
     if (subRegions && subRegions.length > 0) {
         subRegionRow.style.display = 'block';
-        
+
         // 하위 지역 checkbox-tab 생성 (중복 선택 가능)
         let subRegionHTML = `
             <label class="checkbox-tab" data-value="all" data-parent="${value}">
@@ -392,8 +365,8 @@ function handleRegionChange(value, selectedElement) {
                 <span>전체</span>
             </label>
         `;
-        
-        subRegions.forEach(subRegion => {
+
+        subRegions.forEach((subRegion) => {
             subRegionHTML += `
                 <label class="checkbox-tab" data-value="${subRegion}" data-parent="${value}">
                     <input type="checkbox" name="subregion-${value}" value="${subRegion}">
@@ -402,64 +375,64 @@ function handleRegionChange(value, selectedElement) {
                 </label>
             `;
         });
-        
+
         subRegionFilters.innerHTML = subRegionHTML;
         subRegionFilters.className = 'checkbox-tabs sub-region-tabs compact';
-        
+
         // 새로 생성된 checkbox-tab에 이벤트 리스너 추가 (중복 선택 가능)
         const newTabs = subRegionFilters.querySelectorAll('.checkbox-tab');
-        newTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
+        newTabs.forEach((tab) => {
+            tab.addEventListener('click', function () {
                 const checkbox = this.querySelector('input[type="checkbox"]');
                 const subValue = checkbox.value;
                 const parent = this.dataset.parent;
-                
+
                 // 체크박스 토글
                 checkbox.checked = !checkbox.checked;
-                
+
                 // active 클래스 토글
                 this.classList.toggle('active', checkbox.checked);
-                
+
                 handleSubRegionChange(subValue, parent, this);
             });
         });
-        
-        // 기존 선택된 지역 중 현재 광역시도가 아닌 것들은 유지하고, 
+
+        // 기존 선택된 지역 중 현재 광역시도가 아닌 것들은 유지하고,
         // 현재 광역시도의 선택만 초기화
         const currentRegionDisplayName = getRegionDisplayName(value);
-        currentFilters.selectedRegions = currentFilters.selectedRegions.filter(region => {
+        currentFilters.selectedRegions = currentFilters.selectedRegions.filter((region) => {
             const parts = region.split(' ');
             return parts[0] !== currentRegionDisplayName;
         });
-        
+
         updateSelectedRegionsDisplay();
     } else {
         subRegionRow.style.display = 'none';
     }
-    
+
     applyFilters();
 }
 
 // 지역 표시 이름 가져오기
 function getRegionDisplayName(regionCode) {
     const regionMap = {
-        'seoul': '서울',
-        'gyeonggi': '경기',
-        'incheon': '인천',
-        'busan': '부산',
-        'daegu': '대구',
-        'gwangju': '광주',
-        'daejeon': '대전',
-        'ulsan': '울산',
-        'sejong': '세종',
-        'gangwon': '강원',
-        'chungbuk': '충북',
-        'chungnam': '충남',
-        'jeonbuk': '전북',
-        'jeonnam': '전남',
-        'gyeongbuk': '경북',
-        'gyeongnam': '경남',
-        'jeju': '제주'
+        seoul: '서울',
+        gyeonggi: '경기',
+        incheon: '인천',
+        busan: '부산',
+        daegu: '대구',
+        gwangju: '광주',
+        daejeon: '대전',
+        ulsan: '울산',
+        sejong: '세종',
+        gangwon: '강원',
+        chungbuk: '충북',
+        chungnam: '충남',
+        jeonbuk: '전북',
+        jeonnam: '전남',
+        gyeongbuk: '경북',
+        gyeongnam: '경남',
+        jeju: '제주',
     };
     return regionMap[regionCode] || regionCode;
 }
@@ -468,48 +441,57 @@ function getRegionDisplayName(regionCode) {
 function handleSubRegionChange(value, parent, selectedElement) {
     const parentDisplayName = getRegionDisplayName(parent);
     const checkbox = selectedElement.querySelector('input[type="checkbox"]');
-    
-    console.log('handleSubRegionChange:', { value, parent, parentDisplayName, checked: checkbox.checked });
-    
+
+    console.log('handleSubRegionChange:', {
+        value,
+        parent,
+        parentDisplayName,
+        checked: checkbox.checked,
+    });
+
     if (value === 'all') {
         if (checkbox.checked) {
             // '전체' 체크 시 - 해당 부모의 모든 개별 지역 해제하고 "전체"만 추가
-            currentFilters.selectedRegions = currentFilters.selectedRegions.filter(region => {
+            currentFilters.selectedRegions = currentFilters.selectedRegions.filter((region) => {
                 return !region.startsWith(parentDisplayName);
             });
             currentFilters.selectedRegions.push(`${parentDisplayName} 전체`);
-            
+
             // 같은 부모의 모든 개별 지역 체크박스 해제
-            document.querySelectorAll(`[data-parent="${parent}"] input[type="checkbox"]`).forEach(cb => {
-                if (cb.value !== 'all') {
-                    cb.checked = false;
-                    cb.parentElement.classList.remove('active');
-                }
-            });
-            
+            document
+                .querySelectorAll(`[data-parent="${parent}"] input[type="checkbox"]`)
+                .forEach((cb) => {
+                    if (cb.value !== 'all') {
+                        cb.checked = false;
+                        cb.parentElement.classList.remove('active');
+                    }
+                });
+
             console.log('Selected 전체 for:', parentDisplayName);
         } else {
             // '전체' 해제 시
-            currentFilters.selectedRegions = currentFilters.selectedRegions.filter(region => {
+            currentFilters.selectedRegions = currentFilters.selectedRegions.filter((region) => {
                 return region !== `${parentDisplayName} 전체`;
             });
             console.log('Unselected 전체 for:', parentDisplayName);
         }
     } else {
         const regionKey = `${parentDisplayName} ${value}`;
-        
+
         if (checkbox.checked) {
             // 개별 지역 체크 시
             // '전체' 체크 해제
-            const allCheckbox = document.querySelector(`[data-parent="${parent}"][data-value="all"] input[type="checkbox"]`);
+            const allCheckbox = document.querySelector(
+                `[data-parent="${parent}"][data-value="all"] input[type="checkbox"]`
+            );
             if (allCheckbox && allCheckbox.checked) {
                 allCheckbox.checked = false;
                 allCheckbox.parentElement.classList.remove('active');
-                currentFilters.selectedRegions = currentFilters.selectedRegions.filter(region => {
+                currentFilters.selectedRegions = currentFilters.selectedRegions.filter((region) => {
                     return region !== `${parentDisplayName} 전체`;
                 });
             }
-            
+
             // 개별 지역 추가
             if (!currentFilters.selectedRegions.includes(regionKey)) {
                 currentFilters.selectedRegions.push(regionKey);
@@ -517,13 +499,13 @@ function handleSubRegionChange(value, parent, selectedElement) {
             console.log('Added region:', regionKey);
         } else {
             // 개별 지역 해제 시
-            currentFilters.selectedRegions = currentFilters.selectedRegions.filter(region => {
+            currentFilters.selectedRegions = currentFilters.selectedRegions.filter((region) => {
                 return region !== regionKey;
             });
             console.log('Removed region:', regionKey);
         }
     }
-    
+
     updateSelectedRegionsDisplay();
     applyFilters();
 }
@@ -532,9 +514,9 @@ function handleSubRegionChange(value, parent, selectedElement) {
 function updateSelectedRegionsDisplay() {
     const selectedRegionsContainer = document.getElementById('selectedRegions');
     const selectedTags = document.getElementById('selectedTags');
-    
+
     if (!selectedRegionsContainer || !selectedTags) return;
-    
+
     if (currentFilters.selectedRegions.length === 0) {
         // 선택된 지역이 없으면 숨김
         selectedRegionsContainer.style.display = 'none';
@@ -542,10 +524,11 @@ function updateSelectedRegionsDisplay() {
     } else {
         // 선택된 지역이 있으면 표시
         selectedRegionsContainer.style.display = 'flex';
-        
+
         // 태그 생성
-        selectedTags.innerHTML = currentFilters.selectedRegions.map(region => {
-            return `
+        selectedTags.innerHTML = currentFilters.selectedRegions
+            .map((region) => {
+                return `
                 <span class="region-tag">
                     ${region}
                     <button class="tag-remove" data-region="${region}" title="제거">
@@ -553,20 +536,26 @@ function updateSelectedRegionsDisplay() {
                     </button>
                 </span>
             `;
-        }).join('');
-        
+            })
+            .join('');
+
         // 제거 버튼 이벤트 추가
-        selectedTags.querySelectorAll('.tag-remove').forEach(btn => {
-            btn.addEventListener('click', function() {
+        selectedTags.querySelectorAll('.tag-remove').forEach((btn) => {
+            btn.addEventListener('click', function () {
                 const regionToRemove = this.dataset.region;
-                currentFilters.selectedRegions = currentFilters.selectedRegions.filter(r => r !== regionToRemove);
-                
+                currentFilters.selectedRegions = currentFilters.selectedRegions.filter(
+                    (r) => r !== regionToRemove
+                );
+
                 // 해당 체크박스 해제
                 const parts = regionToRemove.split(' ');
                 if (parts.length === 2) {
                     const checkboxes = document.querySelectorAll('#subRegionFilters .checkbox-tab');
-                    checkboxes.forEach(cb => {
-                        if (cb.textContent.trim() === parts[1] || cb.textContent.trim() === '전체') {
+                    checkboxes.forEach((cb) => {
+                        if (
+                            cb.textContent.trim() === parts[1] ||
+                            cb.textContent.trim() === '전체'
+                        ) {
                             const input = cb.querySelector('input[type="checkbox"]');
                             if (input && cb.textContent.trim() === parts[1]) {
                                 input.checked = false;
@@ -575,7 +564,7 @@ function updateSelectedRegionsDisplay() {
                         }
                     });
                 }
-                
+
                 updateSelectedRegionsDisplay();
                 applyFilters();
             });
@@ -591,38 +580,40 @@ function handleFilterChange() {
 
 // 필터 적용
 function applyFilters() {
+    console.log('필터 적용 중, currentFilters:', currentFilters);
     const filteredDocuments = filterDocuments();
+    console.log('필터링 결과:', filteredDocuments.length, '개 문서');
     renderDocuments(filteredDocuments);
     updateResultCount(filteredDocuments.length);
 }
 
 // 문서 필터링
 function filterDocuments() {
-    return sampleDocuments.filter(doc => {
+    return sampleDocuments.filter((doc) => {
         // 상품 유형 필터
         if (currentFilters.productType !== 'all') {
             // 상품 유형 매핑 (오피스텔 세분화 적용)
             const typeMap = {
-                'apartment': 'apartment',
+                apartment: 'apartment',
                 'residential-ot': 'officetel-residential',
                 'profit-ot': 'officetel-profit',
-                'urban': 'urban',
-                'commercial': 'commercial',
+                urban: 'urban',
+                commercial: 'commercial',
                 'lifestyle-lodge': 'lifestyle-lodge',
-                'knowledge': 'knowledge',
-                'hotel': 'hotel',
-                'studio': 'studio',
-                'villa': 'villa',
-                'land': 'land',
-                'other': 'other'
+                knowledge: 'knowledge',
+                hotel: 'hotel',
+                studio: 'studio',
+                villa: 'villa',
+                land: 'land',
+                other: 'other',
             };
-            
+
             const mappedType = typeMap[currentFilters.productType];
             if (mappedType && doc.type !== mappedType) {
                 return false;
             }
         }
-        
+
         // 공급 유형 필터
         if (currentFilters.supplyType !== 'all') {
             // 공급 유형 매핑
@@ -631,23 +622,23 @@ function filterDocuments() {
                 'public-sale': '공공분양',
                 'private-rental': '민간임대',
                 'public-rental': '공공임대',
-                'other': '기타'
+                other: '기타',
             };
-            
+
             const mappedSupplyType = supplyTypeMap[currentFilters.supplyType];
             if (mappedSupplyType && doc.supplyType !== mappedSupplyType) {
                 return false;
             }
         }
-        
+
         // 지역 필터 적용
         if (currentFilters.selectedRegions.length > 0) {
             // 문서의 지역과 선택된 지역 비교
             if (!doc.region) return false;
-            
+
             // selectedRegions 배열의 지역 중 하나라도 일치하면 표시
             const docLocation = `${doc.region} ${doc.district || ''}`;
-            const match = currentFilters.selectedRegions.some(selectedRegion => {
+            const match = currentFilters.selectedRegions.some((selectedRegion) => {
                 // "전체" 처리
                 if (selectedRegion.endsWith(' 전체')) {
                     const regionPrefix = selectedRegion.replace(' 전체', '');
@@ -656,19 +647,29 @@ function filterDocuments() {
                 // 특정 지역 처리 - 완전 일치
                 return docLocation.trim() === selectedRegion;
             });
-            
+
             if (!match) return false;
         }
-        
+
         // 키워드 필터
         if (currentFilters.keyword) {
             const keyword = currentFilters.keyword.toLowerCase();
-            const searchableText = `${doc.title} ${doc.description} ${doc.keywords.join(' ')} ${doc.location}`.toLowerCase();
+            const searchableText = [
+                doc.title || '',
+                doc.description || '',
+                doc.keywords ? doc.keywords.join(' ') : '',
+                doc.location || '',
+                doc.region || '',
+                doc.district || ''
+            ].join(' ').toLowerCase();
+            
+            console.log(`검색중: "${keyword}" in "${searchableText.substring(0, 100)}..."`);
+            
             if (!searchableText.includes(keyword)) {
                 return false;
             }
         }
-        
+
         return true;
     });
 }
@@ -681,7 +682,7 @@ const itemsPerPage = 15; // 한 페이지에 15개 문서 표시
 function renderDocuments(documents) {
     const grid = document.getElementById('documentGrid');
     if (!grid) return;
-    
+
     if (documents.length === 0) {
         grid.innerHTML = `
             <div class="no-results">
@@ -693,48 +694,52 @@ function renderDocuments(documents) {
         updatePagination(0, 0);
         return;
     }
-    
+
     // 페이지네이션 적용
     const totalPages = Math.ceil(documents.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedDocuments = documents.slice(startIndex, endIndex);
-    
-    grid.innerHTML = paginatedDocuments.map(doc => {
-        const productType = productTypes.find(t => t.id === doc.type) || { name: '기타', color: '#6b7280' };
-        return `
-            <div class="document-card" data-id="${doc.id}" onclick="openPreview(${doc.id})">
+
+    grid.innerHTML = paginatedDocuments
+        .map((doc) => {
+            const productType = productTypes.find((t) => t.id === doc.type) || {
+                name: '기타',
+                color: '#6b7280',
+            };
+            return `
+            <div class="document-card" data-id="${doc.id}" onclick="openPreview(${doc.id})" style="--hover-border-color: ${productType.color};" onmouseover="this.style.borderColor='${productType.color}50'" onmouseout="this.style.borderColor='transparent'">
                 <div class="document-info">
-                    <div class="document-header">
-                        <div class="document-badges">
-                            <span class="badge-type" style="background-color: ${productType.color}; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;">
-                                ${productType.name}
-                            </span>
-                            <span class="badge-supply" style="background: #f3f4f6; color: #6b7280; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;">
-                                ${doc.supplyType || '민간분양'}
-                            </span>
-                        </div>
-                        <button class="btn-action-mini btn-menu" onclick="event.stopPropagation()">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
+                    <div class="document-type-box" style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 5px 12px;
+                        background: ${productType.color}15;
+                        border-radius: 6px;
+                        margin-bottom: 10px;
+                    ">
+                        <span style="color: ${productType.color}; font-size: 12px; font-weight: 600;">
+                            ${productType.name}
+                        </span>
+                        <span style="color: ${productType.color}66;">·</span>
+                        <span style="color: ${productType.color}cc; font-size: 12px; font-weight: 500;">
+                            ${doc.supplyType || '민간분양'}
+                        </span>
                     </div>
                     <h3 class="document-title">${doc.title}</h3>
-                    <div class="document-meta-info" style="margin-top: 4px;">
-                        <span class="meta-info-item">
-                            <i class="fas fa-map-marker-alt" style="font-size: 11px;"></i>
-                            <span>${doc.location}</span>
+                    <div class="document-meta-info" style="display: flex; gap: 12px; margin: 2px 0 8px 0;">
+                        <span style="color: #9ca3af; font-size: 11px;">
+                            <i class="fas ${doc.fileType === 'PDF' ? 'fa-file-pdf' : 'fa-file-powerpoint'}" style="font-size: 10px; margin-right: 4px;"></i>
+                            ${doc.fileType}
                         </span>
-                        <span class="meta-info-item">
-                            <i class="fas ${doc.fileType === 'PDF' ? 'fa-file-pdf' : 'fa-file-powerpoint'}" style="font-size: 11px;"></i>
-                            <span>${doc.fileType}</span>
+                        <span style="color: #9ca3af; font-size: 11px;">
+                            <i class="fas fa-hdd" style="font-size: 10px; margin-right: 4px;"></i>
+                            ${doc.fileSize}
                         </span>
-                        <span class="meta-info-item">
-                            <i class="fas fa-hdd" style="font-size: 11px;"></i>
-                            <span>${doc.fileSize}</span>
-                        </span>
-                        <span class="meta-info-item">
-                            <i class="fas fa-calendar-alt" style="font-size: 11px;"></i>
-                            <span>${doc.date || '2024.01.15'}</span>
+                        <span style="color: #9ca3af; font-size: 11px;">
+                            <i class="fas fa-calendar-alt" style="font-size: 10px; margin-right: 4px;"></i>
+                            ${doc.date || '2024.01.15'}
                         </span>
                     </div>
                     <div class="document-footer">
@@ -742,42 +747,67 @@ function renderDocuments(documents) {
                             <i class="fas fa-coins"></i>
                             <span>${doc.points}P</span>
                         </div>
-                        <div class="document-actions-mini">
-                            <button class="btn-action-mini btn-eye" onclick="event.stopPropagation(); openPreview(${doc.id})" title="미리보기">
-                                <i class="far fa-eye"></i>
+                        <div class="document-actions" style="display: flex; gap: 4px;">
+                            <button class="btn-action-mini" onclick="event.stopPropagation(); handleDirectDownload(${doc.id}, ${doc.points})" title="다운로드" style="
+                                width: 28px;
+                                height: 28px;
+                                border-radius: 6px;
+                                border: none;
+                                background: #fafbfc;
+                                color: #cbd5e1;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                cursor: pointer;
+                                transition: all 0.2s ease;
+                            " onmouseover="this.style.background='${productType.color}'; this.style.color='white'" onmouseout="this.style.background='#fafbfc'; this.style.color='#cbd5e1'">
+                                <i class="fas fa-download" style="font-size: 12px;"></i>
                             </button>
-                            <button class="btn-action-mini btn-download-mini" onclick="event.stopPropagation(); handleDirectDownload(${doc.id}, ${doc.points})" title="다운로드">
-                                <i class="fas fa-download"></i>
+                            <button class="btn-action-mini" onclick="event.stopPropagation(); addToCart(${doc.id})" title="장바구니 담기" style="
+                                width: 28px;
+                                height: 28px;
+                                border-radius: 6px;
+                                border: none;
+                                background: #fafbfc;
+                                color: #cbd5e1;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                cursor: pointer;
+                                transition: all 0.2s ease;
+                            " onmouseover="this.style.background='${productType.color}'; this.style.color='white'" onmouseout="this.style.background='#fafbfc'; this.style.color='#cbd5e1'">
+                                <i class="fas fa-shopping-cart" style="font-size: 12px;"></i>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         `;
-    }).join('');
-    
+        })
+        .join('');
+
     // 장바구니 버튼 이벤트
-    grid.querySelectorAll('.btn-cart').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    grid.querySelectorAll('.btn-cart').forEach((btn) => {
+        btn.addEventListener('click', function (e) {
             e.stopPropagation();
             const docId = this.dataset.id;
             handleAddToCart(docId);
         });
     });
-    
+
     // 다운로드 버튼 이벤트
-    grid.querySelectorAll('.btn-download').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    grid.querySelectorAll('.btn-download').forEach((btn) => {
+        btn.addEventListener('click', function (e) {
             e.stopPropagation();
             const docId = this.dataset.id;
             const points = parseInt(this.dataset.points);
             handleDirectDownload(docId, points);
         });
     });
-    
+
     // 자세히보기 버튼 이벤트
-    grid.querySelectorAll('.btn-detail').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    grid.querySelectorAll('.btn-detail').forEach((btn) => {
+        btn.addEventListener('click', function (e) {
             e.stopPropagation();
             const docId = this.dataset.id;
             // 전역 openPreview 함수 호출
@@ -788,7 +818,7 @@ function renderDocuments(documents) {
             }
         });
     });
-    
+
     // 페이지네이션 업데이트
     updatePagination(documents.length, totalPages);
 }
@@ -797,16 +827,16 @@ function renderDocuments(documents) {
 function updatePagination(totalItems, totalPages) {
     const pagination = document.getElementById('pagination');
     if (!pagination) return;
-    
+
     // 페이지가 1개 이하면 페이지네이션 숨기기
     if (totalPages <= 1) {
         pagination.style.display = 'none';
         return;
     }
-    
+
     pagination.style.display = 'flex';
     pagination.innerHTML = '';
-    
+
     // 이전 버튼
     const prevBtn = document.createElement('button');
     prevBtn.className = 'page-btn';
@@ -819,20 +849,20 @@ function updatePagination(totalItems, totalPages) {
         }
     };
     pagination.appendChild(prevBtn);
-    
+
     // 페이지 번호 계산 (최대 15개)
     const maxVisiblePages = 15;
     let startPage = 1;
     let endPage = Math.min(totalPages, maxVisiblePages);
-    
+
     // 현재 페이지를 중앙에 위치시키기
     if (totalPages > maxVisiblePages) {
         const halfVisible = Math.floor(maxVisiblePages / 2);
-        
+
         if (currentPage > halfVisible) {
             startPage = currentPage - halfVisible;
             endPage = currentPage + halfVisible;
-            
+
             // 끝 페이지가 전체 페이지를 초과하는 경우 조정
             if (endPage > totalPages) {
                 endPage = totalPages;
@@ -840,7 +870,7 @@ function updatePagination(totalItems, totalPages) {
             }
         }
     }
-    
+
     // 첫 페이지로 가기 버튼 (생략 기호와 함께)
     if (startPage > 1) {
         const firstBtn = document.createElement('button');
@@ -851,7 +881,7 @@ function updatePagination(totalItems, totalPages) {
             applyFilters();
         };
         pagination.appendChild(firstBtn);
-        
+
         if (startPage > 2) {
             const ellipsis = document.createElement('span');
             ellipsis.className = 'page-ellipsis';
@@ -859,25 +889,25 @@ function updatePagination(totalItems, totalPages) {
             pagination.appendChild(ellipsis);
         }
     }
-    
+
     // 페이지 번호 버튼들
     for (let i = startPage; i <= endPage; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.className = 'page-btn';
         pageBtn.textContent = i;
-        
+
         if (i === currentPage) {
             pageBtn.classList.add('active');
         }
-        
+
         pageBtn.onclick = () => {
             currentPage = i;
             applyFilters();
         };
-        
+
         pagination.appendChild(pageBtn);
     }
-    
+
     // 마지막 페이지로 가기 버튼 (생략 기호와 함께)
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
@@ -886,7 +916,7 @@ function updatePagination(totalItems, totalPages) {
             ellipsis.textContent = '...';
             pagination.appendChild(ellipsis);
         }
-        
+
         const lastBtn = document.createElement('button');
         lastBtn.className = 'page-btn';
         lastBtn.textContent = totalPages;
@@ -896,7 +926,7 @@ function updatePagination(totalItems, totalPages) {
         };
         pagination.appendChild(lastBtn);
     }
-    
+
     // 다음 버튼
     const nextBtn = document.createElement('button');
     nextBtn.className = 'page-btn';
@@ -917,14 +947,14 @@ function updateResultCount(count) {
     if (totalCount) {
         totalCount.textContent = count.toLocaleString();
     }
-    
+
     // 선택된 지역 표시
     const resultRegion = document.getElementById('resultRegion');
     if (resultRegion) {
         if (currentFilters.region === 'all') {
             resultRegion.textContent = '';
         } else {
-            const regionName = regionNames[currentFilters.region] || currentFilters.region;
+            const regionName = window.WaveSpaceData.regionNames[currentFilters.region] || currentFilters.region;
             resultRegion.textContent = `• ${regionName} 지역`;
         }
     }
@@ -940,21 +970,21 @@ function resetFilters() {
         selectedRegions: [],
         keyword: '',
         productType: 'all',
-        supplyType: 'all'
+        supplyType: 'all',
     };
-    
+
     // UI 초기화
     const typeFilter = document.getElementById('typeFilter');
     if (typeFilter) typeFilter.value = 'all';
-    
+
     const keywordInput = document.getElementById('keywordInput');
     if (keywordInput) keywordInput.value = '';
-    
+
     const dateFilter = document.getElementById('dateFilter');
     if (dateFilter) dateFilter.value = 'all';
-    
+
     // 지역 선택 초기화
-    document.querySelectorAll('.nav-selector').forEach(selector => {
+    document.querySelectorAll('.nav-selector').forEach((selector) => {
         selector.classList.remove('selected', 'active');
     });
     // 전체 선택
@@ -962,16 +992,16 @@ function resetFilters() {
     if (allRegionSelector) {
         allRegionSelector.classList.add('selected', 'active');
     }
-    
+
     // 하위 지역 행 숨기기
     const subRegionRow = document.getElementById('subRegionRow');
     if (subRegionRow) {
         subRegionRow.style.display = 'none';
     }
-    
+
     // 상품 유형 필터 초기화
     const productTabs = document.querySelectorAll('.product-filter .checkbox-tab');
-    productTabs.forEach(tab => {
+    productTabs.forEach((tab) => {
         tab.classList.remove('active');
         const input = tab.querySelector('input[type="radio"]');
         if (input) input.checked = false;
@@ -983,10 +1013,10 @@ function resetFilters() {
         const input = allProductTab.querySelector('input[type="radio"]');
         if (input) input.checked = true;
     }
-    
+
     // 공급 유형 필터 초기화
     const supplyTabs = document.querySelectorAll('.supply-filter .checkbox-tab');
-    supplyTabs.forEach(tab => {
+    supplyTabs.forEach((tab) => {
         tab.classList.remove('active');
         const input = tab.querySelector('input[type="radio"]');
         if (input) input.checked = false;
@@ -998,7 +1028,7 @@ function resetFilters() {
         const input = allSupplyTab.querySelector('input[type="radio"]');
         if (input) input.checked = true;
     }
-    
+
     updateSelectedRegionsDisplay();
     applyFilters();
 }
@@ -1010,20 +1040,21 @@ function resetFilters() {
 function showDocumentPreview(doc) {
     const modal = document.getElementById('previewModal');
     if (!modal) return;
-    
-    const productType = productTypes.find(t => t.id === doc.type);
-    
+
+    const productType = productTypes.find((t) => t.id === doc.type);
+
     modal.querySelector('.preview-header h3').textContent = doc.title;
     modal.querySelector('.preview-type').textContent = productType.name;
     modal.querySelector('.preview-type').style.backgroundColor = productType.color + '20';
     modal.querySelector('.preview-type').style.color = productType.color;
-    
+
     const previewBody = modal.querySelector('.preview-body');
     previewBody.innerHTML = `
         <div class="preview-thumbnail">
-            ${doc.thumbnail ? 
-                `<img src="${doc.thumbnail}" alt="${doc.title}">` :
-                `<div class="file-icon ${doc.fileType.toLowerCase()}">${doc.fileType}</div>`
+            ${
+                doc.thumbnail
+                    ? `<img src="${doc.thumbnail}" alt="${doc.title}">`
+                    : `<div class="file-icon ${doc.fileType.toLowerCase()}">${doc.fileType}</div>`
             }
         </div>
         <div class="preview-details">
@@ -1060,12 +1091,12 @@ function showDocumentPreview(doc) {
             <div class="detail-group">
                 <h4>키워드</h4>
                 <div class="keyword-tags">
-                    ${doc.keywords.map(keyword => `<span class="keyword-tag">${keyword}</span>`).join('')}
+                    ${doc.keywords.map((keyword) => `<span class="keyword-tag">${keyword}</span>`).join('')}
                 </div>
             </div>
         </div>
     `;
-    
+
     const downloadBtn = modal.querySelector('.preview-download-btn');
     downloadBtn.dataset.id = doc.id;
     downloadBtn.dataset.points = doc.points;
@@ -1073,18 +1104,18 @@ function showDocumentPreview(doc) {
         <i class="fas fa-download"></i>
         다운로드 (${doc.points}P)
     `;
-    
+
     modal.classList.add('active');
 }
 
 // 장바구니 추가 처리
 function handleAddToCart(docId) {
-    const doc = sampleDocuments.find(d => d.id == docId);
+    const doc = sampleDocuments.find((d) => d.id == docId);
     if (doc) {
         // 장바구니 추가 성공 메시지
         const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-        const existingItem = cartItems.find(item => item.id === doc.id);
-        
+        const existingItem = cartItems.find((item) => item.id === doc.id);
+
         if (existingItem) {
             showToastMessage(`"${doc.title}"은(는) 이미 장바구니에 있습니다.`, 'warning');
         } else {
@@ -1093,7 +1124,7 @@ function handleAddToCart(docId) {
                 title: doc.title,
                 points: doc.points,
                 type: doc.type,
-                fileType: doc.fileType
+                fileType: doc.fileType,
             });
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
             showToastMessage(`"${doc.title}"이(가) 장바구니에 추가되었습니다.`, 'success');
@@ -1103,35 +1134,38 @@ function handleAddToCart(docId) {
 
 // 다운로드 버튼 직접 클릭 처리
 function handleDirectDownload(docId, points) {
-    const doc = sampleDocuments.find(d => d.id == docId);
+    const doc = sampleDocuments.find((d) => d.id == docId);
     if (!doc) return;
-    
+
     // 로그인 체크
     if (!userData.isLoggedIn) {
         showToastMessage('로그인이 필요한 서비스입니다.', 'error');
         return;
     }
-    
+
     // 포인트 체크
     if (userData.points < points) {
-        showToastMessage(`포인트가 부족합니다. 필요: ${points}P, 보유: ${userData.points}P`, 'error');
+        showToastMessage(
+            `포인트가 부족합니다. 필요: ${points}P, 보유: ${userData.points}P`,
+            'error'
+        );
         return;
     }
-    
+
     // 다운로드 기록 저장
     const downloadHistory = JSON.parse(localStorage.getItem('downloadHistory') || '[]');
     downloadHistory.push({
         id: doc.id,
         title: doc.title,
         downloadDate: new Date().toISOString(),
-        points: points
+        points: points,
     });
     localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
-    
+
     // 글로벌 포인트 시스템 사용하여 포인트 차감 및 애니메이션
     const downloadBtn = event?.currentTarget || document.querySelector(`[data-id="${docId}"]`);
     spendPoints(points, `"${doc.title}" 다운로드 완료!`, downloadBtn);
-    
+
     // 실제로는 여기서 파일 다운로드 처리
     // window.location.href = `/api/download/${docId}`;
 }
@@ -1144,10 +1178,10 @@ function handleDownload(docId, points) {
 // 미리보기 PDF 렌더링 함수
 async function renderPreviewPDF(pdfPath, docId) {
     const previewArea = document.querySelector('.preview-pages-layout');
-    
+
     // 문서 정보 가져오기
-    const doc = sampleDocuments.find(d => d.id == docId);
-    
+    const doc = sampleDocuments.find((d) => d.id == docId);
+
     // PDF 파일이 없는 경우 안내 메시지 표시
     if (!doc || !doc.pdfPath || doc.pdfPath === null) {
         // 미리보기 영역에 안내 메시지 표시
@@ -1163,7 +1197,7 @@ async function renderPreviewPDF(pdfPath, docId) {
         }
         return;
     }
-    
+
     // PDF 파일이 있는 경우 - 캔버스 구조 복원
     if (previewArea) {
         // 기존 HTML 구조 복원
@@ -1187,44 +1221,32 @@ async function renderPreviewPDF(pdfPath, docId) {
             </div>
         `;
     }
-    
-    // 캔버스 요소 다시 가져오기
-    const canvas4 = document.getElementById('previewCanvas4');
+
+    // 캔버스 요소 가져오기
     const canvas5 = document.getElementById('previewCanvas5');
-    const canvas6 = document.getElementById('previewCanvas6');
-    
-    if (!canvas4 || !canvas5 || !canvas6) {
-        console.error('캔버스 요소를 찾을 수 없습니다.');
+
+    if (!canvas5) {
+        console.error('5페이지 캔버스 요소를 찾을 수 없습니다.');
         return;
     }
-    
+
     // PDF 파일이 있는 경우 - 실제 환경에서는 PDF.js를 사용하여 렌더링
     // 테스트 환경에서는 데모 이미지 렌더링
     try {
         // 실제 PDF 로드 시도 (테스트 환경에서는 실패할 수 있음)
         if (typeof pdfjsLib !== 'undefined' && doc.pdfPath.startsWith('http')) {
             // 실제 PDF 렌더링 로직
-            await renderActualPDF(doc.pdfPath, [canvas4, canvas5, canvas6]);
+            await renderActualPDF(doc.pdfPath, canvas5);
         } else {
             // 데모용 페이지 렌더링
-            const ctx4 = canvas4.getContext('2d');
             const ctx5 = canvas5.getContext('2d');
-            const ctx6 = canvas6.getContext('2d');
-            
+
             // 캔버스 초기화
-            ctx4.fillStyle = '#ffffff';
-            ctx4.fillRect(0, 0, canvas4.width, canvas4.height);
-            
             ctx5.fillStyle = '#ffffff';
             ctx5.fillRect(0, 0, canvas5.width, canvas5.height);
-            
-            ctx6.fillStyle = '#ffffff';
-            ctx6.fillRect(0, 0, canvas6.width, canvas6.height);
-            
-            // 데모 페이지 렌더링
-            renderPage4(ctx4, canvas4.width, canvas4.height);
+
+            // 데모 5페이지 렌더링
             renderPage5(ctx5, canvas5.width, canvas5.height);
-            renderPage6(ctx6, canvas6.width, canvas6.height);
         }
     } catch (error) {
         console.error('PDF 렌더링 오류:', error);
@@ -1243,57 +1265,49 @@ async function renderPreviewPDF(pdfPath, docId) {
 }
 
 // 실제 PDF 렌더링 함수
-async function renderActualPDF(pdfPath, canvases) {
+async function renderActualPDF(pdfPath, canvas) {
     try {
         // PDF 문서 로드
         const loadingTask = pdfjsLib.getDocument(pdfPath);
         const pdf = await loadingTask.promise;
-        
-        // 렌더링할 페이지 번호 (4, 5, 6)
-        const pageNumbers = [4, 5, 6];
-        
-        for (let i = 0; i < canvases.length; i++) {
-            const canvas = canvases[i];
-            const ctx = canvas.getContext('2d');
-            let pageNum = pageNumbers[i];
-            
-            // 페이지가 존재하지 않으면 마지막 페이지 사용
-            if (pageNum > pdf.numPages) {
-                pageNum = Math.max(1, pdf.numPages - (2 - i));
-            }
-            
-            // 페이지 가져오기
-            const page = await pdf.getPage(pageNum);
-            
-            // 캔버스 크기에 맞게 뷰포트 설정
-            const desiredWidth = canvas.width;
-            const desiredHeight = canvas.height;
-            const viewport = page.getViewport({ scale: 1.0 });
-            
-            const scale = Math.min(
-                desiredWidth / viewport.width,
-                desiredHeight / viewport.height
-            );
-            
-            const scaledViewport = page.getViewport({ scale: scale });
-            
-            // 캔버스 크기 조정
-            canvas.width = scaledViewport.width;
-            canvas.height = scaledViewport.height;
-            
-            // PDF 페이지 렌더링
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: scaledViewport
-            };
-            
-            await page.render(renderContext).promise;
-            
-            // 페이지 라벨 업데이트
-            const labelElement = canvas.parentElement.querySelector('.page-label');
-            if (labelElement) {
-                labelElement.textContent = `페이지 ${pageNum}${i === 1 ? ' (메인)' : ''}`;
-            }
+
+        // 5페이지만 렌더링
+        const ctx = canvas.getContext('2d');
+        let pageNum = 5;
+
+        // 페이지가 존재하지 않으면 마지막 페이지 사용
+        if (pageNum > pdf.numPages) {
+            pageNum = pdf.numPages;
+        }
+
+        // 페이지 가져오기
+        const page = await pdf.getPage(pageNum);
+
+        // 캔버스 크기에 맞게 뷰포트 설정
+        const desiredWidth = canvas.width;
+        const desiredHeight = canvas.height;
+        const viewport = page.getViewport({ scale: 1.0 });
+
+        const scale = Math.min(desiredWidth / viewport.width, desiredHeight / viewport.height);
+
+        const scaledViewport = page.getViewport({ scale: scale });
+
+        // 캔버스 크기 조정
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+
+        // PDF 페이지 렌더링
+        const renderContext = {
+            canvasContext: ctx,
+            viewport: scaledViewport,
+        };
+
+        await page.render(renderContext).promise;
+
+        // 페이지 라벨 업데이트
+        const labelElement = canvas.parentElement.querySelector('.page-label');
+        if (labelElement) {
+            labelElement.textContent = `페이지 ${pageNum}`;
         }
     } catch (error) {
         console.error('PDF 렌더링 실패:', error);
@@ -1306,36 +1320,36 @@ function renderPage4(ctx, width, height) {
     // 배경
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
-    
+
     // 제목
     ctx.fillStyle = '#1f2937';
     ctx.font = 'bold 10px sans-serif';
     ctx.fillText('4. 경쟁 분석', 10, 20);
-    
+
     // 구분선
     ctx.strokeStyle = '#e5e7eb';
     ctx.beginPath();
     ctx.moveTo(10, 25);
     ctx.lineTo(width - 10, 25);
     ctx.stroke();
-    
+
     // 표 그리기
     ctx.font = '8px sans-serif';
     ctx.fillStyle = '#6b7280';
     ctx.fillText('프로젝트명', 10, 45);
     ctx.fillText('세대수', 60, 45);
     ctx.fillText('분양가', 90, 45);
-    
+
     // 표 데이터
     ctx.font = '7px sans-serif';
     ctx.fillText('래미안', 10, 60);
     ctx.fillText('2,990', 60, 60);
     ctx.fillText('3.3억', 90, 60);
-    
+
     ctx.fillText('힐스테이트', 10, 75);
     ctx.fillText('1,428', 60, 75);
     ctx.fillText('3.1억', 90, 75);
-    
+
     // 막대 차트
     ctx.fillStyle = '#2E8CE6';
     ctx.fillRect(10, 90, 25, 40);
@@ -1343,7 +1357,7 @@ function renderPage4(ctx, width, height) {
     ctx.fillRect(40, 95, 25, 35);
     ctx.fillStyle = '#93c5fd';
     ctx.fillRect(70, 100, 25, 30);
-    
+
     // 차트 라벨
     ctx.fillStyle = '#6b7280';
     ctx.font = '6px sans-serif';
@@ -1357,22 +1371,22 @@ function renderPage5(ctx, width, height) {
     // 배경
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
-    
+
     // 헤더
     ctx.fillStyle = '#2E8CE6';
     ctx.fillRect(0, 0, width, 35);
-    
+
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 14px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('5. 투자 전망', width/2, 22);
+    ctx.fillText('5. 투자 전망', width / 2, 22);
     ctx.textAlign = 'left';
-    
+
     // 수익률 예측 섹션
     ctx.fillStyle = '#374151';
     ctx.font = '10px sans-serif';
     ctx.fillText('■ 수익률 예측', 15, 55);
-    
+
     // 라인 차트 그리기
     ctx.strokeStyle = '#2E8CE6';
     ctx.lineWidth = 2;
@@ -1384,21 +1398,28 @@ function renderPage5(ctx, width, height) {
     ctx.lineTo(140, 60);
     ctx.lineTo(170, 50);
     ctx.stroke();
-    
+
     // 차트 포인트
     ctx.fillStyle = '#2E8CE6';
-    const points = [[20, 100], [50, 85], [80, 70], [110, 65], [140, 60], [170, 50]];
-    points.forEach(point => {
+    const points = [
+        [20, 100],
+        [50, 85],
+        [80, 70],
+        [110, 65],
+        [140, 60],
+        [170, 50],
+    ];
+    points.forEach((point) => {
         ctx.beginPath();
         ctx.arc(point[0], point[1], 3, 0, 2 * Math.PI);
         ctx.fill();
     });
-    
+
     // 투자 포인트 섹션
     ctx.fillStyle = '#374151';
     ctx.font = '10px sans-serif';
     ctx.fillText('■ 투자 포인트', 15, 130);
-    
+
     // 포인트 박스
     ctx.fillStyle = '#f3f4f6';
     ctx.fillRect(15, 140, width - 30, 40);
@@ -1406,12 +1427,12 @@ function renderPage5(ctx, width, height) {
     ctx.font = '8px sans-serif';
     ctx.fillText('• 역세권 트리플역', 20, 155);
     ctx.fillText('• 대규모 개발호재', 20, 168);
-    
+
     // 예상 수익 테이블
     ctx.fillStyle = '#374151';
     ctx.font = '10px sans-serif';
     ctx.fillText('■ 예상 수익 분석', 15, 200);
-    
+
     // 테이블
     ctx.strokeStyle = '#e5e7eb';
     ctx.strokeRect(15, 210, width - 30, 50);
@@ -1427,19 +1448,19 @@ function renderPage6(ctx, width, height) {
     // 배경
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
-    
+
     // 제목
     ctx.fillStyle = '#1f2937';
     ctx.font = 'bold 10px sans-serif';
     ctx.fillText('6. 리스크 분석', 10, 20);
-    
+
     // 구분선
     ctx.strokeStyle = '#e5e7eb';
     ctx.beginPath();
     ctx.moveTo(10, 25);
     ctx.lineTo(width - 10, 25);
     ctx.stroke();
-    
+
     // 리스크 매트릭스
     ctx.fillStyle = '#fee2e2';
     ctx.fillRect(10, 35, 30, 30);
@@ -1447,23 +1468,23 @@ function renderPage6(ctx, width, height) {
     ctx.fillRect(45, 35, 30, 30);
     ctx.fillStyle = '#dcfce7';
     ctx.fillRect(80, 35, 30, 30);
-    
+
     ctx.fillStyle = '#374151';
     ctx.font = '7px sans-serif';
     ctx.fillText('높음', 18, 50);
     ctx.fillText('중간', 52, 50);
     ctx.fillText('낮음', 87, 50);
-    
+
     // 리스크 항목
     ctx.fillStyle = '#6b7280';
     ctx.font = '8px sans-serif';
     ctx.fillText('■ 주요 리스크', 10, 85);
-    
+
     ctx.font = '7px sans-serif';
     ctx.fillText('• 금리 상승 리스크', 15, 100);
     ctx.fillText('• 규제 변화 가능성', 15, 112);
     ctx.fillText('• 공급 과잉 우려', 15, 124);
-    
+
     // 대응 방안
     ctx.font = '8px sans-serif';
     ctx.fillText('■ 대응 방안', 10, 145);
@@ -1699,8 +1720,8 @@ const uploadSystem = {
         const selectedRegion = region1.value;
         region2.innerHTML = '<option value="">시군구 선택</option>';
         
-        if (selectedRegion && regionData[selectedRegion]) {
-            regionData[selectedRegion].forEach(subRegion => {
+        if (selectedRegion && window.WaveSpaceData.regionData[selectedRegion]) {
+            window.WaveSpaceData.regionData[selectedRegion].forEach(subRegion => {
                 const option = document.createElement('option');
                 option.value = subRegion;
                 option.textContent = subRegion;
@@ -1806,7 +1827,7 @@ const uploadSystem = {
             previewType.textContent = type?.name || '';
         }
         if (previewLocation) {
-            const region1Name = regionNames[this.formData.region1] || this.formData.region1;
+            const region1Name = window.WaveSpaceData.regionNames[this.formData.region1] || this.formData.region1;
             previewLocation.textContent = `${region1Name} ${this.formData.region2}`;
         }
         if (previewFile) {
@@ -1853,7 +1874,7 @@ const uploadSystem = {
     checkDuplicate() {
         // 중복 검사 로직 (실제로는 서버에서 처리)
         const similarDoc = sampleDocuments.find(doc => {
-            const docRegion = Object.keys(regionNames).find(key => regionNames[key] === doc.region);
+            const docRegion = Object.keys(window.WaveSpaceData.regionNames).find(key => window.WaveSpaceData.regionNames[key] === doc.region);
             return doc.type === this.formData.type && 
                    docRegion === this.formData.region1 &&
                    doc.district === this.formData.region2;
@@ -1872,39 +1893,39 @@ function initializeEventListeners() {
     // 정렬 옵션
     const sortSelect = document.getElementById('sortSelect');
     if (sortSelect) {
-        sortSelect.addEventListener('change', function() {
+        sortSelect.addEventListener('change', function () {
             const sortedDocuments = sortDocuments(filterDocuments(), this.value);
             renderDocuments(sortedDocuments);
         });
     }
-    
+
     // 미리보기 모달 닫기
     const previewClose = document.getElementById('previewClose');
     if (previewClose) {
-        previewClose.addEventListener('click', function() {
+        previewClose.addEventListener('click', () => {
             const modal = document.getElementById('previewModal');
             if (modal) modal.classList.remove('active');
         });
     }
-    
+
     // 미리보기 다운로드 버튼
     const previewDownloadBtn = document.querySelector('.preview-download-btn');
     if (previewDownloadBtn) {
-        previewDownloadBtn.addEventListener('click', function() {
+        previewDownloadBtn.addEventListener('click', function () {
             const docId = this.dataset.id;
             const points = parseInt(this.dataset.points);
             handleDownload(docId, points);
-            
+
             // 모달 닫기
             const modal = document.getElementById('previewModal');
             if (modal) modal.classList.remove('active');
         });
     }
-    
+
     // 파일 제거 버튼
     const removeFileBtn = document.querySelector('.remove-file');
     if (removeFileBtn) {
-        removeFileBtn.addEventListener('click', function() {
+        removeFileBtn.addEventListener('click', () => {
             uploadSystem.formData.file = null;
             document.querySelector('.file-info').style.display = 'none';
             document.getElementById('fileUploadArea').style.display = 'flex';
@@ -1916,10 +1937,13 @@ function initializeEventListeners() {
 // 문서 정렬
 function sortDocuments(documents, sortBy) {
     const sorted = [...documents];
-    
+
     switch (sortBy) {
         case 'latest':
-            sorted.sort((a, b) => new Date(b.date.replace(/\./g, '-')) - new Date(a.date.replace(/\./g, '-')));
+            sorted.sort(
+                (a, b) =>
+                    new Date(b.date.replace(/\./g, '-')) - new Date(a.date.replace(/\./g, '-'))
+            );
             break;
         case 'filesize':
             // 파일 크기를 숫자로 변환하여 정렬 (큰 파일이 먼저)
@@ -1930,7 +1954,7 @@ function sortDocuments(documents, sortBy) {
             });
             break;
     }
-    
+
     return sorted;
 }
 
@@ -1984,12 +2008,12 @@ const uploadSystem = {
         if (region1Select) {
             region1Select.addEventListener('change', (e) => {
                 const selectedRegion = e.target.value;
-                if (selectedRegion && regionData[selectedRegion]) {
+                if (selectedRegion && window.WaveSpaceData.regionData[selectedRegion]) {
                     // 시군구 업데이트
                     region2Select.disabled = false;
                     region2Select.innerHTML = '<option value="">시/군/구 선택</option>';
                     
-                    regionData[selectedRegion].forEach(district => {
+                    window.WaveSpaceData.regionData[selectedRegion].forEach(district => {
                         const option = document.createElement('option');
                         option.value = district;
                         option.textContent = district;
@@ -2450,7 +2474,7 @@ const uploadSystem = {
             type: productType,
             region: region1,
             district: region2,
-            location: `${regionNames[region1]} ${region2}`,
+            location: `${window.WaveSpaceData.regionNames[region1]} ${region2}`,
             date: new Date().toLocaleDateString('ko-KR').replace(/\\. /g, '.').replace(/\\.$/, ''),
             createDate: `자료생성일: ${fileDate}`,
             fileSize: this.formData.fileSize + 'MB',
@@ -2554,7 +2578,7 @@ function initEnhancedUploadModal() {
     const uploadZone = document.getElementById('uploadZone');
     const region1Select = document.getElementById('uploadRegion1');
     const region2Select = document.getElementById('uploadRegion2');
-    
+
     // 모달 열기
     if (uploadBtn) {
         uploadBtn.addEventListener('click', () => {
@@ -2566,93 +2590,89 @@ function initEnhancedUploadModal() {
             }
         });
     }
-    
+
     // 모달 닫기
     if (modalClose) {
         modalClose.addEventListener('click', () => {
             modal.classList.remove('active');
         });
     }
-    
+
     if (btnCancel) {
         btnCancel.addEventListener('click', () => {
             modal.classList.remove('active');
         });
     }
-    
+
     // 파일 업로드
     if (uploadZone) {
         uploadZone.addEventListener('click', () => {
             fileInput.click();
         });
-        
+
         // 드래그 앤 드롭
         uploadZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadZone.style.borderColor = '#2E8CE6';
         });
-        
+
         uploadZone.addEventListener('dragleave', (e) => {
             e.preventDefault();
             uploadZone.style.borderColor = '#d1d5db';
         });
-        
+
         uploadZone.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadZone.style.borderColor = '#d1d5db';
-            const file = e.dataTransfer.files[0];
-            if (file) handleFileUpload(file);
+            const files = Array.from(e.dataTransfer.files);
+            handleSingleFileUpload(files);
         });
     }
-    
+
     if (fileInput) {
         fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) handleFileUpload(file);
+            const files = Array.from(e.target.files);
+            handleSingleFileUpload(files);
         });
     }
-    
+
     // 지역 선택
     if (region1Select) {
         region1Select.addEventListener('change', (e) => {
             updateRegion2Options(e.target.value);
-            generateTitle();
             checkAllFieldsAndDuplicate(); // 중복검사 실행
         });
     }
-    
+
     if (region2Select) {
         region2Select.addEventListener('change', () => {
-            generateTitle();
             checkAllFieldsAndDuplicate(); // 중복검사 실행
         });
     }
-    
+
     // 상품유형 버튼
-    document.querySelectorAll('.upload-product-types .upload-type-btn').forEach(btn => {
+    document.querySelectorAll('.upload-product-types .upload-type-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.upload-product-types .upload-type-btn').forEach(b => {
+            document.querySelectorAll('.upload-product-types .upload-type-btn').forEach((b) => {
                 b.classList.remove('active');
             });
             btn.classList.add('active');
-            generateTitle();
             calculatePoints();
             checkAllFieldsAndDuplicate(); // 중복검사 실행
         });
     });
-    
+
     // 공급유형 버튼
-    document.querySelectorAll('.upload-supply-types .upload-type-btn').forEach(btn => {
+    document.querySelectorAll('.upload-supply-types .upload-type-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.upload-supply-types .upload-type-btn').forEach(b => {
+            document.querySelectorAll('.upload-supply-types .upload-type-btn').forEach((b) => {
                 b.classList.remove('active');
             });
             btn.classList.add('active');
-            generateTitle();
             checkAllFieldsAndDuplicate(); // 중복검사 실행
         });
     });
-    
+
     // 파일 제거 버튼
     const fileRemoveBtn = document.getElementById('fileRemove');
     if (fileRemoveBtn) {
@@ -2660,13 +2680,13 @@ function initEnhancedUploadModal() {
             removeUploadedFile();
         });
     }
-    
+
     // 날짜 선택 시 포인트 재계산
     const fileYear = document.getElementById('fileYear');
     const fileMonth = document.getElementById('fileMonth');
     const fileDay = document.getElementById('fileDay');
-    
-    [fileYear, fileMonth, fileDay].forEach(element => {
+
+    [fileYear, fileMonth, fileDay].forEach((element) => {
         if (element) {
             element.addEventListener('change', () => {
                 // 파일이 업로드된 경우에만 포인트 계산
@@ -2677,7 +2697,7 @@ function initEnhancedUploadModal() {
             });
         }
     });
-    
+
     // 업로드 제출 버튼
     const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
     if (uploadSubmitBtn) {
@@ -2687,100 +2707,209 @@ function initEnhancedUploadModal() {
     }
 }
 
+// 파일 업로드 처리 (단일 파일)
+function handleSingleFileUpload(files) {
+    if (files.length === 0) return;
+    
+    // 첫 번째 파일만 처리
+    const file = files[0];
+    
+    // 이미 파일이 있으면 교체 여부 확인
+    if (uploadedFile) {
+        uploadedFile = null;
+    }
+    
+    handleFileUpload(file);
+}
+
 // 파일 업로드 처리
 async function handleFileUpload(file) {
-    const fileInfo = document.getElementById('fileInfo');
-    const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    const fileThumbnail = document.getElementById('fileThumbnail');
-    const fileIconDiv = document.getElementById('fileIconDiv');
+    // 파일 객체 저장
+    uploadedFile = {
+        file: file,
+        year: '',
+        month: '',
+        day: ''
+    };
+    
+    // UI 업데이트
+    updateFileUI();
+    
+    // 업로드 영역 숨기기
     const uploadZone = document.getElementById('uploadZone');
-    const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
-    
-    // 파일 정보 표시
-    if (fileName) fileName.textContent = file.name;
-    if (fileSize) fileSize.textContent = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
-    
-    // 파일 정보 영역 표시
-    if (fileInfo) fileInfo.classList.add('show');
-    if (uploadZone) uploadZone.classList.add('has-file');
-    
-    // 썸네일 즉시 생성 (PDF의 경우)
-    if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-        await generatePDFThumbnail(file);
-    } else {
-        // PDF가 아닌 경우 기본 아이콘 표시
-        if (fileThumbnail) fileThumbnail.style.display = 'none';
-        if (fileIconDiv) fileIconDiv.style.display = 'block';
+    if (uploadZone) {
+        uploadZone.style.display = 'none';
     }
     
     // 포인트 계산
     calculatePoints();
-    
-    // 업로드 버튼은 날짜 선택 후 활성화됨 (calculatePoints에서 처리)
 }
+
+// 파일 UI 업데이트
+function updateFileUI() {
+    const container = document.getElementById('filesContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (!uploadedFile) return;
+    
+    const fileData = uploadedFile;
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'simple-file-info show';
+        fileDiv.style.marginBottom = '12px';
+        
+        // 파일 아이콘 결정
+        let iconClass = 'fas fa-file';
+        let iconColor = '#6b7280';
+        
+        if (fileData.file.type === 'application/pdf' || fileData.file.name.endsWith('.pdf')) {
+            iconClass = 'fas fa-file-pdf';
+            iconColor = '#dc2626';
+        } else if (fileData.file.name.match(/\.(ppt|pptx)$/i)) {
+            iconClass = 'fas fa-file-powerpoint';
+            iconColor = '#dc6612';
+        } else if (fileData.file.name.match(/\.(doc|docx)$/i)) {
+            iconClass = 'fas fa-file-word';
+            iconColor = '#2563eb';
+        } else if (fileData.file.name.match(/\.(xls|xlsx)$/i)) {
+            iconClass = 'fas fa-file-excel';
+            iconColor = '#16a34a';
+        }
+        
+        fileDiv.innerHTML = `
+            <div class="simple-file-icon">
+                <i class="${iconClass}" style="color: ${iconColor};"></i>
+            </div>
+            <div class="simple-file-details">
+                <div class="simple-file-name">${fileData.file.name}</div>
+                <div class="simple-file-size">${(fileData.file.size / (1024 * 1024)).toFixed(1)} MB</div>
+                <div class="file-date-select" style="margin-top: 12px;">
+                    <label style="font-size: 13px; color: #374151; font-weight: 600; display: block; margin-bottom: 8px;">
+                        <i class="fas fa-calendar-check" style="color: #6b7280; margin-right: 4px;"></i>
+                        파일 생성 날짜 <span style="color: #dc2626;">*</span>
+                    </label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <select class="date-select file-year" data-file-id="${fileData.id}" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 80px;">
+                            <option value="">연도</option>
+                            <option value="2025">2025년</option>
+                            <option value="2024">2024년</option>
+                            <option value="2023">2023년</option>
+                        </select>
+                        <select class="date-select file-month" data-file-id="${fileData.id}" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 65px;">
+                            <option value="">월</option>
+                            ${Array.from({length: 12}, (_, i) => `<option value="${i + 1}">${i + 1}월</option>`).join('')}
+                        </select>
+                        <select class="date-select file-day" data-file-id="${fileData.id}" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 65px;">
+                            <option value="">일</option>
+                            ${Array.from({length: 31}, (_, i) => `<option value="${i + 1}">${i + 1}일</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button class="simple-file-remove" id="dynamicFileRemove">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(fileDiv);
+        
+        // 파일 제거 버튼 이벤트 추가
+        const removeBtn = fileDiv.querySelector('#dynamicFileRemove');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                removeUploadedFile();
+            });
+        }
+        
+        // 날짜 선택 이벤트 추가
+        const yearSelect = fileDiv.querySelector('.file-year');
+        const monthSelect = fileDiv.querySelector('.file-month');
+        const daySelect = fileDiv.querySelector('.file-day');
+        
+        [yearSelect, monthSelect, daySelect].forEach(select => {
+            select.addEventListener('change', () => {
+                if (uploadedFile) {
+                    uploadedFile.year = yearSelect.value;
+                    uploadedFile.month = monthSelect.value;
+                    uploadedFile.day = daySelect.value;
+                    calculatePoints();
+                    checkAllFieldsAndDuplicate();
+                }
+            });
+        });
+        
+        // 기존 값 복원
+        if (fileData.year) yearSelect.value = fileData.year;
+        if (fileData.month) monthSelect.value = fileData.month;
+        if (fileData.day) daySelect.value = fileData.day;
+}
+
 
 // PDF 썸네일 생성 (실제 PDF 페이지 추출)
 async function generatePDFThumbnail(file) {
     const thumbnailDiv = document.getElementById('fileThumbnail');
     const iconDiv = document.getElementById('fileIconDiv');
     const canvas = document.getElementById('thumbnailCanvas');
-    
+
     if (!thumbnailDiv || !canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
-    
+
     try {
         // PDF.js가 로드되었는지 확인
         if (typeof pdfjsLib === 'undefined') {
             throw new Error('PDF.js 라이브러리가 로드되지 않았습니다');
         }
-        
+
         // FileReader로 PDF 파일 읽기
         const arrayBuffer = await file.arrayBuffer();
-        
+
         // PDF 문서 로드
-        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-        
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
         // 5번째 페이지 가져오기 (5페이지가 없으면 마지막 페이지 사용)
         const pageNumber = Math.min(5, pdf.numPages);
         const page = await pdf.getPage(pageNumber);
-        
+
         // 캔버스 크기 설정
         const viewport = page.getViewport({ scale: 0.5 }); // 축소된 크기
         const canvasWidth = 120;
         const canvasHeight = 160;
-        
+
         // 비율 유지하면서 캔버스에 맞추기
         const scale = Math.min(canvasWidth / viewport.width, canvasHeight / viewport.height);
         const scaledViewport = page.getViewport({ scale: scale });
-        
+
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        
+
         // 배경 색상 설정
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        
+
         // PDF 페이지 렌더링
         const renderContext = {
             canvasContext: ctx,
-            viewport: scaledViewport
+            viewport: scaledViewport,
         };
-        
+
         await page.render(renderContext).promise;
-        
+
         // 오른쪽 절반 모자이크 처리
         const halfWidth = Math.floor(canvasWidth / 2);
         const imageData = ctx.getImageData(halfWidth, 0, halfWidth, canvasHeight);
         const data = imageData.data;
         const pixelSize = 6; // 모자이크 크기
-        
+
         for (let y = 0; y < canvasHeight; y += pixelSize) {
             for (let x = 0; x < halfWidth; x += pixelSize) {
                 // 각 블록의 평균 색상 계산
-                let r = 0, g = 0, b = 0, count = 0;
-                
+                let r = 0,
+                    g = 0,
+                    b = 0,
+                    count = 0;
+
                 for (let dy = 0; dy < pixelSize && y + dy < canvasHeight; dy++) {
                     for (let dx = 0; dx < pixelSize && x + dx < halfWidth; dx++) {
                         const idx = ((y + dy) * halfWidth + (x + dx)) * 4;
@@ -2792,12 +2921,12 @@ async function generatePDFThumbnail(file) {
                         }
                     }
                 }
-                
+
                 if (count > 0) {
                     r = Math.floor(r / count);
                     g = Math.floor(g / count);
                     b = Math.floor(b / count);
-                    
+
                     // 블록 전체를 평균 색상으로 채우기
                     for (let dy = 0; dy < pixelSize && y + dy < canvasHeight; dy++) {
                         for (let dx = 0; dx < pixelSize && x + dx < halfWidth; dx++) {
@@ -2812,9 +2941,9 @@ async function generatePDFThumbnail(file) {
                 }
             }
         }
-        
+
         ctx.putImageData(imageData, halfWidth, 0);
-        
+
         // 페이지 번호 표시
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.fillRect(0, canvasHeight - 20, 40, 20);
@@ -2822,18 +2951,17 @@ async function generatePDFThumbnail(file) {
         ctx.font = '11px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(`P.${pageNumber}`, 20, canvasHeight - 6);
-        
+
         // 썸네일 표시, 아이콘 숨기기
         thumbnailDiv.style.display = 'block';
         if (iconDiv) iconDiv.style.display = 'none';
-        
     } catch (error) {
         console.error('PDF 썸네일 생성 실패:', error);
-        
+
         // 오류 발생 시 기본 썸네일 표시
         ctx.fillStyle = '#f3f4f6';
         ctx.fillRect(0, 0, 120, 160);
-        
+
         ctx.fillStyle = '#6b7280';
         ctx.font = '16px sans-serif';
         ctx.textAlign = 'center';
@@ -2841,7 +2969,7 @@ async function generatePDFThumbnail(file) {
         ctx.font = '12px sans-serif';
         ctx.fillText('미리보기', 60, 100);
         ctx.fillText('불가', 60, 120);
-        
+
         thumbnailDiv.style.display = 'block';
         if (iconDiv) iconDiv.style.display = 'none';
     }
@@ -2851,35 +2979,249 @@ async function generatePDFThumbnail(file) {
 function updateRegion2Options(region1Value) {
     const region2Select = document.getElementById('uploadRegion2');
     if (!region2Select) return;
-    
+
     // 지역2 초기화
     region2Select.innerHTML = '<option value="">시/군/구 선택</option>';
     region2Select.disabled = true;
-    
+
     // 지역 데이터 매핑
     const regionMap = {
-        'seoul': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
-        'gyeonggi': ['가평군', '고양시', '과천시', '광명시', '광주시', '구리시', '군포시', '김포시', '남양주시', '동두천시', '부천시', '성남시', '수원시', '시흥시', '안산시', '안성시', '안양시', '양주시', '양평군', '여주시', '연천군', '오산시', '용인시', '의왕시', '의정부시', '이천시', '파주시', '평택시', '포천시', '하남시', '화성시'],
-        'incheon': ['강화군', '계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '옹진군', '중구'],
-        'busan': ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
-        'daegu': ['남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
-        'gwangju': ['광산구', '남구', '동구', '북구', '서구'],
-        'daejeon': ['대덕구', '동구', '서구', '유성구', '중구'],
-        'ulsan': ['남구', '동구', '북구', '울주군', '중구'],
-        'sejong': ['세종시'],
-        'gangwon': ['강릉시', '고성군', '동해시', '삼척시', '속초시', '양구군', '양양군', '영월군', '원주시', '인제군', '정선군', '철원군', '춘천시', '태백시', '평창군', '홍천군', '화천군', '횡성군'],
-        'chungbuk': ['괴산군', '단양군', '보은군', '영동군', '옥천군', '음성군', '제천시', '증평군', '진천군', '청주시', '충주시'],
-        'chungnam': ['계룡시', '공주시', '금산군', '논산시', '당진시', '보령시', '부여군', '서산시', '서천군', '아산시', '예산군', '천안시', '청양군', '태안군', '홍성군'],
-        'jeonbuk': ['고창군', '군산시', '김제시', '남원시', '무주군', '부안군', '순창군', '완주군', '익산시', '임실군', '장수군', '전주시', '정읍시', '진안군'],
-        'jeonnam': ['강진군', '고흥군', '곡성군', '광양시', '구례군', '나주시', '담양군', '목포시', '무안군', '보성군', '순천시', '신안군', '여수시', '영광군', '영암군', '완도군', '장성군', '장흥군', '진도군', '함평군', '해남군', '화순군'],
-        'gyeongbuk': ['경산시', '경주시', '고령군', '구미시', '군위군', '김천시', '문경시', '봉화군', '상주시', '성주군', '안동시', '영덕군', '영양군', '영주시', '영천시', '예천군', '울릉군', '울진군', '의성군', '청도군', '청송군', '칠곡군', '포항시'],
-        'gyeongnam': ['거제시', '거창군', '고성군', '김해시', '남해군', '밀양시', '사천시', '산청군', '양산시', '의령군', '진주시', '창녕군', '창원시', '통영시', '하동군', '함안군', '함양군', '합천군'],
-        'jeju': ['서귀포시', '제주시']
+        seoul: [
+            '강남구',
+            '강동구',
+            '강북구',
+            '강서구',
+            '관악구',
+            '광진구',
+            '구로구',
+            '금천구',
+            '노원구',
+            '도봉구',
+            '동대문구',
+            '동작구',
+            '마포구',
+            '서대문구',
+            '서초구',
+            '성동구',
+            '성북구',
+            '송파구',
+            '양천구',
+            '영등포구',
+            '용산구',
+            '은평구',
+            '종로구',
+            '중구',
+            '중랑구',
+        ],
+        gyeonggi: [
+            '가평군',
+            '고양시',
+            '과천시',
+            '광명시',
+            '광주시',
+            '구리시',
+            '군포시',
+            '김포시',
+            '남양주시',
+            '동두천시',
+            '부천시',
+            '성남시',
+            '수원시',
+            '시흥시',
+            '안산시',
+            '안성시',
+            '안양시',
+            '양주시',
+            '양평군',
+            '여주시',
+            '연천군',
+            '오산시',
+            '용인시',
+            '의왕시',
+            '의정부시',
+            '이천시',
+            '파주시',
+            '평택시',
+            '포천시',
+            '하남시',
+            '화성시',
+        ],
+        incheon: [
+            '강화군',
+            '계양구',
+            '남동구',
+            '동구',
+            '미추홀구',
+            '부평구',
+            '서구',
+            '연수구',
+            '옹진군',
+            '중구',
+        ],
+        busan: [
+            '강서구',
+            '금정구',
+            '기장군',
+            '남구',
+            '동구',
+            '동래구',
+            '부산진구',
+            '북구',
+            '사상구',
+            '사하구',
+            '서구',
+            '수영구',
+            '연제구',
+            '영도구',
+            '중구',
+            '해운대구',
+        ],
+        daegu: ['남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
+        gwangju: ['광산구', '남구', '동구', '북구', '서구'],
+        daejeon: ['대덕구', '동구', '서구', '유성구', '중구'],
+        ulsan: ['남구', '동구', '북구', '울주군', '중구'],
+        sejong: ['세종시'],
+        gangwon: [
+            '강릉시',
+            '고성군',
+            '동해시',
+            '삼척시',
+            '속초시',
+            '양구군',
+            '양양군',
+            '영월군',
+            '원주시',
+            '인제군',
+            '정선군',
+            '철원군',
+            '춘천시',
+            '태백시',
+            '평창군',
+            '홍천군',
+            '화천군',
+            '횡성군',
+        ],
+        chungbuk: [
+            '괴산군',
+            '단양군',
+            '보은군',
+            '영동군',
+            '옥천군',
+            '음성군',
+            '제천시',
+            '증평군',
+            '진천군',
+            '청주시',
+            '충주시',
+        ],
+        chungnam: [
+            '계룡시',
+            '공주시',
+            '금산군',
+            '논산시',
+            '당진시',
+            '보령시',
+            '부여군',
+            '서산시',
+            '서천군',
+            '아산시',
+            '예산군',
+            '천안시',
+            '청양군',
+            '태안군',
+            '홍성군',
+        ],
+        jeonbuk: [
+            '고창군',
+            '군산시',
+            '김제시',
+            '남원시',
+            '무주군',
+            '부안군',
+            '순창군',
+            '완주군',
+            '익산시',
+            '임실군',
+            '장수군',
+            '전주시',
+            '정읍시',
+            '진안군',
+        ],
+        jeonnam: [
+            '강진군',
+            '고흥군',
+            '곡성군',
+            '광양시',
+            '구례군',
+            '나주시',
+            '담양군',
+            '목포시',
+            '무안군',
+            '보성군',
+            '순천시',
+            '신안군',
+            '여수시',
+            '영광군',
+            '영암군',
+            '완도군',
+            '장성군',
+            '장흥군',
+            '진도군',
+            '함평군',
+            '해남군',
+            '화순군',
+        ],
+        gyeongbuk: [
+            '경산시',
+            '경주시',
+            '고령군',
+            '구미시',
+            '군위군',
+            '김천시',
+            '문경시',
+            '봉화군',
+            '상주시',
+            '성주군',
+            '안동시',
+            '영덕군',
+            '영양군',
+            '영주시',
+            '영천시',
+            '예천군',
+            '울릉군',
+            '울진군',
+            '의성군',
+            '청도군',
+            '청송군',
+            '칠곡군',
+            '포항시',
+        ],
+        gyeongnam: [
+            '거제시',
+            '거창군',
+            '고성군',
+            '김해시',
+            '남해군',
+            '밀양시',
+            '사천시',
+            '산청군',
+            '양산시',
+            '의령군',
+            '진주시',
+            '창녕군',
+            '창원시',
+            '통영시',
+            '하동군',
+            '함안군',
+            '함양군',
+            '합천군',
+        ],
+        jeju: ['서귀포시', '제주시'],
     };
-    
+
     if (region1Value && regionMap[region1Value]) {
         region2Select.disabled = false;
-        regionMap[region1Value].forEach(area => {
+        regionMap[region1Value].forEach((area) => {
             const option = document.createElement('option');
             option.value = area;
             option.textContent = area;
@@ -2892,37 +3234,39 @@ function updateRegion2Options(region1Value) {
 function generateTitle() {
     const titleInput = document.getElementById('documentTitle');
     if (!titleInput) return;
-    
+
     const region1 = document.getElementById('uploadRegion1');
     const region2 = document.getElementById('uploadRegion2');
     const productBtn = document.querySelector('.upload-product-types .upload-type-btn.active');
     const supplyBtn = document.querySelector('.upload-supply-types .upload-type-btn.active');
-    
-    let titleParts = [];
-    
+
+    const titleParts = [];
+
     // 지역1 추가
     if (region1 && region1.value) {
         const region1Text = region1.options[region1.selectedIndex].text;
         titleParts.push(region1Text);
     }
-    
+
     // 지역2 추가
     if (region2 && region2.value) {
         titleParts.push(region2.value);
     }
-    
+
     // 상품유형 추가
     if (productBtn) {
-        const productName = productBtn.getAttribute('data-name') || productBtn.querySelector('span').textContent;
+        const productName =
+            productBtn.getAttribute('data-name') || productBtn.querySelector('span').textContent;
         titleParts.push(productName);
     }
-    
+
     // 공급유형 추가
     if (supplyBtn) {
-        const supplyName = supplyBtn.getAttribute('data-name') || supplyBtn.querySelector('span').textContent;
+        const supplyName =
+            supplyBtn.getAttribute('data-name') || supplyBtn.querySelector('span').textContent;
         titleParts.push(supplyName);
     }
-    
+
     // 마지막에 "시장조사서" 추가
     if (titleParts.length > 0) {
         titleParts.push('시장조사서');
@@ -2933,11 +3277,13 @@ function generateTitle() {
 // 다운로드 포인트 계산 (기준 7,000P)
 function calculateDownloadPoints(fileSizeMB, createDateStr) {
     const basePoints = 7000; // 기준 포인트 7,000P
-    
+
     // 파일 크기를 숫자로 변환 (예: "12.5MB" → 12.5)
-    const fileSize = typeof fileSizeMB === 'string' ? 
-        parseFloat(fileSizeMB.replace(/[^0-9.]/g, '')) : fileSizeMB;
-    
+    const fileSize =
+        typeof fileSizeMB === 'string'
+            ? parseFloat(fileSizeMB.replace(/[^0-9.]/g, ''))
+            : fileSizeMB;
+
     // 파일 크기 지수
     let sizeMultiplier = 0;
     if (fileSize >= 5) {
@@ -2947,15 +3293,15 @@ function calculateDownloadPoints(fileSizeMB, createDateStr) {
     } else {
         sizeMultiplier = 0.7; // 70%
     }
-    
+
     // 날짜 파싱 (예: "자료생성일: 2024.01.15" 또는 "2024.01.15" 또는 "2024년 1월 15일")
     let dateStr = createDateStr.replace('자료생성일: ', '').trim();
-    
+
     // "년", "월", "일" 제거
     dateStr = dateStr.replace(/년/g, '.').replace(/월/g, '.').replace(/일/g, '').trim();
-    
+
     const dateParts = dateStr.split('.');
-    
+
     let createDate;
     if (dateParts.length === 3) {
         // "2024.01.15" 형식
@@ -2965,29 +3311,32 @@ function calculateDownloadPoints(fileSizeMB, createDateStr) {
         // 다른 형식 시도
         createDate = new Date(dateStr.replace(/\./g, '-'));
     }
-    
+
     // Invalid Date 체크
     if (isNaN(createDate.getTime())) {
         console.error('Invalid date format:', createDateStr);
         // 날짜 파싱 실패 시 1년 이내로 가정 (기본 10,000P)
-        return Math.round(basePoints * sizeMultiplier * 1.0 / 10) * 10;
+        return Math.round((basePoints * sizeMultiplier * 1.0) / 10) * 10;
     }
-    
+
     const today = new Date();
     const daysDiff = Math.floor((today - createDate) / (1000 * 60 * 60 * 24));
-    
+
     // 최신성 지수
     let freshnessMultiplier = 0;
-    if (daysDiff <= 180) { // 6개월 이내
+    if (daysDiff <= 180) {
+        // 6개월 이내
         freshnessMultiplier = 1.2; // 120%
-    } else if (daysDiff <= 365) { // 1년 이내
+    } else if (daysDiff <= 365) {
+        // 1년 이내
         freshnessMultiplier = 1.0; // 100%
-    } else if (daysDiff <= 730) { // 2년 이내
+    } else if (daysDiff <= 730) {
+        // 2년 이내
         freshnessMultiplier = 0.7; // 70%
     } else {
         freshnessMultiplier = 0.5; // 2년 초과는 50% (0이 아닌 최소값 보장)
     }
-    
+
     // 최종 포인트 계산 후 10단위 반올림
     const totalPoints = basePoints * sizeMultiplier * freshnessMultiplier;
     return Math.round(totalPoints / 10) * 10;
@@ -2995,91 +3344,138 @@ function calculateDownloadPoints(fileSizeMB, createDateStr) {
 
 // 업로드 포인트 계산 (기준 3,000P)
 function calculatePoints() {
-    const fileInput = document.getElementById('fileInput');
-    const fileYear = document.getElementById('fileYear');
-    const fileMonth = document.getElementById('fileMonth');
-    const fileDay = document.getElementById('fileDay');
     const pointsValue = document.getElementById('pointsValue');
-    
-    if (!fileInput || !fileInput.files[0]) {
+    let totalPoints = 0;
+
+    if (!uploadedFile) {
         if (pointsValue) pointsValue.textContent = '+0P';
         return;
     }
-    
-    const file = fileInput.files[0];
-    const fileSize = file.size / (1024 * 1024); // MB
-    const basePoints = 3000; // 기본 포인트 3000P
-    let totalPoints = 0;
-    
-    // 파일 크기 지수
-    let sizeMultiplier = 0;
-    if (fileSize >= 5) {
-        sizeMultiplier = 1.1; // 110%
-    } else if (fileSize >= 2) {
-        sizeMultiplier = 1.0; // 100%
-    } else {
-        sizeMultiplier = 0.7; // 70%
-    }
-    
-    // 최신성 지수 (연/월/일 선택 기준)
-    let freshnessMultiplier = 0;
-    let daysDiff = null;
-    let isOverTwoYears = false;
-    
-    if (fileYear && fileYear.value && fileMonth && fileMonth.value && fileDay && fileDay.value) {
-        const selectedDate = new Date(fileYear.value, fileMonth.value - 1, fileDay.value);
-        const today = new Date();
-        daysDiff = Math.floor((today - selectedDate) / (1000 * 60 * 60 * 24));
-        
-        if (daysDiff <= 180) { // 6개월 이내
-            freshnessMultiplier = 1.2; // 120%
-        } else if (daysDiff <= 365) { // 1년 이내
-            freshnessMultiplier = 1.0; // 100%
-        } else if (daysDiff <= 730) { // 2년 이내
-            freshnessMultiplier = 0.7; // 70%
+
+    const fileData = uploadedFile;
+        const fileSize = fileData.file.size / (1024 * 1024); // MB
+        const basePoints = 3000; // 기본 포인트 3000P
+        let filePoints = 0;
+
+        // 파일 크기 지수
+        let sizeMultiplier = 0;
+        if (fileSize >= 5) {
+            sizeMultiplier = 1.1; // 110%
+        } else if (fileSize >= 2) {
+            sizeMultiplier = 1.0; // 100%
         } else {
-            freshnessMultiplier = 0; // 2년 초과는 0P
-            isOverTwoYears = true;
+            sizeMultiplier = 0.7; // 70%
         }
-    }
-    
-    // 최종 포인트 계산: 기본 3000P × 최신성 지수 × 파일크기 지수
-    totalPoints = Math.round(basePoints * sizeMultiplier * freshnessMultiplier);
-    
-    // 포인트 표시 - id를 pointsValue로 수정
+
+        // 최신성 지수 (연/월/일 선택 기준)
+        let freshnessMultiplier = 0;
+        let daysDiff = null;
+        let hasOverTwoYears = false;
+
+        if (fileData.year && fileData.month && fileData.day) {
+            const selectedDate = new Date(fileData.year, fileData.month - 1, fileData.day);
+            const today = new Date();
+            daysDiff = Math.floor((today - selectedDate) / (1000 * 60 * 60 * 24));
+
+            if (daysDiff <= 180) {
+                // 6개월 이내
+                freshnessMultiplier = 1.2; // 120%
+            } else if (daysDiff <= 365) {
+                // 1년 이내
+                freshnessMultiplier = 1.0; // 100%
+            } else if (daysDiff <= 730) {
+                // 2년 이내
+                freshnessMultiplier = 0.7; // 70%
+            } else {
+                freshnessMultiplier = 0; // 2년 초과는 0P
+                hasOverTwoYears = true;
+            }
+        }
+
+        // 파일 포인트 계산 (기본 3000P × 최신성 지수 × 파일크기 지수)
+        filePoints = basePoints * sizeMultiplier * freshnessMultiplier;
+        
+    // 최종 포인트를 10단위로 반올림
+    console.log('반올림 전 포인트:', filePoints);
+    totalPoints = Math.round(filePoints / 10) * 10;
+    console.log('반올림 후 포인트:', totalPoints);
+
+    // 포인트 표시
     const pointResult = document.getElementById('pointsValue');
     if (pointResult) {
         pointResult.textContent = `+${totalPoints.toLocaleString()}P`;
     }
-    
+
+    // 체크표시 업데이트
+    highlightPointFactors(fileSize, daysDiff, sizeMultiplier, freshnessMultiplier, totalPoints);
+
     // 2년 초과 시 경고 메시지 표시
-    if (isOverTwoYears) {
+    if (hasOverTwoYears) {
         showToastMessage('24개월이 경과된 자료는 업로드할 수 없습니다.', 'error');
     }
-    
-    // 해당 지수 강조 표시
-    if (daysDiff !== null) {
-        highlightPointFactors(fileSize, daysDiff, sizeMultiplier, freshnessMultiplier, totalPoints);
-    }
-    
+
     // 모든 필수 필드가 입력되었는지 확인하고 중복검사 실행
     checkAllFieldsAndDuplicate();
-    
-    // 업로드 버튼 활성화 및 표시 (파일이 있고 날짜가 선택되고 2년 이내인 경우)
+}
+
+// 업로드 버튼 상태 업데이트 함수 (분리)
+function updateUploadButton(isDuplicate = false) {
     const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
-    if (uploadSubmitBtn) {
-        if (file && fileYear.value && fileMonth.value && fileDay.value && !isOverTwoYears) {
-            uploadSubmitBtn.style.display = 'block';
-            uploadSubmitBtn.disabled = false;
-        } else {
-            uploadSubmitBtn.style.display = 'none';
-            uploadSubmitBtn.disabled = true;
-        }
+    if (!uploadSubmitBtn) return;
+
+    const fileData = uploadedFile || {};
+    const hasDate = fileData.year && fileData.month && fileData.day;
+    const region1 = document.getElementById('uploadRegion1')?.value;
+    const region2 = document.getElementById('uploadRegion2')?.value;
+    const productActive = document.querySelector('.upload-product-types .upload-type-btn.active');
+    const supplyActive = document.querySelector('.upload-supply-types .upload-type-btn.active');
+    
+    // 2년 초과 여부 재계산
+    let hasOverTwoYears = false;
+    if (hasDate) {
+        const fileDate = new Date(fileData.year, fileData.month - 1, fileData.day);
+        const today = new Date();
+        const daysDiff = Math.floor((today - fileDate) / (1000 * 60 * 60 * 24));
+        hasOverTwoYears = daysDiff > 730;
+    }
+    
+    console.log('업로드 버튼 체크:', {
+        uploadedFile: !!uploadedFile,
+        hasDate,
+        hasOverTwoYears,
+        region1,
+        region2,
+        productActive: !!productActive,
+        supplyActive: !!supplyActive,
+        isDuplicate
+    });
+    
+    const hasAllRequiredFields = uploadedFile && 
+                                hasDate && 
+                                !hasOverTwoYears &&
+                                !isDuplicate &&
+                                region1 &&
+                                region2 &&
+                                productActive &&
+                                supplyActive;
+                                
+    if (hasAllRequiredFields) {
+        uploadSubmitBtn.style.display = 'block';
+        uploadSubmitBtn.disabled = false;
+    } else {
+        uploadSubmitBtn.style.display = 'none';
+        uploadSubmitBtn.disabled = true;
     }
 }
 
 // 포인트 요소 강조 표시 함수
-function highlightPointFactors(fileSize, daysDiff, sizeMultiplier, freshnessMultiplier, totalPoints) {
+function highlightPointFactors(
+    fileSize,
+    daysDiff,
+    sizeMultiplier,
+    freshnessMultiplier,
+    totalPoints
+) {
     // 모든 테이블 행의 강조 제거 및 원본 텍스트 복원
     const fresh6m = document.getElementById('fresh-6m-value');
     const fresh1y = document.getElementById('fresh-1y-value');
@@ -3088,7 +3484,7 @@ function highlightPointFactors(fileSize, daysDiff, sizeMultiplier, freshnessMult
     const size5mb = document.getElementById('size-5mb-value');
     const size2mb = document.getElementById('size-2mb-value');
     const sizeUnder2mb = document.getElementById('size-under2mb-value');
-    
+
     // 초기화
     if (fresh6m) fresh6m.innerHTML = '120%';
     if (fresh1y) fresh1y.innerHTML = '100%';
@@ -3097,13 +3493,13 @@ function highlightPointFactors(fileSize, daysDiff, sizeMultiplier, freshnessMult
     if (size5mb) size5mb.innerHTML = '110%';
     if (size2mb) size2mb.innerHTML = '100%';
     if (sizeUnder2mb) sizeUnder2mb.innerHTML = '70%';
-    
+
     // 모든 행 스타일 초기화
-    document.querySelectorAll('#pointDetailsDropdown table tr').forEach(row => {
+    document.querySelectorAll('#pointDetailsDropdown table tr').forEach((row) => {
         row.style.backgroundColor = '';
         row.style.fontWeight = '';
     });
-    
+
     // 최신성 지수 강조
     if (freshnessMultiplier === 1.2 && fresh6m) {
         // 6개월 이내 - 120%
@@ -3119,10 +3515,11 @@ function highlightPointFactors(fileSize, daysDiff, sizeMultiplier, freshnessMult
         fresh2y.parentElement.style.backgroundColor = '#fef3c7';
     } else if (freshnessMultiplier === 0 && freshOver2y) {
         // 2년 초과 - 업로드 불가
-        freshOver2y.innerHTML = '<span style="color: #dc2626; font-weight: bold;">✓</span> 업로드 불가';
+        freshOver2y.innerHTML =
+            '<span style="color: #dc2626; font-weight: bold;">✓</span> 업로드 불가';
         freshOver2y.parentElement.style.backgroundColor = '#fee2e2';
     }
-    
+
     // 파일크기 지수 강조
     if (sizeMultiplier === 1.1 && size5mb) {
         // 5MB 이상 - 110%
@@ -3143,25 +3540,34 @@ function highlightPointFactors(fileSize, daysDiff, sizeMultiplier, freshnessMult
 function generateDuplicateKey() {
     const region1 = document.getElementById('uploadRegion1').value;
     const region2 = document.getElementById('uploadRegion2').value;
-    const fileYear = document.getElementById('fileYear').value;
-    const fileMonth = document.getElementById('fileMonth').value;
-    const fileDay = document.getElementById('fileDay').value;
-    const fileInput = document.getElementById('fileInput');
     const productBtn = document.querySelector('.upload-product-types .upload-type-btn.active');
     const supplyBtn = document.querySelector('.upload-supply-types .upload-type-btn.active');
-    
-    if (!fileInput || !fileInput.files[0]) return null;
-    
-    const file = fileInput.files[0];
-    const fileSize = Math.round(file.size / (1024 * 1024)); // MB 단위로 반올림
+
+    // uploadedFile이 있는지 확인 (단일 파일로 변경됨)
+    if (!uploadedFile || !uploadedFile.file) return null;
+
+    // uploadedFile에서 날짜 정보 가져오기
+    const fileYear = uploadedFile.year;
+    const fileMonth = uploadedFile.month;
+    const fileDay = uploadedFile.day;
+
+    const fileSize = Math.round(uploadedFile.file.size / (1024 * 1024)); // MB 단위로 반올림
     const productType = productBtn ? productBtn.dataset.type : null;
     const supplyType = supplyBtn ? supplyBtn.dataset.type : null;
-    
+
     // 모든 필수 정보가 있는지 확인
-    if (!region1 || !region2 || !fileYear || !fileMonth || !fileDay || !productType || !supplyType) {
+    if (
+        !region1 ||
+        !region2 ||
+        !fileYear ||
+        !fileMonth ||
+        !fileDay ||
+        !productType ||
+        !supplyType
+    ) {
         return null;
     }
-    
+
     // 중복 키 생성: 지역1_지역2_날짜_파일크기_상품유형_공급유형
     const monthStr = String(fileMonth).padStart(2, '0');
     const dayStr = String(fileDay).padStart(2, '0');
@@ -3172,51 +3578,65 @@ function generateDuplicateKey() {
 function checkAllFieldsAndDuplicate() {
     // 중복 키 생성 시도
     const duplicateKey = generateDuplicateKey();
-    
+
     // 모든 필수 필드가 입력되지 않았으면 중복검사 알림 숨기기
-    const duplicateAlert = document.getElementById('duplicateCheckAlert');
+    const duplicateCheckInfo = document.getElementById('duplicateCheckInfo');
     if (!duplicateKey) {
-        if (duplicateAlert) {
-            duplicateAlert.style.display = 'none';
+        if (duplicateCheckInfo) {
+            duplicateCheckInfo.style.display = 'none';
         }
+        updateUploadButton(); // 바로 업로드 버튼 업데이트
         return;
     }
-    
+
     // 모든 필수 필드가 입력되었으면 중복검사 실행
-    checkDuplicateFile(duplicateKey);
+    checkDuplicateFile(duplicateKey, (isDuplicate) => {
+        // 중복 검사 완료 후 업로드 버튼 업데이트
+        updateUploadButton(isDuplicate);
+    });
 }
 
-// 중복 검사 함수
-function checkDuplicateFile(duplicateKey) {
-    if (!duplicateKey) return;
-    
+// 중복 검사 함수 (콜백 기반으로 변경)
+function checkDuplicateFile(duplicateKey, callback) {
+    if (!duplicateKey) {
+        if (callback) callback(false);
+        return;
+    }
+
     // 새로운 위치의 중복 검사 알림 표시 영역
     const duplicateCheckInfo = document.getElementById('duplicateCheckInfo');
     const duplicateCheckMessage = document.getElementById('duplicateCheckMessage');
-    
+
     // uploadedFilesRegistry가 없으면 생성
     if (typeof uploadedFilesRegistry === 'undefined') {
         window.uploadedFilesRegistry = new Set();
     }
-    
+
     // 실제 중복 여부 확인
     const isDuplicate = uploadedFilesRegistry.has(duplicateKey);
-    
+
     // 중복 알림 표시
     if (duplicateCheckInfo && duplicateCheckMessage) {
         duplicateCheckInfo.style.display = 'block';
-        
+
         if (isDuplicate) {
             duplicateCheckInfo.style.background = '#fef2f2';
             duplicateCheckInfo.style.borderColor = '#fecaca';
-            duplicateCheckMessage.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #dc2626; margin-right: 6px; font-size: 12px;"></i><span style="color: #dc2626; font-weight: 500;">동일한 문서가 이미 업로드되었습니다</span>';
+            duplicateCheckMessage.innerHTML =
+                '<i class="fas fa-exclamation-triangle" style="color: #dc2626; margin-right: 6px; font-size: 12px;"></i><span style="color: #dc2626; font-weight: 500;">동일한 문서가 이미 업로드되었습니다</span>';
         } else {
             duplicateCheckInfo.style.background = '#f0fdf4';
             duplicateCheckInfo.style.borderColor = '#86efac';
-            duplicateCheckMessage.innerHTML = '<i class="fas fa-check-circle" style="color: #16a34a; margin-right: 6px; font-size: 12px;"></i><span style="color: #16a34a; font-weight: 500;">중복되지 않은 새 문서입니다</span>';
+            duplicateCheckMessage.innerHTML =
+                '<i class="fas fa-check-circle" style="color: #16a34a; margin-right: 6px; font-size: 12px;"></i><span style="color: #16a34a; font-weight: 500;">중복되지 않은 새 문서입니다</span>';
         }
     }
-    
+
+    // UI 업데이트 완료 후 콜백 실행
+    setTimeout(() => {
+        if (callback) callback(isDuplicate);
+    }, 100); // 100ms 대기로 UI 업데이트 보장
+
     return isDuplicate;
 }
 
@@ -3224,13 +3644,13 @@ function checkDuplicateFile(duplicateKey) {
 function animatePointsEarned(points) {
     const startElement = document.getElementById('pointsValue');
     const targetElement = document.querySelector('.user-points');
-    
+
     if (!startElement || !targetElement) return;
-    
+
     // 시작 위치 계산
     const startRect = startElement.getBoundingClientRect();
     const targetRect = targetElement.getBoundingClientRect();
-    
+
     // 플라잉 포인트 요소 생성
     const flyingPoints = document.createElement('div');
     flyingPoints.className = 'flying-points';
@@ -3240,7 +3660,7 @@ function animatePointsEarned(points) {
     flyingPoints.style.top = `${startRect.top}px`;
     flyingPoints.style.transform = 'translateX(-50%)';
     document.body.appendChild(flyingPoints);
-    
+
     // 애니메이션 실행
     setTimeout(() => {
         flyingPoints.style.transition = 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
@@ -3249,7 +3669,7 @@ function animatePointsEarned(points) {
         flyingPoints.style.opacity = '0';
         flyingPoints.style.transform = 'translateX(-50%) scale(0.3)';
     }, 50);
-    
+
     // 애니메이션 완료 후 제거
     setTimeout(() => {
         flyingPoints.remove();
@@ -3260,23 +3680,23 @@ function animatePointsEarned(points) {
 function animatePointsCounter(startValue, endValue, duration = 1500) {
     const element = document.querySelector('.user-points');
     if (!element) return;
-    
+
     const startTime = Date.now();
     const difference = endValue - startValue;
-    
+
     // 포인트 증가 하이라이트
     element.classList.add('points-increasing');
-    
+
     function updateCounter() {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         // easeOutQuart 이징 함수
         const easeProgress = 1 - Math.pow(1 - progress, 4);
         const currentValue = Math.round(startValue + difference * easeProgress);
-        
+
         element.textContent = `${currentValue.toLocaleString()}P`;
-        
+
         if (progress < 1) {
             requestAnimationFrame(updateCounter);
         } else {
@@ -3287,7 +3707,7 @@ function animatePointsCounter(startValue, endValue, duration = 1500) {
             }, 300);
         }
     }
-    
+
     requestAnimationFrame(updateCounter);
 }
 
@@ -3298,31 +3718,47 @@ function showToastMessage(message, type = 'success') {
     if (existingToast) {
         existingToast.remove();
     }
-    
+
     const toast = document.createElement('div');
     toast.className = `toast-message toast-${type}`;
     toast.innerHTML = `
         <div class="toast-content">
-            ${type === 'success' ? 
-                '<i class="fas fa-check-circle"></i>' : 
-                '<i class="fas fa-exclamation-circle"></i>'
+            ${
+                type === 'success'
+                    ? '<i class="fas fa-check-circle"></i>'
+                    : '<i class="fas fa-exclamation-circle"></i>'
             }
             <span>${message}</span>
         </div>
     `;
     document.body.appendChild(toast);
-    
+
     // 애니메이션 시작
     setTimeout(() => {
         toast.classList.add('show');
     }, 100);
-    
+
     // 3초 후 제거
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
+// 전역으로 토스트 함수 등록
+window.showToastMessage = showToastMessage;
+window.showSuccessMessage = function(message, duration) {
+    showToastMessage(message, 'success');
+};
+window.showErrorMessage = function(message, duration) {
+    showToastMessage(message, 'error');
+};
+window.showInfoMessage = function(message, duration) {
+    showToastMessage(message, 'info');
+};
+window.showWarningMessage = function(message, duration) {
+    showToastMessage(message, 'warning');
+};
 
 // ===========================================
 // 글로벌 포인트 변동 시스템
@@ -3331,17 +3767,17 @@ function showToastMessage(message, type = 'success') {
 // 포인트 획득 함수 (증가)
 function earnPoints(amount, message = '포인트를 획득했습니다!', sourceElement = null) {
     if (amount <= 0) return;
-    
+
     const currentPoints = userData.points || 0;
     const newPoints = currentPoints + amount;
-    
+
     // 1. 플라잉 애니메이션 (sourceElement가 있으면 그 위치에서 시작)
     if (sourceElement) {
         animatePointsEarnedFromElement(amount, sourceElement);
     } else {
         animatePointsEarned(amount);
     }
-    
+
     // 2. 카운팅 애니메이션 (0.5초 후 시작)
     setTimeout(() => {
         animatePointsCounter(currentPoints, newPoints);
@@ -3351,7 +3787,7 @@ function earnPoints(amount, message = '포인트를 획득했습니다!', source
             localStorage.setItem('userPoints', newPoints);
         }
     }, 500);
-    
+
     // 3. 토스트 메시지
     showToastMessage(`${message} +${amount.toLocaleString()}P`, 'success');
 }
@@ -3359,26 +3795,26 @@ function earnPoints(amount, message = '포인트를 획득했습니다!', source
 // 포인트 사용 함수 (감소)
 function spendPoints(amount, message = '포인트를 사용했습니다.', targetElement = null) {
     if (amount <= 0) return;
-    
+
     const currentPoints = userData.points || 0;
     const newPoints = Math.max(0, currentPoints - amount); // 음수 방지
-    
+
     // 1. 사용 애니메이션 (빨간색으로 아래로 떨어지는 효과)
     if (targetElement) {
         animatePointsSpentToElement(amount, targetElement);
     } else {
         animatePointsSpent(amount);
     }
-    
+
     // 2. 카운팅 애니메이션 (즉시 시작)
     animatePointsCounter(currentPoints, newPoints, 1000, 'decrease');
     userData.points = newPoints;
-    
+
     // localStorage에도 저장
     if (typeof localStorage !== 'undefined') {
         localStorage.setItem('userPoints', newPoints);
     }
-    
+
     // 3. 토스트 메시지
     showToastMessage(`${message} -${amount.toLocaleString()}P`, 'info');
 }
@@ -3387,9 +3823,9 @@ function spendPoints(amount, message = '포인트를 사용했습니다.', targe
 function animatePointsSpent(points) {
     const startElement = document.querySelector('.user-points');
     if (!startElement) return;
-    
+
     const startRect = startElement.getBoundingClientRect();
-    
+
     // 떨어지는 포인트 요소 생성
     const fallingPoints = document.createElement('div');
     fallingPoints.className = 'falling-points';
@@ -3404,7 +3840,7 @@ function animatePointsSpent(points) {
     fallingPoints.style.zIndex = '10000';
     fallingPoints.style.pointerEvents = 'none';
     document.body.appendChild(fallingPoints);
-    
+
     // 애니메이션 실행
     setTimeout(() => {
         fallingPoints.style.transition = 'all 1s cubic-bezier(0.4, 0, 1, 1)';
@@ -3412,7 +3848,7 @@ function animatePointsSpent(points) {
         fallingPoints.style.opacity = '0';
         fallingPoints.style.transform = 'translateX(-50%) scale(0.5)';
     }, 50);
-    
+
     // 애니메이션 완료 후 제거
     setTimeout(() => {
         fallingPoints.remove();
@@ -3426,10 +3862,10 @@ function animatePointsEarnedFromElement(points, element) {
         animatePointsEarned(points);
         return;
     }
-    
+
     const startRect = element.getBoundingClientRect();
     const targetRect = targetElement.getBoundingClientRect();
-    
+
     const flyingPoints = document.createElement('div');
     flyingPoints.className = 'flying-points';
     flyingPoints.textContent = `+${points.toLocaleString()}P`;
@@ -3438,7 +3874,7 @@ function animatePointsEarnedFromElement(points, element) {
     flyingPoints.style.top = `${startRect.top + startRect.height / 2}px`;
     flyingPoints.style.transform = 'translateX(-50%) translateY(-50%)';
     document.body.appendChild(flyingPoints);
-    
+
     setTimeout(() => {
         flyingPoints.style.transition = 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
         flyingPoints.style.left = `${targetRect.left + targetRect.width / 2}px`;
@@ -3446,7 +3882,7 @@ function animatePointsEarnedFromElement(points, element) {
         flyingPoints.style.opacity = '0';
         flyingPoints.style.transform = 'translateX(-50%) scale(0.3)';
     }, 50);
-    
+
     setTimeout(() => {
         flyingPoints.remove();
     }, 1600);
@@ -3459,10 +3895,10 @@ function animatePointsSpentToElement(points, element) {
         animatePointsSpent(points);
         return;
     }
-    
+
     const startRect = startElement.getBoundingClientRect();
     const targetRect = element.getBoundingClientRect();
-    
+
     const spentPoints = document.createElement('div');
     spentPoints.className = 'spent-points';
     spentPoints.textContent = `-${points.toLocaleString()}P`;
@@ -3476,7 +3912,7 @@ function animatePointsSpentToElement(points, element) {
     spentPoints.style.zIndex = '10000';
     spentPoints.style.pointerEvents = 'none';
     document.body.appendChild(spentPoints);
-    
+
     setTimeout(() => {
         spentPoints.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.6, 1)';
         spentPoints.style.left = `${targetRect.left + targetRect.width / 2}px`;
@@ -3484,7 +3920,7 @@ function animatePointsSpentToElement(points, element) {
         spentPoints.style.opacity = '0';
         spentPoints.style.transform = 'translateX(-50%) translateY(-50%) scale(0.3)';
     }, 50);
-    
+
     setTimeout(() => {
         spentPoints.remove();
     }, 1100);
@@ -3494,20 +3930,20 @@ function animatePointsSpentToElement(points, element) {
 function resetUploadForm() {
     const form = document.querySelector('.simple-upload-modal');
     if (!form) return;
-    
-    // 입력 필드 초기화
-    const titleInput = document.getElementById('documentTitle');
-    if (titleInput) titleInput.value = '';
-    
+
+    // 파일 초기화
+    uploadedFile = null;
+    updateFileUI();
+
     const region1 = document.getElementById('uploadRegion1');
     if (region1) region1.selectedIndex = 0;
-    
+
     const region2 = document.getElementById('uploadRegion2');
     if (region2) {
         region2.innerHTML = '<option value="">시/군/구 선택</option>';
         region2.disabled = true;
     }
-    
+
     // 날짜 선택 초기화
     const fileYear = document.getElementById('fileYear');
     const fileMonth = document.getElementById('fileMonth');
@@ -3515,42 +3951,42 @@ function resetUploadForm() {
     if (fileYear) fileYear.selectedIndex = 0;
     if (fileMonth) fileMonth.selectedIndex = 0;
     if (fileDay) fileDay.selectedIndex = 0;
-    
+
     // 파일 정보 숨기기
     const fileInfo = document.getElementById('fileInfo');
     if (fileInfo) fileInfo.classList.remove('show');
-    
+
     const uploadZone = document.getElementById('uploadZone');
     if (uploadZone) uploadZone.classList.remove('has-file');
-    
+
     // 썸네일 숨기기
     const fileThumbnail = document.getElementById('fileThumbnail');
     const fileIconDiv = document.getElementById('fileIconDiv');
     if (fileThumbnail) fileThumbnail.style.display = 'none';
     if (fileIconDiv) fileIconDiv.style.display = 'block';
-    
+
     // 버튼 초기화
-    document.querySelectorAll('.upload-type-btn').forEach(btn => {
+    document.querySelectorAll('.upload-type-btn').forEach((btn) => {
         btn.classList.remove('active');
     });
-    
+
     // 포인트 초기화
     const pointsValue = document.getElementById('pointsValue');
     if (pointsValue) pointsValue.textContent = '+0P';
-    
+
     // 업로드 버튼 비활성화 및 숨기기
     const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
     if (uploadSubmitBtn) {
         uploadSubmitBtn.disabled = true;
         uploadSubmitBtn.style.display = 'none';
     }
-    
+
     // 중복검사 알림 숨기기
     const duplicateCheckInfo = document.getElementById('duplicateCheckInfo');
     if (duplicateCheckInfo) {
         duplicateCheckInfo.style.display = 'none';
     }
-    
+
     // 포인트 팩터 표시 초기화
     resetPointFactorDisplay();
 }
@@ -3559,17 +3995,17 @@ function resetUploadForm() {
 function resetPointFactorDisplay() {
     // 최신성 지수 초기화
     const freshnessRows = document.querySelectorAll('#freshnessTable tr');
-    freshnessRows.forEach(row => {
+    freshnessRows.forEach((row) => {
         const checkCell = row.querySelector('td:last-child');
         if (checkCell) {
             checkCell.innerHTML = '';
             row.classList.remove('highlighted-row');
         }
     });
-    
+
     // 파일크기 지수 초기화
     const fileSizeRows = document.querySelectorAll('#fileSizeTable tr');
-    fileSizeRows.forEach(row => {
+    fileSizeRows.forEach((row) => {
         const checkCell = row.querySelector('td:last-child');
         if (checkCell) {
             checkCell.innerHTML = '';
@@ -3580,176 +4016,199 @@ function resetPointFactorDisplay() {
 
 // 파일 제거
 function removeUploadedFile() {
-    const fileInput = document.getElementById('fileInput');
-    const fileInfo = document.getElementById('fileInfo');
+    // 파일 초기화
+    uploadedFile = null;
+    
+    // UI 업데이트
+    updateFileUI();
+    
+    // 업로드 영역 다시 표시
     const uploadZone = document.getElementById('uploadZone');
-    const fileThumbnail = document.getElementById('fileThumbnail');
-    const fileIconDiv = document.getElementById('fileIconDiv');
-    const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
-    const pointsValue = document.getElementById('pointsValue');
+    if (uploadZone) {
+        uploadZone.style.display = 'block';
+    }
     
     // 파일 입력 초기화
-    if (fileInput) fileInput.value = '';
-    
-    // UI 초기화
-    if (fileInfo) fileInfo.classList.remove('show');
-    if (uploadZone) uploadZone.classList.remove('has-file');
-    if (fileThumbnail) fileThumbnail.style.display = 'none';
-    if (fileIconDiv) fileIconDiv.style.display = 'block';
-    if (uploadSubmitBtn) {
-        uploadSubmitBtn.disabled = true;
-        uploadSubmitBtn.style.display = 'none';
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+        fileInput.value = '';
     }
-    if (pointsValue) pointsValue.textContent = '+0P';
+    
+    // 포인트 초기화
+    const pointsValue = document.getElementById('pointsValue');
+    if (pointsValue) {
+        pointsValue.textContent = '+0P';
+    }
     
     // 중복검사 알림 숨기기
     const duplicateCheckInfo = document.getElementById('duplicateCheckInfo');
     if (duplicateCheckInfo) {
         duplicateCheckInfo.style.display = 'none';
     }
+    
+    // 업로드 버튼 숨기기
+    const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
+    if (uploadSubmitBtn) {
+        uploadSubmitBtn.style.display = 'none';
+        uploadSubmitBtn.disabled = true;
+    }
 }
 
 // 업로드 제출
 function submitUpload() {
-    const fileInput = document.getElementById('fileInput');
-    const titleInput = document.getElementById('documentTitle');
     const region1 = document.getElementById('uploadRegion1');
     const region2 = document.getElementById('uploadRegion2');
-    const fileYear = document.getElementById('fileYear');
-    const fileMonth = document.getElementById('fileMonth');
-    const fileDay = document.getElementById('fileDay');
     const productBtn = document.querySelector('.upload-product-types .upload-type-btn.active');
     const supplyBtn = document.querySelector('.upload-supply-types .upload-type-btn.active');
     const modal = document.getElementById('uploadModal');
-    
+
     // 유효성 검사
-    if (!fileInput || !fileInput.files[0]) {
+    if (!uploadedFile) {
         showToastMessage('파일을 선택해주세요.', 'error');
         return;
     }
-    
+
     if (!region1 || !region1.value || !region2 || !region2.value) {
         showToastMessage('지역을 선택해주세요.', 'error');
         return;
     }
-    
-    if (!fileYear || !fileYear.value || !fileMonth || !fileMonth.value || !fileDay || !fileDay.value) {
-        showToastMessage('파일 생성 날짜를 모두 선택해주세요.', 'error');
+
+    // 파일의 날짜가 선택되었는지 확인
+    if (!uploadedFile.year || !uploadedFile.month || !uploadedFile.day) {
+        showToastMessage('파일의 생성 날짜를 선택해주세요.', 'error');
         return;
     }
     
     // 2년 초과 확인
-    const selectedDate = new Date(fileYear.value, fileMonth.value - 1, fileDay.value);
-    const today = new Date();
-    const daysDiff = Math.floor((today - selectedDate) / (1000 * 60 * 60 * 24));
+    const fileUploadDate = new Date(uploadedFile.year, uploadedFile.month - 1, uploadedFile.day);
+    const currentDay = new Date();
+    const uploadDaysDiff = Math.floor((currentDay - fileUploadDate) / (1000 * 60 * 60 * 24));
     
-    if (daysDiff > 730) { // 2년(730일) 초과
-        showToastMessage('24개월이 경과된 자료는 업로드할 수 없습니다.', 'error');
+    if (uploadDaysDiff > 730) {
+        showToastMessage(`${uploadedFile.file.name}: 24개월이 경과된 자료는 업로드할 수 없습니다.`, 'error');
         return;
     }
-    
+
     if (!productBtn) {
         showToastMessage('상품유형을 선택해주세요.', 'error');
         return;
     }
-    
+
     if (!supplyBtn) {
         showToastMessage('공급유형을 선택해주세요.', 'error');
         return;
     }
-    
-    // 중복 검사 먼저 실행
-    const duplicateKey = generateDuplicateKey();
-    if (duplicateKey) {
-        if (typeof uploadedFilesRegistry === 'undefined') {
-            window.uploadedFilesRegistry = new Set();
-        }
-        
-        // 중복 여부 확인
-        if (uploadedFilesRegistry.has(duplicateKey)) {
-            showToastMessage('동일한 문서가 이미 업로드되었습니다.', 'error');
-            return;
-        }
+
+    // 중복 검사 및 파일 업로드 처리
+    if (typeof uploadedFilesRegistry === 'undefined') {
+        window.uploadedFilesRegistry = new Set();
     }
-    
-    // 최종 확인 정보 생성
-    const file = fileInput.files[0];
-    const fileSize = (file.size / (1024 * 1024)).toFixed(1);
-    const pointsValue = document.getElementById('pointsValue');
-    const points = pointsValue ? pointsValue.textContent : '+0P';
+
     const region1Text = region1.options[region1.selectedIndex].text;
     const productName = productBtn.getAttribute('data-name') || productBtn.querySelector('span').textContent;
     const supplyName = supplyBtn.getAttribute('data-name') || supplyBtn.querySelector('span').textContent;
-    const fileDate = `${fileYear.value}년 ${fileMonth.value}월 ${fileDay.value}일`;
-    // 날짜 형식 변환 (YYYY.MM.DD 형식으로)
-    const formattedFileDate = `${fileYear.value}.${String(fileMonth.value).padStart(2, '0')}.${String(fileDay.value).padStart(2, '0')}`;
+    const productType = productBtn.getAttribute('data-type');
+    const supplyType = supplyBtn.getAttribute('data-type');
     
-    // 업로드 처리 (실제로는 서버로 전송)
-    console.log('업로드 정보:', {
-        file: file.name,
-        title: titleInput.value,
-        region1: region1.value,
-        region2: region2.value,
-        fileDate: fileDate,
-        productType: productBtn.getAttribute('data-type'),
-        supplyType: supplyBtn.getAttribute('data-type'),
-        points: points
-    });
+    // 단일 파일 처리
+    const fileSize = (uploadedFile.file.size / (1024 * 1024)).toFixed(1);
+    const fileDate = `${uploadedFile.year}년 ${uploadedFile.month}월 ${uploadedFile.day}일`;
+    const formattedFileDate = `${uploadedFile.year}.${String(uploadedFile.month).padStart(2, '0')}.${String(uploadedFile.day).padStart(2, '0')}`;
     
-    // 포인트 획득량 계산
-    const earnedPoints = parseInt(points.replace(/[^0-9]/g, ''));
+    // 중복 키 생성
+    const monthStr = String(uploadedFile.month).padStart(2, '0');
+    const dayStr = String(uploadedFile.day).padStart(2, '0');
+    const duplicateKey = `${region1.value}_${region2.value}_${uploadedFile.year}-${monthStr}-${dayStr}_${Math.round(uploadedFile.file.size / (1024 * 1024))}MB_${productType}_${supplyType}`;
+    
+    // 중복 여부 확인
+    if (uploadedFilesRegistry.has(duplicateKey)) {
+        showToastMessage(`${uploadedFile.file.name}: 동일한 문서가 이미 업로드되었습니다.`, 'error');
+        return;
+    }
+    
+    // 파일 포인트 계산
+    const basePoints = 3000;
+    let sizeMultiplier = 1.0;
+    let freshnessMultiplier = 1.0;
+    
+    const fileSizeMB = parseFloat(fileSize);
+    if (fileSizeMB >= 5) sizeMultiplier = 1.1;
+    else if (fileSizeMB < 2) sizeMultiplier = 0.7;
+    
+    // 날짜 변수들을 새로 선언 (다른 이름 사용)
+    const fileSelectedDate = new Date(uploadedFile.year, uploadedFile.month - 1, uploadedFile.day);
+    const currentDate = new Date();
+    const fileDaysDiff = Math.floor((currentDate - fileSelectedDate) / (1000 * 60 * 60 * 24));
+    
+    if (fileDaysDiff <= 180) freshnessMultiplier = 1.2;
+    else if (fileDaysDiff <= 365) freshnessMultiplier = 1.0;
+    else if (fileDaysDiff <= 730) freshnessMultiplier = 0.7;
+    
+    const filePoints = Math.round((basePoints * sizeMultiplier * freshnessMultiplier) / 10) * 10;
     
     // 다운로드 포인트 계산
     const downloadPoints = calculateDownloadPoints(fileSize, `자료생성일: ${fileDate}`);
     
-    // 새 문서 객체 생성 및 목록에 추가
+    // 제목 생성 (자동생성 대신 직접 생성)
+    const title = `${region1Text} ${region2.value} ${productName} ${supplyName} 시장조사서`;
+    
+    // 새 문서 객체 생성
     const newDoc = {
         id: sampleDocuments.length + 1,
-        title: titleInput.value,
-        type: productBtn.getAttribute('data-type'),
+        title: title,
+        type: productType,
         region: region1.value,
         district: region2.value,
         location: `${region1Text} ${region2.value}`,
-        date: formattedFileDate,  // 파일 생성일을 표시
+        date: formattedFileDate,
         createDate: `자료생성일: ${fileDate}`,
         fileSize: fileSize + ' MB',
-        fileType: file.name.split('.').pop().toUpperCase(),
+        fileType: uploadedFile.file.name.split('.').pop().toUpperCase(),
         pages: Math.floor(Math.random() * 40) + 20,
-        uploadPoints: earnedPoints,  // 업로드 시 획득 포인트
-        points: downloadPoints,  // 다운로드 시 필요 포인트
+        uploadPoints: filePoints,
+        points: downloadPoints,
         supplyType: supplyName,
-        isPremium: earnedPoints >= 3000,
+        isPremium: filePoints >= 3000,
         keywords: [],
         thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: titleInput.value,
+        description: title,
         author: userData.name || '익명',
         downloads: 0,
-        views: 0
+        views: 0,
     };
     
-    // 문서 목록 맨 앞에 추가
+    // 문서 목록에 추가
     sampleDocuments.unshift(newDoc);
     
     // 업로드 성공 후 레지스트리에 추가
-    if (duplicateKey) {
-        uploadedFilesRegistry.add(duplicateKey);
-    }
+    uploadedFilesRegistry.add(duplicateKey);
     
+    console.log('업로드 정보:', {
+        file: uploadedFile.file.name,
+        title: title,
+        region1: region1.value,
+        region2: region2.value,
+        fileDate: fileDate,
+        productType: productType,
+        supplyType: supplyType,
+        points: filePoints,
+    });
+
     // 화면 갱신
     renderDocuments(sampleDocuments);
     updateResultCount(sampleDocuments.length);
-    
+
     // 미리보기 모달 이벤트 재초기화 (업로드 후 이벤트 유지)
     setTimeout(() => {
         initializePreviewModal();
     }, 100);
-    
+
     // 글로벌 포인트 시스템 사용 - 업로드 버튼 요소 찾기
     const uploadButton = document.getElementById('btnUpload');
-    
+
     // 포인트 획득 처리 (애니메이션과 업데이트 모두 처리)
-    earnPoints(earnedPoints, '문서가 성공적으로 업로드되었습니다!', uploadButton);
-    
+    earnPoints(filePoints, `문서가 성공적으로 업로드되었습니다!`, uploadButton);
+
     // 모달 닫기 (애니메이션 시작 후 바로)
     setTimeout(() => {
         if (modal) modal.classList.remove('active');
@@ -3768,14 +4227,16 @@ let currentFilteredDocuments = [];
 function openPreview(docId) {
     // 현재 필터링된 문서 목록 가져오기
     currentFilteredDocuments = filterDocuments();
-    
+
     // 선택한 문서의 인덱스 찾기
-    currentPreviewIndex = currentFilteredDocuments.findIndex(doc => doc.id === docId);
-    
+    currentPreviewIndex = currentFilteredDocuments.findIndex((doc) => doc.id === docId);
+
     if (currentPreviewIndex === -1) return;
-    
-    console.log(`문서 열기 - ID: ${docId}, 인덱스: ${currentPreviewIndex}, 전체: ${currentFilteredDocuments.length}개`);
-    
+
+    console.log(
+        `문서 열기 - ID: ${docId}, 인덱스: ${currentPreviewIndex}, 전체: ${currentFilteredDocuments.length}개`
+    );
+
     showMinimalPreview(currentFilteredDocuments[currentPreviewIndex]);
 }
 
@@ -3783,10 +4244,13 @@ function openPreview(docId) {
 function showMinimalPreview(doc) {
     const modal = document.getElementById('previewModal');
     if (!modal) return;
-    
+
     // 문서 타입 찾기
-    const productType = productTypes.find(t => t.id === doc.type) || { name: '기타', color: '#6b7280' };
-    
+    const productType = productTypes.find((t) => t.id === doc.type) || {
+        name: '기타',
+        color: '#6b7280',
+    };
+
     // 미리보기 정보 업데이트
     document.getElementById('previewTitle').textContent = doc.title;
     document.querySelector('.preview-type-badge').textContent = productType.name;
@@ -3795,23 +4259,23 @@ function showMinimalPreview(doc) {
     document.getElementById('previewFileSize').textContent = doc.fileSize;
     document.getElementById('previewDate').textContent = doc.createDate.replace('자료생성일: ', '');
     document.getElementById('previewPoints').textContent = doc.points.toLocaleString();
-    
+
     // 포인트 계산 요소 업데이트
     const fileSize = parseFloat(doc.fileSize.replace(/[^0-9.]/g, ''));
     const createDateStr = doc.createDate.replace('자료생성일: ', '').trim();
-    
+
     // 날짜 파싱
-    let dateStr = createDateStr.replace(/년/g, '.').replace(/월/g, '.').replace(/일/g, '').trim();
+    const dateStr = createDateStr.replace(/년/g, '.').replace(/월/g, '.').replace(/일/g, '').trim();
     const dateParts = dateStr.split('.');
     let daysDiff = 0;
-    
+
     if (dateParts.length === 3) {
         const [year, month, day] = dateParts;
         const createDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
         const today = new Date();
         daysDiff = Math.floor((today - createDate) / (1000 * 60 * 60 * 24));
     }
-    
+
     // 최신성 지수 표시
     let freshnessText = '';
     let freshnessMultiplier = 0;
@@ -3828,7 +4292,7 @@ function showMinimalPreview(doc) {
         freshnessText = '2년 초과 (50%)';
         freshnessMultiplier = 0.5;
     }
-    
+
     // 파일크기 지수 표시
     let sizeText = '';
     let sizeMultiplier = 0;
@@ -3842,38 +4306,40 @@ function showMinimalPreview(doc) {
         sizeText = `${doc.fileSize} (70%)`;
         sizeMultiplier = 0.7;
     }
-    
+
     // 요소 업데이트
     const freshnessElement = document.getElementById('freshnessIndex');
     if (freshnessElement) freshnessElement.textContent = freshnessText;
-    
+
     const sizeElement = document.getElementById('fileSizeIndex');
     if (sizeElement) sizeElement.textContent = sizeText;
-    
+
     // 계산식 업데이트
     const formulaElement = document.getElementById('pointFormula');
     if (formulaElement) {
-        const calculatedPoints = Math.round(7000 * freshnessMultiplier * sizeMultiplier / 10) * 10;
+        const calculatedPoints =
+            Math.round((7000 * freshnessMultiplier * sizeMultiplier) / 10) * 10;
         formulaElement.textContent = `기준 7,000P × ${freshnessMultiplier} × ${sizeMultiplier} = ${calculatedPoints.toLocaleString()}P`;
     }
-    
+
     // 카운터 업데이트
-    document.querySelector('.preview-document-counter').textContent = 
+    document.querySelector('.preview-document-counter').textContent =
         `${currentPreviewIndex + 1} / ${currentFilteredDocuments.length}`;
-    
+
     // 네비게이션 버튼 상태 업데이트
     const prevBtn = document.querySelector('.preview-nav-prev');
     const nextBtn = document.querySelector('.preview-nav-next');
-    
+
     // < 버튼: 최신 문서로 이동 (인덱스 감소)
     if (prevBtn) {
         prevBtn.style.display = currentPreviewIndex > 0 ? 'flex' : 'none';
     }
     // > 버튼: 이전 문서로 이동 (인덱스 증가)
     if (nextBtn) {
-        nextBtn.style.display = currentPreviewIndex < currentFilteredDocuments.length - 1 ? 'flex' : 'none';
+        nextBtn.style.display =
+            currentPreviewIndex < currentFilteredDocuments.length - 1 ? 'flex' : 'none';
     }
-    
+
     // 모달 표시
     modal.classList.add('active');
 }
@@ -3899,70 +4365,60 @@ function initializePreviewModal() {
     // 닫기 버튼
     const closeBtn = document.querySelector('.preview-close');
     if (closeBtn) {
-        closeBtn.onclick = function() {
+        closeBtn.onclick = function () {
             const modal = document.getElementById('previewModal');
             if (modal) modal.classList.remove('active');
         };
     }
-    
+
     // 오버레이 클릭으로 닫기
     const overlay = document.querySelector('.preview-overlay');
     if (overlay) {
-        overlay.onclick = function() {
+        overlay.onclick = function () {
             const modal = document.getElementById('previewModal');
             if (modal) modal.classList.remove('active');
         };
     }
-    
+
     // < 버튼 - 최신 문서로 (목록에서 위로 = 인덱스 감소)
     const prevBtn = document.querySelector('.preview-nav-prev');
     if (prevBtn) {
-        prevBtn.onclick = function() {
+        prevBtn.onclick = function () {
             console.log('< 버튼 클릭 - 최신 문서로 (인덱스 감소)');
             navigateToPreviousDoc();
         };
     }
-    
+
     // > 버튼 - 이전 문서로 (목록에서 아래로 = 인덱스 증가)
     const nextBtn = document.querySelector('.preview-nav-next');
     if (nextBtn) {
-        nextBtn.onclick = function() {
+        nextBtn.onclick = function () {
             console.log('> 버튼 클릭 - 이전 문서로 (인덱스 증가)');
             navigateToNextDoc();
         };
     }
-    
+
     // 다운로드 버튼
     const downloadBtn = document.getElementById('previewDownloadBtn');
     if (downloadBtn) {
-        downloadBtn.onclick = function() {
+        downloadBtn.onclick = function () {
             console.log('다운로드 버튼 클릭');
             if (currentPreviewIndex >= 0 && currentFilteredDocuments[currentPreviewIndex]) {
                 const doc = currentFilteredDocuments[currentPreviewIndex];
                 const points = doc.points || 7000;
-                
+
                 console.log('다운로드 문서:', doc.title, '포인트:', points);
-                
-                // 포인트 차감 애니메이션
-                const targetElement = this;
-                spendPoints(points, `${doc.title} 다운로드`, targetElement);
-                
-                // 다운로드 처리
-                showToastMessage(`${doc.title} 다운로드가 시작되었습니다.`, 'success');
-                
-                // 모달 닫기
-                setTimeout(() => {
-                    const modal = document.getElementById('previewModal');
-                    if (modal) modal.classList.remove('active');
-                }, 500);
+
+                // handleDirectDownload 함수 호출 (포인트 확인 포함)
+                handleDirectDownload(doc.id, points);
             }
         };
     }
-    
+
     // 장바구니 버튼
     const cartBtn = document.getElementById('previewCartBtn');
     if (cartBtn) {
-        cartBtn.onclick = function() {
+        cartBtn.onclick = function () {
             console.log('장바구니 버튼 클릭');
             if (currentPreviewIndex >= 0 && currentFilteredDocuments[currentPreviewIndex]) {
                 const doc = currentFilteredDocuments[currentPreviewIndex];
@@ -3971,17 +4427,30 @@ function initializePreviewModal() {
             }
         };
     }
-    
+
+    // 신고 버튼
+    const reportBtn = document.getElementById('previewReportBtn');
+    if (reportBtn) {
+        reportBtn.onclick = function () {
+            console.log('신고 버튼 클릭');
+            if (currentPreviewIndex >= 0 && currentFilteredDocuments[currentPreviewIndex]) {
+                const doc = currentFilteredDocuments[currentPreviewIndex];
+                console.log('신고 문서:', doc.title);
+                showReportModal(doc.id);
+            }
+        };
+    }
+
     // 키보드 네비게이션
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', (e) => {
         const modal = document.getElementById('previewModal');
         if (modal && modal.classList.contains('active')) {
             if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
                 e.preventDefault();
-                navigateToPreviousDoc();  // 위/왼쪽 = 최신 문서로 (인덱스 감소)
+                navigateToPreviousDoc(); // 위/왼쪽 = 최신 문서로 (인덱스 감소)
             } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
                 e.preventDefault();
-                navigateToNextDoc();  // 아래/오른쪽 = 이전 문서로 (인덱스 증가)
+                navigateToNextDoc(); // 아래/오른쪽 = 이전 문서로 (인덱스 증가)
             } else if (e.key === 'Escape') {
                 modal.classList.remove('active');
             }
@@ -3993,67 +4462,279 @@ function initializePreviewModal() {
 // DOM 로드 완료 시 초기화
 // ===========================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('Market Research page loaded');
     console.log('Checking for filter elements...');
-    
+
     // 기존 sampleDocuments의 포인트를 다운로드 포인트로 재계산
-    sampleDocuments.forEach(doc => {
+    sampleDocuments.forEach((doc) => {
         // 업로드 포인트 저장 (기존 points 값을 업로드 포인트로 사용)
         doc.uploadPoints = doc.points || 3000;
-        
+
         // 다운로드 포인트 계산
         doc.points = calculateDownloadPoints(doc.fileSize, doc.createDate);
     });
-    
+
     // 필터 요소들 확인
     const regionSelectors = document.querySelectorAll('.region-filter .nav-selector');
     const productSelectors = document.querySelectorAll('#productTypeFilters .checkbox-tab');
     const supplySelectors = document.querySelectorAll('#supplyTypeFilters .checkbox-tab');
-    
+
     console.log('Found region selectors:', regionSelectors.length);
     console.log('Found product selectors:', productSelectors.length);
     console.log('Found supply selectors:', supplySelectors.length);
-    
+
     // 초기 상태 설정 - '전체' 탭을 active로
     const allRegionSelector = document.querySelector('.nav-selector[data-value="all"]');
     if (allRegionSelector) {
         allRegionSelector.classList.add('selected', 'active');
     }
-    
+
     const allProductTab = document.querySelector('.product-filter .checkbox-tab[data-type="all"]');
     if (allProductTab) {
         allProductTab.classList.add('active');
         const input = allProductTab.querySelector('input[type="radio"]');
         if (input) input.checked = true;
     }
-    
+
     const allSupplyTab = document.querySelector('.supply-filter .checkbox-tab[data-type="all"]');
     if (allSupplyTab) {
         allSupplyTab.classList.add('active');
         const input = allSupplyTab.querySelector('input[type="radio"]');
         if (input) input.checked = true;
     }
-    
+
     // 필터 초기화
     initializeFilters();
-    
+
     // 이벤트 리스너 초기화
     initializeEventListeners();
-    
+
     // uploadSystem.init() 제거 - 새로운 업로드 시스템 사용
     // uploadSystem.init();
-    
+
     // 개선된 업로드 모달 기능 초기화
     initEnhancedUploadModal();
-    
+
     // 미리보기 모달 초기화
     initializePreviewModal();
-    
+
+    // 신고 기능 초기화
+    initializeReportEventListeners();
+
     // 초기 문서 렌더링
     renderDocuments(sampleDocuments);
     updateResultCount(sampleDocuments.length);
-    
+
     // 사용자 포인트 표시
     updateUserPoints();
+
+    // 검색 기능 직접 테스트를 위한 전역 함수
+    window.testSearch = function(keyword) {
+        console.log('테스트 검색 시작:', keyword);
+        currentFilters.keyword = keyword;
+        applyFilters();
+    };
+
+    // 검색 입력 이벤트 직접 바인딩 (기존 이벤트와 충돌 방지)
+    setTimeout(() => {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            console.log('검색 입력창 재바인딩');
+            // 기존 이벤트 제거하고 새로 추가
+            searchInput.oninput = function() {
+                console.log('직접 바인딩 검색:', this.value);
+                currentFilters.keyword = this.value;
+                applyFilters();
+            };
+            
+            // 테스트: 현재 검색창 값 확인
+            console.log('현재 검색창 값:', searchInput.value);
+        } else {
+            console.error('검색 입력창을 찾을 수 없습니다!');
+        }
+    }, 1000);
+
+    // JavaScript 에러 체크
+    window.addEventListener('error', function(e) {
+        console.error('JavaScript 에러 발생:', e.message, e.filename, e.lineno);
+    });
+
+    // 현재 필터 상태 확인
+    console.log('초기 currentFilters:', currentFilters);
 });
+
+// ===========================================
+// 장바구니 기능
+// ===========================================
+
+// 장바구니 데이터 관리
+let cartItems = JSON.parse(localStorage.getItem('marketResearchCart')) || [];
+
+// 장바구니에 담기
+function addToCart(docId) {
+    const doc = sampleDocuments.find(d => d.id === docId);
+    if (!doc) return;
+    
+    // 이미 장바구니에 있는지 확인
+    if (cartItems.some(item => item.id === docId)) {
+        alert('이미 장바구니에 담겨있는 자료입니다.');
+        return;
+    }
+    
+    // 장바구니에 추가
+    cartItems.push({
+        id: doc.id,
+        title: doc.title,
+        type: doc.type,
+        location: doc.location,
+        points: doc.points,
+        fileSize: doc.fileSize,
+        date: doc.date
+    });
+    
+    // 로컬 스토리지에 저장
+    localStorage.setItem('marketResearchCart', JSON.stringify(cartItems));
+    
+    // 성공 메시지 표시
+    alert(`"${doc.title}"이(가) 장바구니에 담겼습니다.\n현재 장바구니: ${cartItems.length}개 자료`);
+    
+    // 장바구니 버튼 애니메이션 효과 (선택사항)
+    const cartBtn = event.currentTarget;
+    if (cartBtn) {
+        cartBtn.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            cartBtn.style.transform = '';
+        }, 200);
+    }
+}
+
+// ===========================================
+// 신고 기능
+// ===========================================
+
+// 신고 모달 표시
+function showReportModal(docId) {
+    const doc = sampleDocuments.find(d => d.id === docId);
+    if (!doc) return;
+    
+    const modal = document.getElementById('reportModal');
+    const title = document.getElementById('reportDocTitle');
+    
+    if (modal && title) {
+        title.textContent = doc.title;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// 신고 모달 닫기
+function closeReportModal() {
+    const modal = document.getElementById('reportModal');
+    const textarea = document.getElementById('reportReason');
+    
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    
+    if (textarea) {
+        textarea.value = '';
+    }
+}
+
+// 신고 제출
+function submitReport() {
+    const textarea = document.getElementById('reportReason');
+    const docTitle = document.getElementById('reportDocTitle');
+    
+    if (!textarea || !docTitle) return;
+    
+    const reason = textarea.value.trim();
+    if (!reason) {
+        alert('신고 사유를 입력해주세요.');
+        return;
+    }
+    
+    // 신고 데이터 저장 (실제 구현에서는 서버로 전송)
+    const reportData = {
+        documentTitle: docTitle.textContent,
+        reason: reason,
+        timestamp: new Date().toISOString(),
+        userId: getCurrentUserId() || 'anonymous'
+    };
+    
+    // 로컬 스토리지에 신고 내역 저장
+    const reports = JSON.parse(localStorage.getItem('documentReports')) || [];
+    reports.push(reportData);
+    localStorage.setItem('documentReports', JSON.stringify(reports));
+    
+    // 성공 메시지
+    alert('신고가 접수되었습니다.\n검토 후 조치하겠습니다.');
+    
+    // 모달 닫기
+    closeReportModal();
+}
+
+// 현재 사용자 ID 가져오기 (Mock 함수)
+function getCurrentUserId() {
+    // 실제 구현에서는 인증 시스템에서 사용자 ID를 가져옴
+    return localStorage.getItem('currentUserId') || null;
+}
+
+// 신고 이벤트 리스너 초기화
+function initializeReportEventListeners() {
+    // 신고 버튼 클릭 이벤트
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.btn-report')) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // 부모 요소에서 문서 ID 찾기
+            const docCard = e.target.closest('.market-research-card');
+            if (docCard) {
+                const docId = docCard.getAttribute('data-doc-id');
+                if (docId) {
+                    showReportModal(docId);
+                }
+            }
+        }
+    });
+    
+    // 모달 닫기 이벤트
+    const modal = document.getElementById('reportModal');
+    const closeBtn = document.getElementById('reportModalClose');
+    const cancelBtn = document.getElementById('reportCancelBtn');
+    const submitBtn = document.getElementById('reportSubmitBtn');
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeReportModal);
+    }
+    
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeReportModal);
+    }
+    
+    if (submitBtn) {
+        submitBtn.addEventListener('click', submitReport);
+    }
+    
+    // 모달 배경 클릭으로 닫기
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeReportModal();
+            }
+        });
+    }
+    
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('reportModal');
+            if (modal && modal.style.display === 'flex') {
+                closeReportModal();
+            }
+        }
+    });
+}
