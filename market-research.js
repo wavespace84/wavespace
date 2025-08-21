@@ -6,11 +6,14 @@
 // 상품 유형 정의
 const productTypes = [
     { id: 'apartment', name: '아파트', color: '#3b82f6' },
-    { id: 'officetel-profit', name: '수익형 오피스텔', color: '#8b5cf6' },
-    { id: 'officetel-residential', name: '주거형 오피스텔', color: '#10b981' },
+    { id: 'profit-ot', name: '수익형 오피스텔', color: '#8b5cf6' },
+    { id: 'residential-ot', name: '주거형 오피스텔', color: '#10b981' },
     { id: 'office', name: '오피스', color: '#f59e0b' },
-    { id: 'shop', name: '상가/상업시설', color: '#ef4444' },
-    { id: 'knowledge', name: '지식산업센터', color: '#06b6d4' }
+    { id: 'urban', name: '도시형생활주택', color: '#22c55e' },
+    { id: 'commercial', name: '상가/상업시설', color: '#ef4444' },
+    { id: 'lifestyle-lodge', name: '생활형숙박시설', color: '#a855f7' },
+    { id: 'knowledge', name: '지식산업센터', color: '#06b6d4' },
+    { id: 'other', name: '기타', color: '#6b7280' }
 ];
 
 // 업로드된 파일을 관리하는 변수
@@ -20,7 +23,7 @@ let uploadedFile = null;
 const sampleDocuments = [
     {
         id: 1,
-        title: '강남구 삼성동 아파트 시장조사서',
+        title: '서울 강남구 아파트 민간분양 시장조사서',
         type: 'apartment',
         region: '서울',
         district: '강남구',
@@ -30,7 +33,7 @@ const sampleDocuments = [
         fileSize: '12.5MB',
         fileType: 'PDF',
         pages: 45,
-        points: 3960,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['프리미엄', '투자가치', '신축'],
@@ -41,8 +44,8 @@ const sampleDocuments = [
     },
     {
         id: 2,
-        title: '판교 테크노밸리 오피스텔 시장분석',
-        type: 'officetel-profit',
+        title: '경기 성남시 수익형오피스텔 민간분양 시장조사서',
+        type: 'profit-ot',
         region: '경기',
         district: '성남시',
         location: '경기 성남시',
@@ -51,7 +54,7 @@ const sampleDocuments = [
         fileSize: '8.3MB',
         fileType: 'PPT',
         pages: 32,
-        points: 3300,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['테크노밸리', '오피스텔', '임대수익'],
@@ -62,7 +65,7 @@ const sampleDocuments = [
     },
     {
         id: 3,
-        title: '홍대상권 상가 시장조사',
+        title: '서울 마포구 상가 민간분양 시장조사서',
         type: 'commercial',
         region: '서울',
         district: '마포구',
@@ -72,7 +75,7 @@ const sampleDocuments = [
         fileSize: '15.2MB',
         fileType: 'PDF',
         pages: 67,
-        points: 3960,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['홍대상권', '상가투자', '젠트리피케이션'],
@@ -83,7 +86,7 @@ const sampleDocuments = [
     },
     {
         id: 4,
-        title: '가산디지털단지 지식산업센터 현황',
+        title: '서울 금천구 지식산업센터 민간분양 시장조사서',
         type: 'knowledge',
         region: '서울',
         district: '금천구',
@@ -93,7 +96,7 @@ const sampleDocuments = [
         fileSize: '23.7MB',
         fileType: 'PDF',
         pages: 89,
-        points: 3960,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['지식산업센터', 'IT산업', '임대현황'],
@@ -104,7 +107,7 @@ const sampleDocuments = [
     },
     {
         id: 5,
-        title: '해운대 신도시 아파트 시장 동향',
+        title: '부산 해운대구 아파트 공공분양 시장조사서',
         type: 'apartment',
         region: '부산',
         district: '해운대구',
@@ -114,7 +117,7 @@ const sampleDocuments = [
         fileSize: '18.9MB',
         fileType: 'PPT',
         pages: 56,
-        points: 3960,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
         supplyType: '공공분양',
         isPremium: false,
         keywords: ['해운대', '신도시', '공공분양'],
@@ -125,8 +128,8 @@ const sampleDocuments = [
     },
     {
         id: 6,
-        title: '여의도 IFC 오피스텔 투자 분석',
-        type: 'officetel-residential',
+        title: '서울 영등포구 주거형오피스텔 민간임대 시장조사서',
+        type: 'residential-ot',
         region: '서울',
         district: '영등포구',
         location: '서울 영등포구',
@@ -135,7 +138,7 @@ const sampleDocuments = [
         fileSize: '11.3MB',
         fileType: 'PDF',
         pages: 42,
-        points: 3960,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
         supplyType: '민간임대',
         isPremium: false,
         keywords: ['여의도', 'IFC', '프리미엄오피스'],
@@ -146,8 +149,8 @@ const sampleDocuments = [
     },
     {
         id: 7,
-        title: '송파 헬리오시티 주거형 오피스텔 분석',
-        type: 'officetel-residential',
+        title: '서울 송파구 주거형오피스텔 민간분양 시장조사서',
+        type: 'residential-ot',
         region: '서울',
         district: '송파구',
         location: '서울 송파구',
@@ -156,7 +159,7 @@ const sampleDocuments = [
         fileSize: '7.8MB',
         fileType: 'PDF',
         pages: 28,
-        points: 3300,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
         supplyType: '민간분양',
         isPremium: false,
         keywords: ['송파', '헬리오시티', '주거형'],
@@ -167,8 +170,8 @@ const sampleDocuments = [
     },
     {
         id: 8,
-        title: '강남역 수익형 오피스텔 투자 가이드',
-        type: 'officetel-profit',
+        title: '서울 강남구 수익형오피스텔 민간분양 시장조사서',
+        type: 'profit-ot',
         region: '서울',
         district: '강남구',
         location: '서울 강남구',
@@ -177,7 +180,7 @@ const sampleDocuments = [
         fileSize: '11.2MB',
         fileType: 'PDF',
         pages: 42,
-        points: 3960,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
         supplyType: '민간분양',
         isPremium: true,
         keywords: ['강남역', '수익형', '투자'],
@@ -188,8 +191,8 @@ const sampleDocuments = [
     },
     {
         id: 9,
-        title: '분당 정자동 주거형 오피스텔 시장조사',
-        type: 'officetel-residential',
+        title: '경기 성남시 주거형오피스텔 공공분양 시장조사서',
+        type: 'residential-ot',
         region: '경기',
         district: '성남시',
         location: '경기 성남시',
@@ -198,7 +201,7 @@ const sampleDocuments = [
         fileSize: '9.1MB',
         fileType: 'PPT',
         pages: 35,
-        points: 3300,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
         supplyType: '공공분양',
         isPremium: false,
         keywords: ['분당', '정자동', '주거형'],
@@ -206,6 +209,526 @@ const sampleDocuments = [
             'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fee2e2"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23dc2626" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
         description: '분당 정자동 주거형 오피스텔 입지 분석',
         pdfPath: null, // PDF 파일 없음
+    },
+    {
+        id: 10,
+        title: '서울 송파구 상가 민간분양 시장조사서',
+        type: 'commercial',
+        region: '서울',
+        district: '송파구',
+        location: '서울 송파구',
+        date: '2024.01.05',
+        createDate: '자료생성일: 2024.01.05',
+        fileSize: '11.3MB',
+        fileType: 'PDF',
+        pages: 42,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['잠실', '상가', '투자'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '잠실동 상가 시장 현황 및 투자 전망',
+        pdfPath: null,
+    },
+    {
+        id: 11,
+        title: '대전 서구 기타 민간분양 시장조사서',
+        type: 'other',
+        region: '대전',
+        district: '서구',
+        location: '대전 서구',
+        date: '2024.01.04',
+        createDate: '자료생성일: 2024.01.04',
+        fileSize: '7.8MB',
+        fileType: 'PDF',
+        pages: 28,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['둔산동', '오피스', '업무시설'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '대전 둔산동 오피스 시장 현황',
+        pdfPath: null,
+    },
+    {
+        id: 12,
+        title: '부산 해운대구 아파트 민간분양 시장조사서',
+        type: 'apartment',
+        region: '부산',
+        district: '해운대구',
+        location: '부산 해운대구',
+        date: '2024.01.03',
+        createDate: '자료생성일: 2024.01.03',
+        fileSize: '14.2MB',
+        fileType: 'PDF',
+        pages: 55,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['해운대', '아파트', '분양'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '해운대구 아파트 분양시장 동향',
+        pdfPath: null,
+    },
+    {
+        id: 13,
+        title: '인천 연수구 지식산업센터 민간분양 시장조사서',
+        type: 'knowledge',
+        region: '인천',
+        district: '연수구',
+        location: '인천 연수구',
+        date: '2024.01.02',
+        createDate: '자료생성일: 2024.01.02',
+        fileSize: '16.5MB',
+        fileType: 'PDF',
+        pages: 72,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['연수구', '지식산업센터', '송도'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '연수구 지식산업센터 입주 현황 분석',
+        pdfPath: null,
+    },
+    {
+        id: 14,
+        title: '광주 서구 상가 민간분양 시장조사서',
+        type: 'commercial',
+        region: '광주',
+        district: '서구',
+        location: '광주 서구',
+        date: '2024.01.01',
+        createDate: '자료생성일: 2024.01.01',
+        fileSize: '8.9MB',
+        fileType: 'PPT',
+        pages: 33,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['상무지구', '상가', '광주'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        description: '광주 상무지구 상가 시장 분석',
+        pdfPath: null,
+    },
+    {
+        id: 15,
+        title: '경기 용인시 아파트 민간분양 시장조사서',
+        type: 'apartment',
+        region: '경기',
+        district: '용인시',
+        location: '경기 용인시',
+        date: '2023.12.31',
+        createDate: '자료생성일: 2023.12.31',
+        fileSize: '10.7MB',
+        fileType: 'PDF',
+        pages: 48,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['수지구', '아파트', '용인'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '용인 수지구 아파트 시장 동향',
+        pdfPath: null,
+    },
+    {
+        id: 16,
+        title: '대구 수성구 수익형오피스텔 민간분양 시장조사서',
+        type: 'profit-ot',
+        region: '대구',
+        district: '수성구',
+        location: '대구 수성구',
+        date: '2023.12.30',
+        createDate: '자료생성일: 2023.12.30',
+        fileSize: '9.4MB',
+        fileType: 'PPT',
+        pages: 37,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['수성구', '오피스텔', '수익형'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        description: '대구 수성구 수익형 오피스텔 투자 분석',
+        pdfPath: null,
+    },
+    {
+        id: 17,
+        title: '세종 세종시 도시형생활주택 공공분양 시장조사서',
+        type: 'urban',
+        region: '세종',
+        district: '세종시',
+        location: '세종시',
+        date: '2023.12.29',
+        createDate: '자료생성일: 2023.12.29',
+        fileSize: '11.8MB',
+        fileType: 'PDF',
+        pages: 51,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '공공분양',
+        isPremium: false,
+        keywords: ['세종시', '도생', '공공주택'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '세종시 도시형생활주택 시장 현황',
+        pdfPath: null,
+    },
+    {
+        id: 18,
+        title: '울산 남구 아파트 민간분양 시장조사서',
+        type: 'apartment',
+        region: '울산',
+        district: '남구',
+        location: '울산 남구',
+        date: '2023.12.28',
+        createDate: '자료생성일: 2023.12.28',
+        fileSize: '7.2MB',
+        fileType: 'PDF',
+        pages: 31,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['울산', '남구', '아파트'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '울산 남구 아파트 분양시장 분석',
+        pdfPath: null,
+    },
+    {
+        id: 19,
+        title: '충남 천안시 지식산업센터 민간분양 시장조사서',
+        type: 'knowledge',
+        region: '충남',
+        district: '천안시',
+        location: '충남 천안시',
+        date: '2023.12.27',
+        createDate: '자료생성일: 2023.12.27',
+        fileSize: '13.5MB',
+        fileType: 'PDF',
+        pages: 62,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['천안', '지식산업센터', '투자'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '천안시 지식산업센터 투자 전망',
+        pdfPath: null,
+    },
+    {
+        id: 20,
+        title: '전북 전주시 아파트 공공분양 시장조사서',
+        type: 'apartment',
+        region: '전북',
+        district: '전주시',
+        location: '전북 전주시',
+        date: '2023.12.26',
+        createDate: '자료생성일: 2023.12.26',
+        fileSize: '9.8MB',
+        fileType: 'PPT',
+        pages: 41,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '공공분양',
+        isPremium: false,
+        keywords: ['전주', '혁신도시', '아파트'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        description: '전주 혁신도시 아파트 시장 분석',
+        pdfPath: null,
+    },
+    {
+        id: 21,
+        title: '경남 창원시 상가 민간임대 시장조사서',
+        type: 'commercial',
+        region: '경남',
+        district: '창원시',
+        location: '경남 창원시',
+        date: '2023.12.25',
+        createDate: '자료생성일: 2023.12.25',
+        fileSize: '8.4MB',
+        fileType: 'PDF',
+        pages: 36,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '민간임대',
+        isPremium: false,
+        keywords: ['창원', '상가', '임대'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '창원시 상가 임대시장 현황',
+        pdfPath: null,
+    },
+    {
+        id: 22,
+        title: '충북 청주시 기타 민간분양 시장조사서',
+        type: 'other',
+        region: '충북',
+        district: '청주시',
+        location: '충북 청주시',
+        date: '2023.12.24',
+        createDate: '자료생성일: 2023.12.24',
+        fileSize: '6.9MB',
+        fileType: 'PPT',
+        pages: 29,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['청주', '오피스', '업무시설'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        description: '청주시 오피스 시장 전망 분석',
+        pdfPath: null,
+    },
+    {
+        id: 23,
+        title: '제주 제주시 생활형숙박시설 민간분양 시장조사서',
+        type: 'lifestyle-lodge',
+        region: '제주',
+        district: '제주시',
+        location: '제주 제주시',
+        date: '2023.12.23',
+        createDate: '자료생성일: 2023.12.23',
+        fileSize: '15.7MB',
+        fileType: 'PDF',
+        pages: 68,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['제주', '생활형숙박시설', '투자'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '제주시 생활형숙박시설 투자 전망',
+        pdfPath: null,
+    },
+    {
+        id: 24,
+        title: '경북 포항시 아파트 민간분양 시장조사서',
+        type: 'apartment',
+        region: '경북',
+        district: '포항시',
+        location: '경북 포항시',
+        date: '2023.12.22',
+        createDate: '자료생성일: 2023.12.22',
+        fileSize: '10.2MB',
+        fileType: 'PDF',
+        pages: 44,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['포항', '아파트', '분양'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '포항시 아파트 분양시장 현황',
+        pdfPath: null,
+    },
+    {
+        id: 25,
+        title: '강원 춘천시 주거형오피스텔 민간분양 시장조사서',
+        type: 'residential-ot',
+        region: '강원',
+        district: '춘천시',
+        location: '강원 춘천시',
+        date: '2023.12.21',
+        createDate: '자료생성일: 2023.12.21',
+        fileSize: '7.6MB',
+        fileType: 'PPT',
+        pages: 32,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['춘천', '오피스텔', '주거형'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        description: '춘천시 주거형 오피스텔 시장 분석',
+        pdfPath: null,
+    },
+    {
+        id: 26,
+        title: '전남 여수시 오피스 민간분양 시장조사서',
+        type: 'office',
+        region: '전남',
+        district: '여수시',
+        location: '전남 여수시',
+        date: '2023.12.20',
+        createDate: '자료생성일: 2023.12.20',
+        fileSize: '12.3MB',
+        fileType: 'PDF',
+        pages: 53,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['여수', '오피스', '업무시설'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '여수시 오피스 빌딩 시장 전망',
+        pdfPath: null,
+    },
+    {
+        id: 27,
+        title: '경기 안양시 지식산업센터 민간분양 시장조사서',
+        type: 'knowledge',
+        region: '경기',
+        district: '안양시',
+        location: '경기 안양시',
+        date: '2023.12.19',
+        createDate: '자료생성일: 2023.12.19',
+        fileSize: '14.8MB',
+        fileType: 'PDF',
+        pages: 64,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['안양', '지식산업센터', 'IT'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '안양시 지식산업센터 입주 현황',
+        pdfPath: null,
+    },
+    {
+        id: 28,
+        title: '경기 김포시 아파트 민간분양 시장조사서',
+        type: 'apartment',
+        region: '경기',
+        district: '김포시',
+        location: '경기 김포시',
+        date: '2023.12.18',
+        createDate: '자료생성일: 2023.12.18',
+        fileSize: '11.1MB',
+        fileType: 'PDF',
+        pages: 47,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['김포', '아파트', '신도시'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '김포시 아파트 분양시장 전망',
+        pdfPath: null,
+    },
+    {
+        id: 29,
+        title: '전남 목포시 상가 민간분양 시장조사서',
+        type: 'commercial',
+        region: '전남',
+        district: '목포시',
+        location: '전남 목포시',
+        date: '2023.12.17',
+        createDate: '자료생성일: 2023.12.17',
+        fileSize: '8.7MB',
+        fileType: 'PPT',
+        pages: 38,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '민간분양',
+        isPremium: false,
+        keywords: ['목포', '상가', '지역상권'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        description: '목포시 상가 시장 투자 분석',
+        pdfPath: null,
+    },
+    {
+        id: 30,
+        title: '경기 성남시 아파트 공공임대 시장조사서',
+        type: 'apartment',
+        region: '경기',
+        district: '성남시',
+        location: '경기 성남시',
+        date: '2023.12.16',
+        createDate: '자료생성일: 2023.12.16',
+        fileSize: '9.2MB',
+        fileType: 'PDF',
+        pages: 40,
+        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
+        supplyType: '공공임대',
+        isPremium: false,
+        keywords: ['공공임대', '성남', 'LH'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '성남시 공공임대 아파트 공급 현황',
+        pdfPath: null,
+    },
+    {
+        id: 31,
+        title: '서울시 역세권 공공임대 주택',
+        type: 'urban',
+        region: '서울',
+        district: '영등포구',
+        location: '서울 영등포구',
+        date: '2023.12.15',
+        createDate: '자료생성일: 2023.12.15',
+        fileSize: '11.5MB',
+        fileType: 'PDF',
+        pages: 52,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '공공임대',
+        isPremium: false,
+        keywords: ['역세권', '공공임대', '청년주택'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '서울시 역세권 공공임대 주택 사업',
+        pdfPath: null,
+    },
+    {
+        id: 32,
+        title: '부산 영도구 재개발 사업 분석',
+        type: 'other',
+        region: '부산',
+        district: '영도구',
+        location: '부산 영도구',
+        date: '2023.12.14',
+        createDate: '자료생성일: 2023.12.14',
+        fileSize: '13.8MB',
+        fileType: 'PDF',
+        pages: 61,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '기타',
+        isPremium: false,
+        keywords: ['재개발', '영도구', '도시재생'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '부산 영도구 재개발 사업 타당성 분석',
+        pdfPath: null,
+    },
+    {
+        id: 33,
+        title: '대전 중구 주거형 오피스텔',
+        type: 'residential-ot',
+        region: '대전',
+        district: '중구',
+        location: '대전 중구',
+        date: '2023.12.13',
+        createDate: '자료생성일: 2023.12.13',
+        fileSize: '7.3MB',
+        fileType: 'PPT',
+        pages: 30,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '공공임대',
+        isPremium: false,
+        keywords: ['주거형', '오피스텔', '공공임대'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
+        description: '대전 중구 공공임대 주거형 오피스텔',
+        pdfPath: null,
+    },
+    {
+        id: 34,
+        title: '경남 통영시 펜션 사업 분석',
+        type: 'other',
+        region: '경남',
+        district: '통영시',
+        location: '경남 통영시',
+        date: '2023.12.12',
+        createDate: '자료생성일: 2023.12.12',
+        fileSize: '10.9MB',
+        fileType: 'PDF',
+        pages: 46,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '기타',
+        isPremium: false,
+        keywords: ['펜션', '통영', '관광숙박'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '통영시 펜션 사업 투자 분석',
+        pdfPath: null,
+    },
+    {
+        id: 35,
+        title: '인천 서구 물류센터 개발 계획',
+        type: 'other',
+        region: '인천',
+        district: '서구',
+        location: '인천 서구',
+        date: '2023.12.11',
+        createDate: '자료생성일: 2023.12.11',
+        fileSize: '18.2MB',
+        fileType: 'PDF',
+        pages: 78,
+        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
+        supplyType: '기타',
+        isPremium: false,
+        keywords: ['물류센터', '인천', '산업시설'],
+        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+        description: '인천 서구 물류센터 개발 사업 계획',
+        pdfPath: null,
     },
 ];
 
@@ -676,7 +1199,7 @@ function filterDocuments() {
 
 // 페이지네이션 관련 변수
 let currentPage = 1;
-const itemsPerPage = 15; // 한 페이지에 15개 문서 표시
+const itemsPerPage = 14; // 한 페이지에 14개 문서 표시
 
 // 문서 렌더링
 function renderDocuments(documents) {
@@ -748,21 +1271,6 @@ function renderDocuments(documents) {
                             <span>${doc.points}P</span>
                         </div>
                         <div class="document-actions" style="display: flex; gap: 4px;">
-                            <button class="btn-action-mini" onclick="event.stopPropagation(); handleDirectDownload(${doc.id}, ${doc.points})" title="다운로드" style="
-                                width: 28px;
-                                height: 28px;
-                                border-radius: 6px;
-                                border: none;
-                                background: #fafbfc;
-                                color: #cbd5e1;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                cursor: pointer;
-                                transition: all 0.2s ease;
-                            " onmouseover="this.style.background='${productType.color}'; this.style.color='white'" onmouseout="this.style.background='#fafbfc'; this.style.color='#cbd5e1'">
-                                <i class="fas fa-download" style="font-size: 12px;"></i>
-                            </button>
                             <button class="btn-action-mini" onclick="event.stopPropagation(); addToCart(${doc.id})" title="장바구니 담기" style="
                                 width: 28px;
                                 height: 28px;
@@ -777,6 +1285,21 @@ function renderDocuments(documents) {
                                 transition: all 0.2s ease;
                             " onmouseover="this.style.background='${productType.color}'; this.style.color='white'" onmouseout="this.style.background='#fafbfc'; this.style.color='#cbd5e1'">
                                 <i class="fas fa-shopping-cart" style="font-size: 12px;"></i>
+                            </button>
+                            <button class="btn-action-mini" onclick="event.stopPropagation(); handleDirectDownload(${doc.id}, ${doc.points})" title="다운로드" style="
+                                width: 28px;
+                                height: 28px;
+                                border-radius: 6px;
+                                border: none;
+                                background: #fafbfc;
+                                color: #cbd5e1;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                cursor: pointer;
+                                transition: all 0.2s ease;
+                            " onmouseover="this.style.background='${productType.color}'; this.style.color='white'" onmouseout="this.style.background='#fafbfc'; this.style.color='#cbd5e1'">
+                                <i class="fas fa-download" style="font-size: 12px;"></i>
                             </button>
                         </div>
                     </div>
@@ -837,21 +1360,44 @@ function updatePagination(totalItems, totalPages) {
     pagination.style.display = 'flex';
     pagination.innerHTML = '';
 
+    // 처음 버튼
+    const firstLink = document.createElement('a');
+    firstLink.href = '#';
+    firstLink.textContent = '처음';
+    if (currentPage === 1) {
+        firstLink.className = 'disabled';
+    }
+    firstLink.onclick = (e) => {
+        e.preventDefault();
+        if (currentPage !== 1) {
+            currentPage = 1;
+            applyFilters();
+        }
+    };
+    pagination.appendChild(firstLink);
+
     // 이전 버튼
-    const prevBtn = document.createElement('button');
-    prevBtn.className = 'page-btn';
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.onclick = () => {
+    const prevLink = document.createElement('a');
+    prevLink.href = '#';
+    prevLink.textContent = '이전';
+    if (currentPage === 1) {
+        prevLink.className = 'disabled';
+    }
+    prevLink.onclick = (e) => {
+        e.preventDefault();
         if (currentPage > 1) {
             currentPage--;
             applyFilters();
         }
     };
-    pagination.appendChild(prevBtn);
+    pagination.appendChild(prevLink);
 
-    // 페이지 번호 계산 (최대 15개)
-    const maxVisiblePages = 15;
+    // 페이지 번호를 감싸는 컨테이너
+    const pageNumbers = document.createElement('div');
+    pageNumbers.className = 'page-numbers';
+
+    // 페이지 번호 계산 (최대 5개 표시)
+    const maxVisiblePages = 5;
     let startPage = 1;
     let endPage = Math.min(totalPages, maxVisiblePages);
 
@@ -871,74 +1417,58 @@ function updatePagination(totalItems, totalPages) {
         }
     }
 
-    // 첫 페이지로 가기 버튼 (생략 기호와 함께)
-    if (startPage > 1) {
-        const firstBtn = document.createElement('button');
-        firstBtn.className = 'page-btn';
-        firstBtn.textContent = '1';
-        firstBtn.onclick = () => {
-            currentPage = 1;
-            applyFilters();
-        };
-        pagination.appendChild(firstBtn);
-
-        if (startPage > 2) {
-            const ellipsis = document.createElement('span');
-            ellipsis.className = 'page-ellipsis';
-            ellipsis.textContent = '...';
-            pagination.appendChild(ellipsis);
-        }
-    }
-
-    // 페이지 번호 버튼들
+    // 페이지 번호 링크들
     for (let i = startPage; i <= endPage; i++) {
-        const pageBtn = document.createElement('button');
-        pageBtn.className = 'page-btn';
-        pageBtn.textContent = i;
+        const pageLink = document.createElement('a');
+        pageLink.href = '#';
+        pageLink.textContent = i;
 
         if (i === currentPage) {
-            pageBtn.classList.add('active');
+            pageLink.className = 'active';
         }
 
-        pageBtn.onclick = () => {
+        pageLink.onclick = (e) => {
+            e.preventDefault();
             currentPage = i;
             applyFilters();
         };
 
-        pagination.appendChild(pageBtn);
+        pageNumbers.appendChild(pageLink);
     }
 
-    // 마지막 페이지로 가기 버튼 (생략 기호와 함께)
-    if (endPage < totalPages) {
-        if (endPage < totalPages - 1) {
-            const ellipsis = document.createElement('span');
-            ellipsis.className = 'page-ellipsis';
-            ellipsis.textContent = '...';
-            pagination.appendChild(ellipsis);
-        }
-
-        const lastBtn = document.createElement('button');
-        lastBtn.className = 'page-btn';
-        lastBtn.textContent = totalPages;
-        lastBtn.onclick = () => {
-            currentPage = totalPages;
-            applyFilters();
-        };
-        pagination.appendChild(lastBtn);
-    }
+    pagination.appendChild(pageNumbers);
 
     // 다음 버튼
-    const nextBtn = document.createElement('button');
-    nextBtn.className = 'page-btn';
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.disabled = currentPage === totalPages;
-    nextBtn.onclick = () => {
+    const nextLink = document.createElement('a');
+    nextLink.href = '#';
+    nextLink.textContent = '다음';
+    if (currentPage === totalPages) {
+        nextLink.className = 'disabled';
+    }
+    nextLink.onclick = (e) => {
+        e.preventDefault();
         if (currentPage < totalPages) {
             currentPage++;
             applyFilters();
         }
     };
-    pagination.appendChild(nextBtn);
+    pagination.appendChild(nextLink);
+
+    // 끝 버튼
+    const lastLink = document.createElement('a');
+    lastLink.href = '#';
+    lastLink.textContent = '끝';
+    if (currentPage === totalPages) {
+        lastLink.className = 'disabled';
+    }
+    lastLink.onclick = (e) => {
+        e.preventDefault();
+        if (currentPage !== totalPages) {
+            currentPage = totalPages;
+            applyFilters();
+        }
+    };
+    pagination.appendChild(lastLink);
 }
 
 // 결과 수 업데이트
