@@ -72,7 +72,7 @@
 
 .search-box input:focus {
     outline: none;
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
 }
 
@@ -98,7 +98,7 @@
 
 .filter-title i {
     font-size: 12px;
-    color: #2E8CE6;
+    color: #2e8ce6;
 }
 
 /* nav-selector 스타일 */
@@ -126,13 +126,13 @@
 
 .nav-selector:hover {
     background: white;
-    border-color: #2E8CE6;
-    color: #2E8CE6;
+    border-color: #2e8ce6;
+    color: #2e8ce6;
 }
 
 .nav-selector.selected {
-    background: #2E8CE6;
-    border-color: #2E8CE6;
+    background: #2e8ce6;
+    border-color: #2e8ce6;
     color: white;
 }
 
@@ -202,8 +202,8 @@
 
 .checkbox-tab.active,
 .checkbox-tab:has(input:checked) {
-    background: #2E8CE6;
-    border-color: #2E8CE6;
+    background: #2e8ce6;
+    border-color: #2e8ce6;
     color: white;
 }
 
@@ -236,21 +236,25 @@
 }
 
 .sub-region-tabs .checkbox-tab .tab-check::after {
-    content: '\2713' !important;
+    content: "\2713" !important;
     color: white !important;
     font-weight: 700 !important;
     font-size: 10px !important;
 }
 
 .sub-region-tabs .checkbox-tab.active {
-    background: #2E8CE6 !important;
-    border-color: #2E8CE6 !important;
+    background: #2e8ce6 !important;
+    border-color: #2e8ce6 !important;
     color: white !important;
 }
 
 /* 선택된 지역 표시 - 분양영업 페이지와 동일한 스타일 적용 */
 .selected-regions {
-    background: linear-gradient(135deg, rgba(46, 140, 230, 0.08), rgba(46, 140, 230, 0.04));
+    background: linear-gradient(
+        135deg,
+        rgba(46, 140, 230, 0.08),
+        rgba(46, 140, 230, 0.04)
+    );
     padding: 14px 18px;
     border-radius: 12px;
     margin-bottom: 20px;
@@ -278,10 +282,10 @@
     gap: 6px;
     padding: 5px 12px;
     background: white;
-    border: 1px solid #2E8CE6;
+    border: 1px solid #2e8ce6;
     border-radius: 20px;
     font-size: 12px;
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-weight: 500;
     transition: all 0.2s ease;
 }
@@ -380,7 +384,7 @@
 }
 
 .result-summary strong {
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-weight: 600;
 }
 
@@ -409,8 +413,8 @@
 }
 
 .sort-btn.active {
-    color: #2E8CE6;
-    border-bottom-color: #2E8CE6;
+    color: #2e8ce6;
+    border-bottom-color: #2e8ce6;
     font-weight: 600;
 }
 
@@ -465,7 +469,7 @@
 .document-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
 }
 
 .document-header {
@@ -482,14 +486,22 @@
     border-radius: 100px;
     font-size: 12px;
     font-weight: 600;
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
 }
 
-.document-type.apartment { background: #3b82f6; }
-.document-type.officetel { background: #8b5cf6; }
-.document-type.commercial { background: #ec4899; }
-.document-type.knowledge { background: #10b981; }
+.document-type.apartment {
+    background: #3b82f6;
+}
+.document-type.officetel {
+    background: #8b5cf6;
+}
+.document-type.commercial {
+    background: #ec4899;
+}
+.document-type.knowledge {
+    background: #10b981;
+}
 
 .menu-btn {
     width: 28px;
@@ -574,12 +586,16 @@
     display: inline-flex;
     align-items: center;
     padding: 4px 10px;
-    background: linear-gradient(135deg, rgba(46, 140, 230, 0.1), rgba(46, 140, 230, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(46, 140, 230, 0.1),
+        rgba(46, 140, 230, 0.05)
+    );
     border: 1px solid rgba(46, 140, 230, 0.2);
     border-radius: 16px;
     font-size: 11px;
     font-weight: 500;
-    color: #2E8CE6;
+    color: #2e8ce6;
     transition: all 0.2s ease;
 }
 
@@ -601,7 +617,7 @@
     gap: 6px;
     font-size: 16px;
     font-weight: 600;
-    color: #2E8CE6;
+    color: #2e8ce6;
 }
 
 .price-value i {
@@ -650,8 +666,8 @@
 
 .btn-preview:hover {
     background: #f9fafb;
-    border-color: #2E8CE6;
-    color: #2E8CE6;
+    border-color: #2e8ce6;
+    color: #2e8ce6;
 }
 
 /* 업로드 버튼 */
@@ -666,7 +682,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #2E8CE6;
+    background: #2e8ce6;
     border: none;
     color: white;
     display: flex;
@@ -680,7 +696,7 @@
 .upload-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(46, 140, 230, 0.45);
-    background: #1F7FD4;
+    background: #1f7fd4;
 }
 
 .upload-btn i {
@@ -708,7 +724,7 @@
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    background: rgba(0, 0, 0, 0.7) !important;
+    background: rgba(0, 0, 0, 0.6) !important;
     cursor: pointer !important;
     z-index: 1 !important;
 }
@@ -814,7 +830,7 @@
 }
 
 .thumbnail-item.active {
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     box-shadow: 0 2px 6px rgba(46, 140, 230, 0.3);
 }
 
@@ -893,7 +909,7 @@
     border-radius: 4px;
     font-size: 11px;
     font-weight: 600;
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
 }
 
@@ -960,12 +976,12 @@
 .point-amount {
     font-size: 24px;
     font-weight: 700;
-    color: #2E8CE6;
+    color: #2e8ce6;
 }
 
 .point-unit {
     font-size: 16px;
-    color: #2E8CE6;
+    color: #2e8ce6;
 }
 
 .price-benefits {
@@ -979,7 +995,7 @@
     gap: 5px;
     padding: 3px 6px;
     background: rgba(46, 140, 230, 0.1);
-    color: #2E8CE6;
+    color: #2e8ce6;
     border-radius: 4px;
     font-size: 11px;
     font-weight: 500;
@@ -1060,7 +1076,7 @@
 .btn-download-main {
     flex: 1;
     padding: 12px 16px;
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
     border: none;
     border-radius: 8px;
@@ -1075,7 +1091,7 @@
 }
 
 .btn-download-main:hover {
-    background: #1F7FD4;
+    background: #1f7fd4;
 }
 
 .btn-add-cart {
@@ -1096,8 +1112,8 @@
 }
 
 .btn-add-cart:hover {
-    border-color: #2E8CE6;
-    color: #2E8CE6;
+    border-color: #2e8ce6;
+    color: #2e8ce6;
 }
 
 .btn-favorite {
@@ -1296,13 +1312,18 @@
 
 /* 오른쪽 반 차단 효과 (미리보기 방지) */
 .preview-image::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     right: 0;
     width: 50%;
     height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.9) 70%, white 100%);
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.9) 70%,
+        white 100%
+    );
     pointer-events: none;
 }
 
@@ -1416,7 +1437,11 @@
 
 /* 가격 정보 */
 .price-info {
-    background: linear-gradient(135deg, rgba(46, 140, 230, 0.08), rgba(46, 140, 230, 0.04));
+    background: linear-gradient(
+        135deg,
+        rgba(46, 140, 230, 0.08),
+        rgba(46, 140, 230, 0.04)
+    );
     border: 1px solid rgba(46, 140, 230, 0.15);
     border-radius: 12px;
     padding: 20px;
@@ -1438,19 +1463,19 @@
 }
 
 .price-amount i {
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-size: 20px;
 }
 
 .points {
     font-size: 28px;
     font-weight: 700;
-    color: #2E8CE6;
+    color: #2e8ce6;
 }
 
 .unit {
     font-size: 16px;
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-weight: 500;
 }
 
@@ -1483,19 +1508,19 @@
 }
 
 .btn-modal-preview:hover {
-    border-color: #2E8CE6;
-    color: #2E8CE6;
+    border-color: #2e8ce6;
+    color: #2e8ce6;
 }
 
 .btn-modal-download {
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
-    border: 2px solid #2E8CE6;
+    border: 2px solid #2e8ce6;
 }
 
 .btn-modal-download:hover {
-    background: #1F7FD4;
-    border-color: #1F7FD4;
+    background: #1f7fd4;
+    border-color: #1f7fd4;
 }
 
 .btn-modal-download.disabled {
@@ -1532,14 +1557,14 @@
 }
 
 .page-btn:hover {
-    color: #2E8CE6;
+    color: #2e8ce6;
     border-bottom-color: rgba(46, 140, 230, 0.3);
 }
 
 .page-btn.active {
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-weight: 600;
-    border-bottom-color: #2E8CE6;
+    border-bottom-color: #2e8ce6;
 }
 
 .page-btn:disabled {
@@ -1552,11 +1577,11 @@
     .market-research-container {
         padding: 24px;
     }
-    
+
     .document-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
-    
+
     .preview-container {
         width: 95%;
         height: 90vh;
@@ -1569,15 +1594,15 @@
         align-items: flex-start;
         gap: 12px;
     }
-    
+
     .sort-controls {
         width: 100%;
     }
-    
+
     .document-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .preview-info {
         width: 300px;
     }
@@ -1644,8 +1669,13 @@
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .keywords-container label {
@@ -1765,8 +1795,12 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .warning-content {
@@ -1900,18 +1934,18 @@
         margin: 20px;
         width: calc(100% - 40px);
     }
-    
+
     .warning-header,
     .warning-body,
     .warning-footer {
         padding-left: 16px;
         padding-right: 16px;
     }
-    
+
     .keywords-list {
         gap: 4px;
     }
-    
+
     .keyword-chip {
         font-size: 10px;
         padding: 3px 6px;

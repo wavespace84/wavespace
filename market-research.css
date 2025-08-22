@@ -13,7 +13,11 @@
 }
 
 /* 시장조사서 페이지의 헤더 스타일 */
-body .main-content .market-research-container .market-research-header .market-research-title {
+body
+    .main-content
+    .market-research-container
+    .market-research-header
+    .market-research-title {
     font-size: 24px !important;
     font-weight: 600 !important;
     color: #1f2937 !important;
@@ -22,7 +26,11 @@ body .main-content .market-research-container .market-research-header .market-re
     line-height: 1.3 !important;
 }
 
-body .main-content .market-research-container .market-research-header .market-research-subtitle {
+body
+    .main-content
+    .market-research-container
+    .market-research-header
+    .market-research-subtitle {
     font-size: 14px !important;
     color: #6b7280 !important;
     display: block !important;
@@ -86,7 +94,7 @@ body .main-content .market-research-container .market-research-header .market-re
 
 .search-box input:focus {
     outline: none;
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
 }
 
@@ -153,7 +161,11 @@ body .main-content .market-research-container .market-research-header .market-re
 
 /* 선택된 지역 표시 */
 .selected-regions {
-    background: linear-gradient(135deg, rgba(46, 140, 230, 0.08), rgba(46, 140, 230, 0.04));
+    background: linear-gradient(
+        135deg,
+        rgba(46, 140, 230, 0.08),
+        rgba(46, 140, 230, 0.04)
+    );
     padding: 14px 18px;
     border-radius: 12px;
     margin-bottom: 20px;
@@ -233,7 +245,10 @@ body .main-content .market-research-container .market-research-header .market-re
     position: relative !important;
 }
 
-.market-research-filters .sub-region-tabs.checkbox-tabs .checkbox-tab input[type="radio"] {
+.market-research-filters
+    .sub-region-tabs.checkbox-tabs
+    .checkbox-tab
+    input[type="radio"] {
     display: none !important;
 }
 
@@ -246,13 +261,19 @@ body .main-content .market-research-container .market-research-header .market-re
 /* 상품유형, 공급유형 필터는 공지사항과 동일한 스타일 사용 */
 /* checkbox-interaction.css의 기본 스타일을 그대로 적용하여 충돌 방지 */
 
-.market-research-filters .sub-region-tabs.checkbox-tabs .checkbox-tab.active span {
+.market-research-filters
+    .sub-region-tabs.checkbox-tabs
+    .checkbox-tab.active
+    span {
     color: white !important;
     font-weight: 500 !important;
 }
 
 /* 하위 지역 탭 전용 체크마크 스타일 */
-.market-research-filters .sub-region-tabs.checkbox-tabs .checkbox-tab .tab-check {
+.market-research-filters
+    .sub-region-tabs.checkbox-tabs
+    .checkbox-tab
+    .tab-check {
     width: 0 !important;
     height: 12px !important;
     overflow: hidden !important;
@@ -265,17 +286,26 @@ body .main-content .market-research-container .market-research-header .market-re
     background: transparent !important;
 }
 
-.market-research-filters .sub-region-tabs.checkbox-tabs .checkbox-tab.active .tab-check {
+.market-research-filters
+    .sub-region-tabs.checkbox-tabs
+    .checkbox-tab.active
+    .tab-check {
     width: 12px !important;
     margin-right: 4px !important;
 }
 
-.market-research-filters .sub-region-tabs.checkbox-tabs .checkbox-tab .tab-check::before {
+.market-research-filters
+    .sub-region-tabs.checkbox-tabs
+    .checkbox-tab
+    .tab-check::before {
     display: none !important;
 }
 
-.market-research-filters .sub-region-tabs.checkbox-tabs .checkbox-tab .tab-check::after {
-    content: '\2713' !important;
+.market-research-filters
+    .sub-region-tabs.checkbox-tabs
+    .checkbox-tab
+    .tab-check::after {
+    content: "\2713" !important;
     color: white !important;
     font-weight: 700 !important;
     font-size: 10px !important;
@@ -283,7 +313,10 @@ body .main-content .market-research-container .market-research-header .market-re
     animation: slide-in-subregion 0.3s ease-out !important;
 }
 
-.market-research-filters .sub-region-tabs.checkbox-tabs .checkbox-tab:not(.active) .tab-check::after {
+.market-research-filters
+    .sub-region-tabs.checkbox-tabs
+    .checkbox-tab:not(.active)
+    .tab-check::after {
     display: none !important;
 }
 
@@ -333,17 +366,23 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab.active {
-    background: #2E8CE6;
-    border-color: #2E8CE6;
+    background: #2e8ce6;
+    border-color: #2e8ce6;
     color: white;
 }
 
-.market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab input[type="radio"] {
+.market-research-filters
+    .checkbox-tabs.employment-tabs
+    .checkbox-tab
+    input[type="radio"] {
     display: none;
 }
 
 /* 체크마크 스타일 */
-.market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab .tab-check {
+.market-research-filters
+    .checkbox-tabs.employment-tabs
+    .checkbox-tab
+    .tab-check {
     width: 0;
     height: 14px;
     overflow: hidden;
@@ -356,17 +395,26 @@ body .main-content .market-research-container .market-research-header .market-re
     background: transparent;
 }
 
-.market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab.active .tab-check {
+.market-research-filters
+    .checkbox-tabs.employment-tabs
+    .checkbox-tab.active
+    .tab-check {
     width: 14px;
     margin-right: 4px;
 }
 
-.market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab .tab-check::before {
+.market-research-filters
+    .checkbox-tabs.employment-tabs
+    .checkbox-tab
+    .tab-check::before {
     display: none;
 }
 
-.market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab .tab-check::after {
-    content: '\2713';
+.market-research-filters
+    .checkbox-tabs.employment-tabs
+    .checkbox-tab
+    .tab-check::after {
+    content: "\2713";
     color: white;
     font-weight: 700;
     font-size: 12px;
@@ -374,17 +422,24 @@ body .main-content .market-research-container .market-research-header .market-re
     animation: slide-in-check 0.3s ease-out;
 }
 
-.market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab:not(.active) .tab-check::after {
+.market-research-filters
+    .checkbox-tabs.employment-tabs
+    .checkbox-tab:not(.active)
+    .tab-check::after {
     display: none;
 }
 
 /* 첫 번째 탭(전체) 테두리 보정 */
-.market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab:first-child {
+.market-research-filters
+    .checkbox-tabs.employment-tabs
+    .checkbox-tab:first-child {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
 }
 
-.market-research-filters .checkbox-tabs.employment-tabs .checkbox-tab:first-child:not(.active) {
+.market-research-filters
+    .checkbox-tabs.employment-tabs
+    .checkbox-tab:first-child:not(.active) {
     border-left: 1px solid #e5e7eb;
     border-top: 1px solid #e5e7eb;
     border-bottom: 1px solid #e5e7eb;
@@ -413,7 +468,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .sub-region-row::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -428,8 +483,6 @@ body .main-content .market-research-container .market-research-header .market-re
     flex-wrap: wrap;
     gap: 8px;
 }
-
-
 
 /* 선택된 지역 표시 영역 - 분양영업 페이지와 동일 */
 .selected-regions {
@@ -490,7 +543,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .sub-region-row::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -581,7 +634,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .sub-region-tabs .checkbox-tab .tab-check::after {
-    content: '\2713' !important;
+    content: "\2713" !important;
     color: white !important;
     font-weight: 700 !important;
     font-size: 10px !important;
@@ -633,15 +686,18 @@ body .main-content .market-research-container .market-research-header .market-re
     color: white !important;
 }
 
-
 /* 광고 배너 섹션 */
 .ad-banner-section {
-    margin: 24px 0;  /* 구인구직 페이지와 동일한 여백 */
+    margin: 24px 0; /* 구인구직 페이지와 동일한 여백 */
 }
 
 .ad-banner {
     position: relative;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* 원래 보라색 그라데이션 유지 */
+    background: linear-gradient(
+        135deg,
+        #667eea 0%,
+        #764ba2 100%
+    ); /* 원래 보라색 그라데이션 유지 */
     border-radius: 16px;
     padding: 24px 32px;
     color: white;
@@ -651,7 +707,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .ad-banner::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     right: -10%;
@@ -756,7 +812,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .result-summary strong {
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-weight: 600;
 }
 
@@ -790,8 +846,8 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .sort-btn.active {
-    color: #2E8CE6;
-    border-bottom-color: #2E8CE6;
+    color: #2e8ce6;
+    border-bottom-color: #2e8ce6;
     font-weight: 600;
 }
 
@@ -813,13 +869,13 @@ body .main-content .market-research-container .market-research-header .market-re
     margin-bottom: 48px;
 }
 
-/* 문서 카드 - 새로운 스타일 */
+/* 문서 카드 - 깨끗한 디자인 */
 .document-card {
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid transparent;
     transition: all 0.2s ease;
     position: relative;
     display: flex;
@@ -831,7 +887,8 @@ body .main-content .market-research-container .market-research-header .market-re
 
 .document-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-    border-color: #d1d5db;
+    transform: none;
+    border-color: #2e8ce6;
 }
 
 /* 문서 썸네일 */
@@ -885,13 +942,13 @@ body .main-content .market-research-container .market-research-header .market-re
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
-/* 문서 정보 - 새로운 스타일 */
+/* 문서 정보 - 깨끗한 스타일 */
 .document-info {
-    padding: 8px 12px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     flex: 1;
-    gap: 2px;
+    gap: 0;
 }
 
 /* 문서 헤더 - 상단 정보 영역 */
@@ -999,7 +1056,7 @@ body .main-content .market-research-container .market-research-header .market-re
     font-size: 17px;
     font-weight: 600;
     color: #1f2937;
-    margin: 16px 0 4px 0;
+    margin: 8px 0 2px 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -1026,10 +1083,10 @@ body .main-content .market-research-container .market-research-header .market-re
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
-    gap: 8px;
-    margin: 6px 0;
+    gap: 12px;
+    margin: 8px 0 10px 0;
     font-size: 11px;
-    color: #6b7280;
+    color: #9ca3af;
 }
 
 .meta-info-item {
@@ -1055,29 +1112,28 @@ body .main-content .market-research-container .market-research-header .market-re
     align-items: center;
     justify-content: space-between;
     margin-top: auto;
-    padding-top: 8px;
-    border-top: 1px solid #f3f4f6;
+    padding-top: 4px;
 }
 
 .points-badge {
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 5px 10px;
+    padding: 4px 10px;
     background: #fef3c7;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: #f59e0b;
 }
 
 .points-badge i {
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .document-actions-mini {
     display: flex;
-    gap: 4px;
+    gap: 6px;
 }
 
 .download-btn {
@@ -1085,7 +1141,7 @@ body .main-content .market-research-container .market-research-header .market-re
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
     border: none;
     border-radius: 8px;
@@ -1096,7 +1152,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .download-btn:hover {
-    background: #1F7FD4;
+    background: #1f7fd4;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(46, 140, 230, 0.3);
 }
@@ -1111,29 +1167,29 @@ body .main-content .market-research-container .market-research-header .market-re
     gap: 8px;
     margin-top: auto;
     padding-top: 12px;
-    border-top: 1px solid #f3f4f6;
     justify-content: flex-end;
 }
 
 /* 미니 액션 버튼 스타일 */
 .btn-action-mini {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border-radius: 6px;
-    border: 1px solid #e5e7eb;
-    background: white;
-    color: #6b7280;
+    border: 1px solid transparent;
+    background: #f9fafb;
+    color: #9ca3af;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .btn-action-mini:hover {
-    background: #f3f4f6;
-    border-color: #d1d5db;
+    background: #e5e7eb;
+    color: #6b7280;
+    transform: scale(1.05);
 }
 
 .btn-action-mini.btn-menu {
@@ -1184,12 +1240,12 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .btn-download {
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
 }
 
 .btn-download:hover {
-    background: #1F7FD4;
+    background: #1f7fd4;
 }
 
 .btn-detail {
@@ -1203,19 +1259,86 @@ body .main-content .market-research-container .market-research-header .market-re
     border-color: #d1d5db;
 }
 
+.btn-report {
+    background: #f3f4f6;
+    color: #6b7280;
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: none;
+}
+
+.btn-report:hover {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+
 /* 업로드 버튼 */
 .upload-btn-wrapper {
     position: fixed;
     bottom: 32px;
     right: 32px;
+    width: 80px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
     z-index: 1000;
+    pointer-events: none;
+}
+
+/* 업로드 라벨 (말풍선) */
+.upload-label {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--primary-blue);
+    font-size: 14px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(46, 140, 230, 0.2);
+    animation: float 3s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+/* 불규칙한 곡선 SVG */
+.upload-curve {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 80px;
+    opacity: 0.6;
 }
 
 .upload-btn {
+    position: relative;
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #2E8CE6;
+    background: #2e8ce6;
     border: none;
     color: white;
     display: flex !important;
@@ -1225,12 +1348,23 @@ body .main-content .market-research-container .market-research-header .market-re
     box-shadow: 0 4px 12px rgba(46, 140, 230, 0.35);
     transition: all 0.3s ease;
     visibility: visible !important;
+    pointer-events: all;
 }
 
 .upload-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(46, 140, 230, 0.45);
-    background: #1F7FD4;
+    background: #1f7fd4;
+}
+
+/* 호버 시 라벨과 곡선 숨기기 */
+.upload-btn:hover ~ .upload-label,
+.upload-btn:hover ~ .upload-curve {
+    opacity: 0;
+}
+
+.upload-btn:active {
+    transform: scale(0.95);
 }
 
 .upload-btn i {
@@ -1302,10 +1436,10 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .upload-modal .modal-title::before {
-    content: '\f0ee';
-    font-family: 'Font Awesome 5 Free';
+    content: "\f0ee";
+    font-family: "Font Awesome 5 Free";
     font-weight: 900;
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-size: 24px;
 }
 
@@ -1386,7 +1520,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .step-header h3 i {
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-size: 24px;
 }
 
@@ -1410,27 +1544,34 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .upload-modal .file-upload-area:hover {
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     background: rgba(46, 140, 230, 0.05);
     transform: translateY(-2px);
 }
 
 .upload-modal .file-upload-area.drag-over {
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     background: rgba(46, 140, 230, 0.1);
     transform: scale(1.02);
 }
 
 .upload-modal .upload-icon {
     font-size: 64px;
-    color: #2E8CE6;
+    color: #2e8ce6;
     margin-bottom: 24px;
     animation: uploadPulse 2s infinite;
 }
 
 @keyframes uploadPulse {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.1); opacity: 1; }
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
 }
 
 .upload-modal .upload-text {
@@ -1485,7 +1626,7 @@ body .main-content .market-research-container .market-research-header .market-re
 
 .thumbnail-item:hover {
     transform: scale(1.05);
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     box-shadow: 0 4px 12px rgba(46, 140, 230, 0.2);
 }
 
@@ -1533,7 +1674,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .meta-item i {
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-size: 16px;
 }
 
@@ -1572,12 +1713,12 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .btn-next {
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
 }
 
 .btn-next:hover {
-    background: #1F7FD4;
+    background: #1f7fd4;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(46, 140, 230, 0.3);
 }
@@ -1608,15 +1749,19 @@ body .main-content .market-research-container .market-research-header .market-re
     width: 40px;
     height: 40px;
     border: 4px solid #e5e7eb;
-    border-top: 4px solid #2E8CE6;
+    border-top: 4px solid #2e8ce6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .analysis-loading p {
@@ -1645,10 +1790,10 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .form-section h4::before {
-    content: '';
+    content: "";
     width: 4px;
     height: 16px;
-    background: #2E8CE6;
+    background: #2e8ce6;
     border-radius: 2px;
 }
 
@@ -1684,7 +1829,7 @@ body .main-content .market-research-container .market-research-header .market-re
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
 }
 
@@ -1718,7 +1863,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .dropdown-btn:hover {
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
 }
 
 .dropdown-btn:disabled {
@@ -1756,7 +1901,7 @@ body .main-content .market-research-container .market-research-header .market-re
 
 .dropdown-item:hover {
     background: #f8fafc;
-    color: #2E8CE6;
+    color: #2e8ce6;
 }
 
 .dropdown-item:last-child {
@@ -1789,15 +1934,15 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .product-type-item:hover {
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     background: rgba(46, 140, 230, 0.05);
     transform: translateY(-2px);
 }
 
 .product-type-item.selected {
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     background: rgba(46, 140, 230, 0.1);
-    color: #2E8CE6;
+    color: #2e8ce6;
 }
 
 .product-type-item i {
@@ -1808,7 +1953,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .product-type-item.selected i {
-    color: #2E8CE6;
+    color: #2e8ce6;
 }
 
 .product-type-item span {
@@ -1818,7 +1963,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .product-type-item.selected span {
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-weight: 600;
 }
 
@@ -1913,7 +2058,7 @@ body .main-content .market-research-container .market-research-header .market-re
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
     border-radius: 20px;
     font-size: 12px;
@@ -1923,7 +2068,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .keyword-tag:hover {
-    background: #1F7FD4;
+    background: #1f7fd4;
     transform: scale(1.05);
 }
 
@@ -1946,7 +2091,7 @@ body .main-content .market-research-container .market-research-header .market-re
     width: 40px;
     height: 40px;
     border: none;
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
     border-radius: 8px;
     cursor: pointer;
@@ -1957,7 +2102,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .btn-add-keyword:hover {
-    background: #1F7FD4;
+    background: #1f7fd4;
     transform: scale(1.05);
 }
 
@@ -2039,19 +2184,19 @@ body .main-content .market-research-container .market-research-header .market-re
         width: 98%;
         max-height: 98vh;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     .product-type-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .file-preview-card {
         flex-direction: column;
     }
-    
+
     .thumbnail-grid {
         max-width: 100%;
     }
@@ -2097,7 +2242,7 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .region-tag:hover {
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     background: rgba(46, 140, 230, 0.05);
 }
 
@@ -2159,14 +2304,14 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .page-btn:hover {
-    color: #2E8CE6;
+    color: #2e8ce6;
     border-bottom-color: rgba(0, 102, 255, 0.3);
 }
 
 .page-btn.active {
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-weight: 600;
-    border-bottom-color: #2E8CE6;
+    border-bottom-color: #2e8ce6;
 }
 
 .page-btn:disabled {
@@ -2192,52 +2337,15 @@ body .main-content .market-research-container .market-research-header .market-re
     user-select: none;
 }
 
-/* 미리보기 모달 네비게이션 버튼 */
-.preview-nav {
+/* 미리보기 모달 헤더 */
+.preview-header {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #e5e7eb;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.preview-nav:hover:not(:disabled) {
-    background: white;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.preview-nav:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.preview-nav-prev {
-    left: 20px;
-}
-
-.preview-nav-next {
+    top: 20px;
     right: 20px;
+    z-index: 10;
 }
 
-.preview-nav i {
-    font-size: 20px;
-    color: #6b7280;
-}
-
-.preview-nav:hover:not(:disabled) i {
-    color: #2E8CE6;
-}
+/* 기존 측면 네비게이션 버튼 스타일 제거 - common.css의 modal-nav-btn 사용 */
 
 /* 문서 카운터 스타일 */
 .preview-document-counter {
@@ -2334,13 +2442,13 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .simple-upload-zone:hover {
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     background: rgba(46, 140, 230, 0.05);
 }
 
 .simple-upload-zone.has-file {
     background: #f0f9ff;
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     border-style: solid;
 }
 
@@ -2349,9 +2457,9 @@ body .main-content .market-research-container .market-research-header .market-re
     margin-top: 16px;
     padding: 10px 16px;
     background: #f0f9ff;
-    border: 1px solid #2E8CE6;
+    border: 1px solid #2e8ce6;
     border-radius: 8px;
-    color: #2E8CE6;
+    color: #2e8ce6;
     font-size: 13px;
     font-weight: 400;
     display: inline-flex;
@@ -2366,7 +2474,7 @@ body .main-content .market-research-container .market-research-header .market-re
 
 .simple-upload-icon {
     font-size: 48px;
-    color: #2E8CE6;
+    color: #2e8ce6;
     margin-bottom: 16px;
 }
 
@@ -2470,7 +2578,7 @@ body .main-content .market-research-container .market-research-header .market-re
 
 .simple-form-input:focus {
     outline: none;
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
     box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
 }
 
@@ -2498,9 +2606,9 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .simple-select-btn.active {
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
 }
 
 /* 액션 버튼 */
@@ -2533,12 +2641,12 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .simple-btn-upload {
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
 }
 
 .simple-btn-upload:hover {
-    background: #1F7FD4;
+    background: #1f7fd4;
 }
 
 .simple-btn-upload:disabled {
@@ -2594,6 +2702,17 @@ body .main-content .market-research-container .market-research-header .market-re
     gap: 12px;
 }
 
+.upload-region-selectors select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f9fafb;
+}
+
+.upload-region-selectors select:enabled {
+    background: white;
+    cursor: pointer;
+}
+
 .upload-product-types {
     display: flex;
     flex-wrap: wrap;
@@ -2627,9 +2746,9 @@ body .main-content .market-research-container .market-research-header .market-re
 }
 
 .upload-type-btn.active {
-    background: #2E8CE6;
+    background: #2e8ce6;
     color: white;
-    border-color: #2E8CE6;
+    border-color: #2e8ce6;
 }
 
 .upload-type-btn i {
@@ -2684,7 +2803,7 @@ body .main-content .market-research-container .market-research-header .market-re
     .document-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
-    
+
     .upload-product-types,
     .upload-supply-types {
         grid-template-columns: repeat(2, 1fr);
@@ -2711,6 +2830,32 @@ body .main-content .market-research-container .market-research-header .market-re
     .document-grid {
         grid-template-columns: 1fr;
     }
+    
+    /* 모바일에서 업로드 버튼 스타일 조정 */
+    .upload-btn-wrapper {
+        bottom: 20px;
+        right: 20px;
+        width: 120px;
+        height: 120px;
+    }
+    
+    .upload-btn {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .upload-label {
+        font-size: 12px;
+        padding: 4px 10px;
+        top: 15px;
+        left: 5px;
+    }
+    
+    .upload-curve {
+        width: 60px;
+        height: 60px;
+        top: 35px;
+    }
 }
 
 /* ===========================================
@@ -2722,7 +2867,7 @@ body .main-content .market-research-container .market-research-header .market-re
     position: fixed;
     font-size: 24px;
     font-weight: bold;
-    color: #0066FF;
+    color: #0066ff;
     z-index: 10000;
     pointer-events: none;
     text-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
@@ -2731,19 +2876,19 @@ body .main-content .market-research-container .market-research-header .market-re
 /* 포인트 증가 하이라이트 효과 */
 .points-increasing {
     animation: pulse 0.5s ease-out;
-    color: #0066FF !important;
+    color: #0066ff !important;
     text-shadow: 0 0 20px rgba(0, 102, 255, 0.5);
 }
 
 @keyframes pulse {
-    0% { 
+    0% {
         transform: scale(1);
     }
-    50% { 
+    50% {
         transform: scale(1.2);
-        color: #0099FF;
+        color: #0099ff;
     }
-    100% { 
+    100% {
         transform: scale(1);
     }
 }
@@ -2802,4 +2947,161 @@ body .main-content .market-research-container .market-research-header .market-re
 .toast-error i {
     color: #dc2626;
     font-size: 20px;
+}
+
+/* 신고 모달 스타일 */
+.report-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.report-modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 480px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.report-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.report-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.report-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.report-modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.report-form-group {
+    margin-bottom: 20px;
+}
+
+.report-form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.report-form-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+.report-form-textarea:focus {
+    outline: none;
+    border-color: #2e8ce6;
+    box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
+}
+
+.report-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.report-submit-btn,
+.report-cancel-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.report-submit-btn {
+    background: #dc2626;
+    color: white;
+}
+
+.report-submit-btn:hover {
+    background: #b91c1c;
+}
+
+.report-cancel-btn {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.report-cancel-btn:hover {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+
+/* 미리보기 단일 페이지 레이아웃 */
+.preview-single-page-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 16px;
+}
+
+.preview-single-page-layout .preview-page {
+    flex: none;
+    width: auto;
+    max-width: 400px;
+}
+
+.preview-single-page-layout .page-label {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2e8ce6;
+    margin-bottom: 8px;
+}
+
+.preview-single-page-layout canvas {
+    width: 100%;
+    height: auto;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: white;
 }

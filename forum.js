@@ -1,5 +1,9 @@
 // forum.js - 자유게시판 페이지 동적 기능
 
+// 네비게이션 관련 변수
+let currentPostIndex = -1;
+let currentFilteredPosts = [];
+
 // 인기 게시글 데이터
 const popularPosts = [
     {
@@ -300,9 +304,17 @@ function createModalTemplate() {
                     <span class="modal-category-badge"></span>
                     <h2 class="post-detail-title"></h2>
                 </div>
-                <button class="modal-close" onclick="closePostDetail()">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="modal-nav-buttons">
+                    <button class="modal-nav-btn" id="prevPostBtn" onclick="navigatePost('prev')" title="이전 게시글">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="modal-nav-btn" id="nextPostBtn" onclick="navigatePost('next')" title="다음 게시글">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="modal-nav-btn modal-close" onclick="closePostDetail()" title="닫기">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
             <div class="modal-body">
                 <div class="post-detail-meta" style="display:none;">
@@ -349,8 +361,17 @@ function createModalTemplate() {
 
 // 게시글 상세 모달 표시 (최적화)
 function showPostDetail(post) {
+    // 현재 필터된 게시글 목록 가져오기
+    currentFilteredPosts = getCurrentFilteredPosts();
+    
+    // 현재 게시글의 인덱스 찾기
+    currentPostIndex = currentFilteredPosts.findIndex(p => p.id === post.id);
+    
     // 모달이 없으면 생성
     const modal = createModalTemplate();
+    
+    // 네비게이션 버튼 상태 업데이트
+    updatePostNavButtons();
     
     // 빠른 DOM 업데이트
     requestAnimationFrame(() => {
@@ -458,6 +479,47 @@ function closePostDetail() {
             modal.style.transition = '';
         }, 300);
     }
+}
+
+// 게시글 네비게이션 함수
+function navigatePost(direction) {
+    if (!currentFilteredPosts || currentFilteredPosts.length === 0) return;
+    
+    if (direction === 'prev' && currentPostIndex > 0) {
+        currentPostIndex--;
+    } else if (direction === 'next' && currentPostIndex < currentFilteredPosts.length - 1) {
+        currentPostIndex++;
+    } else {
+        return;
+    }
+    
+    const post = currentFilteredPosts[currentPostIndex];
+    if (post) {
+        showPostDetail(post);
+    }
+}
+
+// 네비게이션 버튼 상태 업데이트
+function updatePostNavButtons() {
+    const prevBtn = document.getElementById('prevPostBtn');
+    const nextBtn = document.getElementById('nextPostBtn');
+    
+    if (prevBtn && nextBtn) {
+        prevBtn.disabled = currentPostIndex <= 0;
+        nextBtn.disabled = currentPostIndex >= currentFilteredPosts.length - 1;
+    }
+}
+
+// 현재 필터된 게시글 목록 가져오기
+function getCurrentFilteredPosts() {
+    // 현재 보이는 게시글 목록 반환 (인기 게시글 또는 전체 게시글)
+    const hotPostsSection = document.querySelector('.hot-posts');
+    if (hotPostsSection && hotPostsSection.style.display !== 'none') {
+        return popularPosts;
+    }
+    
+    // 필터된 게시글이 있으면 반환, 없으면 전체 게시글 반환
+    return filteredPosts || allPosts;
 }
 
 // 인기 게시글 숨기기
