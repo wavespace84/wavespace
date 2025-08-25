@@ -29,7 +29,6 @@
     color: var(--gray-600);
 }
 
-
 /* 혜택 섹션 */
 .benefits-section {
     padding: 0 0 32px 0;
@@ -433,12 +432,12 @@
     .benefits-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .pricing-cards {
         grid-template-columns: 1fr;
         gap: 32px;
     }
-    
+
     .pricing-card.featured {
         transform: scale(1);
     }
@@ -448,15 +447,15 @@
     .membership-hero {
         padding: 60px 24px;
     }
-    
+
     .hero-title {
         font-size: 36px;
     }
-    
+
     .benefits-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .section-title {
         font-size: 28px;
     }

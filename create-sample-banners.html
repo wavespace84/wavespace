@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <title>샘플 배너 생성기</title>
+        <style>
+            body {
+                font-family:
+                    'Pretendard',
+                    -apple-system,
+                    sans-serif;
+                padding: 20px;
+                background: #f5f5f5;
+            }
+            .banner-canvas {
+                width: 1200px;
+                height: 180px;
+                margin: 20px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 32px;
+                font-weight: bold;
+                border-radius: 16px;
+                position: relative;
+                overflow: hidden;
+            }
+            .banner1 {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            .banner2 {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            }
+            .banner3 {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            }
+            .download-btn {
+                padding: 10px 20px;
+                background: #3080ff;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                margin: 10px;
+            }
+            .instructions {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+            h2 {
+                color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="instructions">
+            <h2>배너 이미지 생성 가이드</h2>
+            <p>아래 배너 디자인을 마우스 우클릭하여 "이미지로 저장"을 선택하세요.</p>
+            <p>
+                저장 위치:
+                <code>D:\wavespace\images\banners\</code>
+            </p>
+            <p>파일명: banner1.jpg, banner2.jpg, banner3.jpg</p>
+        </div>
+
+        <h3>배너 1 - WAVE SPACE 프로모션</h3>
+        <canvas id="banner1" width="1200" height="180"></canvas>
+
+        <h3>배너 2 - 신규 회원 이벤트</h3>
+        <canvas id="banner2" width="1200" height="180"></canvas>
+
+        <h3>배너 3 - 플러스 멤버십</h3>
+        <canvas id="banner3" width="1200" height="180"></canvas>
+
+        <script>
+            // 배너 1
+            const canvas1 = document.getElementById('banner1');
+            const ctx1 = canvas1.getContext('2d');
+
+            // 그라데이션 배경
+            const gradient1 = ctx1.createLinearGradient(0, 0, 1200, 180);
+            gradient1.addColorStop(0, '#667eea');
+            gradient1.addColorStop(1, '#764ba2');
+            ctx1.fillStyle = gradient1;
+            ctx1.fillRect(0, 0, 1200, 180);
+
+            // 텍스트
+            ctx1.fillStyle = 'white';
+            ctx1.font = 'bold 36px Pretendard, sans-serif';
+            ctx1.textAlign = 'center';
+            ctx1.textBaseline = 'middle';
+            ctx1.fillText('WAVE SPACE와 함께하는 부동산 혁신', 600, 70);
+            ctx1.font = '20px Pretendard, sans-serif';
+            ctx1.fillText('대한민국 No.1 분양실무자 커뮤니티', 600, 110);
+
+            // 배너 2
+            const canvas2 = document.getElementById('banner2');
+            const ctx2 = canvas2.getContext('2d');
+
+            const gradient2 = ctx2.createLinearGradient(0, 0, 1200, 180);
+            gradient2.addColorStop(0, '#f093fb');
+            gradient2.addColorStop(1, '#f5576c');
+            ctx2.fillStyle = gradient2;
+            ctx2.fillRect(0, 0, 1200, 180);
+
+            ctx2.fillStyle = 'white';
+            ctx2.font = 'bold 36px Pretendard, sans-serif';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'middle';
+            ctx2.fillText('🎉 신규 회원 가입 이벤트', 600, 70);
+            ctx2.font = '20px Pretendard, sans-serif';
+            ctx2.fillText('지금 가입하면 1,000 포인트 즉시 지급!', 600, 110);
+
+            // 배너 3
+            const canvas3 = document.getElementById('banner3');
+            const ctx3 = canvas3.getContext('2d');
+
+            const gradient3 = ctx3.createLinearGradient(0, 0, 1200, 180);
+            gradient3.addColorStop(0, '#4facfe');
+            gradient3.addColorStop(1, '#00f2fe');
+            ctx3.fillStyle = gradient3;
+            ctx3.fillRect(0, 0, 1200, 180);
+
+            ctx3.fillStyle = 'white';
+            ctx3.font = 'bold 36px Pretendard, sans-serif';
+            ctx3.textAlign = 'center';
+            ctx3.textBaseline = 'middle';
+            ctx3.fillText('⭐ Plus Membership 혜택', 600, 70);
+            ctx3.font = '20px Pretendard, sans-serif';
+            ctx3.fillText('월 29,000원으로 프리미엄 서비스를 경험하세요', 600, 110);
+
+            // 다운로드 기능
+            function downloadCanvas(canvasId, filename) {
+                const canvas = document.getElementById(canvasId);
+                const link = document.createElement('a');
+                link.download = filename;
+                canvas.toBlob(
+                    (blob) => {
+                        link.href = URL.createObjectURL(blob);
+                        link.click();
+                    },
+                    'image/jpeg',
+                    0.95
+                );
+            }
+        </script>
+
+        <div style="margin-top: 40px">
+            <button class="download-btn" onclick="downloadCanvas('banner1', 'banner1.jpg')">배너 1 다운로드</button>
+            <button class="download-btn" onclick="downloadCanvas('banner2', 'banner2.jpg')">배너 2 다운로드</button>
+            <button class="download-btn" onclick="downloadCanvas('banner3', 'banner3.jpg')">배너 3 다운로드</button>
+        </div>
+
+        <div class="instructions" style="margin-top: 40px">
+            <h3>사용 방법</h3>
+            <ol>
+                <li>위 버튼을 클릭하여 배너 이미지를 다운로드</li>
+                <li>
+                    <code>D:\wavespace\images\banners\</code>
+                    폴더에 저장
+                </li>
+                <li>
+                    data-center.html 파일에서 이미지 경로 수정:
+                    <br />
+                    <code>src="https://via.placeholder.com/..."</code>
+                    <br />
+                    →
+                    <code>src="images/banners/banner1.jpg"</code>
+                </li>
+            </ol>
+        </div>
+    </body>
+</html>

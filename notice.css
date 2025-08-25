@@ -334,6 +334,12 @@ body .main-content .notice-container .notice-header .notice-subtitle {
     position: relative;
 }
 
+.modal-header .modal-nav-buttons {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+}
+
 .modal-close {
     position: absolute;
     top: 32px;
@@ -776,7 +782,7 @@ body .main-content .notice-container .notice-header .notice-subtitle {
 }
 
 .radio-custom::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 6px;
     height: 6px;
@@ -838,7 +844,7 @@ body .main-content .notice-container .notice-header .notice-subtitle {
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
-    content: '✓';
+    content: "✓";
     color: white;
     font-size: 14px;
     font-weight: bold;
@@ -899,46 +905,46 @@ body .main-content .notice-container .notice-header .notice-subtitle {
     .notice-container {
         padding: 24px 16px;
     }
-    
+
     .notice-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
     }
-    
+
     .notice-bell {
         display: none;
     }
-    
+
     .notice-controls {
         flex-direction: column-reverse;
         gap: 16px;
     }
-    
+
     .search-box {
         max-width: 100%;
         min-width: 100%;
     }
-    
+
     .category-tabs {
         width: 100%;
         overflow-x: auto;
         padding-bottom: 8px;
     }
-    
+
     .notice-item {
         padding: 20px;
     }
-    
+
     .notice-item-title {
         font-size: 16px;
     }
-    
+
     .notice-header {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .notice-header-right {
         align-self: flex-start;
     }

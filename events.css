@@ -32,7 +32,7 @@
 /* 필터 탭 */
 /* 이벤트 탭 - checkbox-interaction.css 사용 */
 .event-tabs {
-    margin-top: -16px;  /* 공지사항과 일관성 있게 위치 조정 */
+    margin-top: -16px; /* 공지사항과 일관성 있게 위치 조정 */
     margin-bottom: 32px;
 }
 
@@ -79,27 +79,27 @@
 
 /* 탭 아이콘 */
 .tab-btn::before {
-    content: '';
-    font-family: 'Font Awesome 6 Free';
+    content: "";
+    font-family: "Font Awesome 6 Free";
     font-weight: 900;
     font-size: 12px;
     margin-right: 2px;
 }
 
 .tab-btn[data-status="all"]::before {
-    content: '\f00a';  /* grip icon */
+    content: "\f00a"; /* grip icon */
 }
 
 .tab-btn[data-status="ongoing"]::before {
-    content: '\f017';  /* clock icon */
+    content: "\f017"; /* clock icon */
 }
 
 .tab-btn[data-status="upcoming"]::before {
-    content: '\f073';  /* calendar icon */
+    content: "\f073"; /* calendar icon */
 }
 
 .tab-btn[data-status="ended"]::before {
-    content: '\f00c';  /* check icon */
+    content: "\f00c"; /* check icon */
 }
 
 /* 탭 카운트 뱃지 */
@@ -132,7 +132,6 @@
     overflow: hidden;
     box-shadow: var(--shadow-sm);
 }
-
 
 .banner-content {
     position: relative;
@@ -191,7 +190,6 @@
     background-color: var(--deep-blue);
     box-shadow: 0 4px 12px rgba(46, 140, 230, 0.3);
 }
-
 
 /* 이벤트 그리드 */
 .events-grid {
@@ -555,8 +553,8 @@
 
 /* 체크박스 아이콘 */
 .category-toggle::after {
-    content: '\f00c';
-    font-family: 'Font Awesome 6 Free';
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
     font-weight: 900;
     position: absolute;
     top: -6px;
@@ -713,24 +711,24 @@
     .events-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .suggest-content {
         grid-template-columns: 1fr;
     }
-    
+
     .suggest-section {
         padding: 32px;
     }
-    
+
     /* 가로형 혜택 리스트 반응형 */
     .benefit-list.horizontal {
         flex-wrap: wrap;
     }
-    
+
     .benefit-list.horizontal .benefit-item {
         min-width: 200px;
     }
-    
+
     /* 카테고리 토글 태블릿 반응형 - 1줄 유지 */
 }
 
@@ -738,66 +736,66 @@
     .events-container {
         padding: 24px 20px 60px;
     }
-    
+
     .events-header {
         flex-direction: column;
         text-align: center;
         gap: 20px;
     }
-    
+
     .event-tabs {
         flex-wrap: wrap;
     }
-    
+
     .tab-btn {
         min-width: calc(50% - 4px);
     }
-    
+
     .main-event-banner {
         flex-direction: column;
         padding: 32px 24px;
         text-align: center;
     }
-    
+
     .banner-visual {
         display: none;
     }
-    
+
     .events-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .suggest-section {
         padding: 24px;
     }
-    
+
     .suggest-form {
         padding: 20px;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     /* 모바일에서 가로형 혜택 리스트 세로로 변경 */
     .benefit-list.horizontal {
         flex-direction: column;
     }
-    
+
     .benefit-list.horizontal .benefit-item {
         flex-direction: row;
         text-align: left;
         gap: 16px;
     }
-    
+
     .benefit-list.horizontal .benefit-item i {
         font-size: 24px;
     }
-    
+
     .benefit-list.horizontal .benefit-content {
         align-items: flex-start;
     }
-    
+
     /* 카테고리 토글 모바일 반응형 */
     .category-toggle-group {
         gap: 6px;
@@ -805,19 +803,325 @@
         -webkit-overflow-scrolling: touch;
         padding-bottom: 8px;
     }
-    
+
     .category-toggle {
         padding: 8px 12px;
         font-size: 13px;
         white-space: nowrap;
         flex-shrink: 0;
     }
-    
+
     .category-toggle i {
         font-size: 14px;
     }
-    
+
     .category-toggle span {
         font-size: 12px;
+    }
+}
+
+/* 이벤트 모달 스타일 */
+.event-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.event-modal.show {
+    opacity: 1;
+}
+
+.event-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+}
+
+.event-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.event-modal.show .event-modal-content {
+    transform: scale(1);
+}
+
+.event-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.event-modal-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.event-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+}
+
+/* 이벤트 상세 헤더 */
+.event-detail-header {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.event-detail-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 36px;
+    flex-shrink: 0;
+}
+
+.event-detail-info {
+    flex: 1;
+}
+
+.event-detail-meta {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.event-category-badge {
+    padding: 4px 12px;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    font-size: 12px;
+    border-radius: var(--radius-full);
+    font-weight: 500;
+}
+
+.event-status-badge {
+    padding: 4px 12px;
+    font-size: 12px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+}
+
+.event-status-badge.ongoing {
+    background: var(--success-bg);
+    color: var(--success-color);
+}
+
+.event-status-badge.upcoming {
+    background: var(--info-bg);
+    color: var(--info-color);
+}
+
+.event-status-badge.ended {
+    background: var(--gray-100);
+    color: var(--gray-500);
+}
+
+.event-special-badge {
+    padding: 4px 12px;
+    background: var(--warning-bg);
+    color: var(--warning-color);
+    font-size: 12px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+}
+
+.event-detail-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+}
+
+.event-detail-desc {
+    font-size: 16px;
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+/* 이벤트 상세 내용 */
+.event-detail-content {
+    margin-bottom: 24px;
+}
+
+.event-detail-section {
+    margin-bottom: 32px;
+}
+
+.event-detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.event-detail-section h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-detail-section h4 i {
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+/* 이벤트 기간 정보 */
+.event-period-info {
+    background: var(--gray-50);
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.event-period-text {
+    font-size: 16px;
+    color: var(--gray-700);
+    margin-bottom: 12px;
+}
+
+.event-progress {
+    width: 100%;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.event-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.event-days-left {
+    font-size: 14px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* 이벤트 혜택 & 참여 방법 */
+.event-benefits,
+.event-steps,
+.event-notes {
+    padding-left: 20px;
+}
+
+.event-benefits li,
+.event-steps li,
+.event-notes li {
+    font-size: 15px;
+    color: var(--gray-700);
+    line-height: 1.8;
+    margin-bottom: 8px;
+}
+
+.event-steps {
+    counter-reset: step;
+}
+
+.event-steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 8px;
+}
+
+.event-steps li::marker {
+    content: counter(step) ". ";
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* 모달 푸터 */
+.event-modal-footer {
+    padding: 24px 32px;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: center;
+}
+
+.event-participate-btn {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.event-participate-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 102, 255, 0.3);
+}
+
+.event-participate-btn:disabled {
+    background: var(--gray-300);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .event-modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .event-modal-header,
+    .event-modal-body,
+    .event-modal-footer {
+        padding: 20px;
+    }
+    
+    .event-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .event-detail-icon {
+        margin-bottom: 16px;
+    }
+    
+    .event-detail-meta {
+        justify-content: center;
     }
 }

@@ -969,6 +969,9 @@ function renderJobList() {
     // 정렬 적용
     filteredJobs = sortJobs(filteredJobs);
     
+    // 전역 변수에 저장 (페이지네이션용)
+    currentFilteredJobs = filteredJobs;
+    
     // 필터링된 결과에 따른 카운트 업데이트
     const totalCountElement = document.getElementById('totalCount');
     if (totalCountElement) {
@@ -1465,3 +1468,69 @@ function initializeAdBanner() {
 // 중복된 함수 정의 제거됨 (상단에 이미 정의되어 있음)
 
 // 중복 이벤트 리스너 제거 (initializeEventListeners에서 이미 등록됨)
+
+// 페이지네이션 관련 변수
+let currentPage = 1;
+const itemsPerPage = 10;
+let currentFilteredJobs = []; // 현재 필터링된 구인공고 저장
+
+// 페이지네이션 렌더링 함수
+function renderPagination() {
+    const paginationContainer = document.getElementById('salesRecruitPagination');
+    if (!paginationContainer) return;
+    
+    const totalPages = Math.ceil(currentFilteredJobs.length / itemsPerPage);
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+    
+    let paginationHTML = '';
+    
+    // 처음 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(1); return false;">처음</a>`;
+    
+    // 이전 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${Math.max(1, currentPage - 1)}); return false;">이전</a>`;
+    
+    // 페이지 번호
+    paginationHTML += '<div class="page-numbers">';
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `<a href="javascript:void(0)" class="${currentPage === i ? 'active' : ''}" onclick="goToPage(${i}); return false;">${i}</a>`;
+    }
+    paginationHTML += '</div>';
+    
+    // 다음 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${Math.min(totalPages, currentPage + 1)}); return false;">다음</a>`;
+    
+    // 끝 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${totalPages}); return false;">끝</a>`;
+    
+    paginationContainer.innerHTML = paginationHTML;
+}
+
+// 페이지 이동 함수
+function goToPage(page) {
+    const totalPages = Math.ceil(currentFilteredJobs.length / itemsPerPage);
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    renderJobList(); // 구인공고 리스트 렌더링 함수 호출
+    renderPagination();
+    
+    // 페이지 이동 시 스크롤 위치 유지
+    return false;
+}
+
+// 페이지네이션 초기화 (DOMContentLoaded 이벤트에 추가)
+document.addEventListener('DOMContentLoaded', () => {
+    renderPagination();
+});

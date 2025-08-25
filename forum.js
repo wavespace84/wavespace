@@ -4,6 +4,9 @@
 let currentPostIndex = -1;
 let currentFilteredPosts = [];
 
+// 파일 업로드 관련 변수
+let selectedFiles = [];
+
 // 인기 게시글 데이터
 const popularPosts = [
     {
@@ -57,7 +60,16 @@ const allPosts = [
     { id: 106, number: 1229, category: "info", categoryName: "정보공유", title: "2024년 달라지는 부동산 정책 총정리", author: "정책분석가", date: "5시간 전", views: 892, likes: 67, comments: 23 },
     { id: 107, number: 1228, category: "question", categoryName: "질문", title: "전매제한 관련 법률 해석 도움 부탁드립니다", author: "신입사원", date: "8시간 전", views: 145, likes: 3, comments: 12 },
     { id: 108, number: 1227, category: "general", categoryName: "일반", title: "모델하우스 운영 중 겪은 황당한 에피소드", author: "웃긴이야기", date: "어제", views: 1234, likes: 89, comments: 45 },
-    { id: 109, number: 1226, category: "review", categoryName: "후기", title: "래미안 ○○ 청약 당첨 후기 및 팁 공유", author: "당첨자", date: "어제", views: 2345, likes: 123, comments: 67 }
+    { id: 109, number: 1226, category: "review", categoryName: "후기", title: "래미안 ○○ 청약 당첨 후기 및 팁 공유", author: "당첨자", date: "어제", views: 2345, likes: 123, comments: 67 },
+    { id: 110, number: 1225, category: "info", categoryName: "정보공유", title: "2024년 상반기 분양 성과 분석 및 하반기 전망", author: "분석전문가", date: "2일 전", views: 456, likes: 34, comments: 19 },
+    { id: 111, number: 1224, category: "question", categoryName: "질문", title: "특별공급 자격 조건 관련 문의드립니다", author: "예비청약자", date: "2일 전", views: 178, likes: 5, comments: 8 },
+    { id: 112, number: 1223, category: "general", categoryName: "일반", title: "분양 현장에서 만난 진상 고객 이야기 모음", author: "현장직원", date: "3일 전", views: 1567, likes: 98, comments: 56 },
+    { id: 113, number: 1222, category: "review", categoryName: "후기", title: "갤럭시파크 분양 후기 - 청약부터 계약까지", author: "성공청약자", date: "3일 전", views: 789, likes: 67, comments: 28 },
+    { id: 114, number: 1221, category: "info", categoryName: "정보공유", title: "분양권 전매 관련 최신 법규 정리", author: "법무팀장", date: "4일 전", views: 634, likes: 45, comments: 21 },
+    { id: 115, number: 1220, category: "general", categoryName: "일반", title: "신입사원이 분양 현장에서 배운 것들", author: "신입분양사", date: "4일 전", views: 423, likes: 29, comments: 17 },
+    { id: 116, number: 1219, category: "question", categoryName: "질문", title: "대출 한도 계산 방법 알려주세요", author: "대출고민자", date: "5일 전", views: 321, likes: 12, comments: 15 },
+    { id: 117, number: 1218, category: "info", categoryName: "정보공유", title: "서울 외곽 신도시 분양 현황 총정리", author: "지역전문가", date: "5일 전", views: 876, likes: 52, comments: 31 },
+    { id: 118, number: 1217, category: "review", categoryName: "후기", title: "힐스테이트 청약 실패 후기와 교훈", author: "아쉬운청약자", date: "6일 전", views: 543, likes: 38, comments: 24 }
 ];
 
 // 현재 표시되는 게시글
@@ -143,6 +155,11 @@ function updatePostsList() {
     const postsList = document.querySelector('.posts-list');
     if (!postsList) return;
     
+    // 페이지네이션 적용 - 현재 페이지에 해당하는 게시글만 추출
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const postsToShow = displayedPosts.slice(startIndex, endIndex);
+    
     // 공지사항 HTML (고정)
     let postsHTML = `
         <div class="notice-item">
@@ -158,8 +175,8 @@ function updatePostsList() {
         </div>
     `;
     
-    // 일반 게시글 추가
-    displayedPosts.forEach(post => {
+    // 현재 페이지의 게시글만 추가
+    postsToShow.forEach(post => {
         postsHTML += `
             <div class="post-item" data-id="${post.id}">
                 <div class="post-number">${post.number}</div>
@@ -223,65 +240,75 @@ function updateCategoryCounts() {
     });
 }
 
-// 인기 게시글 무한 스크롤
+// 인기 게시글 무한 스크롤 (3개씩 표시, 왼쪽 이동)
 function initializeInfiniteCarousel() {
     const container = document.querySelector('.hot-posts-grid');
     if (!container) return;
 
-    container.style.cssText = `
-        display: flex;
-        gap: 16px;
-        overflow: hidden;
-        position: relative;
-    `;
+    // 기존 카드들을 복제 (무한 스크롤을 위해)
+    const originalCards = Array.from(container.querySelectorAll('.hot-post-card'));
+    if (originalCards.length === 0) return;
 
+    // 복제본 추가
+    originalCards.forEach(card => {
+        const clone = card.cloneNode(true);
+        container.appendChild(clone);
+    });
+
+    // 컨테이너를 wrapper로 감싸기
     const wrapper = document.createElement('div');
+    wrapper.className = 'hot-posts-wrapper';
     wrapper.style.cssText = `
         display: flex;
         gap: 16px;
-        animation: infiniteScroll 30s linear infinite;
+        animation: smoothInfiniteScroll 25s linear infinite;
+        will-change: transform;
+        transform: translateZ(0);
     `;
-
-    function createCard(post) {
-        const card = document.createElement('div');
-        card.className = 'hot-post-card';
-        card.style.cssText = 'flex: 0 0 calc(33.333% - 11px); cursor: pointer;';
-        card.innerHTML = `
-            <span class="hot-badge">HOT</span>
-            <h3 class="hot-post-title">${post.title}</h3>
-            <p class="hot-post-excerpt">${post.excerpt}</p>
-            <div class="hot-post-stats">
-                <span><i class="fas fa-eye"></i> ${post.views.toLocaleString()}</span>
-                <span><i class="fas fa-comment"></i> ${post.comments}</span>
-                <span><i class="fas fa-heart"></i> ${post.likes}</span>
-            </div>
+    
+    // 컨테이너 스타일 설정
+    container.style.cssText = `
+        display: block;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+    `;
+    
+    // 카드들을 wrapper로 이동
+    const allCards = Array.from(container.querySelectorAll('.hot-post-card'));
+    allCards.forEach(card => {
+        card.style.cssText = `
+            flex: 0 0 calc(33.333% - 11px);
+            min-width: calc(33.333% - 11px);
+            transform: translateZ(0);
+            backface-visibility: hidden;
         `;
-        card.onclick = () => showPostDetail(post);
-        return card;
-    }
-
-    popularPosts.forEach(post => {
-        wrapper.appendChild(createCard(post));
+        wrapper.appendChild(card);
     });
-
-    popularPosts.forEach(post => {
-        wrapper.appendChild(createCard(post));
-    });
-
+    
+    // 기존 카드들 제거 후 wrapper 추가
     container.innerHTML = '';
     container.appendChild(wrapper);
 
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes infiniteScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .hot-posts-grid:hover .hot-posts-grid > div {
-            animation-play-state: paused;
-        }
-    `;
-    document.head.appendChild(style);
+    // CSS 애니메이션 스타일 추가
+    if (!document.getElementById('infinite-scroll-style')) {
+        const style = document.createElement('style');
+        style.id = 'infinite-scroll-style';
+        style.textContent = `
+            @keyframes smoothInfiniteScroll {
+                0% { 
+                    transform: translateX(0); 
+                }
+                100% { 
+                    transform: translateX(-50%); 
+                }
+            }
+            .hot-posts-grid:hover .hot-posts-wrapper {
+                animation-play-state: paused;
+            }
+        `;
+        document.head.appendChild(style);
+    }
 }
 
 // 모달 템플릿 캐싱
@@ -305,7 +332,7 @@ function createModalTemplate() {
                     <h2 class="post-detail-title"></h2>
                 </div>
                 <div class="modal-nav-buttons">
-                    <button class="modal-nav-btn" id="prevPostBtn" onclick="navigatePost('prev')" title="이전 게시글">
+                    <button class="modal-nav-btn" id="prevPostBtn" onclick="navigatePost('prev')" title="이전 게시글" disabled>
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <button class="modal-nav-btn" id="nextPostBtn" onclick="navigatePost('next')" title="다음 게시글">
@@ -495,6 +522,14 @@ function navigatePost(direction) {
     
     const post = currentFilteredPosts[currentPostIndex];
     if (post) {
+        // 새 게시글이 현재 페이지에 없다면 해당 페이지로 이동
+        const postPageIndex = Math.floor(currentPostIndex / itemsPerPage) + 1;
+        if (postPageIndex !== currentPage) {
+            currentPage = postPageIndex;
+            updatePostsList();
+            renderPagination();
+        }
+        
         showPostDetail(post);
     }
 }
@@ -518,8 +553,8 @@ function getCurrentFilteredPosts() {
         return popularPosts;
     }
     
-    // 필터된 게시글이 있으면 반환, 없으면 전체 게시글 반환
-    return filteredPosts || allPosts;
+    // 전체 필터된 게시글 반환 (페이지 경계 넘어서도 이동 가능)
+    return displayedPosts;
 }
 
 // 인기 게시글 숨기기
@@ -677,6 +712,8 @@ function toggleLike(btn, postId) {
 function openWriteModal() {
     const modal = document.getElementById('writeModal');
     if (modal) {
+        // 모달 열기 전에 초기화
+        resetWriteModal();
         modal.classList.add('active');
     }
 }
@@ -685,6 +722,192 @@ function closeWriteModal() {
     const modal = document.getElementById('writeModal');
     if (modal) {
         modal.classList.remove('active');
+        // 모달 닫을 때 초기화
+        setTimeout(() => {
+            resetWriteModal();
+        }, 300); // 애니메이션 완료 후 초기화
+    }
+}
+
+// 글쓰기 모달 초기화
+function resetWriteModal() {
+    // 폼 초기화
+    const form = document.getElementById('writeForm');
+    if (form) {
+        form.reset();
+    }
+    
+    // 파일 관련 초기화
+    selectedFiles = [];
+    const fileInput = document.getElementById('postFiles');
+    if (fileInput) {
+        fileInput.value = ''; // 파일 input 초기화
+    }
+    
+    // 파일 목록 UI 초기화
+    const fileList = document.getElementById('fileList');
+    if (fileList) {
+        fileList.innerHTML = '';
+    }
+    
+    // 글자수 카운트 초기화
+    const titleCount = document.getElementById('titleCount');
+    const contentCount = document.getElementById('contentCount');
+    if (titleCount) titleCount.textContent = '0';
+    if (contentCount) contentCount.textContent = '0';
+}
+
+// 파일 선택 처리
+function handleFileSelect(e) {
+    const files = Array.from(e.target.files);
+    
+    // 파일 유효성 검사
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 
+                         'application/pdf', 'application/msword', 
+                         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                         'application/vnd.ms-excel', 
+                         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+    
+    const validFiles = files.filter(file => {
+        // 파일 크기 체크
+        if (file.size > maxFileSize) {
+            alert(`"${file.name}" 파일이 너무 큽니다. (최대 10MB)`);
+            return false;
+        }
+        
+        // 파일 형식 체크
+        if (!allowedTypes.includes(file.type)) {
+            const extension = file.name.split('.').pop().toLowerCase();
+            // 확장자로 한 번 더 체크
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'xls', 'xlsx'];
+            if (!allowedExtensions.includes(extension)) {
+                alert(`"${file.name}" 파일 형식은 지원되지 않습니다.`);
+                return false;
+            }
+        }
+        
+        return true;
+    });
+    
+    // 중복 파일 체크
+    validFiles.forEach(file => {
+        const isDuplicate = selectedFiles.some(f => 
+            f.name === file.name && f.size === file.size
+        );
+        
+        if (!isDuplicate) {
+            selectedFiles.push(file);
+        }
+    });
+    
+    // 파일 목록 업데이트
+    updateFileList();
+    
+    // input 초기화 (같은 파일 다시 선택 가능하도록)
+    e.target.value = '';
+}
+
+// 파일 목록 UI 업데이트
+function updateFileList() {
+    const fileList = document.getElementById('fileList');
+    if (!fileList) return;
+    
+    if (selectedFiles.length === 0) {
+        fileList.innerHTML = '';
+        return;
+    }
+    
+    let listHTML = '<div class="selected-files">';
+    
+    selectedFiles.forEach((file, index) => {
+        const fileSize = formatFileSize(file.size);
+        const fileIcon = getFileIcon(file.name);
+        
+        listHTML += `
+            <div class="file-item" data-index="${index}">
+                <div class="file-icon">${fileIcon}</div>
+                <div class="file-info">
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${fileSize}</span>
+                </div>
+                <button type="button" class="file-remove" onclick="removeFile(${index})" title="파일 제거">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+    });
+    
+    listHTML += '</div>';
+    
+    // 총 파일 수와 크기 표시
+    const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
+    listHTML += `
+        <div class="file-summary">
+            <span>${selectedFiles.length}개 파일</span>
+            <span>${formatFileSize(totalSize)}</span>
+        </div>
+    `;
+    
+    fileList.innerHTML = listHTML;
+}
+
+// 파일 제거
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    updateFileList();
+}
+
+// 파일 크기 포맷
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+// 파일 아이콘 결정
+function getFileIcon(filename) {
+    const extension = filename.split('.').pop().toLowerCase();
+    const iconMap = {
+        'pdf': 'fa-file-pdf',
+        'doc': 'fa-file-word',
+        'docx': 'fa-file-word',
+        'xls': 'fa-file-excel',
+        'xlsx': 'fa-file-excel',
+        'jpg': 'fa-file-image',
+        'jpeg': 'fa-file-image',
+        'png': 'fa-file-image',
+        'gif': 'fa-file-image'
+    };
+    
+    return `<i class="fas ${iconMap[extension] || 'fa-file'}"></i>`;
+}
+
+// 드래그 앤 드롭 이벤트 처리
+function handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('drag-over');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        // 가상의 input 이벤트 생성
+        const fakeEvent = { target: { files: files } };
+        handleFileSelect(fakeEvent);
     }
 }
 
@@ -819,6 +1042,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // 파일 업로드 이벤트 리스너
+    const fileInput = document.getElementById('postFiles');
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFileSelect);
+    }
+    
+    // 드래그 앤 드롭 이벤트 리스너
+    const fileUploadArea = document.querySelector('.file-upload-area');
+    if (fileUploadArea) {
+        fileUploadArea.addEventListener('dragover', handleDragOver);
+        fileUploadArea.addEventListener('dragleave', handleDragLeave);
+        fileUploadArea.addEventListener('drop', handleDrop);
+    }
+    
     // 게시글 클릭 이벤트 (이벤트 위임 초기화)
     initializePostClickEvents();
     
@@ -851,4 +1088,67 @@ document.addEventListener('DOMContentLoaded', function() {
             showPostDetail(noticePost);
         }
     });
+    
+    // 페이지네이션 초기화 및 렌더링
+    renderPagination();
 });
+
+// 페이지네이션 관련 변수
+let currentPage = 1;
+const itemsPerPage = 10;
+
+// 페이지네이션 렌더링 함수
+function renderPagination() {
+    const paginationContainer = document.getElementById('forumPagination');
+    if (!paginationContainer) return;
+    
+    const totalPages = Math.ceil(displayedPosts.length / itemsPerPage);
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+    
+    let paginationHTML = '';
+    
+    // 처음 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(1); return false;">처음</a>`;
+    
+    // 이전 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${Math.max(1, currentPage - 1)}); return false;">이전</a>`;
+    
+    // 페이지 번호
+    paginationHTML += '<div class="page-numbers">';
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `<a href="javascript:void(0)" class="${currentPage === i ? 'active' : ''}" onclick="goToPage(${i}); return false;">${i}</a>`;
+    }
+    paginationHTML += '</div>';
+    
+    // 다음 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${Math.min(totalPages, currentPage + 1)}); return false;">다음</a>`;
+    
+    // 끝 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${totalPages}); return false;">끝</a>`;
+    
+    paginationContainer.innerHTML = paginationHTML;
+}
+
+// 페이지 이동 함수
+function goToPage(page) {
+    const totalPages = Math.ceil(displayedPosts.length / itemsPerPage);
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    updatePostsList();
+    renderPagination();
+    
+    // 페이지 이동 시 스크롤 위치 유지
+    return false;
+}

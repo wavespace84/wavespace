@@ -1,26 +1,26 @@
 /* main.css - 모든 CSS 파일을 import하는 메인 파일 */
 
 /* Base styles */
-@import 'base.css';
+@import "base.css";
 
 /* Layout */
-@import 'layout.css';
+@import "layout.css";
 
 /* Components */
-@import 'components.css';
+@import "components.css";
 
 /* Sidebar */
-@import 'sidebar.css';
+@import "sidebar.css";
 
 /* Header */
-@import 'header.css';
+@import "header.css";
 
 /* Pages */
-@import 'pages/home.css';
-@import 'pages/notice.css';
-@import 'pages/support.css';
-@import 'pages/events.css';
-@import 'pages/plus-membership.css';
+@import "pages/home.css";
+@import "pages/notice.css";
+@import "pages/support.css";
+@import "pages/events.css";
+@import "pages/plus-membership.css";
 
 /* Utilities */
-@import 'utilities.css';
+@import "utilities.css";

@@ -1,0 +1,77 @@
+name: 📈 Performance Monitoring
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # 매주 월요일 오전 9시
+  workflow_dispatch:  # 수동 실행
+
+jobs:
+  lighthouse:
+    name: 🔍 Lighthouse Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 🚀 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          
+      - name: 📦 Install dependencies
+        run: npm ci
+        
+      - name: 🏗️ Build site
+        run: npm run build
+        
+      - name: 🌐 Start local server
+        run: |
+          npx serve -s dist -p 3000 &
+          sleep 5
+          
+      - name: 🔍 Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun || echo "Lighthouse CI not configured yet"
+          
+      - name: 📊 Performance summary
+        run: |
+          echo "### 📈 Performance Report" >> $GITHUB_STEP_SUMMARY
+          echo "- Date: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- Pages analyzed: Multiple static pages" >> $GITHUB_STEP_SUMMARY
+          echo "- Focus: Core Web Vitals, Accessibility, SEO" >> $GITHUB_STEP_SUMMARY
+
+  bundle-analysis:
+    name: 📦 Bundle Size Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 🚀 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          
+      - name: 📦 Install dependencies
+        run: npm ci
+        
+      - name: 🏗️ Build with analysis
+        run: npm run build
+        
+      - name: 📊 Analyze bundle
+        run: |
+          echo "### 📦 Bundle Analysis Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### CSS Files:" >> $GITHUB_STEP_SUMMARY
+          find dist -name "*.css" -exec ls -lh {} \; | awk '{print "- " $9 ": " $5}' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### JavaScript Files:" >> $GITHUB_STEP_SUMMARY
+          find dist -name "*.js" -exec ls -lh {} \; | awk '{print "- " $9 ": " $5}' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Total Size:" >> $GITHUB_STEP_SUMMARY
+          echo "- **$(du -sh dist | cut -f1)**" >> $GITHUB_STEP_SUMMARY

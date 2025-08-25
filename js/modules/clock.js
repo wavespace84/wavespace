@@ -10,9 +10,9 @@ export function initClock() {
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
-            hour12: false
+            hour12: false,
         });
-        
+
         const timeElement = document.getElementById('currentTime');
         if (timeElement) {
             timeElement.textContent = timeString;

@@ -1,0 +1,35 @@
+# 의존성 및 빌드 파일
+node_modules/
+dist/
+build/
+package-lock.json
+
+# MCP 서버 (외부 프로젝트)  
+mcp-servers/
+
+# 레거시 CSS 참조 파일
+jobkorea_css/
+saramin_css/
+
+# 생성된 파일
+*.min.js
+*.min.css
+*.bundle.*
+
+# 바이너리 파일
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.woff
+*.woff2
+*.ttf
+*.eot
+
+# 임시 파일
+*.tmp
+*.temp
+.cache/
+*.log

@@ -1,4 +1,4 @@
-/* 헤드헌팅 페이지 스타일 - support.css 기반 통일된 디자인 */
+/* AI 매칭 서비스 페이지 스타일 - support.css 기반 통일된 디자인 */
 
 .headhunting-container {
     max-width: 1200px;
@@ -112,7 +112,7 @@
 }
 
 .quick-item::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -196,13 +196,17 @@
 }
 
 .ad-banner::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     right: -10%;
     width: 60%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 70%
+    );
     transform: rotate(30deg);
 }
 
@@ -243,7 +247,7 @@
 }
 
 .ad-banner-image::after {
-    content: '배너 이미지 영역';
+    content: "배너 이미지 영역";
     color: rgba(255, 255, 255, 0.6);
     font-size: 14px;
     font-weight: 500;
@@ -584,7 +588,7 @@
 }
 
 .checkbox-mark::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 6px;
     height: 10px;
@@ -624,7 +628,10 @@
     background: var(--gray-100);
 }
 
-.filter-subsection .checkbox-item input[type="checkbox"]:checked ~ span:last-child {
+.filter-subsection
+    .checkbox-item
+    input[type="checkbox"]:checked
+    ~ span:last-child {
     color: var(--primary-blue);
 }
 
@@ -939,7 +946,6 @@
     color: var(--white);
 }
 
-
 /* 모달 */
 .modal {
     display: none;
@@ -1240,7 +1246,7 @@ textarea.form-control {
 }
 
 .profile-steps::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 24px;
     left: 80px;
@@ -1288,8 +1294,8 @@ textarea.form-control {
 }
 
 .step.completed .step-number::after {
-    content: '\f00c';
-    font-family: 'Font Awesome 5 Free';
+    content: "\f00c";
+    font-family: "Font Awesome 5 Free";
     font-weight: 900;
     font-size: 16px;
 }
@@ -1315,7 +1321,11 @@ textarea.form-control {
     align-items: flex-start;
     gap: 12px;
     padding: 20px;
-    background: linear-gradient(135deg, rgba(48, 128, 255, 0.05) 0%, rgba(48, 128, 255, 0.02) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(48, 128, 255, 0.05) 0%,
+        rgba(48, 128, 255, 0.02) 100%
+    );
     border: 1px solid rgba(48, 128, 255, 0.2);
     border-radius: 12px;
 }
@@ -1393,7 +1403,7 @@ textarea.form-control {
 }
 
 .form-label.required::after {
-    content: ' *';
+    content: " *";
     color: #fa5252;
 }
 
@@ -1471,7 +1481,7 @@ textarea.form-control {
 }
 
 .career-number::before {
-    content: '경력 ';
+    content: "경력 ";
     color: var(--gray-600);
     font-weight: 500;
 }
@@ -1717,19 +1727,19 @@ textarea.form-control {
     .headhunting-container {
         padding: 40px 32px;
     }
-    
+
     .quick-menu {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .filter-row {
         flex-direction: column;
     }
-    
+
     .filter-group {
         width: 100%;
     }
-    
+
     .talent-grid {
         grid-template-columns: 1fr;
     }
@@ -1739,24 +1749,24 @@ textarea.form-control {
     .headhunting-container {
         padding: 24px 16px;
     }
-    
+
     .quick-menu {
         grid-template-columns: 1fr;
     }
-    
+
     .search-box-large {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .search-btn {
         width: 100%;
     }
-    
+
     .checkbox-tabs {
         flex-direction: column;
     }
-    
+
     .checkbox-tab {
         width: 100%;
         justify-content: center;

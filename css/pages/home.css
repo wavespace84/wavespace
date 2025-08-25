@@ -27,7 +27,11 @@
     display: inline-flex;
     align-items: center;
     padding: 8px 16px;
-    background: linear-gradient(135deg, rgba(48, 128, 255, 0.1) 0%, rgba(48, 128, 255, 0.05) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(48, 128, 255, 0.1) 0%,
+        rgba(48, 128, 255, 0.05) 100%
+    );
     border: 1px solid rgba(48, 128, 255, 0.2);
     border-radius: var(--radius-full);
     font-size: var(--font-size-sm);
@@ -44,7 +48,11 @@
 }
 
 .hero-title-gradient {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--bright-blue) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-blue) 0%,
+        var(--bright-blue) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -195,7 +203,11 @@
     transform: translate(-50%, -50%);
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(48, 128, 255, 0.2) 0%, transparent 70%);
+    background: radial-gradient(
+        circle,
+        rgba(48, 128, 255, 0.2) 0%,
+        transparent 70%
+    );
     filter: blur(60px);
 }
 
@@ -237,7 +249,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--bright-blue) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-blue) 0%,
+        var(--bright-blue) 100%
+    );
     border-radius: var(--radius-lg);
     color: var(--white);
     font-size: 24px;
@@ -324,7 +340,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--bright-blue) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-blue) 0%,
+        var(--bright-blue) 100%
+    );
     border-radius: var(--radius-lg);
     color: var(--white);
     font-size: 28px;
@@ -484,7 +504,11 @@
 }
 
 .reward-card.special {
-    background: linear-gradient(135deg, rgba(123, 97, 255, 0.1) 0%, rgba(123, 97, 255, 0.05) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(123, 97, 255, 0.1) 0%,
+        rgba(123, 97, 255, 0.05) 100%
+    );
     border: 1px solid rgba(123, 97, 255, 0.2);
 }
 
@@ -539,7 +563,7 @@
 }
 
 .reward-shop-btn:hover {
-    background-color: #6B51EF;
+    background-color: #6b51ef;
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(123, 97, 255, 0.3);
 }
@@ -547,26 +571,38 @@
 /* CTA Section */
 .cta-section {
     padding: 120px 0;
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-blue) 0%,
+        var(--deep-blue) 100%
+    );
     text-align: center;
     position: relative;
     overflow: hidden;
 }
 
 .cta-section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 60%
+    );
     animation: rotate 30s linear infinite;
 }
 
 @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .cta-content {
@@ -698,23 +734,23 @@
         grid-template-columns: 1fr;
         text-align: center;
     }
-    
+
     .hero-visual {
         display: none;
     }
-    
+
     .flow-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .features-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .community-content {
         grid-template-columns: 1fr;
     }
-    
+
     .reward-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -724,27 +760,27 @@
     .hero-title {
         font-size: 36px;
     }
-    
+
     .hero-values {
         grid-template-columns: 1fr;
     }
-    
+
     .hero-cta-wrapper {
         flex-direction: column;
         width: 100%;
     }
-    
+
     .hero-main-cta,
     .hero-sub-cta {
         width: 100%;
         justify-content: center;
     }
-    
+
     .cta-buttons {
         flex-direction: column;
         width: 100%;
     }
-    
+
     .cta-primary,
     .cta-secondary {
         width: 100%;

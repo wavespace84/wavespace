@@ -2,59 +2,59 @@
 
 // 5개 분야별 데이터
 // 점수 집계 기준:
-// - 출첵왕: 1일부터 매일 점수 집계 (1등 3000점, 2등 2900점 ~ 30등 1000점, 30등 밖 0점)
-// - 소통왕: (게시글 * 3점) + (댓글 * 1점)
-// - 답변왕: (답변 * 1점) + (채택 * 5점)
-// - 정보왕: 월간 자료 업로드 포인트 획득 순위
-// - 추천왕: 추천인당 2500점
+// - 출첵리더: 1일부터 매일 점수 집계 (1등 3000점, 2등 2900점 ~ 30등 1000점, 30등 밖 0점)
+// - 소통리더: (게시글 * 3점) + (댓글 * 1점)
+// - 답변리더: (답변 * 1점) + (채택 * 5점)
+// - 정보리더: 월간 자료 업로드 포인트 획득 순위
+// - 추천리더: 추천인당 2500점
 const rankingData = {
     attendance: [
-        { name: '장성실', score: 3000, change: 0, changeType: 'same' },  // 1등
-        { name: '서매일', score: 2900, change: 1, changeType: 'up' },   // 2등
+        { name: '장성실', score: 3000, change: 0, changeType: 'same' }, // 1등
+        { name: '서매일', score: 2900, change: 1, changeType: 'up' }, // 2등
         { name: '남부지런', score: 2800, change: 1, changeType: 'down' }, // 3등
-        { name: '강출석', score: 2700, change: 2, changeType: 'up' },    // 4등
-        { name: '박정시', score: 2600, change: 1, changeType: 'down' }   // 5등
+        { name: '강출석', score: 2700, change: 2, changeType: 'up' }, // 4등
+        { name: '박정시', score: 2600, change: 1, changeType: 'down' }, // 5등
     ],
     communication: [
-        { name: '최전문가', score: 356, change: 1, changeType: 'up' },  // 게시글 89개(267점) + 댓글 89개(89점)
-        { name: '정과장', score: 307, change: 1, changeType: 'down' },  // 게시글 76개(228점) + 댓글 79개(79점)
-        { name: '강대리', score: 260, change: 3, changeType: 'up' },    // 게시글 65개(195점) + 댓글 65개(65점)
-        { name: '김영업', score: 234, change: 0, changeType: 'same' },  // 게시글 58개(174점) + 댓글 60개(60점)
-        { name: '이기획', score: 203, change: 2, changeType: 'down' }   // 게시글 51개(153점) + 댓글 50개(50점)
+        { name: '최전문가', score: 356, change: 1, changeType: 'up' }, // 게시글 89개(267점) + 댓글 89개(89점)
+        { name: '정과장', score: 307, change: 1, changeType: 'down' }, // 게시글 76개(228점) + 댓글 79개(79점)
+        { name: '강대리', score: 260, change: 3, changeType: 'up' }, // 게시글 65개(195점) + 댓글 65개(65점)
+        { name: '김영업', score: 234, change: 0, changeType: 'same' }, // 게시글 58개(174점) + 댓글 60개(60점)
+        { name: '이기획', score: 203, change: 2, changeType: 'down' }, // 게시글 51개(153점) + 댓글 50개(50점)
     ],
     answer: [
-        { name: '송선생', score: 936, change: 0, changeType: 'same' },  // 답변 156개(156점) + 채택 156개(780점)
-        { name: '윤멘토', score: 858, change: 1, changeType: 'up' },    // 답변 143개(143점) + 채택 143개(715점)
-        { name: '한교수', score: 792, change: 1, changeType: 'down' },  // 답변 132개(132점) + 채택 132개(660점)
-        { name: '최전문가', score: 726, change: 2, changeType: 'up' },  // 답변 121개(121점) + 채택 121개(605점)
-        { name: '정멘토', score: 660, change: 1, changeType: 'down' }   // 답변 110개(110점) + 채택 110개(550점)
+        { name: '송선생', score: 936, change: 0, changeType: 'same' }, // 답변 156개(156점) + 채택 156개(780점)
+        { name: '윤멘토', score: 858, change: 1, changeType: 'up' }, // 답변 143개(143점) + 채택 143개(715점)
+        { name: '한교수', score: 792, change: 1, changeType: 'down' }, // 답변 132개(132점) + 채택 132개(660점)
+        { name: '최전문가', score: 726, change: 2, changeType: 'up' }, // 답변 121개(121점) + 채택 121개(605점)
+        { name: '정멘토', score: 660, change: 1, changeType: 'down' }, // 답변 110개(110점) + 채택 110개(550점)
     ],
     information: [
-        { name: '오데이터', score: 45000, change: 2, changeType: 'up' },  // 월간 포인트 획득량
+        { name: '오데이터', score: 45000, change: 2, changeType: 'up' }, // 월간 포인트 획득량
         { name: '유분석', score: 42000, change: 0, changeType: 'same' },
         { name: '구리서치', score: 38000, change: 2, changeType: 'down' },
         { name: '김정보', score: 35000, change: 1, changeType: 'up' },
-        { name: '이자료', score: 32000, change: 1, changeType: 'down' }
+        { name: '이자료', score: 32000, change: 1, changeType: 'down' },
     ],
     referral: [
-        { name: '김영업', score: 80000, change: 2, changeType: 'up' },   // 32명 추천
+        { name: '김영업', score: 80000, change: 2, changeType: 'up' }, // 32명 추천
         { name: '이기획', score: 70000, change: 1, changeType: 'down' }, // 28명 추천
         { name: '박팀장', score: 60000, change: 0, changeType: 'same' }, // 24명 추천
         { name: '최전문가', score: 55000, change: 3, changeType: 'up' }, // 22명 추천
-        { name: '정과장', score: 50000, change: 1, changeType: 'down' }  // 20명 추천
-    ]
+        { name: '정과장', score: 50000, change: 1, changeType: 'down' }, // 20명 추천
+    ],
 };
 
 // 포인트 보상 정보
 const rewards = {
     1: 100000,
     2: 50000,
-    3: 20000
+    3: 20000,
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('hall-of-fame.js 로드됨');
-    
+
     // 초기화
     initializeHallOfFame();
 });
@@ -73,22 +73,22 @@ function simulateRealtimeUpdate() {
     const categories = ['referral', 'communication', 'answer', 'information', 'attendance'];
     const randomCategory = categories[Math.floor(Math.random() * categories.length)];
     const categoryData = rankingData[randomCategory];
-    
+
     // 이전 순위 저장
     const prevRanking = categoryData.map((user, idx) => ({
         name: user.name,
-        index: idx
+        index: idx,
     }));
-    
+
     // 점수 변경 시뮬레이션
     if (Math.random() > 0.3) {
         // 2-5위 중에서 랜덤하게 선택 (1등은 제외)
         const candidateIndices = [1, 2, 3, 4]; // 2위~5위
         const randomIndex = candidateIndices[Math.floor(Math.random() * candidateIndices.length)];
         let scoreIncrease;
-        
+
         if (randomCategory === 'attendance') {
-            // 출석왕은 점수가 고정되어 있으므로 변동 없음
+            // 출석리더는 점수가 고정되어 있으므로 변동 없음
             return;
         } else if (randomCategory === 'communication') {
             // 게시글 작성(3점) 또는 댓글(1점)
@@ -103,15 +103,15 @@ function simulateRealtimeUpdate() {
             // 추천 1명 (2500점)
             scoreIncrease = 2500;
         }
-        
+
         categoryData[randomIndex].score += scoreIncrease;
-        
+
         // 점수 기준으로 정렬
         categoryData.sort((a, b) => b.score - a.score);
-        
+
         // 변동 정보 업데이트
         categoryData.forEach((user, newIndex) => {
-            const prevData = prevRanking.find(p => p.name === user.name);
+            const prevData = prevRanking.find((p) => p.name === user.name);
             if (prevData) {
                 const prevIndex = prevData.index;
                 if (prevIndex !== newIndex) {
@@ -123,9 +123,9 @@ function simulateRealtimeUpdate() {
                 }
             }
         });
-        
+
         // 실제로 순위 변동이 있었을 때만 업데이트
-        const hasChange = categoryData.some(user => user.change > 0);
+        const hasChange = categoryData.some((user) => user.change > 0);
         if (hasChange) {
             console.log(`${randomCategory} 카테고리 순위 변동 발생!`);
             updateCategoryRankings(randomCategory, true);
@@ -137,13 +137,13 @@ function simulateRealtimeUpdate() {
 function updateCategoryRankings(category, animate = false) {
     const categoryElement = document.querySelector(`[data-category="${category}"]`);
     if (!categoryElement) return;
-    
+
     const rankingList = categoryElement.querySelector('.ranking-list-new');
     const data = rankingData[category];
-    
+
     // 이전 1등 이름 저장
     const previousFirst = rankingList.querySelector('.ranking-item-new.first .name')?.textContent;
-    
+
     // 애니메이션 시 카테고리 섹션에 updating 클래스 추가
     if (animate) {
         categoryElement.classList.add('updating');
@@ -151,50 +151,64 @@ function updateCategoryRankings(category, animate = false) {
             categoryElement.classList.remove('updating');
         }, 500);
     }
-    
+
     // 점수 기준으로 정렬 (높은 점수가 상위)
     data.sort((a, b) => b.score - a.score);
-    
+
     // 애니메이션을 위한 기존 아이템 정보 저장
     const existingItems = rankingList.querySelectorAll('.ranking-item-new');
     const oldPositions = new Map();
     const oldScores = new Map();
-    
+
     if (animate && existingItems.length > 0) {
         // 각 아이템의 현재 위치 저장
         existingItems.forEach((item, index) => {
             const name = item.querySelector('.name').textContent;
             const rect = item.getBoundingClientRect();
-            
+
             oldPositions.set(name, {
                 top: rect.top,
                 height: rect.height,
                 oldIndex: index,
-                element: item
+                element: item,
             });
         });
     }
-    
+
     // 새로운 순위로 아이템 재생성
     const newElements = [];
-    
+
     // 새로운 랭킹 아이템 생성 (상위 5명 표시)
     data.slice(0, 5).forEach((user, index) => {
-        const rankClass = index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : 'fourth-fifth';
-        const badgeClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : index < 5 ? 'blue' : 'gray';
+        const rankClass =
+            index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : 'fourth-fifth';
+        const badgeClass =
+            index === 0
+                ? 'gold'
+                : index === 1
+                  ? 'silver'
+                  : index === 2
+                    ? 'bronze'
+                    : index < 5
+                      ? 'blue'
+                      : 'gray';
         const reward = rewards[index + 1] || 0; // 4, 5등은 포인트 없음
-        
+
         const userBadge = getUserBadge(category, index);
         const changeIcon = getChangeIcon(user.changeType);
-        
+
         // 카테고리별 점수 표시
-        let scoreText = `${user.score.toLocaleString()}점`;
-        
-        const rankIcon = index === 0 ? '<i class="fas fa-crown"></i>' : 
-                        index === 1 ? '<i class="fas fa-medal"></i>' : 
-                        index === 2 ? '<i class="fas fa-award"></i>' :
-                        `<span style="font-weight: 700; font-size: 16px;">${index + 1}</span>`; // 4, 5등은 숫자 표시
-        
+        const scoreText = `${user.score.toLocaleString()}점`;
+
+        const rankIcon =
+            index === 0
+                ? '<i class="fas fa-crown"></i>'
+                : index === 1
+                  ? '<i class="fas fa-medal"></i>'
+                  : index === 2
+                    ? '<i class="fas fa-award"></i>'
+                    : `<span style="font-weight: 700; font-size: 16px;">${index + 1}</span>`; // 4, 5등은 숫자 표시
+
         const rankingItem = document.createElement('div');
         rankingItem.className = `ranking-item-new ${rankClass}`;
         rankingItem.setAttribute('data-category', category);
@@ -215,48 +229,48 @@ function updateCategoryRankings(category, animate = false) {
                 ${user.change > 0 ? `<span>${user.change}</span>` : ''}
             </div>
         `;
-        
+
         newElements.push({ element: rankingItem, user: user, index: index });
     });
-    
+
     // 애니메이션 처리
     if (animate && oldPositions.size > 0) {
         // 기존 아이템 모두 제거
         rankingList.innerHTML = '';
-        
+
         // FLIP 애니메이션 적용
         newElements.forEach(({ element: newItem, user, index }) => {
             const oldData = oldPositions.get(user.name);
-            
+
             if (oldData) {
                 // 기존 사용자
                 rankingList.appendChild(newItem);
-                
+
                 // 점수 변경 애니메이션은 제거 (HTML 구조와 다름)
-                
+
                 // 순위 변경 애니메이션
                 if (oldData.oldIndex !== index) {
                     console.log(`${user.name}: ${oldData.oldIndex + 1}위 → ${index + 1}위`);
-                    
+
                     // 새 위치의 좌표 가져오기
                     const newRect = newItem.getBoundingClientRect();
-                    
+
                     // 이동 거리 계산
                     const deltaY = oldData.top - newRect.top;
                     console.log(`이동 거리: ${deltaY}px`);
-                    
+
                     // 즉시 이전 위치로 이동 (transition 없이)
                     newItem.style.transition = 'none';
                     newItem.style.transform = `translateY(${deltaY}px)`;
-                    
+
                     // 브라우저가 변경사항을 적용하도록 강제
                     newItem.offsetHeight;
-                    
+
                     // 애니메이션 시작
                     requestAnimationFrame(() => {
                         newItem.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
                         newItem.style.transform = 'translateY(0)';
-                        
+
                         // 강조 효과
                         newItem.classList.add('rank-changed');
                         console.log(`${user.name}에 rank-changed 클래스 추가됨`);
@@ -266,7 +280,7 @@ function updateCategoryRankings(category, animate = false) {
                         }, 1500);
                     });
                 }
-                
+
                 // 1등이 변경되었는지 확인
                 if (index === 0 && previousFirst && previousFirst !== user.name) {
                     newItem.classList.add('new-champion');
@@ -280,7 +294,7 @@ function updateCategoryRankings(category, animate = false) {
                 rankingList.appendChild(newItem);
                 newItem.style.opacity = '0';
                 newItem.style.transform = 'translateX(-20px)';
-                
+
                 requestAnimationFrame(() => {
                     newItem.style.transition = 'all 0.6s ease';
                     newItem.style.opacity = '1';
@@ -302,17 +316,17 @@ function animateScoreCount(element, start, end) {
     const duration = 1000; // 1초 동안 애니메이션
     const startTime = Date.now();
     const diff = end - start;
-    
+
     function updateScore() {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         // easing function for smooth animation
         const easeOutQuad = progress * (2 - progress);
         const currentScore = Math.floor(start + diff * easeOutQuad);
-        
+
         element.textContent = `${currentScore}점`;
-        
+
         if (progress < 1) {
             requestAnimationFrame(updateScore);
         } else {
@@ -326,7 +340,7 @@ function animateScoreCount(element, start, end) {
             }, 300);
         }
     }
-    
+
     updateScore();
 }
 
@@ -334,48 +348,48 @@ function animateScoreCount(element, start, end) {
 function getUserBadge(category, index) {
     const badges = {
         referral: [
-            { icon: 'fa-crown', label: '추천왕', color: 'gold' },
+            { icon: 'fa-crown', label: '추천리더', color: 'gold' },
             { icon: 'fa-star', label: '추천스타', color: 'silver' },
             { icon: 'fa-award', label: '추천우수', color: 'bronze' },
             { icon: 'fa-user-plus', label: '추천활동', color: 'blue' },
-            { icon: 'fa-users', label: '추천참여', color: 'gray' }
+            { icon: 'fa-users', label: '추천참여', color: 'gray' },
         ],
         communication: [
-            { icon: 'fa-crown', label: '소통왕', color: 'gold' },
+            { icon: 'fa-crown', label: '소통리더', color: 'gold' },
             { icon: 'fa-star', label: '소통스타', color: 'silver' },
             { icon: 'fa-award', label: '소통우수', color: 'bronze' },
             { icon: 'fa-comments', label: '소통활동', color: 'blue' },
-            { icon: 'fa-comment', label: '소통참여', color: 'gray' }
+            { icon: 'fa-comment', label: '소통참여', color: 'gray' },
         ],
         answer: [
-            { icon: 'fa-crown', label: '답변왕', color: 'gold' },
+            { icon: 'fa-crown', label: '답변리더', color: 'gold' },
             { icon: 'fa-star', label: '답변스타', color: 'silver' },
             { icon: 'fa-award', label: '답변우수', color: 'bronze' },
             { icon: 'fa-check-circle', label: '답변활동', color: 'blue' },
-            { icon: 'fa-lightbulb', label: '답변참여', color: 'gray' }
+            { icon: 'fa-lightbulb', label: '답변참여', color: 'gray' },
         ],
         information: [
-            { icon: 'fa-crown', label: '정보왕', color: 'gold' },
+            { icon: 'fa-crown', label: '정보리더', color: 'gold' },
             { icon: 'fa-star', label: '정보스타', color: 'silver' },
             { icon: 'fa-award', label: '정보우수', color: 'bronze' },
             { icon: 'fa-database', label: '정보활동', color: 'blue' },
-            { icon: 'fa-folder', label: '정보참여', color: 'gray' }
+            { icon: 'fa-folder', label: '정보참여', color: 'gray' },
         ],
         attendance: [
-            { icon: 'fa-crown', label: '출석왕', color: 'gold' },
+            { icon: 'fa-crown', label: '출석리더', color: 'gold' },
             { icon: 'fa-star', label: '출석스타', color: 'silver' },
             { icon: 'fa-award', label: '출석우수', color: 'bronze' },
             { icon: 'fa-calendar-check', label: '출석활동', color: 'blue' },
-            { icon: 'fa-calendar', label: '출석참여', color: 'gray' }
-        ]
+            { icon: 'fa-calendar', label: '출석참여', color: 'gray' },
+        ],
     };
-    
+
     return badges[category][index] || badges[category][4];
 }
 
 // 변동 아이콘 생성
 function getChangeIcon(changeType) {
-    switch(changeType) {
+    switch (changeType) {
         case 'up':
             return '<i class="fas fa-arrow-up"></i>';
         case 'down':
@@ -391,7 +405,7 @@ function getChangeIcon(changeType) {
 function addCategoryDataAttributes() {
     const categories = document.querySelectorAll('.category-section');
     const categoryNames = ['attendance', 'communication', 'answer', 'information', 'referral'];
-    
+
     categories.forEach((category, index) => {
         if (categoryNames[index]) {
             category.setAttribute('data-category', categoryNames[index]);
@@ -454,73 +468,73 @@ const historyData = {
         communication: '최전문가',
         answer: '송선생',
         information: '오데이터',
-        referral: '김영업'
+        referral: '김영업',
     },
     '2025-02': {
         attendance: '서매일',
         communication: '정과장',
         answer: '윤멘토',
         information: '유분석',
-        referral: '이기획'
+        referral: '이기획',
     },
     '2025-03': {
         attendance: '장성실',
         communication: '강대리',
         answer: '송선생',
         information: '구리서치',
-        referral: '박팀장'
+        referral: '박팀장',
     },
     '2025-04': {
         attendance: '남부지런',
         communication: '최전문가',
         answer: '한교수',
         information: '김정보',
-        referral: '최전문가'
+        referral: '최전문가',
     },
     '2025-05': {
         attendance: '강출석',
         communication: '김영업',
         answer: '정멘토',
         information: '이자료',
-        referral: '정과장'
+        referral: '정과장',
     },
     '2025-06': {
         attendance: '박정시',
         communication: '이기획',
         answer: '송선생',
         information: '오데이터',
-        referral: '김영업'
+        referral: '김영업',
     },
     '2025-07': {
         attendance: '장성실',
         communication: '정과장',
         answer: '윤멘토',
         information: '유분석',
-        referral: '이기획'
+        referral: '이기획',
     },
     '2025-08': {
         attendance: '서매일',
         communication: '최전문가',
         answer: '한교수',
         information: '구리서치',
-        referral: '박팀장'
+        referral: '박팀장',
     },
     '2025-09': {
         attendance: '남부지런',
         communication: '강대리',
         answer: '송선생',
         information: '김정보',
-        referral: '최전문가'
+        referral: '최전문가',
     },
     '2025-10': {
         attendance: '강출석',
         communication: '김영업',
         answer: '정멘토',
         information: '이자료',
-        referral: '정과장'
+        referral: '정과장',
     },
     '2025-11': null, // 아직 미확정
-    '2025-12': null  // 아직 미확정
+    '2025-12': null, // 아직 미확정
 };
 
 // 초기화 함수
@@ -528,17 +542,17 @@ function initializeHallOfFame() {
     updateCurrentMonth();
     addCategoryDataAttributes();
     addUpdateAnimationStyles();
-    
+
     // 모든 카테고리 초기 렌더링
-    Object.keys(rankingData).forEach(category => {
+    Object.keys(rankingData).forEach((category) => {
         updateCategoryRankings(category);
     });
-    
+
     // 2초마다 실시간 업데이트 시뮬레이션 (순위 변동 확인)
     setInterval(simulateRealtimeUpdate, 2000);
-    
+
     // 실시간 표시 (효과 제거)
-    
+
     // 역대 랭킹 기능 초기화
     initializeHistoryFeature();
 }
@@ -550,10 +564,10 @@ function initializeHistoryFeature() {
     const historyModalClose = document.getElementById('historyModalClose');
     const monthTabs = document.getElementById('monthTabs');
     const historyContent = document.getElementById('historyContent');
-    
+
     // 월 탭 생성
     createMonthTabs();
-    
+
     // 플로팅 버튼 클릭 이벤트
     historyBtn.addEventListener('click', () => {
         historyModal.classList.add('active');
@@ -562,12 +576,12 @@ function initializeHistoryFeature() {
         showMonthHistory(latestMonth);
         setActiveTab(latestMonth);
     });
-    
+
     // 모달 닫기
     historyModalClose.addEventListener('click', () => {
         historyModal.classList.remove('active');
     });
-    
+
     // 모달 외부 클릭시 닫기
     historyModal.addEventListener('click', (e) => {
         if (e.target === historyModal) {
@@ -579,15 +593,28 @@ function initializeHistoryFeature() {
 // 월 탭 생성
 function createMonthTabs() {
     const monthTabs = document.getElementById('monthTabs');
-    const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-    
+    const months = [
+        '1월',
+        '2월',
+        '3월',
+        '4월',
+        '5월',
+        '6월',
+        '7월',
+        '8월',
+        '9월',
+        '10월',
+        '11월',
+        '12월',
+    ];
+
     months.forEach((month, index) => {
         const monthKey = `2025-${String(index + 1).padStart(2, '0')}`;
         const tab = document.createElement('button');
         tab.className = 'month-tab';
         tab.dataset.month = monthKey;
         tab.innerHTML = month;
-        
+
         if (historyData[monthKey]) {
             tab.addEventListener('click', () => {
                 showMonthHistory(monthKey);
@@ -598,7 +625,7 @@ function createMonthTabs() {
             tab.style.opacity = '0.4';
             tab.style.cursor = 'not-allowed';
         }
-        
+
         monthTabs.appendChild(tab);
     });
 }
@@ -606,7 +633,7 @@ function createMonthTabs() {
 // 활성 탭 설정
 function setActiveTab(monthKey) {
     const tabs = document.querySelectorAll('.month-tab');
-    tabs.forEach(tab => {
+    tabs.forEach((tab) => {
         if (tab.dataset.month === monthKey) {
             tab.classList.add('active');
         } else {
@@ -619,10 +646,10 @@ function setActiveTab(monthKey) {
 function showMonthHistory(monthKey) {
     const historyContent = document.getElementById('historyContent');
     const data = historyData[monthKey];
-    
+
     // 페이드 아웃 효과
     historyContent.classList.add('transitioning');
-    
+
     setTimeout(() => {
         if (!data) {
             historyContent.innerHTML = `
@@ -635,18 +662,19 @@ function showMonthHistory(monthKey) {
             historyContent.classList.add('active');
             return;
         }
-        
+
         const categories = [
-            { key: 'attendance', name: '출첵왕', icon: 'fa-calendar-check' },
-            { key: 'communication', name: '소통왕', icon: 'fa-comments' },
-            { key: 'answer', name: '답변왕', icon: 'fa-check-circle' },
-            { key: 'information', name: '정보왕', icon: 'fa-database' },
-            { key: 'referral', name: '추천왕', icon: 'fa-user-plus' }
+            { key: 'attendance', name: '출첵리더', icon: 'fa-calendar-check' },
+            { key: 'communication', name: '소통리더', icon: 'fa-comments' },
+            { key: 'answer', name: '답변리더', icon: 'fa-check-circle' },
+            { key: 'information', name: '정보리더', icon: 'fa-database' },
+            { key: 'referral', name: '추천리더', icon: 'fa-user-plus' },
         ];
-        
-        historyContent.innerHTML = categories.map(category => {
-            const winnerName = data[category.key];
-            return `
+
+        historyContent.innerHTML = categories
+            .map((category) => {
+                const winnerName = data[category.key];
+                return `
                 <div class="history-list-item">
                     <div class="history-category-icon">
                         <i class="fas ${category.icon}"></i>
@@ -666,12 +694,13 @@ function showMonthHistory(monthKey) {
                     </div>
                 </div>
             `;
-        }).join('');
-        
+            })
+            .join('');
+
         // 페이드 인 효과
         historyContent.classList.remove('transitioning');
         historyContent.classList.add('active');
-        
+
         // 애니메이션 완료 후 클래스 정리
         setTimeout(() => {
             historyContent.classList.remove('active');
@@ -681,6 +710,6 @@ function showMonthHistory(monthKey) {
 
 // 가장 최근 확정된 월 가져오기
 function getLatestConfirmedMonth() {
-    const months = Object.keys(historyData).filter(key => historyData[key] !== null);
+    const months = Object.keys(historyData).filter((key) => historyData[key] !== null);
     return months[months.length - 1];
 }

@@ -86,30 +86,30 @@
         --container-padding: 24px;
         --sidebar-width: 280px;
     }
-    
+
     .app-container {
         position: relative;
     }
-    
+
     .sidebar {
         position: fixed;
         left: -100%;
         transition: left 0.3s ease;
         z-index: 1001;
     }
-    
+
     .sidebar.mobile-open {
         left: 0;
     }
-    
+
     .main-container {
         margin-left: 0;
     }
-    
+
     .main-header {
         left: 0;
     }
-    
+
     .header-left {
         display: block;
     }

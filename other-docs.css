@@ -1,0 +1,49 @@
+/* 기타자료 페이지 스타일 */
+
+/* 컨테이너 */
+.other-docs-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 80px 80px;
+}
+
+/* 헤더 */
+.other-docs-header {
+    margin-bottom: 32px;
+}
+
+/* 기타자료 페이지의 헤더 스타일 - 다른 페이지와 일치 */
+body .main-content .other-docs-container .other-docs-header .other-docs-title {
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: var(--gray-900) !important;
+    margin-bottom: 6px !important;
+    display: block !important;
+    line-height: 1.3 !important;
+}
+
+body .main-content .other-docs-container .other-docs-header .other-docs-subtitle {
+    font-size: 14px !important;
+    color: var(--gray-600) !important;
+    display: block !important;
+    line-height: 1.5 !important;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .other-docs-container {
+        padding: 40px 40px 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .other-docs-container {
+        padding: 32px 24px 48px;
+    }
+}
+
+@media (max-width: 640px) {
+    .other-docs-container {
+        padding: 24px 16px 40px;
+    }
+}

@@ -3,23 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self'; worker-src 'self' blob:;">
     <title>시장조사서 - WAVE SPACE</title>
     <script src="preload.js"></script>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="styles.css?v=7">
-    <link rel="stylesheet" href="market-research.css">
-    <link rel="stylesheet" href="market-research-minimal.css">
+    <link rel="stylesheet" href="market-research.css?v=3">
+    <link rel="stylesheet" href="market-research-minimal.css?v=2">
     <link rel="stylesheet" href="css/checkbox-interaction.css">
+    <link rel="stylesheet" href="mobile-fix.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- PDF.js 라이브러리 추가 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-        // PDF.js 워커 설정
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        // PDF.js 워커 설정 - 라이브러리 로드 확인 후 설정
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        } else {
+            console.warn('PDF.js 라이브러리를 로드할 수 없습니다. PDF 미리보기 기능이 제한될 수 있습니다.');
+        }
     </script>
 </head>
-<body>
+<body data-page="market-research">
     <!-- 전체 컨테이너 -->
     <div class="app-container">
         <!-- 사이드바 -->
@@ -127,9 +133,9 @@
                                     <i class="fas fa-briefcase"></i>
                                     <span>분양영업</span>
                                 </a>
-                                <a href="headhunting.html" class="nav-item">
-                                    <i class="fas fa-user-tie"></i>
-                                    <span>헤드헌팅</span>
+                                <a href="ai-matching.html" class="nav-item">
+                                    <i class="fas fa-robot"></i>
+                                    <span>AI 매칭</span>
                                 </a>
                             </div>
                         </div>
@@ -267,7 +273,7 @@
                         <div class="user-info">
                             <p class="user-name">박승학님</p>
                             <div class="user-meta">
-                                <span class="user-title">소통왕</span>
+                                <span class="user-title">소통리더</span>
                                 <span class="user-points">• 100,000P</span>
                             </div>
                         </div>
@@ -290,6 +296,7 @@
                         <!-- 검색 바 -->
                         <div class="filter-top-bar">
                             <div class="search-box">
+                                <label for="searchInput" class="sr-only">지역명, 프로젝트명, 키워드 검색</label>
                                 <i class="fas fa-search"></i>
                                 <input type="text" placeholder="지역명, 프로젝트명, 키워드 검색" id="searchInput">
                             </div>
@@ -425,10 +432,10 @@
                                         <span class="tab-check"></span>
                                         <span>지식산업센터</span>
                                     </label>
-                                    <label class="checkbox-tab" data-type="hotel">
+                                    <label class="checkbox-tab" data-type="office">
                                         <input type="radio" name="product-type-filter">
                                         <span class="tab-check"></span>
-                                        <span>호텔</span>
+                                        <span>오피스</span>
                                     </label>
                                     <label class="checkbox-tab" data-type="other">
                                         <input type="radio" name="product-type-filter">
@@ -519,18 +526,8 @@
                             </div>
 
                             <!-- 페이지네이션 -->
-                            <div class="pagination" id="pagination">
-                                <button class="page-btn" disabled>
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <button class="page-btn active">1</button>
-                                <button class="page-btn">2</button>
-                                <button class="page-btn">3</button>
-                                <button class="page-btn">4</button>
-                                <button class="page-btn">5</button>
-                                <button class="page-btn">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
+                            <div class="pagination-underline" id="pagination">
+                                <!-- JavaScript로 동적 생성 -->
                             </div>
                     </div>
                 </div>
@@ -540,7 +537,20 @@
 
     <!-- 플로팅 업로드 버튼 -->
     <div class="upload-btn-wrapper">
-        <button class="upload-btn" id="uploadBtn">
+        <div class="upload-label">업로드</div>
+        <svg class="upload-curve" width="60" height="80" viewBox="0 0 60 80">
+            <path
+                d="M 30 10 Q 20 25, 25 35 T 35 50 Q 30 65, 30 75"
+                stroke="rgba(46, 140, 230, 0.3)"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+                stroke-dasharray="4, 6"
+            >
+                <animate attributeName="stroke-dashoffset" values="0;10" dur="3s" repeatCount="indefinite" />
+            </path>
+        </svg>
+        <button class="upload-btn" id="uploadBtn" title="업로드">
             <i class="fas fa-upload"></i>
         </button>
     </div>
@@ -549,40 +559,34 @@
     <div class="preview-modal" id="previewModal">
         <div class="preview-overlay"></div>
         <div class="preview-container">
-            <button class="preview-close" id="previewClose">
-                <i class="fas fa-times"></i>
-            </button>
-            <!-- 문서 카운터 -->
-            <div class="preview-document-counter" id="previewCounter">1 / 6</div>
-            <!-- 좌우 네비게이션 버튼 -->
-            <button class="preview-nav preview-nav-prev" id="previewPrev" title="이전 문서">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="preview-nav preview-nav-next" id="previewNext" title="다음 문서">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+            <!-- 상단 네비게이션 버튼 그룹 -->
+            <div class="preview-header">
+                <div class="modal-nav-buttons">
+                    <button class="modal-nav-btn preview-nav-prev" id="previewPrev" title="이전 문서">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="modal-nav-btn preview-nav-next" id="previewNext" title="다음 문서">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="modal-nav-btn modal-close" id="previewClose" title="닫기">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
             <div class="preview-wrapper">
                 <!-- 미니멀 레이아웃 -->
                 <div class="preview-minimal-layout">
-                    <!-- 왼쪽: 문서 미리보기 (3페이지 레이아웃) -->
+                    <!-- 왼쪽: 문서 미리보기 (단일 페이지) -->
                     <div class="preview-document-area">
-                        <div class="preview-pages-layout">
-                            <!-- 4페이지 (위, 작게) -->
-                            <div class="preview-page-small preview-page-top">
-                                <canvas id="previewCanvas4" width="120" height="160"></canvas>
-                                <div class="page-label">페이지 4</div>
+                        <div class="preview-single-page-layout">
+                            <!-- 미리보기 제목 -->
+                            <div class="preview-title">자료 미리보기 (5p)</div>
+                            <!-- 5페이지 (메인) -->
+                            <div class="preview-page-single">
+                                <canvas id="previewCanvas5" width="300" height="400"></canvas>
                             </div>
-                            
-                            <!-- 5페이지 (중앙, 크게 - 메인) -->
-                            <div class="preview-page-main">
-                                <canvas id="previewCanvas5" width="200" height="280"></canvas>
-                                <div class="page-label main">페이지 5 (메인)</div>
-                            </div>
-                            
-                            <!-- 6페이지 (아래, 작게) -->
-                            <div class="preview-page-small preview-page-bottom">
-                                <canvas id="previewCanvas6" width="120" height="160"></canvas>
-                                <div class="page-label">페이지 6</div>
+                            <div class="preview-info-text">
+                                <i class="fas fa-info-circle"></i> 미리보기 방지를 위해 낮은 해상도가 적용되었습니다
                             </div>
                         </div>
                     </div>
@@ -592,8 +596,11 @@
                         <!-- 문서 타입 배지 -->
                         <span class="preview-type-badge" id="previewType">아파트</span>
                         
-                        <!-- 문서 제목 -->
-                        <h1 class="preview-doc-title" id="previewTitle">강남구 삼성동 아파트 시장조사서</h1>
+                        <!-- 문서 제목 (2줄 구성) -->
+                        <h1 class="preview-doc-title" id="previewTitle">
+                            <span class="title-line1">강남구 삼성동 • 아파트</span>
+                            <span class="title-line2">민간분양 시장조사서</span>
+                        </h1>
                         
                         <!-- 핵심 정보 -->
                         <div class="preview-key-info">
@@ -603,7 +610,7 @@
                             </div>
                             <div class="key-info-item">
                                 <i class="fas fa-file-pdf"></i>
-                                <span>PDF • <span id="previewFileSize">15.2MB</span></span>
+                                <span>PDF • <span id="previewFileSize">15.2MB</span> • <span id="previewPages">67</span>페이지</span>
                             </div>
                             <div class="key-info-item">
                                 <i class="fas fa-calendar"></i>
@@ -611,31 +618,77 @@
                             </div>
                         </div>
                         
-                        <!-- 다운로드 포인트 -->
+                        <!-- 다운로드 포인트 - 업로드 모달 스타일 적용 -->
                         <div class="preview-point-section">
-                            <div class="point-display">
-                                <span class="point-label">다운로드 포인트</span>
-                                <div class="point-value-display">
-                                    <span class="point-number" id="previewPoints">10,000</span>
-                                    <span class="point-suffix">P</span>
+                            <div class="preview-point-info-box">
+                                <div class="preview-point-header">
+                                    <div class="preview-point-main">
+                                        <h4 class="preview-point-title">
+                                            <i class="fas fa-coins"></i>
+                                            다운로드 필요 포인트
+                                        </h4>
+                                        <p class="preview-point-subtitle">기본 7,000P × 최신성% × 파일크기%</p>
+                                        <div class="preview-point-value" id="previewPoints">10,000P</div>
+                                    </div>
+                                    <button type="button" class="preview-point-toggle" onclick="togglePreviewPointDetails()">
+                                        <span id="previewToggleText">자세히보기</span>
+                                        <i class="fas fa-chevron-down" id="previewToggleIcon"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="point-breakdown">
-                                <div class="point-breakdown-item">
-                                    <span class="point-breakdown-label">
-                                        <i class="fas fa-calendar-check"></i>
-                                        최신성 지수
-                                    </span>
-                                    <span class="point-breakdown-value" id="freshnessIndex">6개월 이내 (120%)</span>
+                            
+                            <!-- 토글 상세 정보 -->
+                            <div class="preview-point-details" id="previewPointDetails">
+                                <div class="preview-point-tables">
+                                    <!-- 최신성 지수 표 -->
+                                    <div class="preview-point-table-group">
+                                        <h5 class="preview-point-table-title">
+                                            <i class="fas fa-calendar-check"></i>
+                                            최신성 지수
+                                        </h5>
+                                        <table class="preview-point-table" id="freshnessTable">
+                                            <tr data-months="6">
+                                                <td>6개월 이내</td>
+                                                <td style="color: #dc2626;">120%</td>
+                                            </tr>
+                                            <tr data-months="12">
+                                                <td>1년 이내</td>
+                                                <td style="color: #0066FF;">100%</td>
+                                            </tr>
+                                            <tr data-months="24">
+                                                <td>2년 이내</td>
+                                                <td style="color: #6b7280;">70%</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    
+                                    <!-- 파일크기 지수 표 -->
+                                    <div class="preview-point-table-group">
+                                        <h5 class="preview-point-table-title">
+                                            <i class="fas fa-hdd"></i>
+                                            파일크기 지수
+                                        </h5>
+                                        <table class="preview-point-table" id="sizeTable">
+                                            <tr data-size="5">
+                                                <td>5MB 이상</td>
+                                                <td style="color: #059669;">110%</td>
+                                            </tr>
+                                            <tr data-size="2-5">
+                                                <td>2~5MB</td>
+                                                <td style="color: #0066FF;">100%</td>
+                                            </tr>
+                                            <tr data-size="2">
+                                                <td>2MB 미만</td>
+                                                <td style="color: #6b7280;">70%</td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div class="point-breakdown-item">
-                                    <span class="point-breakdown-label">
-                                        <i class="fas fa-hdd"></i>
-                                        파일크기 지수
-                                    </span>
-                                    <span class="point-breakdown-value" id="fileSizeIndex">15.2MB (110%)</span>
-                                </div>
-                                <div class="point-formula" id="pointFormula">
+                                
+                                <!-- 계산식 -->
+                                <div class="preview-point-formula" id="pointFormula">
+                                    <span id="freshnessIndex" style="display: none;">6개월 이내 (120%)</span>
+                                    <span id="fileSizeIndex" style="display: none;">15.2MB (110%)</span>
                                     기준 7,000P × 1.2 × 1.1 = 9,240P
                                 </div>
                             </div>
@@ -643,17 +696,55 @@
                         
                         <!-- 버튼 그룹 -->
                         <div class="preview-button-group">
-                            <button class="btn-add-cart" id="previewCartBtn">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span>장바구니</span>
-                            </button>
-                            <button class="btn-download-primary" id="previewDownloadBtn">
-                                <i class="fas fa-download"></i>
-                                <span>다운로드</span>
-                            </button>
+                            <!-- 메인 액션: 다운로드 -->
+                            <div class="preview-main-action">
+                                <button class="btn-download-primary" id="previewDownloadBtn">
+                                    <i class="fas fa-download"></i>
+                                    <span>다운로드</span>
+                                </button>
+                            </div>
+                            <!-- 보조 액션: 장바구니, 신고 -->
+                            <div class="preview-sub-actions">
+                                <button class="btn-add-cart" id="previewCartBtn">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>장바구니 담기</span>
+                                </button>
+                                <button class="btn-report" id="previewReportBtn">
+                                    <i class="fas fa-flag"></i>
+                                    <span>신고</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 신고 모달 -->
+    <div class="report-modal" id="reportModal">
+        <div class="report-modal-overlay"></div>
+        <div class="report-modal-content">
+            <div class="report-modal-header">
+                <h3 class="report-modal-title">문서 신고</h3>
+                <button class="report-modal-close" id="reportModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="report-modal-body">
+                <div class="report-form-group">
+                    <label for="reportReason" class="report-form-label">신고 이유</label>
+                    <textarea id="reportReason" class="report-form-textarea" 
+                              placeholder="신고 이유를 간략하게 기입해주세요..." 
+                              maxlength="200" rows="4"></textarea>
+                    <div class="report-char-count">
+                        <span id="reportCharCount">0</span>/200
+                    </div>
+                </div>
+            </div>
+            <div class="report-modal-actions">
+                <button class="report-btn-cancel" id="reportBtnCancel">취소</button>
+                <button class="report-btn-submit" id="reportBtnSubmit" disabled>신고 제출</button>
             </div>
         </div>
     </div>
@@ -681,85 +772,8 @@
                     <input type="file" hidden id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx">
                 </div>
 
-                <!-- 파일 정보 -->
-                <div class="simple-file-info" id="fileInfo">
-                    <div class="file-thumbnail" id="fileThumbnail" style="display: none;">
-                        <canvas id="thumbnailCanvas" width="120" height="160"></canvas>
-                    </div>
-                    <div class="simple-file-icon" id="fileIconDiv">
-                        <i class="fas fa-file-pdf" style="color: #dc2626;"></i>
-                    </div>
-                    <div class="simple-file-details">
-                        <div class="simple-file-name" id="fileName"></div>
-                        <div class="simple-file-size" id="fileSize"></div>
-                        <div class="file-date-select" style="margin-top: 12px;">
-                            <label style="font-size: 13px; color: #374151; font-weight: 600; display: block; margin-bottom: 8px;">
-                                <i class="fas fa-calendar-check" style="color: #6b7280; margin-right: 4px;"></i>
-                                파일 생성 날짜 <span style="color: #dc2626;">*</span>
-                            </label>
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <select id="fileYear" class="date-select" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 80px;">
-                                    <option value="">연도</option>
-                                    <option value="2025">2025년</option>
-                                    <option value="2024">2024년</option>
-                                    <option value="2023">2023년</option>
-                                </select>
-                                <select id="fileMonth" class="date-select" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 65px;">
-                                    <option value="">월</option>
-                                    <option value="1">1월</option>
-                                    <option value="2">2월</option>
-                                    <option value="3">3월</option>
-                                    <option value="4">4월</option>
-                                    <option value="5">5월</option>
-                                    <option value="6">6월</option>
-                                    <option value="7">7월</option>
-                                    <option value="8">8월</option>
-                                    <option value="9">9월</option>
-                                    <option value="10">10월</option>
-                                    <option value="11">11월</option>
-                                    <option value="12">12월</option>
-                                </select>
-                                <select id="fileDay" class="date-select" style="padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; min-width: 65px;">
-                                    <option value="">일</option>
-                                    <option value="1">1일</option>
-                                    <option value="2">2일</option>
-                                    <option value="3">3일</option>
-                                    <option value="4">4일</option>
-                                    <option value="5">5일</option>
-                                    <option value="6">6일</option>
-                                    <option value="7">7일</option>
-                                    <option value="8">8일</option>
-                                    <option value="9">9일</option>
-                                    <option value="10">10일</option>
-                                    <option value="11">11일</option>
-                                    <option value="12">12일</option>
-                                    <option value="13">13일</option>
-                                    <option value="14">14일</option>
-                                    <option value="15">15일</option>
-                                    <option value="16">16일</option>
-                                    <option value="17">17일</option>
-                                    <option value="18">18일</option>
-                                    <option value="19">19일</option>
-                                    <option value="20">20일</option>
-                                    <option value="21">21일</option>
-                                    <option value="22">22일</option>
-                                    <option value="23">23일</option>
-                                    <option value="24">24일</option>
-                                    <option value="25">25일</option>
-                                    <option value="26">26일</option>
-                                    <option value="27">27일</option>
-                                    <option value="28">28일</option>
-                                    <option value="29">29일</option>
-                                    <option value="30">30일</option>
-                                    <option value="31">31일</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="simple-file-remove" id="fileRemove">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+                <!-- 파일 정보 리스트 (최대 2개) -->
+                <div id="filesContainer"></div>
 
                 <!-- 중복 검수 안내 (파일생성날짜 바로 아래) -->
                 <div class="duplicate-check-info" id="duplicateCheckInfo" style="display: none; margin-top: 8px; padding: 8px 12px; background: #fef3c7; border: 1px solid #fbbf24; border-radius: 6px;">
@@ -769,14 +783,6 @@
 
                 <!-- 개선된 정보 입력 -->
                 <div class="simple-quick-info">
-                    <!-- 제목 (자동 생성) -->
-                    <div class="simple-form-group">
-                        <label class="simple-form-label">
-                            <i class="fas fa-heading" style="color: #6b7280; margin-right: 4px;"></i>
-                            제목 (자동 생성)
-                        </label>
-                        <input type="text" class="simple-form-input" id="documentTitle" readonly style="background: #f9fafb; color: #374151; font-weight: 500;">
-                    </div>
 
                     <!-- 지역 선택 (2단계 드롭다운) -->
                     <div class="simple-form-group">
@@ -839,8 +845,8 @@
                             <button type="button" class="upload-type-btn" data-type="knowledge" data-name="지식산업센터">
                                 <span>지식산업센터</span>
                             </button>
-                            <button type="button" class="upload-type-btn" data-type="hotel" data-name="호텔">
-                                <span>호텔</span>
+                            <button type="button" class="upload-type-btn" data-type="office" data-name="오피스">
+                                <span>오피스</span>
                             </button>
                             <button type="button" class="upload-type-btn" data-type="other" data-name="기타">
                                 <span>기타</span>
@@ -963,6 +969,79 @@
                         }
                     }
                 </script>
+                
+                <script>
+                    // 다운로드 모달 포인트 상세정보 토글
+                    function togglePreviewPointDetails() {
+                        const details = document.getElementById('previewPointDetails');
+                        const toggleText = document.getElementById('previewToggleText');
+                        const toggleIcon = document.getElementById('previewToggleIcon');
+                        const toggleBtn = event.currentTarget;
+                        
+                        if (details.classList.contains('show')) {
+                            details.classList.remove('show');
+                            toggleText.textContent = '자세히보기';
+                            toggleBtn.classList.remove('active');
+                        } else {
+                            details.classList.add('show');
+                            toggleText.textContent = '접기';
+                            toggleBtn.classList.add('active');
+                            
+                            // 해당 항목 강조
+                            highlightActiveRows();
+                        }
+                    }
+                    
+                    // 현재 문서에 해당하는 행 강조
+                    function highlightActiveRows() {
+                        // 모든 active 클래스 제거
+                        document.querySelectorAll('#freshnessTable tr, #sizeTable tr').forEach(row => {
+                            row.classList.remove('active');
+                        });
+                        
+                        // 현재 문서 날짜 가져오기 (실제 데이터에서)
+                        const dateEl = document.getElementById('previewDate');
+                        if (dateEl) {
+                            const dateStr = dateEl.textContent;
+                            const docDate = new Date(dateStr.replace(/\./g, '-'));
+                            const today = new Date();
+                            const monthsDiff = Math.floor((today - docDate) / (1000 * 60 * 60 * 24 * 30));
+                            
+                            // 최신성 테이블에서 해당 행 강조
+                            const freshnessTable = document.getElementById('freshnessTable');
+                            if (freshnessTable) {
+                                const rows = freshnessTable.querySelectorAll('tr');
+                                if (monthsDiff <= 6) {
+                                    rows[0].classList.add('active');
+                                } else if (monthsDiff <= 12) {
+                                    rows[1].classList.add('active');
+                                } else if (monthsDiff <= 24) {
+                                    rows[2].classList.add('active');
+                                }
+                            }
+                        }
+                        
+                        // 파일 크기 가져오기
+                        const sizeEl = document.getElementById('previewFileSize');
+                        if (sizeEl) {
+                            const sizeText = sizeEl.textContent;
+                            const size = parseFloat(sizeText);
+                            
+                            // 파일크기 테이블에서 해당 행 강조
+                            const sizeTable = document.getElementById('sizeTable');
+                            if (sizeTable) {
+                                const rows = sizeTable.querySelectorAll('tr');
+                                if (size >= 5) {
+                                    rows[0].classList.add('active');
+                                } else if (size >= 2) {
+                                    rows[1].classList.add('active');
+                                } else {
+                                    rows[2].classList.add('active');
+                                }
+                            }
+                        }
+                    }
+                </script>
 
                 <!-- 예상 포인트 표시 -->
                 <div class="simple-points-info" id="estimatedPoints">
@@ -1002,8 +1081,8 @@
                                     <h4>기본 정보</h4>
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label for="documentTitle">제목 *</label>
-                                            <input type="text" id="documentTitle" name="title" placeholder="분석된 제목이 표시됩니다" required>
+                                            <label for="analysisDocumentTitle">제목 *</label>
+                                            <input type="text" id="analysisDocumentTitle" name="title" placeholder="분석된 제목이 표시됩니다" required>
                                         </div>
                                     </div>
                                 </div>
@@ -1013,7 +1092,7 @@
                                     <h4>지역 정보</h4>
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label for="region1">지역1 (시/도) *</label>
+                                            <label for="region1Value">지역1 (시/도) *</label>
                                             <div class="region-selector">
                                                 <div class="region-dropdown" id="region1Dropdown">
                                                     <button type="button" class="dropdown-btn" id="region1Btn">
@@ -1040,11 +1119,11 @@
                                                         <div class="dropdown-item" data-value="제주">제주특별자치도</div>
                                                     </div>
                                                 </div>
-                                                <input type="hidden" id="region1" name="region1" required>
+                                                <input type="hidden" id="region1Value" name="region1" required>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="region2">지역2 (시/군/구) *</label>
+                                            <label for="region2Value">지역2 (시/군/구) *</label>
                                             <div class="region-selector">
                                                 <div class="region-dropdown" id="region2Dropdown">
                                                     <button type="button" class="dropdown-btn" id="region2Btn" disabled>
@@ -1055,7 +1134,7 @@
                                                         <!-- 지역1 선택에 따라 동적으로 생성됩니다 -->
                                                     </div>
                                                 </div>
-                                                <input type="hidden" id="region2" name="region2" required>
+                                                <input type="hidden" id="region2Value" name="region2" required>
                                             </div>
                                         </div>
                                     </div>
@@ -1212,42 +1291,12 @@
         </div>
     </div>
 
-    <script src="market-research.js"></script>
+    <script src="market-research.js?v=3"></script>
     <script>
         // 현재 미리보기 중인 문서 ID
         let currentPreviewId = 1;
         
-        // 미리보기 함수 강제 정의
-        function openPreview(docId) {
-            console.log('인라인 openPreview 호출, docId:', docId);
-            const modal = document.getElementById('previewModal');
-            if (modal) {
-                currentPreviewId = parseInt(docId);
-                modal.style.display = 'block';
-                modal.classList.add('active');
-                console.log('미리보기 모달 표시됨');
-                
-                // market-research.js에서 정의된 sampleDocuments 사용
-                if (typeof sampleDocuments !== 'undefined') {
-                    const doc = sampleDocuments.find(d => d.id == docId);
-                    if (doc) {
-                        updatePreviewContent(doc);
-                        // PDF 렌더링 (pdfPath 전달)
-                        if (typeof renderPreviewPDF === 'function') {
-                            renderPreviewPDF(doc.pdfPath, docId);
-                        }
-                    }
-                }
-                
-                // 네비게이션 버튼 상태 업데이트
-                updatePreviewNavButtons();
-                
-                // 키보드 네비게이션 설정
-                setupModalKeyboardNavigation();
-            } else {
-                alert('미리보기 모달을 찾을 수 없습니다!');
-            }
-        }
+        // market-research.js의 openPreview 함수를 사용
         
         // 미리보기 내용 업데이트 함수
         function updatePreviewContent(doc) {
@@ -1261,25 +1310,39 @@
             const pointsEl = document.getElementById('previewPoints');
             const fileSizeEl = document.getElementById('previewFileSize');
             
-            if (titleEl) titleEl.textContent = doc.title;
+            // 제목을 2줄로 구성
+            if (titleEl) {
+                // 제목에서 지역과 상품 정보 추출
+                const parts = doc.title.split(' ');
+                let location = '';
+                let product = '';
+                let supplyType = '민간분양'; // 기본값
+                
+                // 간단한 파싱 (실제 데이터 구조에 맞게 조정 필요)
+                if (parts.length >= 3) {
+                    location = parts.slice(0, 2).join(' '); // 처음 2단어를 지역으로
+                    product = parts[2]; // 세 번째 단어를 상품으로
+                }
+                
+                titleEl.innerHTML = `
+                    <span class="title-line1">${location} • ${product || '아파트'}</span>
+                    <span class="title-line2">${supplyType} 시장조사서</span>
+                `;
+            }
             if (typeEl) typeEl.textContent = productType ? productType.name : doc.type;
             if (locationEl) locationEl.textContent = doc.location;
             if (dateEl) dateEl.textContent = doc.createDate || doc.date;
-            if (pointsEl) pointsEl.textContent = doc.points ? doc.points.toLocaleString() : '10,000';
+            if (pointsEl) pointsEl.textContent = doc.points ? doc.points.toLocaleString() + 'P' : '10,000P';
             if (fileSizeEl) fileSizeEl.textContent = doc.fileSize || '15.2';
+            
+            // 페이지 수 업데이트
+            const pagesEl = document.getElementById('previewPages');
+            if (pagesEl) pagesEl.textContent = doc.pages || '67';
             
             // 포인트 계산 설명 업데이트
             updatePointBreakdown(doc);
             
-            // 다운로드 버튼 업데이트
-            const downloadBtn = document.getElementById('previewDownloadBtn');
-            if (downloadBtn) {
-                downloadBtn.onclick = () => {
-                    if (typeof handleDownload !== 'undefined') {
-                        handleDownload(doc.id, doc.points);
-                    }
-                };
-            }
+            // 다운로드 버튼 업데이트 - market-research.js에서 처리
         }
         
         // 포인트 계산 설명 업데이트
@@ -1328,11 +1391,17 @@
             if (freshnessEl) freshnessEl.textContent = freshnessText;
             if (fileSizeEl) fileSizeEl.textContent = sizeText;
             
-            // 계산식 업데이트 - 기준 포인트를 3000P로 변경
-            const basePoints = 3000;
+            // 계산식 업데이트 - 다운로드는 7000P 기준
+            const basePoints = 7000;
             const totalPoints = Math.round(basePoints * freshnessMultiplier * sizeMultiplier);
             if (formulaEl) {
-                formulaEl.textContent = `기준 3,000P × ${freshnessMultiplier} × ${sizeMultiplier} = ${totalPoints.toLocaleString()}P`;
+                formulaEl.textContent = `기준 7,000P × ${freshnessMultiplier} × ${sizeMultiplier} = ${totalPoints.toLocaleString()}P`;
+            }
+            
+            // 메인 포인트 값도 업데이트
+            const mainPointsEl = document.getElementById('previewPoints');
+            if (mainPointsEl) {
+                mainPointsEl.textContent = totalPoints.toLocaleString() + 'P';
             }
         }
         
@@ -1360,11 +1429,7 @@
         
         // 문서 카운터 업데이트
         function updateDocumentCounter() {
-            const counterEl = document.getElementById('previewCounter');
-            if (counterEl) {
-                const maxId = typeof sampleDocuments !== 'undefined' ? sampleDocuments.length : 6;
-                counterEl.textContent = `${currentPreviewId} / ${maxId}`;
-            }
+            // 문서 카운터 제거됨
         }
         
         // 썸네일 업데이트 함수
@@ -1408,32 +1473,32 @@
                 const maxId = typeof sampleDocuments !== 'undefined' ? sampleDocuments.length : 6;
                 
                 switch(e.key) {
-                    case 'ArrowLeft':
-                        e.preventDefault();
-                        if (currentPreviewId > 1) {
-                            currentPreviewId--;
-                            openPreview(currentPreviewId);
-                        }
-                        break;
-                    case 'ArrowRight':
-                        e.preventDefault();
-                        if (currentPreviewId < maxId) {
-                            currentPreviewId++;
-                            openPreview(currentPreviewId);
-                        }
-                        break;
-                    case 'Escape':
-                        e.preventDefault();
-                        modal.style.display = 'none';
-                        modal.classList.remove('active');
-                        document.removeEventListener('keydown', handleModalKeyboard);
-                        break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    if (currentPreviewId > 1) {
+                        currentPreviewId--;
+                        openPreview(currentPreviewId);
+                    }
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    if (currentPreviewId < maxId) {
+                        currentPreviewId++;
+                        openPreview(currentPreviewId);
+                    }
+                    break;
+                case 'Escape':
+                    e.preventDefault();
+                    modal.style.display = 'none';
+                    modal.classList.remove('active');
+                    document.removeEventListener('keydown', handleModalKeyboard);
+                    break;
                 }
             }
         }
         
         // 닫기 버튼 이벤트
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             const closeBtn = document.getElementById('previewClose');
             const modal = document.getElementById('previewModal');
             const overlay = document.querySelector('.preview-overlay');
@@ -1500,6 +1565,10 @@
             // 미니멀 버전에서는 썸네일 기능을 사용하지 않음
         }
     </script>
+    <!-- 공통 데이터 모듈 (반드시 market-research.js보다 먼저 로드) -->
+    <script src="js/modules/common-data.js"></script>
+    <!-- ES6 모듈 시스템 (file:// 프로토콜에서는 CORS 오류 발생하므로 비활성화) -->
+    <!-- <script type="module" src="js/main.js"></script> -->
     <script src="script.js"></script>
     <script src="sidebar-debug.js"></script>
     <script src="sidebar-diagnosis.js"></script>

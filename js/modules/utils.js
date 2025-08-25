@@ -11,7 +11,7 @@ export const $$ = (selector, parent = document) => Array.from(parent.querySelect
  */
 export const on = (element, event, handler, options) => {
     if (element instanceof NodeList || Array.isArray(element)) {
-        element.forEach(el => el.addEventListener(event, handler, options));
+        element.forEach((el) => el.addEventListener(event, handler, options));
     } else if (element) {
         element.addEventListener(event, handler, options);
     }
@@ -19,7 +19,7 @@ export const on = (element, event, handler, options) => {
 
 export const off = (element, event, handler, options) => {
     if (element instanceof NodeList || Array.isArray(element)) {
-        element.forEach(el => el.removeEventListener(event, handler, options));
+        element.forEach((el) => el.removeEventListener(event, handler, options));
     } else if (element) {
         element.removeEventListener(event, handler, options);
     }
@@ -45,11 +45,11 @@ export const debounce = (func, wait = 300) => {
  */
 export const throttle = (func, limit = 300) => {
     let inThrottle;
-    return function(...args) {
+    return function (...args) {
         if (!inThrottle) {
             func.apply(this, args);
             inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+            setTimeout(() => (inThrottle = false), limit);
         }
     };
 };
@@ -63,40 +63,40 @@ export const storage = {
             const item = window.localStorage.getItem(key);
             return item ? JSON.parse(item) : defaultValue;
         } catch (error) {
-            console.error(`Error reading from localStorage:`, error);
+            console.error('Error reading from localStorage:', error);
             return defaultValue;
         }
     },
-    
+
     set(key, value) {
         try {
             window.localStorage.setItem(key, JSON.stringify(value));
             return true;
         } catch (error) {
-            console.error(`Error writing to localStorage:`, error);
+            console.error('Error writing to localStorage:', error);
             return false;
         }
     },
-    
+
     remove(key) {
         try {
             window.localStorage.removeItem(key);
             return true;
         } catch (error) {
-            console.error(`Error removing from localStorage:`, error);
+            console.error('Error removing from localStorage:', error);
             return false;
         }
     },
-    
+
     clear() {
         try {
             window.localStorage.clear();
             return true;
         } catch (error) {
-            console.error(`Error clearing localStorage:`, error);
+            console.error('Error clearing localStorage:', error);
             return false;
         }
-    }
+    },
 };
 
 /**
@@ -117,7 +117,7 @@ export const formatDate = (date, format = 'YYYY-MM-DD') => {
     const hours = String(d.getHours()).padStart(2, '0');
     const minutes = String(d.getMinutes()).padStart(2, '0');
     const seconds = String(d.getSeconds()).padStart(2, '0');
-    
+
     return format
         .replace('YYYY', year)
         .replace('MM', month)
@@ -132,23 +132,23 @@ export const formatDate = (date, format = 'YYYY-MM-DD') => {
  */
 export const timeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-    
+
     const intervals = {
-        '년': 31536000,
-        '개월': 2592000,
-        '주': 604800,
-        '일': 86400,
-        '시간': 3600,
-        '분': 60
+        년: 31536000,
+        개월: 2592000,
+        주: 604800,
+        일: 86400,
+        시간: 3600,
+        분: 60,
     };
-    
+
     for (const [unit, secondsInUnit] of Object.entries(intervals)) {
         const interval = Math.floor(seconds / secondsInUnit);
         if (interval >= 1) {
             return `${interval}${unit} 전`;
         }
     }
-    
+
     return '방금 전';
 };
 
@@ -168,7 +168,7 @@ export const fadeIn = (element, duration = 300) => {
     element.style.opacity = '0';
     element.style.display = 'block';
     element.style.transition = `opacity ${duration}ms`;
-    
+
     requestAnimationFrame(() => {
         element.style.opacity = '1';
     });
@@ -177,7 +177,7 @@ export const fadeIn = (element, duration = 300) => {
 export const fadeOut = (element, duration = 300) => {
     element.style.transition = `opacity ${duration}ms`;
     element.style.opacity = '0';
-    
+
     setTimeout(() => {
         element.style.display = 'none';
     }, duration);
@@ -193,44 +193,44 @@ export const api = {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    ...options.headers
+                    ...options.headers,
                 },
-                ...options
+                ...options,
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             return await response.json();
         } catch (error) {
             console.error('API GET Error:', error);
             throw error;
         }
     },
-    
+
     async post(url, data, options = {}) {
         try {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    ...options.headers
+                    ...options.headers,
                 },
                 body: JSON.stringify(data),
-                ...options
+                ...options,
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             return await response.json();
         } catch (error) {
             console.error('API POST Error:', error);
             throw error;
         }
-    }
+    },
 };
 
 /**
@@ -242,27 +242,29 @@ export const cookie = {
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
     },
-    
+
     set(name, value, days) {
         let expires = '';
         if (days) {
             const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
             expires = `; expires=${date.toUTCString()}`;
         }
         document.cookie = `${name}=${value || ''}${expires}; path=/`;
     },
-    
+
     remove(name) {
         document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-    }
+    },
 };
 
 /**
  * 모바일 디바이스 체크
  */
 export const isMobile = () => {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+    );
 };
 
 /**
@@ -273,25 +275,25 @@ export const scroll = {
         const defaultOptions = {
             behavior: 'smooth',
             block: 'start',
-            inline: 'nearest'
+            inline: 'nearest',
         };
-        
+
         element.scrollIntoView({ ...defaultOptions, ...options });
     },
-    
+
     toTop(smooth = true) {
         window.scrollTo({
             top: 0,
-            behavior: smooth ? 'smooth' : 'auto'
+            behavior: smooth ? 'smooth' : 'auto',
         });
     },
-    
+
     getPosition() {
         return {
             x: window.pageXOffset || document.documentElement.scrollLeft,
-            y: window.pageYOffset || document.documentElement.scrollTop
+            y: window.pageYOffset || document.documentElement.scrollTop,
         };
-    }
+    },
 };
 
 /**
@@ -315,21 +317,21 @@ export const urlParams = {
         const params = new URLSearchParams(window.location.search);
         return params.get(name);
     },
-    
+
     set(name, value) {
         const params = new URLSearchParams(window.location.search);
         params.set(name, value);
         const newUrl = `${window.location.pathname}?${params.toString()}`;
         window.history.pushState({}, '', newUrl);
     },
-    
+
     remove(name) {
         const params = new URLSearchParams(window.location.search);
         params.delete(name);
         const newUrl = `${window.location.pathname}?${params.toString()}`;
         window.history.pushState({}, '', newUrl);
     },
-    
+
     getAll() {
         const params = new URLSearchParams(window.location.search);
         const result = {};
@@ -337,5 +339,5 @@ export const urlParams = {
             result[key] = value;
         }
         return result;
-    }
+    },
 };

@@ -1,24 +1,24 @@
 /* base.css - 기본 리셋 및 전역 스타일 */
 
 /* Font Import */
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
 
 /* CSS Variables */
 :root {
     /* Primary Colors */
-    --primary-blue: #2E8CE6;
-    --deep-blue: #1F7FD4;
-    --bright-blue: #4DA3ED;
-    --sky-blue: #6DB8F2;
-    --light-blue: #EBF5FD;
-    
+    --primary-blue: #2e8ce6;
+    --deep-blue: #1f7fd4;
+    --bright-blue: #4da3ed;
+    --sky-blue: #6db8f2;
+    --light-blue: #ebf5fd;
+
     /* Secondary Colors */
-    --purple: #7B61FF;
-    --teal: #00D4AA;
-    --orange: #FF6B35;
-    
+    --purple: #7b61ff;
+    --teal: #00d4aa;
+    --orange: #ff6b35;
+
     /* Neutral Colors */
-    --black: #0A0A0A;
+    --black: #0a0a0a;
     --gray-900: #1f2937;
     --gray-800: #374151;
     --gray-700: #4b5563;
@@ -29,18 +29,23 @@
     --gray-200: #f3f4f6;
     --gray-100: #f9fafb;
     --gray-50: #fafbfc;
-    --white: #FFFFFF;
-    
+    --white: #ffffff;
+
     /* Semantic Colors */
-    --success: #00D4AA;
-    --warning: #FFB800;
-    --error: #FF3B30;
-    --info: #0099FF;
-    
+    --success: #00d4aa;
+    --warning: #ffb800;
+    --error: #ff3b30;
+    --info: #0099ff;
+
     /* Gradients */
-    --primary-gradient: linear-gradient(135deg, #2E8CE6 0%, #4DA3ED 100%);
-    --extended-gradient: linear-gradient(135deg, #2E8CE6 0%, #4DA3ED 50%, #6DB8F2 100%);
-    
+    --primary-gradient: linear-gradient(135deg, #2e8ce6 0%, #4da3ed 100%);
+    --extended-gradient: linear-gradient(
+        135deg,
+        #2e8ce6 0%,
+        #4da3ed 50%,
+        #6db8f2 100%
+    );
+
     /* Spacing */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
@@ -50,20 +55,21 @@
     --spacing-2xl: 48px;
     --spacing-3xl: 64px;
     --spacing-4xl: 80px;
-    
+
     /* Layout */
     --sidebar-width: 364px;
     --header-height: 64px;
     --container-max-width: 1200px;
     --container-padding: 80px;
-    
+
     /* Transitions */
     --transition-fast: all 0.15s ease;
     --transition-normal: all 0.3s ease;
     --transition-slow: all 0.5s ease;
-    
+
     /* Typography */
-    --font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family:
+        "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-size-xs: 12px;
     --font-size-sm: 13px;
     --font-size-base: 14px;
@@ -73,13 +79,13 @@
     --font-size-2xl: 24px;
     --font-size-3xl: 32px;
     --font-size-4xl: 36px;
-    
+
     /* Shadows */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
-    
+
     /* Border Radius */
     --radius-sm: 4px;
     --radius-md: 6px;
@@ -87,7 +93,6 @@
     --radius-xl: 12px;
     --radius-full: 9999px;
 }
-
 
 /* Reset */
 * {
@@ -122,18 +127,35 @@ body.loaded {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 600;
     line-height: 1.2;
     color: var(--gray-900);
 }
 
-h1 { font-size: var(--font-size-4xl); }
-h2 { font-size: var(--font-size-3xl); }
-h3 { font-size: var(--font-size-2xl); }
-h4 { font-size: var(--font-size-xl); }
-h5 { font-size: var(--font-size-lg); }
-h6 { font-size: var(--font-size-md); }
+h1 {
+    font-size: var(--font-size-4xl);
+}
+h2 {
+    font-size: var(--font-size-3xl);
+}
+h3 {
+    font-size: var(--font-size-2xl);
+}
+h4 {
+    font-size: var(--font-size-xl);
+}
+h5 {
+    font-size: var(--font-size-lg);
+}
+h6 {
+    font-size: var(--font-size-md);
+}
 
 p {
     margin-bottom: 1em;
@@ -147,7 +169,10 @@ a {
 }
 
 /* Forms */
-input, button, select, textarea {
+input,
+button,
+select,
+textarea {
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;

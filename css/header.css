@@ -107,9 +107,9 @@
 
 /* 기본 아이콘 표시 (사용자 이미지 업로드 전까지) */
 .user-avatar:before {
-    content: '\f007';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;  /* solid 스타일 */
+    content: "\f007";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; /* solid 스타일 */
     font-size: 20px;
     color: white;
 }
@@ -144,13 +144,13 @@
     right: -4px;
     width: 20px;
     height: 20px;
-    background-color: #FFD700;
+    background-color: #ffd700;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
-    color: #B8860B;
+    color: #b8860b;
 }
 
 .user-info {
@@ -192,11 +192,11 @@
     .header-left {
         display: block;
     }
-    
+
     .user-info {
         display: none;
     }
-    
+
     .user-profile {
         padding-left: 0;
         margin-left: 0;

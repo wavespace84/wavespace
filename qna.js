@@ -395,7 +395,7 @@ const questionsData = [
         time: '18시간 전',
         views: 89,
         answers: 0,
-        reward: 2500,
+        reward: 3500,
         popular: false,
         isNew: false
     },
@@ -451,7 +451,7 @@ const questionsData = [
         time: '2일 전',
         views: 98,
         answers: 0,
-        reward: 2500,
+        reward: 4000,
         popular: false,
         isNew: false
     },
@@ -535,7 +535,7 @@ const questionsData = [
         time: '4일 전',
         views: 156,
         answers: 0,
-        reward: 4500,
+        reward: 5500,
         popular: false,
         isNew: false
     },
@@ -1535,10 +1535,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 채택완료
             </div>`;
 
-        const rewardBadgeHTML = question.reward > 0
+        // 미채택인 경우에만 포인트 표시 (배경색 없이 주황색 텍스트로)
+        const rewardBadgeHTML = (question.status === 'unadopted' && question.reward > 0)
             ? `<div class="reward-badge">
                 <i class="fas fa-coins"></i>
-                <span class="reward-amount">${question.reward.toLocaleString()}P</span>
+                ${question.reward.toLocaleString()}P
             </div>`
             : '';
 
@@ -1585,13 +1586,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // 페이지네이션 링크 생성 헬퍼 함수
     function createPaginationLink(text, onClick, disabled, active = false) {
         const link = document.createElement('a');
-        link.href = '#';
+        link.href = 'javascript:void(0)'; // # 대신 javascript:void(0) 사용
         link.textContent = text;
         if (disabled) link.className = 'disabled';
         if (active) link.className = 'active';
         link.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation(); // 이벤트 버블링 방지 추가
             if (!disabled) onClick();
+            return false; // 추가 보호
         });
         return link;
     }
@@ -1658,10 +1661,10 @@ document.addEventListener('DOMContentLoaded', function() {
             renderQuestions();
             renderPagination();
             
-            // 페이지 상단으로 스크롤
-            document.querySelector('.qna-container').scrollIntoView({ 
-                behavior: 'smooth' 
-            });
+            // 스크롤 제거 - 사용자가 원하지 않음
+            // document.querySelector('.qna-container').scrollIntoView({ 
+            //     behavior: 'smooth' 
+            // });
         }
     }
 

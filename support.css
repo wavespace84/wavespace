@@ -162,7 +162,7 @@ html {
 }
 
 .quick-item::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -503,7 +503,6 @@ html {
     }
 }
 
-
 /* 이용가이드 모달 */
 .modal-overlay {
     position: fixed;
@@ -555,6 +554,13 @@ html {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+}
+
+.modal-header .modal-nav-buttons {
+    position: absolute;
+    top: 24px;
+    right: 24px;
 }
 
 .modal-title {
@@ -856,7 +862,11 @@ html {
     resize: vertical;
     background-color: var(--white);
     transition: border-color 0.2s ease;
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family:
+        "Pretendard",
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
 }
 
 .inquiry-text-box textarea:focus {
@@ -897,12 +907,12 @@ html {
 }
 
 .kakao-chat-btn {
-    background-color: #FEE500;
+    background-color: #fee500;
     color: #000000;
 }
 
 .kakao-chat-btn:hover:not(:disabled) {
-    background-color: #FDD835;
+    background-color: #fdd835;
     transform: translateY(-1px);
 }
 
@@ -972,7 +982,7 @@ html {
 }
 
 .openchat-room::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -996,7 +1006,11 @@ html {
 .room-icon {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, var(--light-blue), rgba(46, 140, 230, 0.1));
+    background: linear-gradient(
+        135deg,
+        var(--light-blue),
+        rgba(46, 140, 230, 0.1)
+    );
     border-radius: 16px;
     display: flex;
     align-items: center;
@@ -1222,7 +1236,6 @@ html {
     font-family: inherit;
 }
 
-
 .form-actions {
     display: flex;
     gap: 12px;
@@ -1407,7 +1420,7 @@ html {
 }
 
 .inquiry-item::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
@@ -1502,72 +1515,72 @@ html {
     .support-container {
         padding: 24px 20px 60px;
     }
-    
+
     .support-header {
         flex-direction: column;
         text-align: center;
         gap: 20px;
     }
-    
+
     .quick-menu {
         grid-template-columns: 1fr;
     }
-    
+
     .contact-methods {
         grid-template-columns: 1fr;
     }
-    
+
     .faq-categories {
         flex-wrap: wrap;
     }
-    
+
     .faq-list {
         min-height: 400px; /* 모바일에서는 더 작은 기본 높이 */
         max-height: 800px;
     }
-    
+
     .modal-content {
         max-height: 100vh;
         margin: 0;
         border-radius: 0;
     }
-    
+
     .guide-tabs {
         padding: 0 16px;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
-    
+
     .guide-tab {
         padding: 12px 16px;
         font-size: 14px;
         white-space: nowrap;
     }
-    
+
     .guide-content {
         padding: 20px;
     }
-    
+
     .guide-panel h3 {
         font-size: 18px;
     }
-    
+
     .guide-section h4 {
         font-size: 15px;
     }
-    
+
     .guide-section li {
         font-size: 14px;
     }
-    
+
     .inquiry-type-buttons {
         grid-template-columns: 1fr;
     }
-    
+
     .inquiry-buttons {
         flex-direction: column;
     }
-    
+
     .inquiry-modal,
     .inquiry-detail-modal {
         margin: 0;
@@ -1575,38 +1588,38 @@ html {
         max-height: 100vh;
         max-width: 100%;
     }
-    
+
     .inquiry-modal .modal-body,
     .inquiry-detail {
         padding: 20px;
     }
-    
+
     .form-actions {
         flex-direction: column-reverse;
     }
-    
+
     .btn-cancel,
     .btn-submit {
         width: 100%;
     }
-    
+
     .inquiry-controls {
         flex-direction: column;
         align-items: stretch;
         gap: 12px;
     }
-    
+
     .inquiry-tabs {
         width: 100%;
         justify-content: space-between;
     }
-    
+
     .inquiry-tab {
         flex: 1;
         padding: 8px 12px;
         font-size: 13px;
     }
-    
+
     .new-inquiry-btn {
         width: 100%;
         justify-content: center;

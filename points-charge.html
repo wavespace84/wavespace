@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>충전하기 - WAVE SPACE</title>
+        <script src="preload.js"></script>
+        <link rel="stylesheet" href="common.css" />
+        <link rel="stylesheet" href="styles.css?v=7" />
+        <link rel="stylesheet" href="points-charge.css" />
+        <link rel="stylesheet" href="mobile-fix.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <!-- 토스페이먼츠 SDK -->
+        <script src="https://js.tosspayments.com/v1/payment-widget"></script>
+    </head>
+    <body>
+        <!-- 전체 컨테이너 -->
+        <div class="app-container">
+            <!-- 사이드바 -->
+            <aside class="sidebar">
+                <!-- 로고 영역 -->
+                <div class="sidebar-header">
+                    <a href="index.html" class="logo-container">
+                        <span class="logo-text">WAVE space</span>
+                        <span class="beta-badge">BETA</span>
+                    </a>
+                </div>
+
+                <!-- 슬로건 -->
+                <div class="sidebar-slogan">
+                    <p>대한민국 No.1 분양실무자 대표 커뮤니티</p>
+                </div>
+
+                <!-- 네비게이션 -->
+                <nav class="sidebar-nav">
+                    <!-- 안내 섹션 -->
+                    <div class="nav-section">
+                        <div class="nav-category">
+                            <div class="nav-category-wrapper">
+                                <button class="nav-category-button">
+                                    <i class="fas fa-book-open"></i>
+                                    <span>안내</span>
+                                    <i class="fas fa-chevron-down nav-arrow"></i>
+                                </button>
+                                <div class="nav-items">
+                                    <a href="notice.html" class="nav-item">
+                                        <i class="fas fa-bullhorn"></i>
+                                        <span>공지사항</span>
+                                    </a>
+                                    <a href="updates.html" class="nav-item">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>업데이트</span>
+                                    </a>
+                                    <a href="support.html" class="nav-item">
+                                        <i class="fas fa-life-ring"></i>
+                                        <span>고객센터</span>
+                                    </a>
+                                    <a href="plus-membership.html" class="nav-item">
+                                        <i class="fas fa-rocket"></i>
+                                        <span>+Plus Membership</span>
+                                    </a>
+                                    <a href="events.html" class="nav-item">
+                                        <i class="fas fa-gift"></i>
+                                        <span>이벤트</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 커뮤니티 섹션 -->
+                    <div class="nav-section">
+                        <div class="nav-category">
+                            <div class="nav-category-wrapper">
+                                <button class="nav-category-button">
+                                    <i class="fas fa-users"></i>
+                                    <span>커뮤니티</span>
+                                    <i class="fas fa-chevron-down nav-arrow"></i>
+                                </button>
+                                <div class="nav-items">
+                                    <a href="hall-of-fame.html" class="nav-item hall-of-fame highlighted">
+                                        <i class="fas fa-trophy"></i>
+                                        <span>명예의전당</span>
+                                    </a>
+                                    <a href="attendance.html" class="nav-item">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <span>출석체크</span>
+                                    </a>
+                                    <a href="forum.html" class="nav-item">
+                                        <i class="fas fa-comments"></i>
+                                        <span>자유게시판</span>
+                                    </a>
+                                    <a href="humor.html" class="nav-item">
+                                        <i class="fas fa-laugh"></i>
+                                        <span>유머재미</span>
+                                    </a>
+                                    <a href="qna.html" class="nav-item">
+                                        <i class="fas fa-question-circle"></i>
+                                        <span>질문답변</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 구인구직 섹션 -->
+                    <div class="nav-section">
+                        <div class="nav-category">
+                            <div class="nav-category-wrapper">
+                                <button class="nav-category-button">
+                                    <i class="fas fa-building"></i>
+                                    <span>구인구직</span>
+                                    <i class="fas fa-chevron-down nav-arrow"></i>
+                                </button>
+                                <div class="nav-items">
+                                    <a href="planning-recruitment.html" class="nav-item">
+                                        <i class="fas fa-project-diagram"></i>
+                                        <span>분양기획</span>
+                                    </a>
+                                    <a href="sales-recruit.html" class="nav-item highlighted">
+                                        <i class="fas fa-briefcase"></i>
+                                        <span>분양영업</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="ai-matching.html" class="nav-item">
+                                        <i class="fas fa-robot"></i>
+                                        <span>AI 매칭</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 분양자료 섹션 -->
+                    <div class="nav-section">
+                        <div class="nav-category">
+                            <div class="nav-category-wrapper">
+                                <button class="nav-category-button">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span>분양자료</span>
+                                    <i class="fas fa-chevron-down nav-arrow"></i>
+                                </button>
+                                <div class="nav-items">
+                                    <a href="data-center.html" class="nav-item highlighted">
+                                        <i class="fas fa-database"></i>
+                                        <span>Data Center</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="market-research.html" class="nav-item">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>시장조사서</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="proposal.html" class="nav-item">
+                                        <i class="fas fa-file-alt"></i>
+                                        <span>제안서</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="education.html" class="nav-item">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        <span>교육자료</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="policy.html" class="nav-item">
+                                        <i class="fas fa-gavel"></i>
+                                        <span>정책자료</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="other-docs.html" class="nav-item">
+                                        <i class="fas fa-archive"></i>
+                                        <span>기타자료</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="ai-report.html" class="nav-item">
+                                        <i class="fas fa-robot"></i>
+                                        <span>AI 보고서</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 포인트 섹션 -->
+                    <div class="nav-section">
+                        <div class="nav-category active">
+                            <div class="nav-category-wrapper">
+                                <button class="nav-category-button">
+                                    <i class="fas fa-coins"></i>
+                                    <span>포인트</span>
+                                    <i class="fas fa-chevron-down nav-arrow"></i>
+                                </button>
+                                <div class="nav-items">
+                                    <a href="points-policy.html" class="nav-item highlighted">
+                                        <i class="fas fa-gem"></i>
+                                        <span>포인트정책</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="points-ranking.html" class="nav-item">
+                                        <i class="fas fa-chart-bar"></i>
+                                        <span>전체랭킹</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="points-charge.html" class="nav-item active">
+                                        <i class="fas fa-credit-card"></i>
+                                        <span>충전하기</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                    <a href="points-shop.html" class="nav-item">
+                                        <i class="fas fa-store"></i>
+                                        <span>상점</span>
+                                        <span class="check-mark"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 미니게임 섹션 -->
+                    <div class="nav-section minigame-section">
+                        <div class="minigame-header">
+                            <i class="fas fa-gamepad"></i>
+                            <span>미니게임</span>
+                        </div>
+                        <div class="minigame-buttons">
+                            <a href="/game" class="minigame-btn">
+                                <i class="fas fa-gamepad"></i>
+                                <span>모든 게임</span>
+                            </a>
+                            <a href="/game?open=roulette" class="minigame-btn">
+                                <i class="fas fa-circle-notch"></i>
+                                <span>룰렛</span>
+                            </a>
+                            <a href="/game?open=blackjack" class="minigame-btn">
+                                <i class="fas fa-layer-group"></i>
+                                <span>블랙잭</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- 메인 콘텐츠 영역 -->
+            <div class="main-container">
+                <!-- 헤더 -->
+                <header class="main-header">
+                    <div class="header-left">
+                        <button class="mobile-menu-btn">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+
+                    <div class="header-right">
+                        <!-- 충전 내역 버튼 -->
+                        <button class="header-icon-btn charge-history-btn" onclick="alert('충전 내역 페이지로 이동합니다')" title="충전 내역">
+                            <i class="fas fa-history"></i>
+                        </button>
+
+                        <!-- 검색 버튼 -->
+                        <button class="header-icon-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+
+                        <!-- 알림 버튼 -->
+                        <button class="header-icon-btn notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-dot"></span>
+                        </button>
+
+                        <!-- 사용자 프로필 -->
+                        <div class="user-profile">
+                            <div class="user-avatar">
+                                <span>박</span>
+                                <div class="user-badge">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                            </div>
+                            <div class="user-info">
+                                <p class="user-name">박승학님</p>
+                                <div class="user-meta">
+                                    <span class="user-title">소통리더</span>
+                                    <span class="user-points">• 100,000P</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down user-dropdown-icon"></i>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- 메인 콘텐츠 -->
+                <main class="main-content">
+                    <div class="points-charge-container">
+                        <!-- 헤더 -->
+                        <div class="points-charge-header">
+                            <h1 class="points-charge-title">충전하기</h1>
+                            <p class="points-charge-subtitle">포인트를 충전하여 더 많은 혜택을 누리세요</p>
+                        </div>
+                    </div>
+
+                    <!-- 결제 진행 단계 (배경에 표시) -->
+                    <div class="payment-progress">
+                        <div class="progress-steps">
+                            <div class="progress-step active" data-step="1">
+                                <div class="step-circle">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <span class="step-label">충전 선택</span>
+                            </div>
+                            <div class="progress-line"></div>
+                            <div class="progress-step" data-step="2">
+                                <div class="step-circle">
+                                    <i class="fas fa-check-square"></i>
+                                </div>
+                                <span class="step-label">약관 동의</span>
+                            </div>
+                            <div class="progress-line"></div>
+                            <div class="progress-step" data-step="3">
+                                <div class="step-circle">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <span class="step-label">결제 완료</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="points-charge-container">
+
+                        <!-- 현재 보유 포인트 표시 -->
+                        <div class="points-status">
+                            <div class="status-card">
+                                <div class="status-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="status-info">
+                                    <p class="status-label">현재 보유 포인트</p>
+                                    <p class="status-amount" id="currentPoints">100,000P</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 포인트 사용처 안내 -->
+                        <div class="point-usage-guide">
+                            <h3 class="usage-title">
+                                <i class="fas fa-lightbulb"></i>
+                                포인트 사용처
+                            </h3>
+                            <div class="usage-grid">
+                                <div class="usage-item">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>분양자료 다운로드</span>
+                                </div>
+                                <div class="usage-item">
+                                    <i class="fas fa-crown"></i>
+                                    <span>프리미엄 콘텐츠</span>
+                                </div>
+                                <div class="usage-item">
+                                    <i class="fas fa-store"></i>
+                                    <span>포인트 상점</span>
+                                </div>
+                                <div class="usage-item">
+                                    <i class="fas fa-gamepad"></i>
+                                    <span>미니게임 참여</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 계정한정 충전 -->
+                        <div class="starter-package">
+                            <div class="starter-header">
+                                <h2 class="section-title">계정한정 특전</h2>
+                                <p class="section-desc">계정당 총 2회까지만 구매 가능한 특별 충전 패키지입니다</p>
+                            </div>
+                            
+                            <div class="starter-card" id="starterCard">
+                                <!-- JavaScript로 동적 생성 -->
+                            </div>
+                        </div>
+
+                        <!-- 일반 충전 패키지 -->
+                        <div class="charge-section">
+                            <h2 class="section-title">일반 충전 패키지</h2>
+                            <p class="section-desc">
+                                금액이 높을수록 더 많은 보너스 포인트를 받으실 수 있어요
+                                <span class="plus-member-notice">Plus 회원은 보너스 5% 추가 적립!</span>
+                            </p>
+                            
+                            <div class="charge-grid" id="chargeGrid">
+                                <!-- JavaScript로 동적 생성 -->
+                            </div>
+                            
+                            <!-- 직접 입력 -->
+                            <div class="custom-amount-section">
+                                <div class="custom-amount-card">
+                                    <label class="custom-amount-label">
+                                        <i class="fas fa-edit"></i>
+                                        충전 포인트 직접 입력
+                                    </label>
+                                    <div class="custom-amount-dual-input">
+                                        <div class="input-group">
+                                            <label for="customPoints" class="input-group-label">포인트</label>
+                                            <div class="custom-amount-input-wrapper">
+                                                <input type="text" id="customPoints" class="custom-amount-input" 
+                                                       placeholder="포인트를 입력하세요" 
+                                                       inputmode="numeric">
+                                                <span class="input-suffix">P</span>
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <label for="customCash" class="input-group-label">결제 금액</label>
+                                            <div class="custom-amount-input-wrapper">
+                                                <input type="text" id="customCash" class="custom-amount-input" 
+                                                       placeholder="자동 계산됩니다" 
+                                                       readonly>
+                                                <span class="input-suffix">원</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="custom-amount-hint">
+                                        <i class="fas fa-info-circle"></i>
+                                        최소 10,000원 ~ 최대 200,000원 (10,000원 단위)
+                                    </p>
+                                    <p class="custom-amount-notice">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        직접 입력 시 보너스 포인트 및 패키지 아이템이 제공되지 않습니다.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 결제 수단 선택 -->
+                        <div class="payment-section">
+                            <h2 class="section-title">결제 수단 선택</h2>
+                            
+                            <div class="payment-grid" id="paymentGrid">
+                                <!-- JavaScript로 동적 생성 -->
+                            </div>
+                        </div>
+
+                        <!-- 결제 정보 입력 -->
+                        <div class="payment-form" id="paymentForm" style="display: none;">
+                            <h3>결제 정보</h3>
+                            <div class="form-content" id="formContent">
+                                <!-- JavaScript로 동적 생성 -->
+                            </div>
+                        </div>
+
+                        <!-- 약관 동의 -->
+                        <div class="terms-section">
+                            <h2 class="section-title">약관 동의</h2>
+                            
+                            <!-- 전체 동의 -->
+                            <div class="terms-all">
+                                <label class="terms-checkbox-label">
+                                    <input type="checkbox" id="termsAll" class="terms-checkbox">
+                                    <span class="terms-checkmark"></span>
+                                    <span class="terms-text all">모든 약관에 동의합니다</span>
+                                </label>
+                            </div>
+                            
+                            <!-- 개별 약관 -->
+                            <div class="terms-list">
+                                <div class="terms-item">
+                                    <label class="terms-checkbox-label">
+                                        <input type="checkbox" id="termsPayment" class="terms-checkbox individual-term" required>
+                                        <span class="terms-checkmark"></span>
+                                        <span class="terms-text">
+                                            [필수] 결제 이용약관에 동의합니다
+                                            <button type="button" class="terms-detail-btn" onclick="showTermsDetail('payment')">자세히보기</button>
+                                        </span>
+                                    </label>
+                                </div>
+                                
+                                <div class="terms-item">
+                                    <label class="terms-checkbox-label">
+                                        <input type="checkbox" id="termsPrivacy" class="terms-checkbox individual-term" required>
+                                        <span class="terms-checkmark"></span>
+                                        <span class="terms-text">
+                                            [필수] 개인정보 제3자 제공에 동의합니다
+                                            <button type="button" class="terms-detail-btn" onclick="showTermsDetail('privacy')">자세히보기</button>
+                                        </span>
+                                    </label>
+                                </div>
+                                
+                                <div class="terms-item">
+                                    <label class="terms-checkbox-label">
+                                        <input type="checkbox" id="termsMarketing" class="terms-checkbox individual-term">
+                                        <span class="terms-checkmark"></span>
+                                        <span class="terms-text">
+                                            [선택] 마케팅 정보 수신에 동의합니다
+                                            <button type="button" class="terms-detail-btn" onclick="showTermsDetail('marketing')">자세히보기</button>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 결제 요약 및 버튼 -->
+                        <div class="payment-summary">
+                            <div class="summary-card">
+                                <div class="summary-row-horizontal">
+                                    <div class="summary-item">
+                                        <span class="summary-label">결제 금액</span>
+                                        <span class="summary-value" id="summaryAmount">0원</span>
+                                    </div>
+                                    <div class="summary-divider">|</div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">보너스 포인트</span>
+                                        <span class="summary-value bonus" id="summaryBonus">+0P</span>
+                                    </div>
+                                    <div class="summary-divider" id="plusDivider" style="display: none;">|</div>
+                                    <div class="summary-item plus-benefit" id="summaryPlusItem" style="display: none;">
+                                        <span class="summary-label">Plus 혜택</span>
+                                        <span class="summary-value plus" id="summaryPlusBonus">+0P</span>
+                                    </div>
+                                    <div class="summary-divider">|</div>
+                                    <div class="summary-item total">
+                                        <span class="summary-label">총 받을 포인트</span>
+                                        <span class="summary-value" id="summaryTotal">0P</span>
+                                    </div>
+                                    <div class="summary-divider" id="couponDivider" style="display: none;">|</div>
+                                    <div class="summary-item coupon-benefit" id="summaryCouponItem" style="display: none;">
+                                        <span class="summary-label">할인 쿠폰 조각</span>
+                                        <span class="summary-value coupon" id="summaryCoupon">+0개</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="charge-btn" id="chargeBtn" disabled>
+                                <i class="fas fa-credit-card"></i>
+                                <span>결제하기</span>
+                            </button>
+                            
+                            <div class="security-notice">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>안전한 결제를 위해 본인인증이 필요합니다</span>
+                            </div>
+                        </div>
+
+
+                        <!-- 환불 정책 및 주의사항 -->
+                        <div class="policy-section">
+                            <h2 class="section-title">환불 정책 및 주의사항</h2>
+                            
+                            <div class="policy-cards">
+                                <!-- 환불 정책 -->
+                                <div class="policy-card refund">
+                                    <div class="policy-header">
+                                        <div class="policy-icon">
+                                            <i class="fas fa-undo-alt"></i>
+                                        </div>
+                                        <h3>환불 정책</h3>
+                                    </div>
+                                    <ul class="policy-list">
+                                        <li>충전일로부터 <strong>7일 이내</strong> 미사용 포인트에 한해 환불 가능</li>
+                                        <li>사용한 포인트는 환불 불가</li>
+                                        <li>환불 시 결제 수수료 제외 금액 환불</li>
+                                        <li>환불 신청: 고객센터 또는 마이페이지</li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- 주의사항 -->
+                                <div class="policy-card notice">
+                                    <div class="policy-header">
+                                        <div class="policy-icon">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </div>
+                                        <h3>주의사항</h3>
+                                    </div>
+                                    <ul class="policy-list">
+                                        <li>포인트 부정 획득 시 계정 제재 조치</li>
+                                        <li>1일 최대 충전 한도: <strong>200,000원</strong></li>
+                                        <li>계정한정 특전은 계정당 총 2회만 구매 가능</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 자주 묻는 질문 (FAQ) -->
+                        <div class="faq-section">
+                            <h2 class="section-title">자주 묻는 질문</h2>
+                            
+                            <div class="faq-list">
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>포인트 유효기간이 있나요?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="faq-answer">
+                                        <div class="faq-answer-content">
+                                            아니요, 포인트에는 유효기간이 없습니다. 계정을 삭제하기 전까지 언제든 사용 가능합니다.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>환불은 어떻게 신청하나요?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="faq-answer">
+                                        <div class="faq-answer-content">
+                                            충전일로부터 7일 이내에 고객센터(1588-1234) 또는 마이페이지에서 환불 신청이 가능합니다. 미사용 포인트만 환불됩니다.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>스타터 패키지는 왜 2회만 구매할 수 있나요?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="faq-answer">
+                                        <div class="faq-answer-content">
+                                            스타터 패키지는 신규 회원을 위한 특별 혜택입니다. 공정한 혜택 제공을 위해 계정당 총 2회로 제한됩니다.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>결제 실패 시 어떻게 해야 하나요?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="faq-answer">
+                                        <div class="faq-answer-content">
+                                            결제 실패 시 다른 결제 수단으로 재시도해주세요. 지속적인 문제 발생 시 고객센터로 문의 바랍니다. 잘못된 결제는 자동으로 취소됩니다.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>Plus 회원이면 추가 혜택이 있나요?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="faq-answer">
+                                        <div class="faq-answer-content">
+                                            네, Plus 회원은 일반 충전 시 보너스 포인트가 5% 추가 적립됩니다. 단, 스타터 패키지는 이미 할인된 가격이므로 추가 혜택이 적용되지 않습니다.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 고객센터 안내 -->
+                        <div class="support-section">
+                            <div class="support-card">
+                                <div class="support-icon">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <div class="support-content">
+                                    <h3>궁금한 점이 있으면 고객센터 바로가기</h3>
+                                </div>
+                                <a href="support.html" class="support-btn">고객센터 바로가기</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- 간소화된 법적 고지사항 (배경에 표시) -->
+        <div class="legal-notice-section">
+            <div class="legal-notice-card">
+                <div class="legal-header">
+                    <h3><i class="fas fa-info-circle"></i> 사업자 정보</h3>
+                </div>
+                
+                <!-- 핵심 사업자 정보만 표시 -->
+                <div class="company-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">상호</span>
+                            <span class="info-value">(주)웨이브스페이스</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">사업자등록번호</span>
+                            <span class="info-value">123-45-67890</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">통신판매업신고</span>
+                            <span class="info-value">2023-서울강남-1234</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">결제대행</span>
+                            <span class="info-value">토스페이먼츠(주)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 상세 정보 링크 -->
+                    <div class="legal-links">
+                        <a href="#" onclick="alert('상세 법적 고지사항 페이지로 이동합니다')" class="legal-detail-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            전자상거래법 상세 안내보기
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 편의 기능 링크 -->
+                <div class="convenience-links">
+                    <h4><i class="fas fa-link"></i> 관련 서비스</h4>
+                    <div class="links-grid">
+                        <a href="points-policy.html" class="service-link">
+                            <i class="fas fa-file-alt"></i>
+                            <span>포인트 정책</span>
+                        </a>
+                        <a href="#" class="service-link" onclick="alert('준비 중입니다')">
+                            <i class="fas fa-history"></i>
+                            <span>충전 내역</span>
+                        </a>
+                        <a href="points-shop.html" class="service-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>포인트 상점</span>
+                        </a>
+                        <a href="#" class="service-link" onclick="alert('준비 중입니다')">
+                            <i class="fas fa-book"></i>
+                            <span>사용 가이드</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+        <script src="points-charge.js"></script>
+    </body>
+</html>

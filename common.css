@@ -1,5 +1,5 @@
 /* CSS Variables 임포트 */
-@import url('./css/base.css');
+@import url("./css/base.css");
 
 /* 페이지 로딩 시 깜빡임 방지 */
 html {
@@ -17,7 +17,8 @@ body.loaded {
 }
 
 /* 사이드바 안정화 및 고정 */
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -90,6 +91,49 @@ a {
     -webkit-touch-callout: none;
 }
 
+/* 모달 네비게이션 버튼 공통 스타일 */
+.modal-nav-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.modal-nav-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--gray-100);
+    color: var(--gray-600);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-nav-btn:hover:not(:disabled) {
+    background: var(--gray-200);
+    color: var(--gray-800);
+    transform: scale(1.05);
+}
+
+.modal-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.modal-nav-btn.modal-close {
+    background: var(--gray-100);
+    color: var(--gray-500);
+}
+
+.modal-nav-btn.modal-close:hover {
+    background: #ff4444;
+    color: white;
+}
+
 /* 페이지네이션 밑줄 스타일 */
 .pagination-underline {
     display: flex;
@@ -113,14 +157,14 @@ a {
 }
 
 .pagination-underline a:hover:not(.disabled) {
-    color: #3080FF;
-    border-bottom-color: #3080FF;
+    color: #3080ff;
+    border-bottom-color: #3080ff;
 }
 
 .pagination-underline a.active {
-    color: #3080FF;
+    color: #3080ff;
     font-weight: 600;
-    border-bottom-color: #3080FF;
+    border-bottom-color: #3080ff;
 }
 
 .pagination-underline a.disabled {
@@ -132,4 +176,126 @@ a {
 .pagination-underline .page-numbers {
     display: flex;
     gap: 24px;
+}
+
+/* ====================================== */
+/* 통일된 알림 시스템 (Toast Message) */
+/* ====================================== */
+.toast-message {
+    position: fixed !important;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 2147483647 !important; /* 최대 z-index 값으로 항상 최상위 표시 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 300px;
+    max-width: 90vw; /* PC에서 더 긴 메시지 허용 */
+    white-space: nowrap; /* PC에서 한 줄로 표시 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toast-message.show {
+    bottom: 30px !important;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: #374151;
+    white-space: nowrap; /* 컨텐츠도 한 줄로 표시 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 2147483647 !important;
+}
+
+/* 성공 스타일 */
+.toast-success {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
+    border: 1px solid #86efac !important;
+    z-index: 2147483647 !important;
+}
+
+.toast-success .toast-content {
+    color: #14532d;
+}
+
+.toast-success i {
+    color: #16a34a;
+    font-size: 20px;
+}
+
+/* 에러 스타일 */
+.toast-error {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%) !important;
+    border: 1px solid #fecaca !important;
+    z-index: 2147483647 !important;
+}
+
+.toast-error .toast-content {
+    color: #7f1d1d;
+}
+
+.toast-error i {
+    color: #dc2626;
+    font-size: 20px;
+}
+
+/* 정보 스타일 */
+.toast-info {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+    border: 1px solid #93c5fd !important;
+    z-index: 2147483647 !important;
+}
+
+.toast-info .toast-content {
+    color: #1e3a8a;
+}
+
+.toast-info i {
+    color: #2563eb;
+    font-size: 20px;
+}
+
+/* 경고 스타일 */
+.toast-warning {
+    background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%) !important;
+    border: 1px solid #fde68a !important;
+    z-index: 2147483647 !important;
+}
+
+.toast-warning .toast-content {
+    color: #713f12;
+}
+
+.toast-warning i {
+    color: #f59e0b;
+    font-size: 20px;
+}
+
+/* 모바일 대응 */
+@media (max-width: 640px) {
+    .toast-message {
+        min-width: calc(100vw - 40px);
+        max-width: calc(100vw - 40px);
+        left: 20px;
+        right: 20px;
+        transform: none;
+        white-space: normal; /* 모바일에서는 줄바꿈 허용 */
+    }
+    
+    .toast-message.show {
+        bottom: 20px;
+    }
+    
+    .toast-content {
+        white-space: normal; /* 모바일에서는 줄바꿈 허용 */
+    }
 }

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="forum.css">
     <link rel="stylesheet" href="css/checkbox-interaction.css">
+    <link rel="stylesheet" href="mobile-fix.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -122,9 +123,9 @@
                                     <i class="fas fa-briefcase"></i>
                                     <span>분양영업</span>
                                 </a>
-                                <a href="#" class="nav-item">
-                                    <i class="fas fa-search"></i>
-                                    <span>헤드헌팅</span>
+                                <a href="ai-matching.html" class="nav-item">
+                                    <i class="fas fa-robot"></i>
+                                    <span>AI 매칭 서비스</span>
                                 </a>
                             </div>
                         </div>
@@ -262,7 +263,7 @@
                         <div class="user-info">
                             <p class="user-name">박승학님</p>
                             <div class="user-meta">
-                                <span class="user-title">소통왕</span>
+                                <span class="user-title">소통리더</span>
                                 <span class="user-points">• 100,000P</span>
                             </div>
                         </div>
@@ -645,18 +646,8 @@
                 </div>
 
                 <!-- 페이지네이션 -->
-                <div class="pagination-underline">
-                    <a href="#" class="disabled">처음</a>
-                    <a href="#" class="disabled">이전</a>
-                    <div class="page-numbers">
-                        <a href="#" class="active">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">4</a>
-                        <a href="#">5</a>
-                    </div>
-                    <a href="#">다음</a>
-                    <a href="#">끝</a>
+                <div class="pagination-underline" id="forumPagination">
+                    <!-- JavaScript로 동적 생성 -->
                 </div>
                 </div>
             </main>

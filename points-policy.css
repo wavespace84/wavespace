@@ -1,0 +1,1153 @@
+/* 포인트 정책 페이지 스타일 */
+
+/* 컨테이너 */
+.points-policy-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 80px 80px;
+}
+
+/* 헤더 */
+.points-policy-header {
+    margin-bottom: 32px;
+}
+
+/* 포인트 정책 페이지의 헤더 스타일 - 다른 페이지와 일치 */
+body .main-content .points-policy-container .points-policy-header .points-policy-title {
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: var(--gray-900) !important;
+    margin-bottom: 6px !important;
+    display: block !important;
+    line-height: 1.3 !important;
+}
+
+body .main-content .points-policy-container .points-policy-header .points-policy-subtitle {
+    font-size: 14px !important;
+    color: var(--gray-600) !important;
+    display: block !important;
+    line-height: 1.5 !important;
+}
+
+/* 컨트롤 영역 */
+.points-policy-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.controls-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* 검색창 스타일 - 다른 페이지와 일치 */
+.points-policy-controls .search-container {
+    position: relative;
+    min-width: 300px;
+    flex: 1;
+    max-width: 400px;
+}
+
+.points-policy-controls .search-container i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--gray-400);
+    pointer-events: none;
+}
+
+.points-policy-controls .search-container input {
+    width: 100%;
+    height: 44px;
+    padding: 0 20px 0 44px;
+    border: 2px solid var(--gray-200);
+    border-radius: 22px;
+    font-size: 14px;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.points-policy-controls .search-container input::placeholder {
+    color: var(--gray-400);
+}
+
+.points-policy-controls .search-container input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
+}
+
+/* 카테고리 필터 */
+.points-policy-controls #categoryFilter {
+    padding: 8px 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: 22px;
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 320px;
+    max-width: 400px;
+    height: 44px;
+    background-color: white;
+    transition: all 0.2s ease;
+    padding-left: 20px;
+}
+
+.points-policy-controls #categoryFilter:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(46, 140, 230, 0.1);
+}
+
+/* 관리자 버튼 */
+.admin-mode-btn {
+    background: transparent;
+    border: 2px solid var(--gray-200);
+    border-radius: 22px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--gray-600);
+    font-size: 16px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.admin-mode-btn:hover {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    background: rgba(46, 140, 230, 0.05);
+}
+
+.admin-mode-btn.active {
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: white;
+}
+
+/* 현재 보유 포인트 표시 (충전하기 페이지와 동일) */
+.points-status {
+    margin-bottom: 32px;
+}
+
+.status-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 20px 24px;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.status-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--light-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+}
+
+.status-icon i {
+    font-size: 20px;
+    color: var(--primary-blue);
+}
+
+.status-info {
+    flex: 1;
+}
+
+.status-label {
+    font-size: 13px;
+    margin: 0 0 4px 0;
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.status-amount {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--primary-blue);
+}
+
+/* 포인트 시스템 개요 */
+.policy-overview {
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--gray-300);
+    padding-bottom: 24px;
+}
+
+.overview-card {
+    padding: 16px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.card-icon {
+    background: var(--primary-color-alpha-10);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 20px;
+    min-width: 44px;
+    height: 44px;
+}
+
+.card-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 12px 0;
+}
+
+.card-content ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    font-size: 13px;
+}
+
+.card-content li {
+    margin-bottom: 6px;
+}
+
+.card-content li:last-child {
+    margin-bottom: 0;
+}
+
+/* 관리자 모드 인디케이터 */
+.admin-mode-indicator {
+    background: linear-gradient(90deg, var(--warning-bg), var(--warning-color-alpha-10));
+    border: 1px solid var(--warning-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    animation: slideDown 0.3s ease;
+}
+
+.indicator-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.indicator-content i {
+    color: var(--warning-color);
+    font-size: 18px;
+}
+
+.indicator-content span {
+    color: var(--warning-text);
+    font-weight: 600;
+    flex: 1;
+    min-width: 120px;
+}
+
+.save-changes-btn,
+.cancel-changes-btn,
+.exit-admin-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-changes-btn {
+    background: var(--success-color);
+    color: white;
+}
+
+.save-changes-btn:hover {
+    background: var(--success-color-dark);
+}
+
+.cancel-changes-btn {
+    background: var(--danger-color);
+    color: white;
+}
+
+.cancel-changes-btn:hover {
+    background: var(--danger-color-dark);
+}
+
+.exit-admin-btn {
+    background: var(--text-secondary);
+    color: white;
+}
+
+.exit-admin-btn:hover {
+    background: var(--text-primary);
+}
+
+/* 테이블 컨테이너 */
+.policy-table-container {
+    margin-bottom: 40px;
+}
+
+.table-header {
+    padding: 24px 0 16px 0;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.table-header-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 102, 255, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.table-header-icon i {
+    color: var(--primary-blue);
+    font-size: 18px;
+}
+
+.table-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    text-align: left;
+}
+
+.table-header-content {
+    flex: 1;
+}
+
+.table-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* 테이블 래퍼 */
+.policy-table-wrapper {
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+/* 카테고리별 구분선 */
+.category-first-row {
+    border-top: 1px solid rgba(0, 153, 255, 0.3) !important;
+}
+
+.same-category-row {
+    border-top: none;
+}
+
+.policy-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+    margin-top: 30px;
+}
+
+/* 통일된 컬럼 너비 설정 */
+.policy-table th:nth-child(1), .policy-table td:nth-child(1) { width: 15%; }
+.policy-table th:nth-child(2), .policy-table td:nth-child(2) { width: 15%; }
+.policy-table th:nth-child(3), .policy-table td:nth-child(3) { width: 12%; }
+.policy-table th:nth-child(4), .policy-table td:nth-child(4) { width: 8%; }
+.policy-table th:nth-child(5), .policy-table td:nth-child(5) { width: 8%; }
+.policy-table th:nth-child(6), .policy-table td:nth-child(6) { width: 8%; }
+.policy-table th:nth-child(7), .policy-table td:nth-child(7) { width: 8%; }
+.policy-table th:nth-child(8), .policy-table td:nth-child(8) { width: 13%; }
+.policy-table th:nth-child(9), .policy-table td:nth-child(9) { width: 13%; }
+
+.policy-table th {
+    background: var(--gray-200);
+    padding: 12px 16px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--gray-900);
+    border-bottom: 1px solid rgba(0, 153, 255, 0.3);
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+.policy-table th:first-child {
+    border-radius: 0;
+}
+
+.policy-table td {
+    padding: 8px 12px;
+    border-bottom: none;
+    color: var(--gray-700);
+    vertical-align: top;
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.policy-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+/* 테이블 호버 효과 제거됨 */
+
+/* 카테고리별 색상 제거 */
+/* .policy-table .category-community {
+    border-left: 4px solid var(--primary-color);
+}
+
+.policy-table .category-documents {
+    border-left: 4px solid var(--success-color);
+}
+
+.policy-table .category-recruitment {
+    border-left: 4px solid var(--warning-color);
+}
+
+.policy-table .category-points {
+    border-left: 4px solid var(--info-color);
+} */
+
+/* 카테고리 셀 스타일 */
+.category-cell {
+    font-weight: 600;
+    color: var(--text-primary);
+    position: relative;
+    font-size: 13px !important;
+}
+
+/* 말풍선 컨테이너 */
+.policy-table th {
+    position: relative;
+    overflow: visible;
+}
+
+.policy-table thead {
+    overflow: visible;
+}
+
+.tooltip-container {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+
+.tooltip-bubble {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--gray-700);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid var(--gray-300);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.category-community .category-cell {
+    color: var(--primary-color);
+}
+
+.category-documents .category-cell {
+    color: var(--success-color);
+}
+
+.category-recruitment .category-cell {
+    color: var(--warning-color);
+}
+
+.category-points .category-cell {
+    color: var(--info-color);
+}
+
+/* 포인트 표시 (개선된 스타일) */
+.point-positive {
+    color: var(--primary-blue);
+    font-weight: 700;
+    font-size: 14px;
+    /* background: rgba(16, 185, 129, 0.1); */
+    /* padding: 4px 8px; */
+    /* border-radius: 6px; */
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+}
+
+.point-negative {
+    color: #EF4444;
+    font-weight: 700;
+    font-size: 14px;
+    /* background: rgba(239, 68, 68, 0.1); */
+    /* padding: 4px 8px; */
+    /* border-radius: 6px; */
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+}
+
+.point-neutral {
+    color: var(--gray-600);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* 권한 배지 (개선된 스타일) */
+.permission-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: none;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+/* 권한 배지 도형 스타일 제거 - 텍스트만 표시 */
+.permission-all {
+    /* background: rgba(16, 185, 129, 0.12); */
+    color: var(--primary-blue);
+    /* border-color: rgba(16, 185, 129, 0.2); */
+}
+
+.permission-verified {
+    /* background: rgba(0, 102, 255, 0.12); */
+    color: #0066FF;
+    /* border-color: rgba(0, 102, 255, 0.2); */
+}
+
+.permission-plus {
+    /* background: rgba(251, 191, 36, 0.12); */
+    color: #D97706;
+    /* border-color: rgba(251, 191, 36, 0.2); */
+}
+
+.permission-author {
+    /* background: rgba(99, 102, 241, 0.12); */
+    color: #6366F1;
+    /* border-color: rgba(99, 102, 241, 0.2); */
+}
+
+/* 편집 가능한 셀 */
+.editable-cell {
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.editable-cell:hover {
+    background: var(--primary-color-alpha-5);
+}
+
+.editable-cell.editing {
+    background: var(--primary-color-alpha-10);
+}
+
+.editable-cell input,
+.editable-cell select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.editable-cell input:focus,
+.editable-cell select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* 관리자 전용 요소 */
+.admin-only {
+    display: none;
+}
+
+.admin-mode .admin-only {
+    display: table-cell;
+}
+
+.admin-mode .admin-controls {
+    display: block !important;
+}
+
+.admin-mode .admin-mode-indicator {
+    display: block !important;
+}
+
+.admin-mode .editable-cell {
+    border: 1px dashed var(--primary-color-alpha-30);
+}
+
+/* 관리자 컨트롤 */
+.admin-controls {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    gap: 12px;
+    background: var(--bg-secondary);
+}
+
+.add-category-btn,
+.add-item-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.add-category-btn:hover,
+.add-item-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.add-category-btn i,
+.add-item-btn i {
+    margin-right: 6px;
+}
+
+/* 액션 버튼 */
+.action-btn {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin: 0 2px;
+    transition: all 0.2s ease;
+}
+
+.edit-btn {
+    background: var(--primary-color-alpha-10);
+    color: var(--primary-color);
+}
+
+.edit-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.delete-btn {
+    background: var(--danger-color-alpha-10);
+    color: var(--danger-color);
+}
+
+.delete-btn:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
+/* 정책 안내 */
+.policy-notes {
+    margin-bottom: 32px;
+}
+
+.notes-card {
+    padding: 16px 0;
+}
+
+.notes-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notes-card h3 i {
+    color: var(--warning-color);
+    font-size: 16px;
+}
+
+/* 섹션 타이틀 스타일 (충전하기 페이지와 일치) */
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 20px 0;
+}
+
+.notes-content {
+    display: grid;
+    gap: 4px;
+}
+
+.note-item {
+    padding: 4px 8px;
+    border-left: 4px solid var(--primary-color);
+    font-size: 14px;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.note-item strong {
+    color: var(--text-primary);
+}
+
+/* FAQ 섹션 (충전하기 페이지와 동일) */
+.faq-section {
+    margin-bottom: 48px;
+}
+
+.faq-list {
+    display: grid;
+    gap: 12px;
+}
+
+.faq-item {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.faq-question {
+    width: 100%;
+    padding: 20px 24px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gray-800);
+    transition: all 0.2s ease;
+}
+
+.faq-question:hover {
+    background: var(--gray-50);
+}
+
+.faq-question i {
+    color: var(--gray-400);
+    transition: transform 0.2s ease;
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(180deg);
+    color: var(--primary-blue);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 200px;
+}
+
+.faq-answer-content {
+    padding: 0 24px 24px;
+    color: var(--gray-600);
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+/* 고객센터 안내 (충전하기 페이지와 동일) */
+.support-section {
+    margin-bottom: 48px;
+}
+
+.support-card {
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.02) 0%, rgba(0, 153, 255, 0.03) 100%);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.support-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--primary-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+.support-content h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 8px 0;
+}
+
+.support-content p {
+    font-size: 14px;
+    color: var(--gray-600);
+    margin: 0 0 16px 0;
+}
+
+.support-info {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.support-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--gray-700);
+}
+
+.support-item i {
+    color: var(--primary-blue);
+    width: 16px;
+}
+
+.support-btn {
+    background: var(--primary-blue);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.support-btn:hover {
+    background: var(--primary-blue-dark, #0052CC);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+
+/* 테이블 공지사항 */
+.table-notice {
+    font-size: 14px;
+    color: var(--danger-color);
+    margin: 8px 0 0 0;
+    font-weight: 500;
+}
+
+/* 테이블 범례 */
+.table-legend {
+    padding: 8px 16px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.legend-text {
+    font-size: 13px;
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+/* 권한 표시 스타일 */
+.permission-symbol {
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    display: inline-block;
+    width: 20px;
+}
+
+.permission-all {
+    color: var(--primary-blue);
+}
+
+.permission-partial {
+    color: var(--gray-700);
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.permission-none {
+    color: var(--gray-400);
+}
+
+/* 포인트 값 스타일 */
+.point-value {
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.point-positive {
+    color: var(--primary-blue);
+}
+
+.point-negative {
+    color: #EF4444;
+}
+
+.point-special {
+    color: var(--primary-blue);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* 카테고리 행 스타일 */
+.category-row {
+    background: var(--gray-50);
+}
+
+.category-row td:first-child {
+    color: var(--primary-blue);
+}
+
+/* 클릭 가능한 카테고리 (포인트 테이블) */
+.clickable-category {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+}
+
+.clickable-category:hover {
+    color: var(--primary-blue);
+    text-decoration-color: var(--primary-blue);
+    background: rgba(0, 102, 255, 0.05);
+}
+
+/* 애니메이션 */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .points-policy-container {
+        padding: 40px 40px 60px;
+    }
+    
+    .points-policy-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    
+    .controls-left {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .points-policy-controls .search-container {
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .support-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .support-info {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .points-policy-container {
+        padding: 32px 24px 48px;
+    }
+    
+    .points-policy-controls .search-container input {
+        font-size: 12px;
+    }
+    
+    .policy-table-wrapper {
+        font-size: 12px;
+    }
+    
+    .policy-table th,
+    .policy-table td {
+        padding: 8px 12px;
+    }
+    
+    .overview-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .notes-content {
+        gap: 8px;
+    }
+    
+    .note-item {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .indicator-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .admin-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .admin-mode-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    /* 모바일에서는 테이블을 카드 형태로 변환 */
+    .policy-table-wrapper {
+        display: none;
+    }
+    
+    .mobile-cards {
+        display: block;
+        padding: 16px;
+    }
+    
+    .policy-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 16px;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .policy-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-light);
+    }
+    
+    .policy-card-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 14px;
+    }
+    
+    .policy-card-category {
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+    
+    .policy-card-body {
+        display: grid;
+        gap: 8px;
+    }
+    
+    .policy-card-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+    }
+    
+    .policy-card-label {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    .policy-card-value {
+        color: var(--text-primary);
+        text-align: right;
+    }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .admin-mode-indicator {
+        background: linear-gradient(90deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+        border-color: rgba(251, 191, 36, 0.3);
+    }
+    
+    .policy-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .editable-cell:hover {
+        background: rgba(var(--primary-color-rgb), 0.05);
+    }
+}

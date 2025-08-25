@@ -22,7 +22,11 @@
 .logo-text {
     font-size: var(--font-size-xl);
     font-weight: bold;
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--bright-blue) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-blue) 0%,
+        var(--bright-blue) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -105,7 +109,6 @@
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
-
 /* Navigation Sections */
 .nav-section {
     margin-bottom: var(--spacing-sm);
@@ -116,7 +119,7 @@
 }
 
 .nav-section:not(:last-child):not(.active):not(.next-active)::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -215,7 +218,7 @@
 
 /* 명예의전당 특별 강조 스타일 */
 .nav-item.hall-of-fame {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
     color: white;
     font-weight: 600;
     position: relative;
@@ -223,7 +226,7 @@
 }
 
 .nav-item.hall-of-fame::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     left: -50%;
@@ -254,7 +257,8 @@
 }
 
 @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
     }
     50% {
@@ -263,7 +267,7 @@
 }
 
 .nav-item.hall-of-fame:hover {
-    background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
+    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
     transform: translateX(2px);
     box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
 }
@@ -298,7 +302,11 @@
 
 /* 고객센터 푸른색 강조 클래스 - 업그레이드 */
 .nav-item.highlighted-blue {
-    background: linear-gradient(90deg, rgba(33, 150, 243, 0.25) 0%, rgba(135, 206, 250, 0.15) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(33, 150, 243, 0.25) 0%,
+        rgba(135, 206, 250, 0.15) 100%
+    );
     border-left: 3px solid #2196f3;
     box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
     color: #1976d2;
@@ -309,19 +317,28 @@
 
 /* 반짝이는 효과 추가 */
 .nav-item.highlighted-blue::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
     animation: shimmer 3s infinite;
 }
 
 @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
 }
 
 /* 아이콘 펄스 애니메이션 */
@@ -331,14 +348,27 @@
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /* 호버 효과 강화 */
 .nav-item.highlighted-blue:hover {
-    background: linear-gradient(90deg, rgba(33, 150, 243, 0.35) 0%, rgba(135, 206, 250, 0.25) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(33, 150, 243, 0.35) 0%,
+        rgba(135, 206, 250, 0.25) 100%
+    );
     transform: translateX(3px);
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.25);
     color: #0d47a1;

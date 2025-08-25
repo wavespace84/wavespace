@@ -1,0 +1,29 @@
+# 의존성 및 빌드 파일
+node_modules/
+dist/
+build/
+
+# MCP 서버 (외부 프로젝트)
+mcp-servers/
+
+# 레거시 CSS 참조 파일
+jobkorea_css/
+saramin_css/
+
+# 생성된 파일
+*.min.js
+*.bundle.js
+
+# 설정 파일
+*.config.js
+*.config.mjs
+
+# 임시 파일
+*.tmp
+*.temp
+.cache/
+
+# IDE 파일
+.vscode/
+.idea/
+*.log

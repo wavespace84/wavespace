@@ -123,7 +123,12 @@
     left: -100%;
     width: 100%;
     height: 200%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
     transform: translateY(-50%) rotate(45deg);
     transition: left 0.5s;
 }
@@ -185,14 +190,18 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 2px 6px rgba(0, 0, 0, 0.04);
     border: 1px solid var(--gray-100);
     transition: var(--transition-normal);
     position: relative;
 }
 
 .streak-card:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12), 0 3px 8px rgba(0, 0, 0, 0.06);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.12),
+        0 3px 8px rgba(0, 0, 0, 0.06);
     border-color: var(--primary-blue);
     transform: translateY(-2px);
 }
@@ -200,7 +209,11 @@
 /* 퀘스트 달성 카드 스타일 */
 .streak-card.quest-achieved {
     border: 2px solid var(--primary-blue);
-    background: linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(0, 102, 255, 0.1));
+    background: linear-gradient(
+        135deg,
+        rgba(0, 102, 255, 0.05),
+        rgba(0, 102, 255, 0.1)
+    );
     box-shadow: 0 4px 20px rgba(0, 102, 255, 0.15);
 }
 
@@ -331,7 +344,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
 }
 
 .calendar-title-wrapper.current {
@@ -450,7 +465,8 @@
 }
 
 @keyframes today-pulse {
-    0%, 100% {
+    0%,
+    100% {
         border-color: var(--primary-blue);
         box-shadow: 0 2px 8px rgba(0, 102, 255, 0.2);
     }
@@ -517,7 +533,11 @@
 
 /* 회원가입일 스타일 */
 .calendar-day.join-date {
-    background: linear-gradient(135deg, rgba(123, 97, 255, 0.1), rgba(123, 97, 255, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(123, 97, 255, 0.1),
+        rgba(123, 97, 255, 0.05)
+    );
     border: 1px solid var(--purple);
 }
 
@@ -573,7 +593,7 @@
 /* 호버 효과 제거됨 */
 
 .reward-card.current-rank {
-    background: linear-gradient(to right, rgba(0, 102, 255, 0.05), rgba(0, 102, 255, 0.02));
+    background: white; /* 흰색 배경 유지 */
     border: 2px solid var(--primary-blue);
     box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
 }
@@ -644,7 +664,11 @@
 .bonus-rewards {
     margin-top: 24px;
     padding: 20px;
-    background: linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(123, 97, 255, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(0, 102, 255, 0.05),
+        rgba(123, 97, 255, 0.05)
+    );
     border-radius: var(--radius-lg);
     border: 1px solid var(--primary-blue);
 }
@@ -735,7 +759,7 @@
 
 /* 보너스 달성 상태 */
 .bonus-item.achieved {
-    background: linear-gradient(to right, rgba(0, 102, 255, 0.05), transparent);
+    background: white; /* 흰색 배경 유지 */
     border: 2px solid var(--primary-blue);
     position: relative;
 }
@@ -848,8 +872,12 @@
 /* 대표 뱃지 - 아이콘 스타일 */
 .attendance-item .user-badge {
     padding: 4px 8px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,249,250,0.95));
-    border: 1.5px solid rgba(0,102,255,0.2);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.95),
+        rgba(248, 249, 250, 0.95)
+    );
+    border: 1.5px solid rgba(0, 102, 255, 0.2);
     border-radius: var(--radius-full);
     font-size: 14px;
     white-space: nowrap;
@@ -858,20 +886,19 @@
     justify-content: center;
     min-width: 32px;
     height: 26px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease;
 }
 
 .attendance-item .user-badge:hover {
     transform: scale(1.1);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    border-color: rgba(0,102,255,0.4);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 102, 255, 0.4);
 }
 
 .attendance-item .user-badge i {
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
-
 
 /* 메시지 */
 .user-message {
@@ -935,7 +962,11 @@
 .coupon-section {
     margin-top: 24px;
     padding: 20px;
-    background: linear-gradient(to right, rgba(255, 184, 0, 0.05), rgba(255, 184, 0, 0.02));
+    background: linear-gradient(
+        to right,
+        rgba(255, 184, 0, 0.05),
+        rgba(255, 184, 0, 0.02)
+    );
     border-radius: var(--radius-lg);
     border: 2px solid var(--warning);
 }
@@ -969,7 +1000,8 @@
 }
 
 @keyframes bounce {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateY(0);
     }
     50% {
@@ -1054,14 +1086,15 @@
 
 .winner-badge.winner-selected {
     background: white;
-    color: var(--gray-900);  /* 검정색으로 변경 */
+    color: var(--gray-900); /* 검정색으로 변경 */
     font-weight: 700;
     border: 2px solid var(--warning);
     padding: 6px 14px;
 }
 
 @keyframes winner-glow {
-    0%, 100% {
+    0%,
+    100% {
         box-shadow: 0 0 0 rgba(255, 184, 0, 0);
     }
     50% {
@@ -1090,19 +1123,19 @@
 }
 
 .medal-gold {
-    color: #FFD700;
+    color: #ffd700;
     font-size: 18px;
     filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3));
 }
 
 .medal-silver {
-    color: #C0C0C0;
+    color: #c0c0c0;
     font-size: 18px;
     filter: drop-shadow(0 2px 4px rgba(192, 192, 192, 0.3));
 }
 
 .medal-bronze {
-    color: #CD7F32;
+    color: #cd7f32;
     font-size: 18px;
     filter: drop-shadow(0 2px 4px rgba(205, 127, 50, 0.3));
 }
@@ -1114,17 +1147,17 @@
 }
 
 .rank-number.rank-1 {
-    color: #FFD700;
+    color: #ffd700;
     font-weight: 800;
 }
 
 .rank-number.rank-2 {
-    color: #C0C0C0;
+    color: #c0c0c0;
     font-weight: 800;
 }
 
 .rank-number.rank-3 {
-    color: #CD7F32;
+    color: #cd7f32;
     font-weight: 800;
 }
 
@@ -1154,7 +1187,7 @@
 
 /* 내가 30위 안에 있을 때 강조 */
 .attendance-item.my-rank {
-    background: rgba(0, 102, 255, 0.08);
+    background: white; /* 흰색 배경 유지 */
     border: 2px solid var(--primary-blue);
     /* box-shadow 제거 - 번짐/네온 효과 없앰 */
     /* animation 제거 - 깜빡임 효과 없앰 */
@@ -1178,11 +1211,11 @@
     .attendance-container {
         padding: 48px 40px;
     }
-    
+
     .streak-info {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .rewards-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1192,40 +1225,40 @@
     .attendance-title {
         font-size: 24px;
     }
-    
+
     .status-content {
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .check-in-btn {
         width: 100%;
         justify-content: center;
     }
-    
+
     .calendar-section {
         padding: 20px;
     }
-    
+
     .calendar-day {
         font-size: 12px;
     }
-    
+
     .attendance-item {
         flex-direction: column;
         gap: 16px;
         padding: 16px;
     }
-    
+
     .user-profile {
         align-self: flex-start;
         min-width: auto;
     }
-    
+
     .user-message {
         align-self: stretch;
     }
-    
+
     .points-badge {
         align-self: flex-end;
     }
@@ -1235,36 +1268,36 @@
     .attendance-container {
         padding: 24px 20px;
     }
-    
+
     .attendance-title {
         font-size: 20px;
     }
-    
+
     .attendance-subtitle {
         font-size: 14px;
     }
-    
+
     .streak-info {
         grid-template-columns: 1fr;
     }
-    
+
     .rewards-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .calendar-weekdays,
     .calendar-days {
         gap: 2px;
     }
-    
+
     .weekday {
         font-size: 11px;
     }
-    
+
     .day-number {
         font-size: 12px;
     }
-    
+
     .calendar-day i {
         font-size: 12px;
     }

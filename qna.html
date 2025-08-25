@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles.css?v=7">
     <link rel="stylesheet" href="qna.css?v=10">
     <link rel="stylesheet" href="css/checkbox-interaction.css">
+    <link rel="stylesheet" href="mobile-fix.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -122,9 +123,9 @@
                                     <i class="fas fa-briefcase"></i>
                                     <span>분양영업</span>
                                 </a>
-                                <a href="headhunting.html" class="nav-item">
-                                    <i class="fas fa-user-tie"></i>
-                                    <span>헤드헌팅</span>
+                                <a href="ai-matching.html" class="nav-item">
+                                    <i class="fas fa-robot"></i>
+                                    <span>AI 매칭 서비스</span>
                                 </a>
                             </div>
                         </div>
@@ -262,7 +263,7 @@
                         <div class="user-info">
                             <p class="user-name">박승학님</p>
                             <div class="user-meta">
-                                <span class="user-title">소통왕</span>
+                                <span class="user-title">소통리더</span>
                                 <span class="user-points">• 100,000P</span>
                             </div>
                         </div>
@@ -471,9 +472,17 @@
                         5,000P 보상
                     </span>
                 </div>
-                <button class="modal-close" onclick="closeDetailModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="modal-nav-buttons">
+                    <button class="modal-nav-btn" id="prevQuestionBtn" onclick="navigateQuestion('prev')" title="이전 질문" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="modal-nav-btn" id="nextQuestionBtn" onclick="navigateQuestion('next')" title="다음 질문">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="modal-nav-btn modal-close" onclick="closeDetailModal()" title="닫기">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
             
             <div class="modal-body-scroll">
@@ -499,6 +508,19 @@
                     </h3>
                     <div class="answer-form">
                         <textarea id="answerContent" placeholder="답변을 작성해주세요. 정확하고 도움이 되는 답변을 작성하시면 채택될 확률이 높아집니다." rows="6"></textarea>
+                        
+                        <!-- 파일 첨부 영역 -->
+                        <div class="file-attachment-section">
+                            <div class="file-drop-zone" id="fileDropZone">
+                                <input type="file" id="answerFileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.jpg,.jpeg,.png" style="display: none;">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span class="drop-zone-text">파일을 드래그하거나 클릭하여 선택 (최대 2개, 각 30MB)</span>
+                            </div>
+                            <div class="attached-files-list" id="attachedFilesList" style="display: none;">
+                                <!-- 첨부된 파일 목록이 여기에 표시됩니다 -->
+                            </div>
+                        </div>
+                        
                         <div class="answer-actions">
                             <div class="answer-tips">
                                 <i class="fas fa-lightbulb"></i>

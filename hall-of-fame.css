@@ -76,8 +76,12 @@
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* 순위 보상 안내 */
@@ -145,20 +149,20 @@
 
 .reward-item.gold {
     background: rgba(255, 215, 0, 0.08);
-    border: 2px solid #FFD700;
+    border: 2px solid #ffd700;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
     position: relative;
     overflow: hidden;
 }
 
 .reward-item.gold::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+    background: linear-gradient(45deg, #ffd700, #ffa500, #ffd700);
     border-radius: var(--radius-lg);
     opacity: 0.3;
     z-index: -1;
@@ -166,8 +170,12 @@
 }
 
 @keyframes goldShine {
-    0% { transform: translateX(-100%) translateY(-100%); }
-    100% { transform: translateX(100%) translateY(100%); }
+    0% {
+        transform: translateX(-100%) translateY(-100%);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%);
+    }
 }
 
 .reward-item.silver {
@@ -193,7 +201,7 @@
 }
 
 .reward-item.gold .rank-medal i {
-    color: #FFD700;
+    color: #ffd700;
 }
 
 .reward-item.silver .rank-medal i {
@@ -201,7 +209,7 @@
 }
 
 .reward-item.bronze .rank-medal i {
-    color: #CD7F32;
+    color: #cd7f32;
 }
 
 .rank-medal span {
@@ -219,7 +227,7 @@
 .special-badge {
     font-size: 13px;
     font-weight: 600;
-    color: #FFD700;
+    color: #ffd700;
     margin-top: 4px;
     display: flex;
     align-items: center;
@@ -228,7 +236,7 @@
 }
 
 .reward-item.gold .special-badge {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
+    background: linear-gradient(135deg, #ffd700, #ffa500);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -263,9 +271,15 @@
 }
 
 @keyframes categoryPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .category-header {
@@ -317,7 +331,6 @@
     line-height: 1.6;
 }
 
-
 /* 새로운 랭킹 리스트 스타일 */
 .ranking-list-new {
     display: flex;
@@ -349,15 +362,15 @@
 }
 
 @keyframes rankChangeHighlight {
-    0% { 
+    0% {
         box-shadow: none;
         background: var(--gray-50);
     }
-    50% { 
+    50% {
         box-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
         background: rgba(0, 102, 255, 0.05);
     }
-    100% { 
+    100% {
         box-shadow: none;
         background: var(--gray-50);
     }
@@ -371,7 +384,7 @@
 
 /* 1등 카드 - 금색 테두리 강조 */
 .ranking-item-new.first {
-    border: 2px solid #FFD700;
+    border: 2px solid #ffd700;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
     background: rgba(255, 215, 0, 0.08);
 }
@@ -387,15 +400,21 @@
         transform: scale(1);
     }
     20% {
-        box-shadow: 0 0 50px rgba(255, 215, 0, 0.8), 0 0 100px rgba(255, 215, 0, 0.4);
+        box-shadow:
+            0 0 50px rgba(255, 215, 0, 0.8),
+            0 0 100px rgba(255, 215, 0, 0.4);
         transform: scale(1.05);
     }
     40% {
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.3);
+        box-shadow:
+            0 0 30px rgba(255, 215, 0, 0.6),
+            0 0 60px rgba(255, 215, 0, 0.3);
         transform: scale(1.02);
     }
     60% {
-        box-shadow: 0 0 40px rgba(255, 215, 0, 0.7), 0 0 80px rgba(255, 215, 0, 0.35);
+        box-shadow:
+            0 0 40px rgba(255, 215, 0, 0.7),
+            0 0 80px rgba(255, 215, 0, 0.35);
         transform: scale(1.03);
     }
     80% {
@@ -413,7 +432,6 @@
 .ranking-item-new.third {
     border: 1px solid rgba(0, 102, 255, 0.5);
 }
-
 
 /* 순위 배지 */
 .rank-badge {
@@ -436,11 +454,11 @@
 
 .rank-badge.gold {
     background: white;
-    border: 2px solid #FFD700;
+    border: 2px solid #ffd700;
 }
 
 .rank-badge.gold i {
-    color: #FFD700;
+    color: #ffd700;
 }
 
 .rank-badge.silver {
@@ -454,11 +472,11 @@
 
 .rank-badge.bronze {
     background: white;
-    border: 2px solid #CD7F32;
+    border: 2px solid #cd7f32;
 }
 
 .rank-badge.bronze i {
-    color: #CD7F32;
+    color: #cd7f32;
 }
 
 .rank-badge.default {
@@ -625,7 +643,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-
 /* 변동 표시 */
 .change-indicator {
     display: flex;
@@ -664,10 +681,6 @@
     font-size: 10px;
 }
 
-
-
-
-
 /* 역대 랭킹 플로팅 버튼 래퍼 */
 .history-btn-wrapper {
     position: fixed;
@@ -701,7 +714,8 @@
 }
 
 @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateX(-50%) translateY(0);
     }
     50% {
@@ -788,8 +802,12 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes slideUp {
@@ -827,7 +845,7 @@
 }
 
 .history-modal-title i {
-    color: #FFD700;
+    color: #ffd700;
     font-size: 24px;
 }
 
@@ -907,7 +925,7 @@
 }
 
 .month-tab.active::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -2px;
     left: 50%;
@@ -961,11 +979,21 @@
     animation: listItemFadeIn 0.3s ease forwards;
 }
 
-.history-list-item:nth-child(1) { animation-delay: 0.05s; }
-.history-list-item:nth-child(2) { animation-delay: 0.1s; }
-.history-list-item:nth-child(3) { animation-delay: 0.15s; }
-.history-list-item:nth-child(4) { animation-delay: 0.2s; }
-.history-list-item:nth-child(5) { animation-delay: 0.25s; }
+.history-list-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+.history-list-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+.history-list-item:nth-child(3) {
+    animation-delay: 0.15s;
+}
+.history-list-item:nth-child(4) {
+    animation-delay: 0.2s;
+}
+.history-list-item:nth-child(5) {
+    animation-delay: 0.25s;
+}
 
 @keyframes listItemFadeIn {
     from {
@@ -1126,11 +1154,21 @@
     font-size: 20px;
 }
 
-.summary-rank:nth-child(1) i { color: #FFD700; }
-.summary-list-item:nth-child(1) .summary-rank i { color: #FFD700; }
-.summary-list-item:nth-child(2) .summary-rank i { color: #C0C0C0; }
-.summary-list-item:nth-child(3) .summary-rank i { color: #CD7F32; }
-.summary-list-item:nth-child(n+4) .summary-rank i { color: var(--gray-400); }
+.summary-rank:nth-child(1) i {
+    color: #ffd700;
+}
+.summary-list-item:nth-child(1) .summary-rank i {
+    color: #ffd700;
+}
+.summary-list-item:nth-child(2) .summary-rank i {
+    color: #c0c0c0;
+}
+.summary-list-item:nth-child(3) .summary-rank i {
+    color: #cd7f32;
+}
+.summary-list-item:nth-child(n + 4) .summary-rank i {
+    color: var(--gray-400);
+}
 
 .summary-rank span {
     font-size: 11px;
@@ -1206,17 +1244,29 @@
 
 /* 리스트 아이템 특수 효과 */
 .summary-list-item.legendary {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(245, 158, 11, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(251, 191, 36, 0.05),
+        rgba(245, 158, 11, 0.05)
+    );
     border-color: rgba(245, 158, 11, 0.3);
 }
 
 .summary-list-item.epic {
-    background: linear-gradient(135deg, rgba(167, 139, 250, 0.05), rgba(139, 92, 246, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(167, 139, 250, 0.05),
+        rgba(139, 92, 246, 0.05)
+    );
     border-color: rgba(139, 92, 246, 0.3);
 }
 
 .summary-list-item.rare {
-    background: linear-gradient(135deg, rgba(96, 165, 250, 0.05), rgba(59, 130, 246, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(96, 165, 250, 0.05),
+        rgba(59, 130, 246, 0.05)
+    );
     border-color: rgba(59, 130, 246, 0.3);
 }
 
@@ -1232,7 +1282,7 @@
 }
 
 .category-icon.allstar {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
+    background: linear-gradient(135deg, #ffd700, #ffa500);
     border: none;
     display: flex;
     align-items: center;
@@ -1318,7 +1368,7 @@
 }
 
 .allstar-benefits li i {
-    color: #FFD700;
+    color: #ffd700;
     font-size: 16px;
     flex-shrink: 0;
 }
@@ -1357,21 +1407,21 @@
         padding: 16px;
         gap: 16px;
     }
-    
+
     .allstar-badge-display {
         max-width: 160px;
     }
-    
+
     .allstar-badge-display img {
         width: 100px;
         height: 100px;
     }
-    
+
     .allstar-benefits ul {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-    
+
     .allstar-btn {
         width: 100%;
         justify-content: center;
@@ -1383,15 +1433,15 @@
     .hall-container {
         padding: 32px 24px;
     }
-    
+
     .category-rankings-new {
         grid-template-columns: 1fr;
     }
-    
+
     .reward-grid {
         gap: 12px;
     }
-    
+
     .monthly-info-bar {
         flex-direction: column;
         gap: 12px;
@@ -1402,33 +1452,33 @@
     .hall-title {
         font-size: 20px;
     }
-    
+
     .hall-subtitle {
         font-size: 13px;
     }
-    
+
     .reward-grid {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-    
+
     .reward-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 16px;
     }
-    
+
     .rank-medal {
         flex-direction: row;
         gap: 8px;
         margin-bottom: 0;
     }
-    
+
     .rank-medal i {
         font-size: 24px;
     }
-    
+
     /* 모바일에서 플로팅 버튼 위치 조정 */
     .history-btn-wrapper {
         bottom: 24px;
@@ -1436,31 +1486,31 @@
         width: 70px;
         height: 130px;
     }
-    
+
     .floating-history-btn {
         width: 56px;
         height: 56px;
     }
-    
+
     .history-label {
         font-size: 13px;
         padding: 5px 12px;
     }
-    
+
     .history-curve {
         width: 70px;
         height: 70px;
     }
-    
+
     .history-modal-content {
         max-height: 90vh;
     }
-    
+
     .month-tabs {
         gap: 2px;
         padding: 3px;
     }
-    
+
     .month-tab {
         padding: 5px 8px;
         font-size: 11px;
@@ -1471,48 +1521,48 @@
     .hall-container {
         padding: 24px 16px;
     }
-    
+
     .hall-title {
         font-size: 18px;
     }
-    
+
     .month-info,
     .update-badge {
         font-size: 12px;
         padding: 8px 12px;
     }
-    
+
     .category-section {
         padding: 16px;
     }
-    
+
     .category-header {
         flex-wrap: wrap;
         gap: 8px;
     }
-    
+
     .category-icon {
         width: 40px;
         height: 40px;
         font-size: 20px;
     }
-    
+
     .ranking-item-new {
         padding: 12px;
         gap: 8px;
     }
-    
+
     .user-avatar {
         width: 32px;
         height: 32px;
         font-size: 14px;
     }
-    
+
     .reward {
         font-size: 12px;
         padding: 4px 8px;
     }
-    
+
     /* 모바일에서 플로팅 버튼 위치 조정 */
     .history-btn-wrapper {
         bottom: 20px;
@@ -1520,48 +1570,73 @@
         width: 120px;
         height: 120px;
     }
-    
+
     .floating-history-btn {
         width: 48px;
         height: 48px;
     }
-    
+
     .floating-history-btn i {
         font-size: 20px;
     }
-    
+
     .history-label {
         font-size: 12px;
         padding: 4px 10px;
         top: 15px;
         left: 5px;
     }
-    
+
     .history-curve {
         width: 60px;
         height: 45px;
         top: 30px;
         left: 25px;
     }
-    
+
     .history-modal-header {
         padding: 24px;
     }
-    
+
     .history-modal-title {
         font-size: 20px;
     }
-    
+
     .history-modal-body {
         padding: 20px;
     }
-    
+
     .month-tabs {
         gap: 4px;
     }
-    
+
     .month-tab {
         padding: 8px 16px;
         font-size: 13px;
     }
+}
+
+/* 올스타 아이콘 스타일 */
+.category-icon.allstar i {
+    background: linear-gradient(135deg, #ffd700, #ffa500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.allstar-badge-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #ffd700, #ffa500);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+}
+
+.allstar-badge-icon i {
+    font-size: 40px;
+    color: white;
 }

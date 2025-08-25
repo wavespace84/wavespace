@@ -3,6 +3,23 @@
 // 공통 데이터는 js/modules/common-data.js에서 로드됨
 // 사용 방법: window.WaveSpaceData.regionData, window.WaveSpaceData.regionNames 등
 
+// debounce 유틸리티 함수
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// 미리보기 모달 관련 전역 변수
+let currentDocIndex = 0;
+let currentFilteredDocs = [];
+
 // 상품 유형 정의
 const productTypes = [
     { id: 'apartment', name: '아파트', color: '#3b82f6' },
@@ -782,7 +799,8 @@ function initializeFilters() {
     // 상품 유형 필터 초기화
     const productTypeFilters = document.querySelectorAll('#productTypeFilters .checkbox-tab');
     productTypeFilters.forEach((tab) => {
-        tab.addEventListener('click', function () {
+        tab.addEventListener('click', function (e) {
+            e.preventDefault();
             const type = this.dataset.type;
 
             // 라디오 버튼 체크
@@ -802,7 +820,8 @@ function initializeFilters() {
     // 공급 유형 필터 초기화
     const supplyTypeFilters = document.querySelectorAll('#supplyTypeFilters .checkbox-tab');
     supplyTypeFilters.forEach((tab) => {
-        tab.addEventListener('click', function () {
+        tab.addEventListener('click', function (e) {
+            e.preventDefault();
             const type = this.dataset.type;
 
             // 라디오 버튼 체크
@@ -838,7 +857,8 @@ function initializeFilters() {
     // 정렬 버튼
     const sortBtns = document.querySelectorAll('.sort-btn');
     sortBtns.forEach((btn) => {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
             sortBtns.forEach((b) => b.classList.remove('active'));
             this.classList.add('active');
 
@@ -1114,27 +1134,8 @@ function applyFilters() {
 function filterDocuments() {
     return sampleDocuments.filter((doc) => {
         // 상품 유형 필터
-        if (currentFilters.productType !== 'all') {
-            // 상품 유형 매핑 (오피스텔 세분화 적용)
-            const typeMap = {
-                apartment: 'apartment',
-                'residential-ot': 'officetel-residential',
-                'profit-ot': 'officetel-profit',
-                urban: 'urban',
-                commercial: 'commercial',
-                'lifestyle-lodge': 'lifestyle-lodge',
-                knowledge: 'knowledge',
-                hotel: 'hotel',
-                studio: 'studio',
-                villa: 'villa',
-                land: 'land',
-                other: 'other',
-            };
-
-            const mappedType = typeMap[currentFilters.productType];
-            if (mappedType && doc.type !== mappedType) {
-                return false;
-            }
+        if (currentFilters.productType !== 'all' && doc.type !== currentFilters.productType) {
+            return false;
         }
 
         // 공급 유형 필터
@@ -1237,8 +1238,9 @@ function renderDocuments(documents) {
                         display: inline-flex;
                         align-items: center;
                         gap: 8px;
-                        padding: 5px 12px;
+                        padding: 5px 12px 5px 10px;
                         background: ${productType.color}15;
+                        border-left: 3px solid ${productType.color};
                         border-radius: 6px;
                         margin-bottom: 10px;
                     ">
@@ -1258,7 +1260,7 @@ function renderDocuments(documents) {
                         </span>
                         <span style="color: #9ca3af; font-size: 11px;">
                             <i class="fas fa-hdd" style="font-size: 10px; margin-right: 4px;"></i>
-                            ${doc.fileSize}
+                            ${doc.fileSize} (${doc.pages || 0}p)
                         </span>
                         <span style="color: #9ca3af; font-size: 11px;">
                             <i class="fas fa-calendar-alt" style="font-size: 10px; margin-right: 4px;"></i>
@@ -1268,7 +1270,7 @@ function renderDocuments(documents) {
                     <div class="document-footer">
                         <div class="points-badge">
                             <i class="fas fa-coins"></i>
-                            <span>${doc.points}P</span>
+                            <span>${doc.points.toLocaleString('ko-KR')}P</span>
                         </div>
                         <div class="document-actions" style="display: flex; gap: 4px;">
                             <button class="btn-action-mini" onclick="event.stopPropagation(); addToCart(${doc.id})" title="장바구니 담기" style="
@@ -1728,55 +1730,48 @@ async function renderPreviewPDF(pdfPath, docId) {
         return;
     }
 
-    // PDF 파일이 있는 경우 - 캔버스 구조 복원
+    // PDF 파일이 있는 경우 - 단일 페이지 레이아웃
     if (previewArea) {
-        // 기존 HTML 구조 복원
+        // 단일 페이지 레이아웃
         previewArea.innerHTML = `
-            <!-- 4페이지 (위, 작게) -->
-            <div class="preview-page-small preview-page-top">
-                <canvas id="previewCanvas4" width="120" height="160"></canvas>
-                <div class="page-label">페이지 4</div>
-            </div>
-            
-            <!-- 5페이지 (중앙, 크게 - 메인) -->
-            <div class="preview-page-main">
-                <canvas id="previewCanvas5" width="200" height="280"></canvas>
-                <div class="page-label main">페이지 5 (메인)</div>
-            </div>
-            
-            <!-- 6페이지 (아래, 작게) -->
-            <div class="preview-page-small preview-page-bottom">
-                <canvas id="previewCanvas6" width="120" height="160"></canvas>
-                <div class="page-label">페이지 6</div>
+            <div class="preview-single-page-layout">
+                <div class="preview-page-single">
+                    <canvas id="previewCanvas" width="300" height="400"></canvas>
+                </div>
+                <div class="page-label">- 5page -</div>
             </div>
         `;
     }
 
     // 캔버스 요소 가져오기
-    const canvas5 = document.getElementById('previewCanvas5');
+    const canvas = document.getElementById('previewCanvas');
 
-    if (!canvas5) {
-        console.error('5페이지 캔버스 요소를 찾을 수 없습니다.');
+    if (!canvas) {
+        console.error('캔버스 요소를 찾을 수 없습니다.');
         return;
     }
 
     // PDF 파일이 있는 경우 - 실제 환경에서는 PDF.js를 사용하여 렌더링
     // 테스트 환경에서는 데모 이미지 렌더링
     try {
-        // 실제 PDF 로드 시도 (테스트 환경에서는 실패할 수 있음)
-        if (typeof pdfjsLib !== 'undefined' && doc.pdfPath.startsWith('http')) {
+        // PDF.js 라이브러리 확인 및 실제 PDF 로드 시도
+        if (typeof pdfjsLib !== 'undefined' && doc.pdfPath && doc.pdfPath.startsWith('http')) {
             // 실제 PDF 렌더링 로직
-            await renderActualPDF(doc.pdfPath, canvas5);
+            await renderActualPDF(doc.pdfPath, canvas);
         } else {
+            // PDF.js 없거나 로컬 환경일 때 데모 이미지 렌더링
+            if (typeof pdfjsLib === 'undefined') {
+                console.warn('PDF.js가 로드되지 않아 데모 이미지를 표시합니다.');
+            }
             // 데모용 페이지 렌더링
-            const ctx5 = canvas5.getContext('2d');
+            const ctx = canvas.getContext('2d');
 
             // 캔버스 초기화
-            ctx5.fillStyle = '#ffffff';
-            ctx5.fillRect(0, 0, canvas5.width, canvas5.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 데모 5페이지 렌더링
-            renderPage5(ctx5, canvas5.width, canvas5.height);
+            // 데모 5페이지 렌더링 (더 크게)
+            renderPage5(ctx, canvas.width, canvas.height);
         }
     } catch (error) {
         console.error('PDF 렌더링 오류:', error);
@@ -1797,6 +1792,11 @@ async function renderPreviewPDF(pdfPath, docId) {
 // 실제 PDF 렌더링 함수
 async function renderActualPDF(pdfPath, canvas) {
     try {
+        // PDF.js 확인
+        if (typeof pdfjsLib === 'undefined') {
+            throw new Error('PDF.js 라이브러리가 로드되지 않았습니다');
+        }
+        
         // PDF 문서 로드
         const loadingTask = pdfjsLib.getDocument(pdfPath);
         const pdf = await loadingTask.promise;
@@ -1834,10 +1834,14 @@ async function renderActualPDF(pdfPath, canvas) {
 
         await page.render(renderContext).promise;
 
-        // 페이지 라벨 업데이트
+        // 페이지 라벨 업데이트 (5페이지만 특별하게)
         const labelElement = canvas.parentElement.querySelector('.page-label');
         if (labelElement) {
-            labelElement.textContent = `페이지 ${pageNum}`;
+            if (pageNum === 5) {
+                labelElement.textContent = `- 5page -`;
+            } else {
+                labelElement.textContent = `- ${pageNum}page -`;
+            }
         }
     } catch (error) {
         console.error('PDF 렌더링 실패:', error);
@@ -2248,15 +2252,21 @@ const uploadSystem = {
         if (!region1 || !region2) return;
         
         const selectedRegion = region1.value;
-        region2.innerHTML = '<option value="">시군구 선택</option>';
+        region2.innerHTML = '<option value="">시/군/구 선택</option>';
         
         if (selectedRegion && window.WaveSpaceData.regionData[selectedRegion]) {
+            // 두 번째 드롭다운 활성화
+            region2.disabled = false;
+            
             window.WaveSpaceData.regionData[selectedRegion].forEach(subRegion => {
                 const option = document.createElement('option');
                 option.value = subRegion;
                 option.textContent = subRegion;
                 region2.appendChild(option);
             });
+        } else {
+            // 상위 지역이 선택되지 않았으면 비활성화
+            region2.disabled = true;
         }
     },
     
@@ -2437,6 +2447,31 @@ function initializeEventListeners() {
             if (modal) modal.classList.remove('active');
         });
     }
+
+    // 미리보기 네비게이션 버튼
+    const prevBtn = document.getElementById('previewPrev');
+    const nextBtn = document.getElementById('previewNext');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentDocIndex > 0) {
+                currentDocIndex--;
+                updatePreviewModal(currentFilteredDocs[currentDocIndex]);
+                updatePreviewNavButtons();
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentDocIndex < currentFilteredDocs.length - 1) {
+                currentDocIndex++;
+                updatePreviewModal(currentFilteredDocs[currentDocIndex]);
+                updatePreviewNavButtons();
+            }
+        });
+    }
+
 
     // 미리보기 다운로드 버튼
     const previewDownloadBtn = document.querySelector('.preview-download-btn');
@@ -3389,7 +3424,15 @@ async function generatePDFThumbnail(file) {
     try {
         // PDF.js가 로드되었는지 확인
         if (typeof pdfjsLib === 'undefined') {
-            throw new Error('PDF.js 라이브러리가 로드되지 않았습니다');
+            console.warn('PDF.js 라이브러리가 로드되지 않았습니다. 기본 아이콘을 표시합니다.');
+            // PDF.js 없이 기본 아이콘만 표시
+            if (iconDiv) {
+                iconDiv.style.display = 'flex';
+            }
+            if (thumbnailDiv) {
+                thumbnailDiv.style.display = 'none';
+            }
+            return;
         }
 
         // FileReader로 PDF 파일 읽기
@@ -3812,10 +3855,10 @@ function calculateDownloadPoints(fileSizeMB, createDateStr) {
     const fileSize =
         typeof fileSizeMB === 'string'
             ? parseFloat(fileSizeMB.replace(/[^0-9.]/g, ''))
-            : fileSizeMB;
+            : parseFloat(fileSizeMB);
 
     // 파일 크기 지수
-    let sizeMultiplier = 0;
+    let sizeMultiplier = 1.0;
     if (fileSize >= 5) {
         sizeMultiplier = 1.1; // 110%
     } else if (fileSize >= 2) {
@@ -4757,9 +4800,13 @@ let currentFilteredDocuments = [];
 function openPreview(docId) {
     // 현재 필터링된 문서 목록 가져오기
     currentFilteredDocuments = filterDocuments();
+    
+    // market-research.js 내부 변수 업데이트 (네비게이션용)
+    currentFilteredDocs = currentFilteredDocuments;
 
     // 선택한 문서의 인덱스 찾기
     currentPreviewIndex = currentFilteredDocuments.findIndex((doc) => doc.id === docId);
+    currentDocIndex = currentPreviewIndex;
 
     if (currentPreviewIndex === -1) return;
 
@@ -4768,6 +4815,9 @@ function openPreview(docId) {
     );
 
     showMinimalPreview(currentFilteredDocuments[currentPreviewIndex]);
+    
+    // 네비게이션 버튼 상태 업데이트
+    updatePreviewNavButtons();
 }
 
 // 미니멀 미리보기 표시
@@ -4782,13 +4832,31 @@ function showMinimalPreview(doc) {
     };
 
     // 미리보기 정보 업데이트
-    document.getElementById('previewTitle').textContent = doc.title;
+    // 제목을 2줄로 구성
+    const titleEl = document.getElementById('previewTitle');
+    if (titleEl) {
+        // 제목에서 지역과 상품 정보 추출
+        const parts = doc.title.split(' ');
+        let location = doc.location || '';
+        let product = productType.name;
+        let supplyType = doc.supplyType || '민간분양';
+        
+        titleEl.innerHTML = `
+            <span class="title-line1">${location} • ${product}</span>
+            <span class="title-line2">${supplyType} 시장조사서</span>
+        `;
+    }
+    
     document.querySelector('.preview-type-badge').textContent = productType.name;
-    document.querySelector('.preview-type-badge').style.backgroundColor = productType.color;
+    // 배지 배경색 제거 (그라디언트 CSS로 처리)
     document.getElementById('previewLocation').textContent = doc.location;
     document.getElementById('previewFileSize').textContent = doc.fileSize;
     document.getElementById('previewDate').textContent = doc.createDate.replace('자료생성일: ', '');
-    document.getElementById('previewPoints').textContent = doc.points.toLocaleString();
+    // 포인트를 천 단위 구분 쉼표로 표시
+    const pointsEl = document.getElementById('previewPoints');
+    if (pointsEl) {
+        pointsEl.textContent = doc.points.toLocaleString('ko-KR') + 'P';
+    }
 
     // 포인트 계산 요소 업데이트
     const fileSize = parseFloat(doc.fileSize.replace(/[^0-9.]/g, ''));
@@ -4849,12 +4917,14 @@ function showMinimalPreview(doc) {
     if (formulaElement) {
         const calculatedPoints =
             Math.round((7000 * freshnessMultiplier * sizeMultiplier) / 10) * 10;
-        formulaElement.textContent = `기준 7,000P × ${freshnessMultiplier} × ${sizeMultiplier} = ${calculatedPoints.toLocaleString()}P`;
+        formulaElement.textContent = `기준 7,000P × ${freshnessMultiplier} × ${sizeMultiplier} = ${calculatedPoints.toLocaleString('ko-KR')}P`;
     }
 
-    // 카운터 업데이트
-    document.querySelector('.preview-document-counter').textContent =
-        `${currentPreviewIndex + 1} / ${currentFilteredDocuments.length}`;
+    // 카운터 업데이트 - 사용자 요청에 따라 비활성화
+    // const counterElement = document.querySelector('.preview-document-counter');
+    // if (counterElement) {
+    //     counterElement.textContent = `${currentPreviewIndex + 1} / ${currentFilteredDocuments.length}`;
+    // }
 
     // 네비게이션 버튼 상태 업데이트
     const prevBtn = document.querySelector('.preview-nav-prev');
@@ -4872,6 +4942,7 @@ function showMinimalPreview(doc) {
 
     // 모달 표시
     modal.classList.add('active');
+    document.body.classList.add('modal-open');
 }
 
 // 인덱스 감소 - 목록에서 위에 있는 문서로 이동
@@ -4897,7 +4968,10 @@ function initializePreviewModal() {
     if (closeBtn) {
         closeBtn.onclick = function () {
             const modal = document.getElementById('previewModal');
-            if (modal) modal.classList.remove('active');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.classList.remove('modal-open');
+            }
         };
     }
 
@@ -4906,7 +4980,10 @@ function initializePreviewModal() {
     if (overlay) {
         overlay.onclick = function () {
             const modal = document.getElementById('previewModal');
-            if (modal) modal.classList.remove('active');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.classList.remove('modal-open');
+            }
         };
     }
 
@@ -4983,9 +5060,36 @@ function initializePreviewModal() {
                 navigateToNextDoc(); // 아래/오른쪽 = 이전 문서로 (인덱스 증가)
             } else if (e.key === 'Escape') {
                 modal.classList.remove('active');
+                document.body.classList.remove('modal-open');
             }
         }
     });
+}
+
+// ===========================================
+// 전역 함수들 (네비게이션 관련)
+// ===========================================
+
+// 네비게이션 버튼 상태 업데이트
+function updatePreviewNavButtons() {
+    const prevBtn = document.getElementById('previewPrev');
+    const nextBtn = document.getElementById('previewNext');
+    
+    if (prevBtn) prevBtn.disabled = currentDocIndex <= 0;
+    if (nextBtn) nextBtn.disabled = currentDocIndex >= currentFilteredDocs.length - 1;
+    
+    // 문서 카운터 업데이트
+    const counter = document.getElementById('previewCounter');
+    if (counter) {
+        counter.textContent = `${currentDocIndex + 1} / ${currentFilteredDocs.length}`;
+    }
+}
+
+// 미리보기 모달 업데이트 함수
+function updatePreviewModal(doc) {
+    if (doc) {
+        showMinimalPreview(doc);
+    }
 }
 
 // ===========================================
@@ -5058,40 +5162,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 사용자 포인트 표시
     updateUserPoints();
-
-    // 검색 기능 직접 테스트를 위한 전역 함수
-    window.testSearch = function(keyword) {
-        console.log('테스트 검색 시작:', keyword);
-        currentFilters.keyword = keyword;
-        applyFilters();
-    };
-
-    // 검색 입력 이벤트 직접 바인딩 (기존 이벤트와 충돌 방지)
-    setTimeout(() => {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            console.log('검색 입력창 재바인딩');
-            // 기존 이벤트 제거하고 새로 추가
-            searchInput.oninput = function() {
-                console.log('직접 바인딩 검색:', this.value);
-                currentFilters.keyword = this.value;
-                applyFilters();
-            };
-            
-            // 테스트: 현재 검색창 값 확인
-            console.log('현재 검색창 값:', searchInput.value);
-        } else {
-            console.error('검색 입력창을 찾을 수 없습니다!');
-        }
-    }, 1000);
-
-    // JavaScript 에러 체크
-    window.addEventListener('error', function(e) {
-        console.error('JavaScript 에러 발생:', e.message, e.filename, e.lineno);
-    });
-
-    // 현재 필터 상태 확인
-    console.log('초기 currentFilters:', currentFilters);
 });
 
 // ===========================================
@@ -5267,4 +5337,63 @@ function initializeReportEventListeners() {
             }
         }
     });
+    
+    // 페이지네이션 초기화
+    renderPagination();
+}
+
+// 페이지네이션 렌더링 함수
+function renderPagination() {
+    const paginationContainer = document.getElementById('pagination');
+    if (!paginationContainer) return;
+    
+    const totalPages = Math.ceil(sampleDocuments.length / itemsPerPage);
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+    
+    let paginationHTML = '';
+    
+    // 처음 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(1); return false;">처음</a>`;
+    
+    // 이전 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${Math.max(1, currentPage - 1)}); return false;">이전</a>`;
+    
+    // 페이지 번호
+    paginationHTML += '<div class="page-numbers">';
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `<a href="javascript:void(0)" class="${currentPage === i ? 'active' : ''}" onclick="goToPage(${i}); return false;">${i}</a>`;
+    }
+    paginationHTML += '</div>';
+    
+    // 다음 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${Math.min(totalPages, currentPage + 1)}); return false;">다음</a>`;
+    
+    // 끝 버튼
+    paginationHTML += `<a href="javascript:void(0)" class="${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${totalPages}); return false;">끝</a>`;
+    
+    paginationContainer.innerHTML = paginationHTML;
+}
+
+// 페이지 이동 함수
+function goToPage(page) {
+    const totalPages = Math.ceil(sampleDocuments.length / itemsPerPage);
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    displayDocuments(sampleDocuments); // 기존 표시 함수 호출
+    renderPagination();
+    
+    // 페이지 이동 시 스크롤 위치 유지
+    return false;
 }

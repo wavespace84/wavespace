@@ -1,0 +1,75 @@
+/* 구인공고 카드 반응형 디자인 개선 */
+@media (max-width: 1200px) {
+    .job-card {
+        padding: 18px 20px;
+    }
+
+    .job-card .job-badges {
+        min-width: 100px;
+    }
+
+    .job-card .site-name {
+        font-size: 16px;
+    }
+
+    .job-card .job-location {
+        min-width: 90px;
+        font-size: 13px;
+    }
+
+    .job-card .company-name {
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .job-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+        gap: 12px;
+        min-height: auto;
+    }
+
+    .job-card .job-badges {
+        margin-right: 0;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+
+    .job-card .job-left {
+        width: 100%;
+        padding-right: 0;
+        gap: 8px;
+    }
+
+    .job-card .job-right {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .job-card .job-location,
+    .job-card .job-employment,
+    .job-card .company-name {
+        width: auto;
+        min-width: unset;
+    }
+
+    .job-card .job-actions {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        margin-left: 0;
+    }
+
+    .job-card .site-name {
+        font-size: 15px;
+        padding-right: 40px;
+    }
+
+    .job-card .job-title {
+        font-size: 13px;
+    }
+}

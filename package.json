@@ -1,5 +1,41 @@
 {
-  "dependencies": {
-    "@anthropic-ai/claude-code": "^1.0.77"
-  }
+  "name": "wave-space",
+  "version": "1.0.0",
+  "description": "대한민국 No.1 분양실무자 대표 커뮤니티",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "setup": "npm install && npm run lint && npm run format",
+    "lint": "eslint --ext .js,.html .",
+    "lint:fix": "eslint --ext .js,.html . --fix",
+    "format": "prettier --write \"**/*.{js,html,css,json}\"",
+    "format:check": "prettier --check \"**/*.{js,html,css,json}\"",
+    "dev": "npm run lint && npm run format && echo '품질 검사 완료'",
+    "quality-gates": "npm run lint && npm run format && echo '✅ 모든 품질 게이트 통과'",
+    "perf": "node scripts/performance-check.js",
+    "build": "echo 'Static site build - copying files' && mkdir -p dist && cp -r *.html *.css *.js css js images dist/",
+    "quality": "node scripts/quality-gates.js",
+    "dev-setup": "node scripts/dev-setup.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-html": "^7.1.0",
+    "eslint-plugin-security": "^2.1.0",
+    "prettier": "^3.2.5",
+    "lighthouse": "^11.6.0",
+    "@lhci/cli": "^0.13.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "real-estate",
+    "community",
+    "korea",
+    "분양영업",
+    "부동산"
+  ],
+  "author": "WAVE SPACE Team",
+  "license": "UNLICENSED"
 }

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <title>배너 이미지 생성기</title>
+        <style>
+            body {
+                font-family:
+                    'Pretendard',
+                    -apple-system,
+                    sans-serif;
+                padding: 20px;
+                background: #f5f5f5;
+            }
+            canvas {
+                display: block;
+                margin: 20px 0;
+                border-radius: 16px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            button {
+                padding: 12px 24px;
+                background: #3080ff;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+                margin: 10px;
+            }
+            button:hover {
+                background: #2563eb;
+            }
+            .info {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="info">
+            <h2>배너 이미지 생성기</h2>
+            <p>아래 버튼을 클릭하여 배너 이미지를 다운로드하세요.</p>
+            <p>
+                저장 위치:
+                <code>D:\wavespace\images\banners\</code>
+            </p>
+        </div>
+
+        <canvas id="banner1" width="1200" height="180"></canvas>
+        <button onclick="downloadCanvas('banner1', 'banner1.jpg')">Banner 1 다운로드</button>
+
+        <canvas id="banner2" width="1200" height="180"></canvas>
+        <button onclick="downloadCanvas('banner2', 'banner2.jpg')">Banner 2 다운로드</button>
+
+        <canvas id="banner3" width="1200" height="180"></canvas>
+        <button onclick="downloadCanvas('banner3', 'banner3.jpg')">Banner 3 다운로드</button>
+
+        <button onclick="downloadAll()">모든 배너 다운로드</button>
+
+        <script>
+            // 배너 1 - WAVE SPACE 프로모션
+            function drawBanner1() {
+                const canvas = document.getElementById('banner1');
+                const ctx = canvas.getContext('2d');
+
+                // 그라데이션 배경
+                const gradient = ctx.createLinearGradient(0, 0, 1200, 180);
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 1200, 180);
+
+                // 패턴 추가
+                ctx.globalAlpha = 0.1;
+                for (let i = 0; i < 20; i++) {
+                    ctx.beginPath();
+                    ctx.arc(Math.random() * 1200, Math.random() * 180, Math.random() * 50 + 20, 0, Math.PI * 2);
+                    ctx.fillStyle = 'white';
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+
+                // 텍스트
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 42px Pretendard, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 10;
+                ctx.fillText('WAVE SPACE와 함께하는 부동산 혁신', 600, 70);
+
+                ctx.font = '24px Pretendard, sans-serif';
+                ctx.shadowBlur = 5;
+                ctx.fillText('대한민국 No.1 분양실무자 커뮤니티', 600, 110);
+            }
+
+            // 배너 2 - 신규 회원 이벤트
+            function drawBanner2() {
+                const canvas = document.getElementById('banner2');
+                const ctx = canvas.getContext('2d');
+
+                const gradient = ctx.createLinearGradient(0, 0, 1200, 180);
+                gradient.addColorStop(0, '#f093fb');
+                gradient.addColorStop(1, '#f5576c');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 1200, 180);
+
+                // 장식 요소
+                ctx.globalAlpha = 0.2;
+                for (let i = 0; i < 15; i++) {
+                    const x = Math.random() * 1200;
+                    const y = Math.random() * 180;
+                    const size = Math.random() * 30 + 10;
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(x, y, size, size);
+                    ctx.save();
+                    ctx.translate(x + size / 2, y + size / 2);
+                    ctx.rotate(Math.PI / 4);
+                    ctx.fillRect(-size / 2, -size / 2, size, size);
+                    ctx.restore();
+                }
+                ctx.globalAlpha = 1;
+
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 42px Pretendard, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 10;
+                ctx.fillText('🎉 신규 회원 가입 이벤트', 600, 70);
+
+                ctx.font = '24px Pretendard, sans-serif';
+                ctx.shadowBlur = 5;
+                ctx.fillText('지금 가입하면 1,000 포인트 즉시 지급!', 600, 110);
+            }
+
+            // 배너 3 - Plus Membership
+            function drawBanner3() {
+                const canvas = document.getElementById('banner3');
+                const ctx = canvas.getContext('2d');
+
+                const gradient = ctx.createLinearGradient(0, 0, 1200, 180);
+                gradient.addColorStop(0, '#4facfe');
+                gradient.addColorStop(1, '#00f2fe');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 1200, 180);
+
+                // 웨이브 패턴
+                ctx.globalAlpha = 0.2;
+                ctx.beginPath();
+                ctx.moveTo(0, 180);
+                for (let x = 0; x <= 1200; x += 10) {
+                    const y = 90 + Math.sin(x * 0.02) * 30;
+                    ctx.lineTo(x, y);
+                }
+                ctx.lineTo(1200, 180);
+                ctx.closePath();
+                ctx.fillStyle = 'white';
+                ctx.fill();
+                ctx.globalAlpha = 1;
+
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 42px Pretendard, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 10;
+                ctx.fillText('⭐ Plus Membership 혜택', 600, 70);
+
+                ctx.font = '24px Pretendard, sans-serif';
+                ctx.shadowBlur = 5;
+                ctx.fillText('월 29,000원으로 프리미엄 서비스를 경험하세요', 600, 110);
+            }
+
+            // 모든 배너 그리기
+            drawBanner1();
+            drawBanner2();
+            drawBanner3();
+
+            // 다운로드 함수
+            function downloadCanvas(canvasId, filename) {
+                const canvas = document.getElementById(canvasId);
+                canvas.toBlob(
+                    (blob) => {
+                        const link = document.createElement('a');
+                        link.download = filename;
+                        link.href = URL.createObjectURL(blob);
+                        link.click();
+                        URL.revokeObjectURL(link.href);
+                    },
+                    'image/jpeg',
+                    0.95
+                );
+            }
+
+            // 모든 배너 다운로드
+            function downloadAll() {
+                setTimeout(() => downloadCanvas('banner1', 'banner1.jpg'), 100);
+                setTimeout(() => downloadCanvas('banner2', 'banner2.jpg'), 600);
+                setTimeout(() => downloadCanvas('banner3', 'banner3.jpg'), 1100);
+            }
+        </script>
+    </body>
+</html>

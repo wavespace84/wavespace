@@ -27,7 +27,6 @@ body.modal-open {
     width: 100% !important;
     height: 100% !important;
     background: rgba(0, 0, 0, 0.6) !important;
-    backdrop-filter: blur(4px);
     cursor: pointer !important;
     z-index: 1 !important;
 }
@@ -166,6 +165,16 @@ body.modal-open {
     align-items: center;
     justify-content: center;
     height: 100%;
+    padding: 20px;
+}
+
+/* 문서 미리보기 영역 */
+.preview-document-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
 .preview-page-single {
@@ -184,18 +193,46 @@ body.modal-open {
     display: block;
 }
 
-/* 페이지 라벨 */
-.page-label {
+/* 미리보기 제목 */
+.preview-title {
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: 0;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.preview-title::after {
+    content: '';
     position: absolute;
-    bottom: -25px;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    background: transparent;
-    padding: 4px 12px;
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d1d5db, transparent);
+}
+
+/* 미리보기 안내 문구 */
+.preview-info-text {
+    margin-top: 20px;
+    text-align: center;
     font-size: 12px;
-    color: #9ca3af;
+    color: #6b7280;
     font-weight: 400;
-    letter-spacing: 0.5px;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.preview-info-text i {
+    font-size: 13px;
+    color: #9ca3af;
 }
 
 /* 오른쪽: 정보 패널 */

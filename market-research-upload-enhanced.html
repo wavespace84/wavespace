@@ -1,0 +1,1503 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>개선된 시장조사서 업로드</title>
+    <link rel="stylesheet" href="mobile-fix.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    'Pretendard',
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 20px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* 개선된 업로드 모달 */
+            .enhanced-upload-modal {
+                width: 100%;
+                max-width: 700px;
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+                overflow: hidden;
+                animation: slideUp 0.4s ease-out;
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .modal-header {
+                padding: 28px;
+                background: linear-gradient(135deg, #2e8ce6 0%, #1f7fd4 100%);
+                color: white;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .modal-title {
+                font-size: 22px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .modal-title i {
+                font-size: 24px;
+            }
+
+            .modal-close {
+                width: 36px;
+                height: 36px;
+                border: none;
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                cursor: pointer;
+                border-radius: 10px;
+                transition: all 0.2s;
+                font-size: 18px;
+            }
+
+            .modal-close:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
+            .modal-body {
+                padding: 28px;
+            }
+
+            /* 탭 네비게이션 */
+            .tab-nav {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 24px;
+                border-bottom: 2px solid #f3f4f6;
+            }
+
+            .tab-btn {
+                padding: 12px 20px;
+                border: none;
+                background: transparent;
+                color: #6b7280;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                position: relative;
+                transition: all 0.3s;
+            }
+
+            .tab-btn.active {
+                color: #2e8ce6;
+            }
+
+            .tab-btn.active::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: #2e8ce6;
+            }
+
+            .tab-btn.completed {
+                color: #10b981;
+            }
+
+            .tab-btn.completed i {
+                margin-left: 6px;
+            }
+
+            /* 탭 컨텐츠 */
+            .tab-content {
+                display: none;
+            }
+
+            .tab-content.active {
+                display: block;
+                animation: fadeIn 0.3s ease-out;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            /* 파일 업로드 영역 */
+            .upload-zone {
+                border: 2px dashed #d1d5db;
+                border-radius: 16px;
+                padding: 48px 24px;
+                text-align: center;
+                background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+                cursor: pointer;
+                transition: all 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .upload-zone::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, rgba(46, 140, 230, 0.1) 0%, rgba(31, 127, 212, 0.1) 100%);
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .upload-zone:hover::before {
+                opacity: 1;
+            }
+
+            .upload-zone:hover {
+                border-color: #2e8ce6;
+                transform: translateY(-2px);
+            }
+
+            .upload-zone.has-file {
+                background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+                border-color: #2e8ce6;
+                border-style: solid;
+            }
+
+            .upload-icon {
+                font-size: 56px;
+                background: linear-gradient(135deg, #2e8ce6 0%, #1f7fd4 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 20px;
+            }
+
+            /* 파일 미리보기 */
+            .file-preview {
+                display: none;
+                background: white;
+                border-radius: 12px;
+                border: 1px solid #e5e7eb;
+                padding: 20px;
+                margin-top: 20px;
+            }
+
+            .file-preview.show {
+                display: block;
+            }
+
+            .preview-header {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                margin-bottom: 16px;
+            }
+
+            .preview-thumbnail {
+                width: 80px;
+                height: 100px;
+                background: #f3f4f6;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .preview-thumbnail canvas {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .mosaic-overlay {
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 50%;
+                height: 100%;
+                background: repeating-linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.8),
+                    rgba(255, 255, 255, 0.8) 5px,
+                    rgba(200, 200, 200, 0.8) 5px,
+                    rgba(200, 200, 200, 0.8) 10px
+                );
+                backdrop-filter: blur(5px);
+            }
+
+            /* 정보 입력 영역 */
+            .info-section {
+                display: grid;
+                gap: 20px;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+
+            .form-label {
+                font-size: 13px;
+                font-weight: 600;
+                color: #374151;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .form-label .required {
+                color: #ef4444;
+            }
+
+            .form-label .help-icon {
+                font-size: 12px;
+                color: #9ca3af;
+                cursor: help;
+            }
+
+            .form-input {
+                padding: 12px 16px;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                font-size: 14px;
+                transition: all 0.2s;
+                background: white;
+            }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #2e8ce6;
+                box-shadow: 0 0 0 4px rgba(46, 140, 230, 0.1);
+            }
+
+            .form-input:disabled {
+                background: #f9fafb;
+                color: #9ca3af;
+                cursor: not-allowed;
+            }
+
+            /* 유형 선택 버튼 */
+            .type-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            .type-btn {
+                padding: 12px;
+                border: 1px solid #e5e7eb;
+                background: white;
+                border-radius: 10px;
+                font-size: 13px;
+                color: #6b7280;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .type-btn i {
+                font-size: 16px;
+            }
+
+            .type-btn:hover {
+                background: #f9fafb;
+                border-color: #d1d5db;
+                transform: translateY(-1px);
+            }
+
+            .type-btn.active {
+                background: linear-gradient(135deg, #2e8ce6 0%, #1f7fd4 100%);
+                color: white;
+                border-color: #2e8ce6;
+                box-shadow: 0 4px 12px rgba(46, 140, 230, 0.3);
+            }
+
+            /* 포인트 계산 영역 */
+            .points-calculator {
+                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                border-radius: 12px;
+                padding: 20px;
+                margin-top: 20px;
+            }
+
+            .points-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .points-icon {
+                width: 40px;
+                height: 40px;
+                background: white;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                color: #f59e0b;
+            }
+
+            .points-title {
+                font-size: 16px;
+                font-weight: 700;
+                color: #92400e;
+            }
+
+            .points-breakdown {
+                display: grid;
+                gap: 12px;
+            }
+
+            .points-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px;
+                background: rgba(255, 255, 255, 0.7);
+                border-radius: 8px;
+            }
+
+            .points-label {
+                font-size: 13px;
+                color: #78350f;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .points-value {
+                font-size: 14px;
+                font-weight: 700;
+                color: #ea580c;
+            }
+
+            .points-total {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px;
+                background: white;
+                border-radius: 10px;
+                margin-top: 12px;
+                border: 2px solid #fbbf24;
+            }
+
+            .points-total-label {
+                font-size: 15px;
+                font-weight: 600;
+                color: #78350f;
+            }
+
+            .points-total-value {
+                font-size: 20px;
+                font-weight: 700;
+                color: #ea580c;
+            }
+
+            /* 중복 체크 알림 */
+            .duplicate-alert {
+                display: none;
+                background: #fee2e2;
+                border: 1px solid #fecaca;
+                border-radius: 10px;
+                padding: 12px 16px;
+                margin-top: 16px;
+                color: #991b1b;
+                font-size: 13px;
+            }
+
+            .duplicate-alert.show {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .duplicate-alert i {
+                font-size: 16px;
+                color: #dc2626;
+            }
+
+            /* 포인트 규정 안내 */
+            .points-rules {
+                background: #f0f9ff;
+                border: 1px solid #bae6fd;
+                border-radius: 10px;
+                padding: 16px;
+                margin-top: 16px;
+            }
+
+            .rules-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: #0369a1;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .rules-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+
+            .rule-category {
+                font-size: 12px;
+            }
+
+            .rule-header {
+                font-weight: 600;
+                color: #0c4a6e;
+                margin-bottom: 6px;
+            }
+
+            .rule-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 4px 0;
+                color: #475569;
+            }
+
+            /* 액션 버튼 */
+            .modal-actions {
+                display: flex;
+                gap: 12px;
+                margin-top: 28px;
+                padding-top: 28px;
+                border-top: 2px solid #f3f4f6;
+            }
+
+            .btn {
+                flex: 1;
+                padding: 14px 24px;
+                border: none;
+                border-radius: 12px;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .btn-secondary {
+                background: #f3f4f6;
+                color: #6b7280;
+            }
+
+            .btn-secondary:hover {
+                background: #e5e7eb;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #2e8ce6 0%, #1f7fd4 100%);
+                color: white;
+                box-shadow: 0 4px 12px rgba(46, 140, 230, 0.3);
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(46, 140, 230, 0.4);
+            }
+
+            .btn-primary:disabled {
+                background: #d1d5db;
+                color: #9ca3af;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
+
+            /* 프로그레스 바 */
+            .progress-bar {
+                height: 4px;
+                background: #e5e7eb;
+                border-radius: 2px;
+                margin: 20px 0;
+                overflow: hidden;
+            }
+
+            .progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #2e8ce6 0%, #1f7fd4 100%);
+                border-radius: 2px;
+                transition: width 0.3s ease;
+                width: 0%;
+            }
+
+            /* 툴팁 */
+            .tooltip {
+                position: relative;
+            }
+
+            .tooltip-content {
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #1f2937;
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s;
+                margin-bottom: 8px;
+            }
+
+            .tooltip-content::after {
+                content: '';
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                border: 6px solid transparent;
+                border-top-color: #1f2937;
+            }
+
+            .tooltip:hover .tooltip-content {
+                opacity: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 개선된 업로드 모달 -->
+        <div class="enhanced-upload-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-file-upload"></i>
+                    시장조사서 업로드
+                </h2>
+                <button class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- 탭 네비게이션 -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" data-tab="file">1. 파일 선택</button>
+                    <button class="tab-btn" data-tab="info">2. 정보 입력</button>
+                    <button class="tab-btn" data-tab="confirm">3. 확인</button>
+                </div>
+
+                <!-- 탭 1: 파일 선택 -->
+                <div class="tab-content active" id="file-tab">
+                    <!-- 파일 업로드 영역 -->
+                    <div class="upload-zone" id="uploadZone">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <p style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 12px 0">
+                            파일을 드래그하거나 클릭하여 선택
+                        </p>
+                        <p style="font-size: 14px; color: #6b7280">PDF, PPT, DOC, XLS • 최대 50MB</p>
+                        <input type="file" hidden id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx" />
+                    </div>
+
+                    <!-- 파일 미리보기 -->
+                    <div class="file-preview" id="filePreview">
+                        <div class="preview-header">
+                            <div class="preview-thumbnail">
+                                <canvas id="thumbnailCanvas" width="80" height="100"></canvas>
+                                <div class="mosaic-overlay"></div>
+                            </div>
+                            <div style="flex: 1">
+                                <div
+                                    style="font-size: 16px; font-weight: 600; color: #1f2937; margin-bottom: 8px"
+                                    id="fileName"
+                                >
+                                    강남구_시장조사.pdf
+                                </div>
+                                <div style="font-size: 14px; color: #6b7280; margin-bottom: 4px">
+                                    <i class="fas fa-file"></i>
+                                    <span id="fileSize">12.5 MB</span>
+                                </div>
+                                <div style="font-size: 14px; color: #6b7280">
+                                    <i class="fas fa-calendar"></i>
+                                    <span id="fileDate">2024-01-15</span>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" style="width: auto; padding: 8px 16px" onclick="removeFile()">
+                                <i class="fas fa-trash"></i>
+                                삭제
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill1"></div>
+                    </div>
+                </div>
+
+                <!-- 탭 2: 정보 입력 -->
+                <div class="tab-content" id="info-tab">
+                    <div class="info-section">
+                        <!-- 제목 입력 -->
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                제목
+                                <span class="required">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                class="form-input"
+                                id="docTitle"
+                                placeholder="예: 강남구 삼성동 아파트 시장조사서"
+                                required
+                            />
+                        </div>
+
+                        <!-- 지역 선택 -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    광역시도
+                                    <span class="required">*</span>
+                                </label>
+                                <select class="form-input" id="region1" required>
+                                    <option value="">선택하세요</option>
+                                    <option value="서울">서울특별시</option>
+                                    <option value="부산">부산광역시</option>
+                                    <option value="대구">대구광역시</option>
+                                    <option value="인천">인천광역시</option>
+                                    <option value="광주">광주광역시</option>
+                                    <option value="대전">대전광역시</option>
+                                    <option value="울산">울산광역시</option>
+                                    <option value="세종">세종특별자치시</option>
+                                    <option value="경기">경기도</option>
+                                    <option value="강원">강원도</option>
+                                    <option value="충북">충청북도</option>
+                                    <option value="충남">충청남도</option>
+                                    <option value="전북">전라북도</option>
+                                    <option value="전남">전라남도</option>
+                                    <option value="경북">경상북도</option>
+                                    <option value="경남">경상남도</option>
+                                    <option value="제주">제주특별자치도</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    시/군/구
+                                    <span class="required">*</span>
+                                </label>
+                                <select class="form-input" id="region2" disabled required>
+                                    <option value="">먼저 광역시도를 선택하세요</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 파일 날짜 입력 -->
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                파일 작성일
+                                <span class="required">*</span>
+                                <span class="help-icon tooltip">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="tooltip-content">최신성 포인트 계산에 사용됩니다</span>
+                                </span>
+                            </label>
+                            <input type="date" class="form-input" id="fileCreateDate" required />
+                        </div>
+
+                        <!-- 상품 유형 선택 -->
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                상품 유형
+                                <span class="required">*</span>
+                            </label>
+                            <div class="type-grid">
+                                <button type="button" class="type-btn" data-type="apartment">
+                                    <i class="fas fa-building"></i>
+                                    아파트
+                                </button>
+                                <button type="button" class="type-btn" data-type="officetel-residential">
+                                    <i class="fas fa-home"></i>
+                                    주거형 OT
+                                </button>
+                                <button type="button" class="type-btn" data-type="officetel-profit">
+                                    <i class="fas fa-coins"></i>
+                                    수익형 OT
+                                </button>
+                                <button type="button" class="type-btn" data-type="villa">
+                                    <i class="fas fa-house-user"></i>
+                                    빌라
+                                </button>
+                                <button type="button" class="type-btn" data-type="commercial">
+                                    <i class="fas fa-store"></i>
+                                    상가
+                                </button>
+                                <button type="button" class="type-btn" data-type="office">
+                                    <i class="fas fa-briefcase"></i>
+                                    오피스
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 공급 유형 선택 -->
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                공급 유형
+                                <span class="required">*</span>
+                            </label>
+                            <div class="type-grid">
+                                <button type="button" class="type-btn supply-btn" data-supply="분양">
+                                    <i class="fas fa-key"></i>
+                                    분양
+                                </button>
+                                <button type="button" class="type-btn supply-btn" data-supply="입주권">
+                                    <i class="fas fa-certificate"></i>
+                                    입주권
+                                </button>
+                                <button type="button" class="type-btn supply-btn" data-supply="매매">
+                                    <i class="fas fa-handshake"></i>
+                                    매매
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill2"></div>
+                    </div>
+                </div>
+
+                <!-- 탭 3: 확인 -->
+                <div class="tab-content" id="confirm-tab">
+                    <!-- 포인트 계산 -->
+                    <div class="points-calculator">
+                        <div class="points-header">
+                            <div class="points-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="points-title">포인트 계산</div>
+                        </div>
+                        <div class="points-breakdown">
+                            <div class="points-item">
+                                <span class="points-label">
+                                    <i class="fas fa-file"></i>
+                                    파일 크기 포인트
+                                </span>
+                                <span class="points-value" id="sizePoints">0P</span>
+                            </div>
+                            <div class="points-item">
+                                <span class="points-label">
+                                    <i class="fas fa-clock"></i>
+                                    최신성 포인트
+                                </span>
+                                <span class="points-value" id="freshnessPoints">0P</span>
+                            </div>
+                        </div>
+                        <div class="points-total">
+                            <span class="points-total-label">총 획득 포인트</span>
+                            <span class="points-total-value" id="totalPoints">0P</span>
+                        </div>
+                    </div>
+
+                    <!-- 포인트 규정 안내 -->
+                    <div class="points-rules">
+                        <div class="rules-title">
+                            <i class="fas fa-info-circle"></i>
+                            포인트 규정 안내
+                        </div>
+                        <div class="rules-grid">
+                            <div class="rule-category">
+                                <div class="rule-header">📁 파일 크기 포인트</div>
+                                <div class="rule-item">
+                                    <span>20MB 이상</span>
+                                    <span>300P</span>
+                                </div>
+                                <div class="rule-item">
+                                    <span>15-20MB</span>
+                                    <span>250P</span>
+                                </div>
+                                <div class="rule-item">
+                                    <span>10-15MB</span>
+                                    <span>200P</span>
+                                </div>
+                                <div class="rule-item">
+                                    <span>5-10MB</span>
+                                    <span>150P</span>
+                                </div>
+                                <div class="rule-item">
+                                    <span>5MB 미만</span>
+                                    <span>100P</span>
+                                </div>
+                            </div>
+                            <div class="rule-category">
+                                <div class="rule-header">⏰ 최신성 포인트</div>
+                                <div class="rule-item">
+                                    <span>오늘</span>
+                                    <span>200P</span>
+                                </div>
+                                <div class="rule-item">
+                                    <span>7일 이내</span>
+                                    <span>150P</span>
+                                </div>
+                                <div class="rule-item">
+                                    <span>30일 이내</span>
+                                    <span>100P</span>
+                                </div>
+                                <div class="rule-item">
+                                    <span>90일 이내</span>
+                                    <span>50P</span>
+                                </div>
+                                <div class="rule-item">
+                                    <span>90일 초과</span>
+                                    <span>20P</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 중복 체크 알림 -->
+                    <div class="duplicate-alert" id="duplicateAlert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>동일한 파일이 이미 업로드되었습니다. (파일크기, 날짜, 지역, 유형 일치)</span>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill3"></div>
+                    </div>
+                </div>
+
+                <!-- 액션 버튼 -->
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none">
+                        <i class="fas fa-arrow-left"></i>
+                        이전
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">취소</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" disabled>
+                        다음
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary" id="uploadBtn" style="display: none" disabled>
+                        <i class="fas fa-upload"></i>
+                        업로드
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 지역 데이터
+            const regionData = {
+                서울: [
+                    '강남구',
+                    '강동구',
+                    '강북구',
+                    '강서구',
+                    '관악구',
+                    '광진구',
+                    '구로구',
+                    '금천구',
+                    '노원구',
+                    '도봉구',
+                    '동대문구',
+                    '동작구',
+                    '마포구',
+                    '서대문구',
+                    '서초구',
+                    '성동구',
+                    '성북구',
+                    '송파구',
+                    '양천구',
+                    '영등포구',
+                    '용산구',
+                    '은평구',
+                    '종로구',
+                    '중구',
+                    '중랑구',
+                ],
+                부산: [
+                    '강서구',
+                    '금정구',
+                    '기장군',
+                    '남구',
+                    '동구',
+                    '동래구',
+                    '부산진구',
+                    '북구',
+                    '사상구',
+                    '사하구',
+                    '서구',
+                    '수영구',
+                    '연제구',
+                    '영도구',
+                    '중구',
+                    '해운대구',
+                ],
+                대구: ['남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
+                인천: ['강화군', '계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '옹진군', '중구'],
+                광주: ['광산구', '남구', '동구', '북구', '서구'],
+                대전: ['대덕구', '동구', '서구', '유성구', '중구'],
+                울산: ['남구', '동구', '북구', '울주군', '중구'],
+                세종: ['세종시'],
+                경기: [
+                    '가평군',
+                    '고양시',
+                    '과천시',
+                    '광명시',
+                    '광주시',
+                    '구리시',
+                    '군포시',
+                    '김포시',
+                    '남양주시',
+                    '동두천시',
+                    '부천시',
+                    '성남시',
+                    '수원시',
+                    '시흥시',
+                    '안산시',
+                    '안성시',
+                    '안양시',
+                    '양주시',
+                    '양평군',
+                    '여주시',
+                    '연천군',
+                    '오산시',
+                    '용인시',
+                    '의왕시',
+                    '의정부시',
+                    '이천시',
+                    '파주시',
+                    '평택시',
+                    '포천시',
+                    '하남시',
+                    '화성시',
+                ],
+                강원: [
+                    '강릉시',
+                    '고성군',
+                    '동해시',
+                    '삼척시',
+                    '속초시',
+                    '양구군',
+                    '양양군',
+                    '영월군',
+                    '원주시',
+                    '인제군',
+                    '정선군',
+                    '철원군',
+                    '춘천시',
+                    '태백시',
+                    '평창군',
+                    '홍천군',
+                    '화천군',
+                    '횡성군',
+                ],
+                충북: [
+                    '괴산군',
+                    '단양군',
+                    '보은군',
+                    '영동군',
+                    '옥천군',
+                    '음성군',
+                    '제천시',
+                    '증평군',
+                    '진천군',
+                    '청주시',
+                    '충주시',
+                ],
+                충남: [
+                    '계룡시',
+                    '공주시',
+                    '금산군',
+                    '논산시',
+                    '당진시',
+                    '보령시',
+                    '부여군',
+                    '서산시',
+                    '서천군',
+                    '아산시',
+                    '예산군',
+                    '천안시',
+                    '청양군',
+                    '태안군',
+                    '홍성군',
+                ],
+                전북: [
+                    '고창군',
+                    '군산시',
+                    '김제시',
+                    '남원시',
+                    '무주군',
+                    '부안군',
+                    '순창군',
+                    '완주군',
+                    '익산시',
+                    '임실군',
+                    '장수군',
+                    '전주시',
+                    '정읍시',
+                    '진안군',
+                ],
+                전남: [
+                    '강진군',
+                    '고흥군',
+                    '곡성군',
+                    '광양시',
+                    '구례군',
+                    '나주시',
+                    '담양군',
+                    '목포시',
+                    '무안군',
+                    '보성군',
+                    '순천시',
+                    '신안군',
+                    '여수시',
+                    '영광군',
+                    '영암군',
+                    '완도군',
+                    '장성군',
+                    '장흥군',
+                    '진도군',
+                    '함평군',
+                    '해남군',
+                    '화순군',
+                ],
+                경북: [
+                    '경산시',
+                    '경주시',
+                    '고령군',
+                    '구미시',
+                    '군위군',
+                    '김천시',
+                    '문경시',
+                    '봉화군',
+                    '상주시',
+                    '성주군',
+                    '안동시',
+                    '영덕군',
+                    '영양군',
+                    '영주시',
+                    '영천시',
+                    '예천군',
+                    '울릉군',
+                    '울진군',
+                    '의성군',
+                    '청도군',
+                    '청송군',
+                    '칠곡군',
+                    '포항시',
+                ],
+                경남: [
+                    '거제시',
+                    '거창군',
+                    '고성군',
+                    '김해시',
+                    '남해군',
+                    '밀양시',
+                    '사천시',
+                    '산청군',
+                    '양산시',
+                    '의령군',
+                    '진주시',
+                    '창녕군',
+                    '창원시',
+                    '통영시',
+                    '하동군',
+                    '함안군',
+                    '함양군',
+                    '합천군',
+                ],
+                제주: ['서귀포시', '제주시'],
+            };
+
+            // 중복 파일 저장소
+            const uploadedFilesRegistry = new Set();
+
+            // 전역 변수
+            let currentTab = 0;
+            let uploadedFile = null;
+            const formData = {
+                title: '',
+                region1: '',
+                region2: '',
+                fileDate: '',
+                productType: '',
+                supplyType: '',
+                fileSize: 0,
+            };
+
+            // 탭 전환
+            const tabs = ['file', 'info', 'confirm'];
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function switchTab(index) {
+                currentTab = index;
+
+                // 탭 버튼 업데이트
+                tabBtns.forEach((btn, i) => {
+                    btn.classList.toggle('active', i === index);
+                    if (i < index) {
+                        btn.classList.add('completed');
+                    } else {
+                        btn.classList.remove('completed');
+                    }
+                });
+
+                // 탭 컨텐츠 업데이트
+                tabContents.forEach((content, i) => {
+                    content.classList.toggle('active', i === index);
+                });
+
+                // 프로그레스 바 업데이트
+                updateProgress(index);
+
+                // 버튼 업데이트
+                updateButtons();
+
+                // 마지막 탭에서 포인트 계산
+                if (index === 2) {
+                    calculatePoints();
+                    checkDuplicate();
+                }
+            }
+
+            // 프로그레스 바 업데이트
+            function updateProgress(tabIndex) {
+                const progress = ((tabIndex + 1) / 3) * 100;
+                document.querySelectorAll('.progress-fill').forEach((bar) => {
+                    bar.style.width = progress + '%';
+                });
+            }
+
+            // 버튼 업데이트
+            function updateButtons() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const uploadBtn = document.getElementById('uploadBtn');
+                const cancelBtn = document.getElementById('cancelBtn');
+
+                if (currentTab === 0) {
+                    prevBtn.style.display = 'none';
+                    nextBtn.style.display = 'flex';
+                    uploadBtn.style.display = 'none';
+                    cancelBtn.style.display = 'flex';
+                    nextBtn.disabled = !uploadedFile;
+                } else if (currentTab === 1) {
+                    prevBtn.style.display = 'flex';
+                    nextBtn.style.display = 'flex';
+                    uploadBtn.style.display = 'none';
+                    cancelBtn.style.display = 'none';
+                    nextBtn.disabled = !validateInfo();
+                } else if (currentTab === 2) {
+                    prevBtn.style.display = 'flex';
+                    nextBtn.style.display = 'none';
+                    uploadBtn.style.display = 'flex';
+                    cancelBtn.style.display = 'none';
+                    uploadBtn.disabled = false;
+                }
+            }
+
+            // 정보 유효성 검사
+            function validateInfo() {
+                return (
+                    formData.title &&
+                    formData.region1 &&
+                    formData.region2 &&
+                    formData.fileDate &&
+                    formData.productType &&
+                    formData.supplyType
+                );
+            }
+
+            // 파일 업로드 처리
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+
+            uploadZone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            });
+
+            // 드래그 앤 드롭
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.style.borderColor = '#2E8CE6';
+            });
+
+            uploadZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadZone.style.borderColor = '#d1d5db';
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.style.borderColor = '#d1d5db';
+
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFile(file);
+                }
+            });
+
+            // 파일 처리
+            function handleFile(file) {
+                uploadedFile = file;
+                formData.fileSize = file.size / (1024 * 1024); // MB로 변환
+
+                // 파일 정보 표시
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = formData.fileSize.toFixed(1) + ' MB';
+
+                // 오늘 날짜를 기본값으로 설정
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('fileDate').textContent = today;
+                document.getElementById('fileCreateDate').value = today;
+                formData.fileDate = today;
+
+                // 미리보기 표시
+                document.getElementById('filePreview').classList.add('show');
+                uploadZone.classList.add('has-file');
+
+                // 썸네일 생성 (시뮬레이션)
+                createThumbnail();
+
+                // 버튼 활성화
+                updateButtons();
+            }
+
+            // 썸네일 생성 (시뮬레이션)
+            function createThumbnail() {
+                const canvas = document.getElementById('thumbnailCanvas');
+                const ctx = canvas.getContext('2d');
+
+                // 그라데이션 배경
+                const gradient = ctx.createLinearGradient(0, 0, 80, 100);
+                gradient.addColorStop(0, '#e0f2fe');
+                gradient.addColorStop(1, '#bae6fd');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 80, 100);
+
+                // PDF 아이콘
+                ctx.fillStyle = '#0284c7';
+                ctx.font = '30px FontAwesome';
+                ctx.textAlign = 'center';
+                ctx.fillText('\uf1c1', 40, 60); // PDF 아이콘
+            }
+
+            // 파일 제거
+            function removeFile() {
+                uploadedFile = null;
+                fileInput.value = '';
+                document.getElementById('filePreview').classList.remove('show');
+                uploadZone.classList.remove('has-file');
+                updateButtons();
+            }
+
+            // 지역 선택
+            document.getElementById('region1').addEventListener('change', (e) => {
+                const region1 = e.target.value;
+                formData.region1 = region1;
+
+                const region2Select = document.getElementById('region2');
+                region2Select.innerHTML = '<option value="">선택하세요</option>';
+                region2Select.disabled = !region1;
+
+                if (region1 && regionData[region1]) {
+                    regionData[region1].forEach((area) => {
+                        const option = document.createElement('option');
+                        option.value = area;
+                        option.textContent = area;
+                        region2Select.appendChild(option);
+                    });
+                }
+            });
+
+            document.getElementById('region2').addEventListener('change', (e) => {
+                formData.region2 = e.target.value;
+                updateButtons();
+            });
+
+            // 기타 입력 필드
+            document.getElementById('docTitle').addEventListener('input', (e) => {
+                formData.title = e.target.value;
+                updateButtons();
+            });
+
+            document.getElementById('fileCreateDate').addEventListener('change', (e) => {
+                formData.fileDate = e.target.value;
+                document.getElementById('fileDate').textContent = e.target.value;
+                updateButtons();
+            });
+
+            // 상품 유형 선택
+            document.querySelectorAll('.type-btn:not(.supply-btn)').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.type-btn:not(.supply-btn)').forEach((b) => {
+                        b.classList.remove('active');
+                    });
+                    btn.classList.add('active');
+                    formData.productType = btn.dataset.type;
+                    updateButtons();
+                });
+            });
+
+            // 공급 유형 선택
+            document.querySelectorAll('.supply-btn').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.supply-btn').forEach((b) => {
+                        b.classList.remove('active');
+                    });
+                    btn.classList.add('active');
+                    formData.supplyType = btn.dataset.supply;
+                    updateButtons();
+                });
+            });
+
+            // 포인트 계산
+            function calculatePoints() {
+                let sizePoints = 0;
+                let freshnessPoints = 0;
+
+                // 파일 크기 포인트
+                if (formData.fileSize >= 20) {
+                    sizePoints = 300;
+                } else if (formData.fileSize >= 15) {
+                    sizePoints = 250;
+                } else if (formData.fileSize >= 10) {
+                    sizePoints = 200;
+                } else if (formData.fileSize >= 5) {
+                    sizePoints = 150;
+                } else {
+                    sizePoints = 100;
+                }
+
+                // 최신성 포인트
+                const today = new Date();
+                const fileDate = new Date(formData.fileDate);
+                const daysDiff = Math.floor((today - fileDate) / (1000 * 60 * 60 * 24));
+
+                if (daysDiff === 0) {
+                    freshnessPoints = 200;
+                } else if (daysDiff <= 7) {
+                    freshnessPoints = 150;
+                } else if (daysDiff <= 30) {
+                    freshnessPoints = 100;
+                } else if (daysDiff <= 90) {
+                    freshnessPoints = 50;
+                } else {
+                    freshnessPoints = 20;
+                }
+
+                // 포인트 표시
+                document.getElementById('sizePoints').textContent = sizePoints + 'P';
+                document.getElementById('freshnessPoints').textContent = freshnessPoints + 'P';
+                document.getElementById('totalPoints').textContent = sizePoints + freshnessPoints + 'P';
+            }
+
+            // 중복 체크
+            function checkDuplicate() {
+                const key = `${formData.fileSize.toFixed(1)}_${formData.fileDate}_${formData.region1}_${formData.region2}_${formData.productType}_${formData.supplyType}`;
+
+                if (uploadedFilesRegistry.has(key)) {
+                    document.getElementById('duplicateAlert').classList.add('show');
+                } else {
+                    document.getElementById('duplicateAlert').classList.remove('show');
+                }
+            }
+
+            // 버튼 이벤트
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                if (currentTab > 0) {
+                    switchTab(currentTab - 1);
+                }
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (currentTab < 2) {
+                    switchTab(currentTab + 1);
+                }
+            });
+
+            document.getElementById('cancelBtn').addEventListener('click', () => {
+                if (confirm('업로드를 취소하시겠습니까?')) {
+                    window.close();
+                }
+            });
+
+            document.getElementById('uploadBtn').addEventListener('click', () => {
+                // 중복 체크
+                const key = `${formData.fileSize.toFixed(1)}_${formData.fileDate}_${formData.region1}_${formData.region2}_${formData.productType}_${formData.supplyType}`;
+
+                if (uploadedFilesRegistry.has(key)) {
+                    alert('이미 동일한 파일이 업로드되었습니다.');
+                    return;
+                }
+
+                // 레지스트리에 추가
+                uploadedFilesRegistry.add(key);
+
+                // 업로드 성공 메시지
+                alert(
+                    '파일이 성공적으로 업로드되었습니다!\n획득 포인트: ' +
+                        document.getElementById('totalPoints').textContent
+                );
+
+                // 창 닫기 또는 초기화
+                location.reload();
+            });
+
+            // 초기화
+            updateButtons();
+        </script>
+    </body>
+</html>

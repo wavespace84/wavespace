@@ -119,7 +119,8 @@
 
 /* 말풍선 애니메이션 */
 @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateX(-50%) translateY(0);
     }
     50% {
@@ -130,7 +131,7 @@
 /* 카테고리 탭 */
 /* 카테고리 탭 - checkbox-interaction.css 사용 */
 .category-tabs {
-    margin-top: -16px;  /* 상단 마진 조정으로 위로 이동 */
+    margin-top: -16px; /* 상단 마진 조정으로 위로 이동 */
     margin-bottom: 32px;
 }
 
@@ -222,7 +223,11 @@
     width: 100%;
     height: 180px;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--gray-100) 0%,
+        var(--gray-200) 100%
+    );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -330,7 +335,8 @@
     margin-bottom: 48px;
 }
 
-.humor-item, .post-item {
+.humor-item,
+.post-item {
     background: white;
     border-radius: var(--radius-xl);
     overflow: hidden;
@@ -342,7 +348,8 @@
     flex-direction: column;
 }
 
-.humor-item:hover, .post-item:hover {
+.humor-item:hover,
+.post-item:hover {
     box-shadow: var(--shadow-md);
     border-color: var(--primary-blue);
     transform: translateY(-2px);
@@ -352,7 +359,11 @@
     position: relative;
     width: 100%;
     height: 180px;
-    background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--gray-100) 0%,
+        var(--gray-200) 100%
+    );
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -894,25 +905,6 @@
     z-index: 10;
 }
 
-.post-detail-close {
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 0, 0, 0.5);
-    border: none;
-    border-radius: var(--radius-full);
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    transition: var(--transition-fast);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.post-detail-close:hover {
-    background: rgba(0, 0, 0, 0.7);
-}
-
 .post-detail-body {
     flex: 1;
     display: flex;
@@ -922,44 +914,7 @@
     overflow: hidden;
 }
 
-/* 네비게이션 버튼 */
-.post-nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-full);
-    font-size: 20px;
-    color: var(--gray-700);
-    cursor: pointer;
-    transition: var(--transition-fast);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.post-nav-prev {
-    left: 20px;
-}
-
-.post-nav-next {
-    right: 20px;
-}
-
-.post-nav-btn:hover {
-    background: white;
-    box-shadow: var(--shadow-md);
-    color: var(--primary-blue);
-}
-
-.post-nav-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
+/* 기존 측면 네비게이션 버튼 스타일 제거 - common.css의 modal-nav-btn 사용 */
 
 /* 콘텐츠 래퍼 */
 .post-detail-wrapper {
@@ -1175,7 +1130,8 @@
 
 /* 반응형 */
 @media (max-width: 1200px) {
-    .humor-grid, .posts-grid {
+    .humor-grid,
+    .posts-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
@@ -1184,13 +1140,14 @@
     .humor-container {
         padding: 48px 40px;
     }
-    
+
     .best-grid {
         grid-template-columns: 1fr;
         gap: 16px;
     }
-    
-    .humor-grid, .posts-grid {
+
+    .humor-grid,
+    .posts-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
@@ -1201,11 +1158,11 @@
         flex-direction: column;
         gap: 16px;
     }
-    
+
     .humor-title {
         font-size: 20px;
     }
-    
+
     .category-tabs {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
@@ -1216,27 +1173,27 @@
     .post-detail-wrapper {
         flex-direction: column;
     }
-    
+
     .post-detail-media {
         height: 300px;
         flex: none;
     }
-    
+
     .post-detail-info {
         flex: 1;
         padding: 20px;
     }
-    
+
     .post-nav-btn {
         width: 40px;
         height: 40px;
         font-size: 16px;
     }
-    
+
     .post-nav-prev {
         left: 10px;
     }
-    
+
     .post-nav-next {
         right: 10px;
     }
@@ -1246,58 +1203,59 @@
     .humor-container {
         padding: 24px 20px;
     }
-    
+
     .upload-btn-wrapper {
         bottom: 20px;
         right: 20px;
         width: 70px;
         height: 120px;
     }
-    
+
     .floating-upload-btn {
         width: 50px;
         height: 50px;
         font-size: 18px;
     }
-    
+
     .upload-label {
         font-size: 12px;
         padding: 4px 10px;
         top: 15px;
         left: 5px;
     }
-    
+
     .upload-curve {
         width: 60px;
         height: 45px;
         top: 30px;
         left: 25px;
     }
-    
+
     .upload-modal-content {
         margin: 10px;
     }
-    
+
     .humor-title {
         font-size: 18px;
     }
-    
-    .humor-grid, .posts-grid {
+
+    .humor-grid,
+    .posts-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .best-card {
         display: flex;
         align-items: center;
         gap: 16px;
     }
-    
+
     .best-image {
         width: 120px;
         height: 80px;
         flex-shrink: 0;
     }
-    
+
     .best-rank {
         top: 8px;
         left: 8px;
@@ -1305,12 +1263,12 @@
         height: 24px;
         font-size: 12px;
     }
-    
+
     .best-title {
         padding: 0;
         flex: 1;
     }
-    
+
     .best-stats {
         padding: 0;
     }
