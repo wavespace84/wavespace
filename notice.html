@@ -3,8 +3,15 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://sishloxzcqapontycuyz.supabase.co wss://sishloxzcqapontycuyz.supabase.co;"
+        />
         <title>공지사항 - WAVE SPACE</title>
+        <!-- Supabase CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <script src="preload.js"></script>
+        
         <link rel="stylesheet" href="common.css" />
         <link rel="stylesheet" href="styles.css?v=7" />
         <link rel="stylesheet" href="notice.css?v=3" />
@@ -257,21 +264,8 @@
                             <i class="fas fa-bell"></i>
                             <span class="notification-dot"></span>
                         </button>
-                        <div class="user-profile">
-                            <div class="user-avatar">
-                                <span>박</span>
-                                <div class="user-badge">
-                                    <i class="fas fa-crown"></i>
-                                </div>
-                            </div>
-                            <div class="user-info">
-                                <p class="user-name">박승학님</p>
-                                <div class="user-meta">
-                                    <span class="user-title">소통리더</span>
-                                    <span class="user-points">• 100,000P</span>
-                                </div>
-                            </div>
-                            <i class="fas fa-chevron-down user-dropdown-icon"></i>
+                        <div id="userInfoContainer">
+                            <!-- AuthService가 동적으로 사용자 정보를 여기에 표시 -->
                         </div>
                     </div>
                 </header>
@@ -327,7 +321,7 @@
                         </div>
 
                         <!-- 페이지네이션 -->
-                        <div class="pagination" id="pagination">
+                        <div class="pagination-underline" id="paginationContainer">
                             <!-- JavaScript로 동적 생성 -->
                         </div>
                     </div>
@@ -345,10 +339,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-nav-buttons">
-                        <button class="modal-nav-btn" onclick="navigateNotice('prev')" disabled>
+                        <button class="modal-nav-btn" id="modalPrevBtn" onclick="navigateNotice('prev')">
                             <i class="fas fa-chevron-left"></i>
                         </button>
-                        <button class="modal-nav-btn" onclick="navigateNotice('next')">
+                        <button class="modal-nav-btn" id="modalNextBtn" onclick="navigateNotice('next')">
                             <i class="fas fa-chevron-right"></i>
                         </button>
                         <button class="modal-nav-btn modal-close-btn" id="modalClose">
@@ -418,23 +412,6 @@
                         </button>
                     </div>
 
-                    <!-- 매니저용 의견 목록 -->
-                    <div class="admin-feedback-list" id="adminFeedbackList" style="display: none">
-                        <div class="admin-feedback-header">
-                            <h4>
-                                <i class="fas fa-users"></i>
-                                사용자 의견 목록
-                            </h4>
-                            <span class="feedback-count">
-                                총
-                                <span id="feedbackCount">0</span>
-                                개
-                            </span>
-                        </div>
-                        <div class="feedback-items" id="feedbackItems">
-                            <!-- 동적 생성 -->
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -556,8 +533,25 @@
             </div>
         </div>
 
+        <!-- Supabase CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        
+        <!-- 기본 스크립트 먼저 로드 -->
         <script src="script.js"></script>
-        <script src="sidebar-debug.js"></script>
-        <script src="notice.js"></script>
+        
+        <!-- Supabase 설정 먼저 로드 -->
+        <script src="js/config/supabase.js"></script>
+        
+        <!-- AuthService 로드 -->
+        <script src="js/services/authService.js"></script>
+        
+        <!-- NoticeService 로드 -->
+        <script src="js/services/noticeService.js?v=20250828-1658"></script>
+        
+        <!-- FeedbackService 로드 -->
+        <script src="js/services/feedbackService.js?v=20250828-1700"></script>
+        
+        <!-- 공지사항 페이지 스크립트 마지막 로드 -->
+        <script src="notice.js?v=20250828-1700"></script>
     </body>
 </html>

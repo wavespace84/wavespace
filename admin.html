@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드 - WAVE SPACE</title>
+    <link rel="stylesheet" href="common.css?v=1.1">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-page="admin">
+    <div id="app">
+        <!-- 로딩 화면 -->
+        <div id="loading-screen">
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">WAVE SPACE</div>
+            </div>
+        </div>
+
+        <!-- 메인 앱 -->
+        <div id="main-app" class="admin-layout">
+            <!-- 좌측 사이드바 -->
+            <nav class="admin-sidebar">
+                <div class="admin-header">
+                    <h2><i class="fas fa-cogs"></i> 관리자</h2>
+                    <div class="admin-user-info">
+                        <div class="admin-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="admin-details">
+                            <span id="admin-name">관리자</span>
+                            <span class="admin-role">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-menu">
+                    <div class="menu-section">
+                        <h3>대시보드</h3>
+                        <ul>
+                            <li class="menu-item active" data-tab="overview">
+                                <i class="fas fa-chart-line"></i>
+                                <span>개요</span>
+                            </li>
+                            <li class="menu-item" data-tab="analytics">
+                                <i class="fas fa-analytics"></i>
+                                <span>분석</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-section">
+                        <h3>사용자 관리</h3>
+                        <ul>
+                            <li class="menu-item" data-tab="users">
+                                <i class="fas fa-users"></i>
+                                <span>사용자 목록</span>
+                            </li>
+                            <li class="menu-item" data-tab="members">
+                                <i class="fas fa-crown"></i>
+                                <span>플러스 회원</span>
+                            </li>
+                            <li class="menu-item" data-tab="badges">
+                                <i class="fas fa-award"></i>
+                                <span>뱃지 관리</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-section">
+                        <h3>콘텐츠 관리</h3>
+                        <ul>
+                            <li class="menu-item" data-tab="posts">
+                                <i class="fas fa-edit"></i>
+                                <span>게시글 관리</span>
+                            </li>
+                            <li class="menu-item" data-tab="files">
+                                <i class="fas fa-folder"></i>
+                                <span>파일 관리</span>
+                            </li>
+                            <li class="menu-item" data-tab="notices">
+                                <i class="fas fa-bullhorn"></i>
+                                <span>공지사항</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="menu-section">
+                        <h3>시스템</h3>
+                        <ul>
+                            <li class="menu-item" data-tab="settings">
+                                <i class="fas fa-cog"></i>
+                                <span>설정</span>
+                            </li>
+                            <li class="menu-item" data-tab="logs">
+                                <i class="fas fa-file-alt"></i>
+                                <span>로그</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="admin-footer">
+                    <button class="btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        로그아웃
+                    </button>
+                </div>
+            </nav>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="admin-content">
+                <div class="admin-header-bar">
+                    <h1 id="page-title">대시보드 개요</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i>
+                            새로고침
+                        </button>
+                        <button class="btn btn-primary" onclick="exportData()">
+                            <i class="fas fa-download"></i>
+                            데이터 내보내기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 개요 탭 -->
+                <div id="tab-overview" class="tab-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-users">0</h3>
+                                <p>전체 사용자</p>
+                                <span class="stat-change positive" id="users-change">+0</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-posts">0</h3>
+                                <p>전체 게시글</p>
+                                <span class="stat-change positive" id="posts-change">+0</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="plus-members">0</h3>
+                                <p>플러스 회원</p>
+                                <span class="stat-change positive" id="members-change">+0</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-points">0</h3>
+                                <p>총 발행 포인트</p>
+                                <span class="stat-change positive" id="points-change">+0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>사용자 증가 추이</h3>
+                            <canvas id="users-chart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>게시글 활동</h3>
+                            <canvas id="posts-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>최근 활동</h3>
+                        <div class="activity-list" id="recent-activities">
+                            <!-- 최근 활동 로딩 중 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 분석 탭 -->
+                <div id="tab-analytics" class="tab-content">
+                    <div class="analytics-controls">
+                        <div class="date-range">
+                            <label>기간 선택:</label>
+                            <select id="analytics-period">
+                                <option value="7">최근 7일</option>
+                                <option value="30">최근 30일</option>
+                                <option value="90">최근 90일</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="updateAnalytics()">
+                            <i class="fas fa-sync"></i>
+                            업데이트
+                        </button>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="chart-card">
+                            <h3>카테고리별 게시글</h3>
+                            <canvas id="category-chart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>사용자 활동도</h3>
+                            <canvas id="activity-chart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>포인트 소비 패턴</h3>
+                            <canvas id="points-usage-chart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>뱃지 획득 통계</h3>
+                            <canvas id="badges-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 사용자 관리 탭 -->
+                <div id="tab-users" class="tab-content">
+                    <div class="content-header">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="user-search" placeholder="사용자 검색...">
+                        </div>
+                        <div class="filter-box">
+                            <select id="user-filter">
+                                <option value="all">전체</option>
+                                <option value="active">활성</option>
+                                <option value="inactive">비활성</option>
+                                <option value="plus">플러스 회원</option>
+                                <option value="banned">정지</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="createUser()">
+                            <i class="fas fa-plus"></i>
+                            사용자 추가
+                        </button>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table" id="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>사용자명</th>
+                                    <th>이메일</th>
+                                    <th>포인트</th>
+                                    <th>등급</th>
+                                    <th>가입일</th>
+                                    <th>상태</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <!-- 사용자 데이터 -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="users-pagination">
+                        <!-- 페이지네이션 -->
+                    </div>
+                </div>
+
+                <!-- 게시글 관리 탭 -->
+                <div id="tab-posts" class="tab-content">
+                    <div class="content-header">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="post-search" placeholder="게시글 검색...">
+                        </div>
+                        <div class="filter-box">
+                            <select id="post-filter">
+                                <option value="all">전체</option>
+                                <option value="published">게시됨</option>
+                                <option value="hidden">숨김</option>
+                                <option value="reported">신고됨</option>
+                            </select>
+                        </div>
+                        <select id="category-filter">
+                            <option value="all">모든 카테고리</option>
+                        </select>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table" id="posts-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>제목</th>
+                                    <th>작성자</th>
+                                    <th>카테고리</th>
+                                    <th>조회수</th>
+                                    <th>좋아요</th>
+                                    <th>작성일</th>
+                                    <th>상태</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="posts-tbody">
+                                <!-- 게시글 데이터 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 공지사항 관리 탭 -->
+                <div id="tab-notices" class="tab-content">
+                    <div class="content-header">
+                        <button class="btn btn-primary" onclick="createNotice()">
+                            <i class="fas fa-plus"></i>
+                            새 공지사항
+                        </button>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table" id="notices-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>제목</th>
+                                    <th>중요도</th>
+                                    <th>작성일</th>
+                                    <th>상태</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="notices-tbody">
+                                <!-- 공지사항 데이터 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 설정 탭 -->
+                <div id="tab-settings" class="tab-content">
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <h3>시스템 설정</h3>
+                            <form id="system-settings">
+                                <div class="form-group">
+                                    <label>사이트 제목</label>
+                                    <input type="text" id="site-title" value="WAVE SPACE">
+                                </div>
+                                <div class="form-group">
+                                    <label>회원가입 허용</label>
+                                    <input type="checkbox" id="allow-registration" checked>
+                                </div>
+                                <div class="form-group">
+                                    <label>게스트 게시글 읽기</label>
+                                    <input type="checkbox" id="allow-guest-read" checked>
+                                </div>
+                                <div class="form-group">
+                                    <label>일일 포인트 제한</label>
+                                    <input type="number" id="daily-point-limit" value="100">
+                                </div>
+                                <button type="submit" class="btn btn-primary">저장</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-card">
+                            <h3>포인트 설정</h3>
+                            <form id="point-settings">
+                                <div class="form-group">
+                                    <label>게시글 작성</label>
+                                    <input type="number" id="points-post" value="5">
+                                </div>
+                                <div class="form-group">
+                                    <label>댓글 작성</label>
+                                    <input type="number" id="points-comment" value="2">
+                                </div>
+                                <div class="form-group">
+                                    <label>출석체크</label>
+                                    <input type="number" id="points-attendance" value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>좋아요 받기</label>
+                                    <input type="number" id="points-like" value="1">
+                                </div>
+                                <button type="submit" class="btn btn-primary">저장</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-card">
+                            <h3>알림 설정</h3>
+                            <form id="notification-settings">
+                                <div class="form-group">
+                                    <label>실시간 알림 활성화</label>
+                                    <input type="checkbox" id="enable-notifications" checked>
+                                </div>
+                                <div class="form-group">
+                                    <label>푸시 알림</label>
+                                    <input type="checkbox" id="enable-push" checked>
+                                </div>
+                                <div class="form-group">
+                                    <label>이메일 알림</label>
+                                    <input type="checkbox" id="enable-email" checked>
+                                </div>
+                                <button type="submit" class="btn btn-primary">저장</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 로그 탭 -->
+                <div id="tab-logs" class="tab-content">
+                    <div class="content-header">
+                        <div class="log-filters">
+                            <select id="log-level">
+                                <option value="all">모든 레벨</option>
+                                <option value="error">오류</option>
+                                <option value="warning">경고</option>
+                                <option value="info">정보</option>
+                            </select>
+                            <select id="log-category">
+                                <option value="all">모든 카테고리</option>
+                                <option value="auth">인증</option>
+                                <option value="posts">게시글</option>
+                                <option value="files">파일</option>
+                                <option value="points">포인트</option>
+                                <option value="system">시스템</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary" onclick="clearLogs()">
+                            <i class="fas fa-trash"></i>
+                            로그 삭제
+                        </button>
+                    </div>
+
+                    <div class="log-container" id="log-container">
+                        <!-- 로그 항목들 -->
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 모달들 -->
+        <div id="modal-overlay" class="modal-overlay">
+            <!-- 사용자 편집 모달 -->
+            <div id="user-modal" class="modal">
+                <div class="modal-header">
+                    <h3 id="user-modal-title">사용자 편집</h3>
+                    <button class="modal-close" onclick="closeModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="user-form">
+                        <input type="hidden" id="edit-user-id">
+                        <div class="form-group">
+                            <label>사용자명</label>
+                            <input type="text" id="edit-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label>이메일</label>
+                            <input type="email" id="edit-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>포인트</label>
+                            <input type="number" id="edit-points" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>권한</label>
+                            <select id="edit-rank">
+                                <option value="member">일반 회원</option>
+                                <option value="verified">인증 회원</option>
+                                <option value="admin">관리자</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>상태</label>
+                            <select id="edit-status">
+                                <option value="active">활성</option>
+                                <option value="inactive">비활성</option>
+                                <option value="banned">정지</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>플러스 회원</label>
+                            <input type="checkbox" id="edit-plus-member">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal()">취소</button>
+                    <button class="btn btn-primary" onclick="saveUser()">저장</button>
+                </div>
+            </div>
+
+            <!-- 공지사항 편집 모달 -->
+            <div id="notice-modal" class="modal">
+                <div class="modal-header">
+                    <h3 id="notice-modal-title">공지사항 작성</h3>
+                    <button class="modal-close" onclick="closeModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="notice-form">
+                        <input type="hidden" id="edit-notice-id">
+                        <div class="form-group">
+                            <label>제목</label>
+                            <input type="text" id="notice-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>내용</label>
+                            <textarea id="notice-content" rows="10" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>중요도</label>
+                            <select id="notice-priority">
+                                <option value="normal">일반</option>
+                                <option value="important">중요</option>
+                                <option value="urgent">긴급</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>상태</label>
+                            <select id="notice-status">
+                                <option value="published">게시</option>
+                                <option value="draft">초안</option>
+                                <option value="archived">보관</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal()">취소</button>
+                    <button class="btn btn-primary" onclick="saveNotice()">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 스크립트 로드 -->
+    <script src="js/config/supabase.js"></script>
+    <script src="js/services/authService.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

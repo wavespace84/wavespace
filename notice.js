@@ -1,230 +1,279 @@
-// 공지사항 데이터
-const mockNotices = [
-    {
-        id: 1,
-        category: '공지',
-        title: '[필독] WAVE SPACE 서비스 이용약관 개정 안내',
-        content:
-            '안녕하세요, WAVE SPACE입니다. 더 나은 서비스 제공을 위해 이용약관이 일부 개정되었습니다.',
-        team: '운영팀',
-        viewCount: 1523,
-        createdAt: '2024-01-20',
-        isPinned: true,
-        isNew: true,
-    },
-    {
-        id: 2,
-        category: '이벤트',
-        title: '🎉 신규 가입 회원 대상 3,000P 지급 이벤트',
-        content:
-            'WAVE SPACE에 처음 오신 분들을 환영합니다! 신규 가입 후 프로필 작성 시 3,000P를 즉시 지급해드립니다.',
-        team: '운영팀',
-        viewCount: 892,
-        createdAt: '2024-01-19',
-        isPinned: true,
-        isNew: true,
-    },
-    {
-        id: 3,
-        category: '공지',
-        title: 'AI 보고서 서비스 정식 오픈 안내',
-        content:
-            '2024년 2월부터 AI를 활용한 자동 보고서 생성 서비스가 정식으로 오픈됩니다. Plus 회원은 무제한 이용 가능합니다.',
-        team: '운영팀',
-        viewCount: 456,
-        createdAt: '2024-01-18',
-        isPinned: false,
-        isNew: true,
-    },
-    {
-        id: 4,
-        category: '점검',
-        title: '1월 25일(목) 정기 서버 점검 안내',
-        content: '안정적인 서비스 제공을 위한 정기 점검이 예정되어 있습니다.',
-        team: '운영팀',
-        viewCount: 234,
-        createdAt: '2024-01-17',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 5,
-        category: '공지',
-        title: '포인트 정책 변경 안내',
-        content: '2024년 2월 1일부터 포인트 적립 및 사용 정책이 일부 변경됩니다.',
-        team: '운영팀',
-        viewCount: 789,
-        createdAt: '2024-01-15',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 6,
-        category: '이벤트',
-        title: '분양 자료 공유 이벤트 - 최대 10,000P 획득!',
-        content: '양질의 분양 자료를 공유해주신 분들께 포인트를 지급합니다.',
-        team: '운영팀',
-        viewCount: 567,
-        createdAt: '2024-01-14',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 7,
-        category: '공지',
-        title: '모바일 앱 서비스 출시 예정 안내',
-        content:
-            '2024년 3월, WAVE SPACE 모바일 앱(iOS/Android)이 출시될 예정입니다. 언제 어디서나 편리하게 이용하실 수 있습니다.',
-        team: '운영팀',
-        viewCount: 345,
-        createdAt: '2024-01-12',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 8,
-        category: '공지',
-        title: '커뮤니티 가이드라인 안내',
-        content: '건전한 커뮤니티 문화 조성을 위한 가이드라인을 안내드립니다.',
-        team: '운영팀',
-        viewCount: 412,
-        createdAt: '2024-01-10',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 9,
-        category: '가이드',
-        title: '📚 WAVE SPACE 이용 가이드 - 회원가입부터 포인트 활용까지',
-        content:
-            'WAVE SPACE를 처음 이용하시는 분들을 위한 상세한 가이드입니다. 회원가입, 프로필 설정, 포인트 획득 및 사용 방법을 안내드립니다.',
-        team: '운영팀',
-        viewCount: 892,
-        createdAt: '2024-01-08',
-        isPinned: true,
-        isNew: false,
-    },
-    {
-        id: 10,
-        category: '가이드',
-        title: '💡 분양자료 업로드 가이드',
-        content:
-            '양질의 분양자료를 공유하는 방법과 포인트 획득 기준을 상세히 안내드립니다. 자료 분류, 파일 형식, 저작권 주의사항을 확인하세요.',
-        team: '운영팀',
-        viewCount: 567,
-        createdAt: '2024-01-05',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 11,
-        category: '공지',
-        title: '개인정보 처리방침 개정 안내',
-        content:
-            '회원님의 개인정보 보호를 위한 처리방침이 개정되었습니다. 자세한 내용은 본문을 확인해주세요.',
-        team: '운영팀',
-        viewCount: 234,
-        createdAt: '2024-01-03',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 12,
-        category: '이벤트',
-        title: '연말 특별 이벤트 - 포인트 2배 적립',
-        content:
-            '12월 한 달간 모든 활동에 대해 포인트가 2배로 적립됩니다. 이번 기회를 놓치지 마세요!',
-        team: '운영팀',
-        viewCount: 1024,
-        createdAt: '2024-01-02',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 13,
-        category: '점검',
-        title: '긴급 서버 점검 완료 안내',
-        content: '긴급 서버 점검이 완료되었습니다. 이용에 불편을 드려 죄송합니다.',
-        team: '운영팀',
-        viewCount: 156,
-        createdAt: '2024-01-01',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 14,
-        category: '공지',
-        title: '새해 인사 및 운영 계획 안내',
-        content: '2024년 새해를 맞아 WAVE SPACE의 운영 계획을 안내드립니다.',
-        team: '운영팀',
-        viewCount: 789,
-        createdAt: '2023-12-31',
-        isPinned: false,
-        isNew: false,
-    },
-    {
-        id: 15,
-        category: '가이드',
-        title: '📱 모바일 웹 이용 가이드',
-        content: '모바일 환경에서 WAVE SPACE를 효율적으로 이용하는 방법을 안내합니다.',
-        team: '운영팀',
-        viewCount: 445,
-        createdAt: '2023-12-30',
-        isPinned: false,
-        isNew: false,
-    },
-];
+// 공지사항 페이지 - 원본 디자인 + Supabase 연동 버전
+// 원본 디자인을 유지하면서 실제 데이터베이스에서 데이터 가져오기
 
 // 전역 변수
 let currentPage = 1;
 let currentNoticeIndex = 0;
 let currentFilteredNotices = [];
 const itemsPerPage = 10;
-let filteredNotices = [...mockNotices];
+let filteredNotices = [];
+let allNotices = [];
 
-// 권한 체크 (실제로는 서버에서 확인해야 함)
-const userRole = 'staff'; // 'admin', 'staff', 'user' 중 하나
-const hasWritePermission = userRole === 'admin' || userRole === 'staff';
+// 권한 체크
+let userRole = 'user';
+let hasWritePermission = false;
 
 // DOM 요소
-const searchInput = document.getElementById('searchInput');
-const categoryTabs = document.querySelectorAll('.checkbox-tab');
-const noticeList = document.getElementById('noticeList');
-const pagination = document.getElementById('pagination');
-
-// 검색 기능
-searchInput.addEventListener('input', (e) => {
-    filterNotices();
-});
+let searchInput, categoryTabs, noticeList, pagination, writeNoticeBtn;
 
 // 카테고리 필터
 let selectedCategory = 'all';
 
-// 카테고리 탭 클릭 이벤트 (checkbox-tab 스타일)
-categoryTabs.forEach((tab) => {
-    const input = tab.querySelector('input[type="radio"]');
+// 페이지 로드 시 초기화
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // DOM 요소 초기화
+        searchInput = document.getElementById('searchInput');
+        categoryTabs = document.querySelectorAll('.checkbox-tab');
+        noticeList = document.getElementById('noticeList');
+        pagination = document.getElementById('paginationContainer');
+        writeNoticeBtn = document.getElementById('writeNoticeBtn');
 
-    tab.addEventListener('click', (e) => {
-        // 모든 탭에서 active 클래스 제거
-        categoryTabs.forEach((t) => {
-            t.classList.remove('active');
-            const tInput = t.querySelector('input[type="radio"]');
-            if (tInput) tInput.checked = false;
-        });
-        // 클릭한 탭에 active 클래스 추가
-        tab.classList.add('active');
-        if (input) input.checked = true;
-        // 선택된 카테고리 업데이트
-        selectedCategory = tab.dataset.category;
-        filterNotices();
-    });
+        console.log('🔄 공지사항 페이지 초기화 중...');
+
+        // Supabase 서비스 대기
+        await waitForServices();
+        
+        // 사용자 권한 확인
+        await checkUserPermission();
+        
+        // 플로팅 글쓰기 버튼 표시/숨김 처리
+        setupWriteButton();
+        
+        // 이벤트 리스너 설정
+        setupEventListeners();
+        
+        // 초기 데이터 로드
+        await loadNoticesFromSupabase();
+        
+        console.log('✅ 공지사항 페이지 초기화 완료');
+        
+    } catch (error) {
+        console.error('공지사항 페이지 초기화 실패:', error);
+        showErrorMessage('페이지 로딩 중 오류가 발생했습니다.');
+    }
 });
 
-// 필터링 함수
-function filterNotices() {
-    const searchTerm = searchInput.value.toLowerCase();
+/**
+ * 서비스 대기 함수
+ */
+async function waitForServices() {
+    let attempts = 0;
+    const maxAttempts = 50;
+    
+    while (attempts < maxAttempts) {
+        if (window.noticeService && window.authService && window.feedbackService) {
+            return;
+        }
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+    }
+    throw new Error('서비스 초기화 시간 초과');
+}
 
-    filteredNotices = mockNotices.filter((notice) => {
+/**
+ * 사용자 권한 확인
+ */
+async function checkUserPermission() {
+    try {
+        if (window.authService) {
+            const user = await window.authService.getCurrentUser();
+            console.log('ℹ️ 현재 사용자:', user);
+            
+            if (user) {
+                userRole = user.role || 'user';
+                hasWritePermission = ['admin', 'super_admin'].includes(userRole);
+                console.log(`✅ 사용자 권한 확인: 역할=${userRole}, 쓰기권한=${hasWritePermission}`);
+            } else {
+                console.log('ℹ️ 비로그인 사용자');
+                userRole = 'user';
+                hasWritePermission = false;
+            }
+        } else {
+            console.log('⚠️ AuthService를 사용할 수 없음');
+            userRole = 'user';
+            hasWritePermission = false;
+        }
+        
+        console.log(`🔐 최종 권한: 역할=${userRole}, 쓰기권한=${hasWritePermission}`);
+        
+    } catch (error) {
+        console.error('사용자 권한 확인 실패:', error);
+        userRole = 'user';
+        hasWritePermission = false;
+    }
+}
+
+/**
+ * 글쓰기 버튼 설정
+ */
+function setupWriteButton() {
+    if (writeNoticeBtn) {
+        if (hasWritePermission) {
+            console.log('✅ 관리자 - 글쓰기 버튼 표시');
+            writeNoticeBtn.style.display = 'flex';
+        } else {
+            console.log('ℹ️ 일반 사용자 - 글쓰기 버튼 숨김');
+            writeNoticeBtn.style.display = 'none';
+        }
+    }
+}
+
+/**
+ * 이벤트 리스너 설정
+ */
+function setupEventListeners() {
+    // 검색 이벤트
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(filterNotices, 300));
+    }
+
+    // 카테고리 탭 클릭 이벤트 (checkbox-tab 스타일)
+    categoryTabs.forEach((tab) => {
+        const input = tab.querySelector('input[type="radio"]');
+
+        tab.addEventListener('click', (e) => {
+            // 모든 탭에서 active 클래스 제거
+            categoryTabs.forEach((t) => {
+                t.classList.remove('active');
+                const tInput = t.querySelector('input[type="radio"]');
+                if (tInput) tInput.checked = false;
+            });
+            // 클릭한 탭에 active 클래스 추가
+            tab.classList.add('active');
+            if (input) input.checked = true;
+            // 선택된 카테고리 업데이트
+            selectedCategory = tab.dataset.category;
+            filterNotices();
+        });
+    });
+
+    // 글쓰기 버튼 클릭
+    if (writeNoticeBtn) {
+        writeNoticeBtn.addEventListener('click', openWriteModal);
+    }
+
+    // 모달 닫기 버튼 이벤트 리스너 설정
+    const modalCloseBtn = document.getElementById('modalClose');
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeNoticeModal);
+    }
+
+    // 모달 오버레이 클릭으로 닫기
+    const noticeModal = document.getElementById('noticeModal');
+    if (noticeModal) {
+        noticeModal.addEventListener('click', (e) => {
+            if (e.target === noticeModal) {
+                closeNoticeModal();
+            }
+        });
+    }
+
+    // 글쓰기 모달 닫기 버튼
+    const writeModalClose = document.getElementById('writeModalClose');
+    if (writeModalClose) {
+        writeModalClose.addEventListener('click', closeWriteModal);
+    }
+
+    // 글쓰기 모달 오버레이 클릭으로 닫기
+    const writeModal = document.getElementById('writeModal');
+    if (writeModal) {
+        writeModal.addEventListener('click', (e) => {
+            if (e.target === writeModal) {
+                closeWriteModal();
+            }
+        });
+    }
+
+    // 의견 관련 이벤트 리스너 설정
+    setupFeedbackEventListeners();
+}
+
+/**
+ * 의견 관련 이벤트 리스너 설정
+ */
+function setupFeedbackEventListeners() {
+    // 의견 제출 버튼
+    const feedbackSubmit = document.getElementById('feedbackSubmit');
+    if (feedbackSubmit) {
+        feedbackSubmit.addEventListener('click', submitFeedback);
+    }
+
+    // 의견 수정 버튼
+    const feedbackEdit = document.getElementById('feedbackEdit');
+    if (feedbackEdit) {
+        feedbackEdit.addEventListener('click', editFeedback);
+    }
+
+    // 의견 텍스트 실시간 문자 수 카운트
+    const feedbackText = document.getElementById('feedbackText');
+    const charCount = document.getElementById('charCount');
+    if (feedbackText && charCount) {
+        feedbackText.addEventListener('input', (e) => {
+            const count = e.target.value.length;
+            charCount.textContent = count;
+            
+            // 500자 초과 시 스타일 변경
+            if (count > 500) {
+                charCount.style.color = '#ef4444';
+                feedbackSubmit.disabled = true;
+            } else {
+                charCount.style.color = 'var(--gray-500)';
+                if (feedbackSubmit) feedbackSubmit.disabled = false;
+            }
+        });
+    }
+}
+
+/**
+ * Supabase에서 공지사항 데이터 로드
+ */
+async function loadNoticesFromSupabase() {
+    try {
+        showLoadingState();
+        
+        if (!window.noticeService) {
+            throw new Error('NoticeService가 초기화되지 않았습니다.');
+        }
+
+        const result = await window.noticeService.getNotices({
+            limit: 100 // 모든 공지사항을 가져와서 클라이언트에서 필터링
+        });
+
+        if (result.error) {
+            throw new Error(result.error);
+        }
+
+        // 수파베이스 데이터를 원본 구조로 변환
+        allNotices = result.data.map(notice => ({
+            id: notice.id,
+            category: notice.category,
+            title: notice.title,
+            content: notice.content,
+            team: notice.team,
+            viewCount: notice.view_count,
+            createdAt: notice.createdAt, // 이미 포맷된 날짜
+            isPinned: notice.is_pinned,
+            isNew: notice.isNew
+        }));
+
+        filteredNotices = [...allNotices];
+        renderNotices();
+        renderPagination();
+
+    } catch (error) {
+        console.error('공지사항 로드 실패:', error);
+        showErrorMessage('공지사항을 불러오는데 실패했습니다.');
+    }
+}
+
+/**
+ * 필터링 함수
+ */
+function filterNotices() {
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+    filteredNotices = allNotices.filter((notice) => {
         const matchesSearch =
             notice.title.toLowerCase().includes(searchTerm) ||
             notice.content.toLowerCase().includes(searchTerm);
@@ -237,8 +286,12 @@ function filterNotices() {
     renderPagination();
 }
 
-// 공지사항 렌더링
+/**
+ * 공지사항 렌더링 (원본 구조 유지)
+ */
 function renderNotices() {
+    if (!noticeList) return;
+
     // 상단 고정 게시물과 일반 게시물 분리
     const pinnedNotices = filteredNotices
         .filter((notice) => notice.isPinned)
@@ -261,6 +314,11 @@ function renderNotices() {
 
     noticeList.innerHTML = '';
 
+    if (displayedNotices.length === 0) {
+        renderEmptyState();
+        return;
+    }
+
     displayedNotices.forEach((notice, index) => {
         const noticeElement = createNoticeElement(notice);
         // 애니메이션 효과
@@ -272,7 +330,9 @@ function renderNotices() {
     });
 }
 
-// 공지사항 요소 생성
+/**
+ * 공지사항 요소 생성 (원본 구조)
+ */
 function createNoticeElement(notice) {
     const noticeItem = document.createElement('div');
     noticeItem.className = `notice-item ${notice.isPinned ? 'pinned' : ''}`;
@@ -291,31 +351,81 @@ function createNoticeElement(notice) {
             <div class="notice-header-left">
                 <div class="notice-badges">
                     <span class="notice-badge category-${notice.category}">${notice.category}</span>
-                    ${notice.isNew ? '<span class="notice-badge new">NEW</span>' : ''}
                 </div>
-                <h3 class="notice-item-title">${notice.title}</h3>
+                <h3 class="notice-item-title">${escapeHtml(notice.title)}</h3>
+                <p class="notice-item-content">${escapeHtml(notice.content ? notice.content.substring(0, 50) + (notice.content.length > 50 ? '...' : '') : '')}</p>
             </div>
             <div class="notice-header-right">
                 <span class="notice-date"><i class="fas fa-calendar"></i> ${notice.createdAt}</span>
-                ${notice.isPinned ? '<span class="notice-badge pinned-badge"><i class="fas fa-exclamation-circle"></i>상단고정</span>' : ''}
             </div>
         </div>
-        <p class="notice-item-content">${notice.content}</p>
     `;
 
     return noticeItem;
 }
 
-// 페이지네이션 렌더링
+/**
+ * 빈 상태 렌더링
+ */
+function renderEmptyState() {
+    if (!noticeList) return;
+    
+    noticeList.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-icon">📢</div>
+            <div class="empty-title">공지사항이 없습니다</div>
+            <div class="empty-description">
+                ${searchInput?.value ? '검색 결과가 없습니다.' : '등록된 공지사항이 없습니다.'}
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * 로딩 상태 표시
+ */
+function showLoadingState() {
+    if (!noticeList) return;
+    
+    noticeList.innerHTML = `
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <div>공지사항을 불러오는 중...</div>
+        </div>
+    `;
+}
+
+/**
+ * 페이지네이션 링크 생성 (updates.js와 동일한 함수)
+ */
+function createPaginationLink(text, onClick, disabled, active = false) {
+    const link = document.createElement('a');
+    link.href = 'javascript:void(0)';
+    link.textContent = text;
+    if (disabled) link.className = 'disabled';
+    if (active) link.className = 'active';
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!disabled) onClick();
+        return false;
+    });
+    return link;
+}
+
+/**
+ * 페이지네이션 렌더링 (업데이트 페이지와 완전 동일한 구조)
+ */
 function renderPagination() {
-    // 일반 게시물만으로 페이지 수 계산 (상단 고정 제외)
+    if (!pagination) return;
+
+    // 고정글을 제외한 일반 게시물만으로 페이지네이션 계산
     const regularNotices = filteredNotices.filter((notice) => !notice.isPinned);
     const totalPages = Math.ceil(regularNotices.length / itemsPerPage);
+    
     pagination.innerHTML = '';
 
     if (totalPages <= 1) return;
-
-    pagination.className = 'pagination-underline';
 
     // 처음 버튼
     const firstBtn = createPaginationLink(
@@ -333,9 +443,11 @@ function renderPagination() {
     const prevBtn = createPaginationLink(
         '이전',
         () => {
-            currentPage = Math.max(currentPage - 1, 1);
-            renderNotices();
-            renderPagination();
+            if (currentPage > 1) {
+                currentPage--;
+                renderNotices();
+                renderPagination();
+            }
         },
         currentPage === 1
     );
@@ -346,13 +458,8 @@ function renderPagination() {
     pageNumbers.className = 'page-numbers';
 
     // 페이지 번호 버튼들
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage < maxVisiblePages - 1) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, startPage + 4);
 
     for (let i = startPage; i <= endPage; i++) {
         const pageLink = createPaginationLink(
@@ -374,17 +481,19 @@ function renderPagination() {
     const nextBtn = createPaginationLink(
         '다음',
         () => {
-            currentPage = Math.min(currentPage + 1, totalPages);
-            renderNotices();
-            renderPagination();
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderNotices();
+                renderPagination();
+            }
         },
         currentPage === totalPages
     );
     pagination.appendChild(nextBtn);
 
-    // 끝 버튼
+    // 마지막 버튼
     const lastBtn = createPaginationLink(
-        '끝',
+        '마지막',
         () => {
             currentPage = totalPages;
             renderNotices();
@@ -395,404 +504,599 @@ function renderPagination() {
     pagination.appendChild(lastBtn);
 }
 
-// 페이지네이션 링크 생성
-function createPaginationLink(content, onClick, disabled, active = false) {
-    const link = document.createElement('a');
-    link.href = 'javascript:void(0)'; // # 대신 javascript:void(0) 사용
-    link.textContent = content;
-    if (disabled) link.className = 'disabled';
-    if (active) link.className = 'active';
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation(); // 이벤트 버블링 방지 추가
-        if (!disabled) onClick();
-        return false; // 추가 보호
-    });
-    return link;
+/**
+ * 페이지 변경
+ */
+function changePage(page) {
+    const regularNotices = filteredNotices.filter((notice) => !notice.isPinned);
+    const totalPages = Math.ceil(regularNotices.length / itemsPerPage);
+    
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    renderNotices();
+    renderPagination();
 }
 
-// 모달 관련 DOM 요소
-const noticeModal = document.getElementById('noticeModal');
-const modalClose = document.getElementById('modalClose');
-const modalBadges = document.getElementById('modalBadges');
-const modalTitle = document.getElementById('modalTitle');
-const modalContent = document.getElementById('modalContent');
-const modalDate = document.getElementById('modalDate');
+/**
+ * 공지사항 모달 열기
+ */
+async function openNoticeModal(notice) {
+    try {
+        // 현재 공지사항의 인덱스 설정
+        currentFilteredNotices = filteredNotices;
+        currentNoticeIndex = filteredNotices.findIndex(n => n.id === notice.id);
+        
+        // 조회수 증가
+        if (window.noticeService) {
+            window.noticeService.incrementViewCount(notice.id);
+        }
+        
+        // 상세 정보 가져오기
+        let detailNotice = notice;
+        
+        if (window.noticeService) {
+            const result = await window.noticeService.getNoticeById(notice.id);
+            if (result.data) {
+                detailNotice = {
+                    ...result.data,
+                    isPinned: result.data.is_pinned,
+                    isNew: result.data.isNew,
+                    viewCount: result.data.view_count,
+                    createdAt: result.data.createdAt
+                };
+            }
+        }
 
-// 의견 관련 DOM 요소
-const feedbackText = document.getElementById('feedbackText');
-const charCount = document.getElementById('charCount');
-const feedbackSubmit = document.getElementById('feedbackSubmit');
-const feedbackForm = document.querySelector('.feedback-form');
-const feedbackSubmitted = document.getElementById('feedbackSubmitted');
-const submittedContent = document.getElementById('submittedContent');
-const feedbackEdit = document.getElementById('feedbackEdit');
-const adminFeedbackList = document.getElementById('adminFeedbackList');
-const feedbackCount = document.getElementById('feedbackCount');
-const feedbackItems = document.getElementById('feedbackItems');
+        // 모달 내용 업데이트
+        const modal = document.getElementById('noticeModal');
+        const modalBadges = document.getElementById('modalBadges');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const modalDate = document.getElementById('modalDate');
+        
+        // 배지 업데이트
+        if (modalBadges) {
+            modalBadges.innerHTML = `
+                <span class="notice-badge category-${detailNotice.category}">${detailNotice.category}</span>
+                ${detailNotice.isPinned ? '<span class="notice-badge pinned">📌 고정</span>' : ''}
+                ${detailNotice.isNew ? '<span class="notice-badge new">NEW</span>' : ''}
+            `;
+        }
+        
+        // 제목 업데이트
+        if (modalTitle) {
+            modalTitle.textContent = detailNotice.title;
+        }
+        
+        // 내용 업데이트
+        if (modalContent) {
+            modalContent.innerHTML = escapeHtml(detailNotice.content).replace(/\n/g, '<br>');
+        }
+        
+        // 날짜 업데이트
+        if (modalDate) {
+            modalDate.textContent = detailNotice.createdAt;
+        }
 
-// 모달 열기
-function openNoticeModal(notice) {
-    // 현재 공지사항 인덱스 찾기
-    currentNoticeIndex = currentFilteredNotices.findIndex(n => n.id === notice.id);
+        // 의견 기능 로드
+        await loadFeedbackForNotice(detailNotice.id);
+
+        // 네비게이션 버튼 상태 업데이트
+        updateNavigationButtons();
+
+        // 관리자 메뉴 설정
+        const adminActions = document.querySelector('.admin-actions');
+        if (adminActions && hasWritePermission) {
+            adminActions.style.display = 'block';
+            adminActions.innerHTML = `
+                <button class="admin-btn edit-btn" onclick="editNotice('${detailNotice.id}')">수정</button>
+                <button class="admin-btn delete-btn" onclick="deleteNotice('${detailNotice.id}')">삭제</button>
+            `;
+        } else if (adminActions) {
+            adminActions.style.display = 'none';
+        }
+
+        // 모달 표시
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+    } catch (error) {
+        console.error('공지사항 상세 조회 실패:', error);
+        showErrorMessage('공지사항을 불러오는데 실패했습니다.');
+    }
+}
+
+/**
+ * 공지사항 모달 닫기
+ */
+function closeNoticeModal() {
+    const modal = document.getElementById('noticeModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+/**
+ * 글쓰기 모달 열기
+ */
+function openWriteModal() {
+    if (!hasWritePermission) {
+        showErrorMessage('글쓰기 권한이 없습니다.');
+        return;
+    }
+
+    const modal = document.getElementById('writeModal');
+    if (modal) {
+        // 폼 초기화
+        const form = modal.querySelector('#writeNoticeForm');
+        if (form) form.reset();
+        
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+/**
+ * 글쓰기 모달 닫기
+ */
+function closeWriteModal() {
+    const modal = document.getElementById('writeModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+/**
+ * 오류 메시지 표시
+ */
+function showErrorMessage(message) {
+    // 간단한 알림으로 표시 (추후 토스트 메시지로 개선 가능)
+    console.error('Error:', message);
+    if (noticeList && noticeList.innerHTML.includes('loading-state')) {
+        noticeList.innerHTML = `
+            <div class="error-state">
+                <div class="error-icon">⚠️</div>
+                <div class="error-title">오류 발생</div>
+                <div class="error-description">${message}</div>
+            </div>
+        `;
+    }
+}
+
+/**
+ * HTML 이스케이프 함수
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
+/**
+ * 디바운스 함수
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+/**
+ * 의견 기능 로드
+ */
+async function loadFeedbackForNotice(noticeId) {
+    // 피드백 섹션을 항상 표시하도록 확실히 하기
+    const feedbackSection = document.querySelector('.modal-feedback');
+    if (feedbackSection) {
+        feedbackSection.style.display = 'block';
+    }
+
+    if (!window.feedbackService) {
+        console.warn('FeedbackService가 초기화되지 않았습니다.');
+        // 서비스가 없어도 폼을 표시하되 비활성화
+        showFeedbackFormForGuests();
+        return;
+    }
+
+    try {
+        // 현재 사용자의 의견 조회
+        const userFeedback = await window.feedbackService.getUserFeedbackByNotice(noticeId);
+        
+        const feedbackForm = document.querySelector('.feedback-form');
+        const feedbackSubmitted = document.getElementById('feedbackSubmitted');
+        const feedbackText = document.getElementById('feedbackText');
+        const charCount = document.getElementById('charCount');
+
+        // 로그인이 안되어 있거나 에러가 발생한 경우
+        if (userFeedback.error && userFeedback.error.includes('로그인이 필요합니다')) {
+            showFeedbackFormForGuests();
+            return;
+        }
+
+        if (userFeedback.data) {
+            // 이미 의견을 남긴 경우
+            if (feedbackForm) feedbackForm.style.display = 'none';
+            if (feedbackSubmitted) {
+                feedbackSubmitted.style.display = 'block';
+                const submittedContent = document.getElementById('submittedContent');
+                if (submittedContent) {
+                    submittedContent.innerHTML = `
+                        <div style="margin-bottom: 8px;">
+                            <span style="font-size: 12px; color: var(--gray-500);">
+                                ${window.feedbackService.formatDate(userFeedback.data.created_at)}
+                                ${userFeedback.data.is_edited ? ' (수정됨)' : ''}
+                            </span>
+                        </div>
+                        <div>${escapeHtml(userFeedback.data.content)}</div>
+                    `;
+                }
+                
+                // 수정 버튼에 의견 ID 저장
+                const editBtn = document.getElementById('feedbackEdit');
+                if (editBtn) {
+                    editBtn.dataset.feedbackId = userFeedback.data.id;
+                    editBtn.dataset.originalContent = userFeedback.data.content;
+                }
+            }
+        } else {
+            // 의견을 남기지 않은 경우 (로그인된 사용자)
+            if (feedbackForm) feedbackForm.style.display = 'block';
+            if (feedbackSubmitted) feedbackSubmitted.style.display = 'none';
+            if (feedbackText) {
+                feedbackText.value = '';
+                feedbackText.disabled = false;
+                feedbackText.placeholder = '의견을 입력해주세요...';
+            }
+            if (charCount) charCount.textContent = '0';
+            
+            // 제출 버튼 활성화
+            const submitBtn = document.getElementById('feedbackSubmit');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.display = 'inline-flex';
+            }
+        }
+
+        // 의견 개수 표시 (관리자용)
+        if (hasWritePermission) {
+            const feedbackCount = await window.feedbackService.getFeedbackCount(noticeId);
+            if (feedbackCount.data > 0) {
+                updateFeedbackCountDisplay(feedbackCount.data);
+            }
+        }
+
+    } catch (error) {
+        console.error('의견 로드 실패:', error);
+        // 에러가 발생해도 게스트용 폼 표시
+        showFeedbackFormForGuests();
+    }
+}
+
+/**
+ * 비로그인 사용자용 피드백 폼 표시
+ */
+function showFeedbackFormForGuests() {
+    const feedbackForm = document.querySelector('.feedback-form');
+    const feedbackSubmitted = document.getElementById('feedbackSubmitted');
+    const feedbackText = document.getElementById('feedbackText');
+    const charCount = document.getElementById('charCount');
+    const submitBtn = document.getElementById('feedbackSubmit');
+
+    // 폼을 표시하되 비활성화
+    if (feedbackForm) feedbackForm.style.display = 'block';
+    if (feedbackSubmitted) feedbackSubmitted.style.display = 'none';
     
-    // 기존 모달이 열려있는지 확인
-    if (noticeModal.classList.contains('active')) {
-        updateNoticeModal();
+    if (feedbackText) {
+        feedbackText.value = '';
+        feedbackText.disabled = true;
+        feedbackText.placeholder = '의견을 남기려면 로그인이 필요합니다.';
+    }
+    
+    if (charCount) charCount.textContent = '0';
+    
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> 로그인 필요';
+        submitBtn.style.display = 'inline-flex';
+        
+        // 로그인 페이지로 이동하는 클릭 이벤트 추가
+        submitBtn.onclick = () => {
+            window.location.href = 'login.html';
+        };
+    }
+}
+
+/**
+ * 의견 제출
+ */
+async function submitFeedback() {
+    const feedbackText = document.getElementById('feedbackText');
+    const submitBtn = document.getElementById('feedbackSubmit');
+    
+    if (!feedbackText || !submitBtn) return;
+    
+    // 로그인 확인
+    if (feedbackText.disabled) {
+        // 비로그인 사용자의 경우 로그인 페이지로 이동
+        window.location.href = 'login.html';
         return;
     }
     
-    // 배지 생성
-    modalBadges.innerHTML = `
-        <span class="notice-badge category-${notice.category}">${notice.category}</span>
-        ${notice.isNew ? '<span class="notice-badge new">NEW</span>' : ''}
-    `;
-
-    // 내용 채우기
-    modalTitle.textContent = notice.title;
-    modalContent.textContent = notice.content;
-    modalDate.textContent = notice.createdAt;
-
-    // 모달 표시
-    noticeModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-// 모달 내용만 업데이트
-function updateNoticeModal() {
-    const notice = currentFilteredNotices[currentNoticeIndex];
-    if (!notice) return;
+    const content = feedbackText.value.trim();
     
-    // 배지 업데이트
-    modalBadges.innerHTML = `
-        <span class="notice-badge category-${notice.category}">${notice.category}</span>
-        ${notice.isNew ? '<span class="notice-badge new">NEW</span>' : ''}
-    `;
+    if (!content) {
+        showFeedbackMessage('의견을 입력해주세요.', 'error');
+        return;
+    }
+
+    if (content.length > 500) {
+        showFeedbackMessage('의견은 500자 이내로 작성해주세요.', 'error');
+        return;
+    }
+
+    // 현재 공지사항 ID 가져오기
+    const modal = document.getElementById('noticeModal');
+    const currentNotice = currentFilteredNotices[currentNoticeIndex];
     
-    // 내용 업데이트
-    modalTitle.textContent = notice.title;
-    modalContent.textContent = notice.content;
-    modalDate.textContent = notice.createdAt;
-    
-    // 네비게이션 버튼 상태 업데이트
-    updateNoticeNavButtons();
-}
-
-// 공지사항 네비게이션
-function navigateNotice(direction) {
-    if (!currentFilteredNotices || currentFilteredNotices.length === 0) return;
-    
-    if (direction === 'prev' && currentNoticeIndex > 0) {
-        currentNoticeIndex--;
-    } else if (direction === 'next' && currentNoticeIndex < currentFilteredNotices.length - 1) {
-        currentNoticeIndex++;
-    }
-    
-    updateNoticeModal();
-}
-
-// 네비게이션 버튼 상태 업데이트
-function updateNoticeNavButtons() {
-    const prevBtn = document.querySelector('#noticeModal .modal-nav-btn:nth-child(1)');
-    const nextBtn = document.querySelector('#noticeModal .modal-nav-btn:nth-child(2)');
-    
-    if (prevBtn) {
-        prevBtn.disabled = currentNoticeIndex === 0;
-    }
-    if (nextBtn) {
-        nextBtn.disabled = currentNoticeIndex === currentFilteredNotices.length - 1;
-    }
-}
-
-// 모달 닫기
-function closeNoticeModal() {
-    noticeModal.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-// 모달 닫기 이벤트
-modalClose.addEventListener('click', closeNoticeModal);
-
-// 모달 외부 클릭 시 닫기
-noticeModal.addEventListener('click', (e) => {
-    if (e.target === noticeModal) {
-        closeNoticeModal();
-    }
-});
-
-// ESC 키로 모달 닫기
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && noticeModal.classList.contains('active')) {
-        closeNoticeModal();
-    }
-});
-
-// 초기 렌더링
-document.addEventListener('DOMContentLoaded', () => {
-    renderNotices();
-    renderPagination();
-
-    // 권한이 있는 경우 글쓰기 버튼 표시
-    if (hasWritePermission) {
-        const writeBtn = document.getElementById('writeNoticeBtn');
-        if (writeBtn) {
-            writeBtn.style.display = 'flex';
-        }
+    if (!currentNotice) {
+        showFeedbackMessage('공지사항 정보를 찾을 수 없습니다.', 'error');
+        return;
     }
 
-    // 글쓰기 버튼 이벤트
-    const writeNoticeBtn = document.getElementById('writeNoticeBtn');
-    if (writeNoticeBtn) {
-        writeNoticeBtn.addEventListener('click', openWriteModal);
-    }
+    try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 제출 중...';
 
-    // 글쓰기 모달 닫기 이벤트
-    const writeModalClose = document.getElementById('writeModalClose');
-    const writeCancel = document.getElementById('writeCancel');
-    const writeModal = document.getElementById('writeModal');
-
-    if (writeModalClose) {
-        writeModalClose.addEventListener('click', closeWriteModal);
-    }
-    if (writeCancel) {
-        writeCancel.addEventListener('click', closeWriteModal);
-    }
-    if (writeModal) {
-        writeModal.addEventListener('click', (e) => {
-            if (e.target === writeModal) {
-                closeWriteModal();
+        const result = await window.feedbackService.createFeedback(currentNotice.id, content);
+        
+        if (result.error) {
+            // 로그인 필요 에러의 경우 특별 처리
+            if (result.error.includes('로그인이 필요합니다')) {
+                showFeedbackMessage('로그인이 필요합니다. 로그인 페이지로 이동합니다.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
             }
-        });
-    }
-
-    // 공지 작성 폼 제출
-    const noticeForm = document.getElementById('noticeForm');
-    if (noticeForm) {
-        noticeForm.addEventListener('submit', handleNoticeSubmit);
-    }
-});
-
-// 의견 관련 기능
-let currentNoticeId = null;
-let isAdmin = false; // 실제로는 서버에서 확인해야 함
-
-// localStorage 키
-const FEEDBACK_STORAGE_KEY = 'wavespace_notice_feedbacks';
-
-// 의견 데이터 가져오기
-function getFeedbacks() {
-    const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {};
-}
-
-// 의견 데이터 저장
-function saveFeedbacks(feedbacks) {
-    localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(feedbacks));
-}
-
-// 문자 수 카운팅
-feedbackText.addEventListener('input', (e) => {
-    const length = e.target.value.length;
-    charCount.textContent = length;
-
-    // 500자 초과 시 경고
-    if (length >= 500) {
-        charCount.style.color = '#ef4444';
-    } else {
-        charCount.style.color = 'var(--gray-500)';
-    }
-
-    // 버튼 활성화/비활성화
-    feedbackSubmit.disabled = length === 0;
-});
-
-// 의견 제출
-feedbackSubmit.addEventListener('click', () => {
-    const text = feedbackText.value.trim();
-    if (!text) return;
-
-    // 의견 저장
-    const feedbacks = getFeedbacks();
-    if (!feedbacks[currentNoticeId]) {
-        feedbacks[currentNoticeId] = [];
-    }
-
-    const newFeedback = {
-        id: Date.now(),
-        noticeId: currentNoticeId,
-        userId: 'user123', // 실제로는 로그인한 사용자 ID
-        userName: '박승학',
-        text: text,
-        createdAt: new Date().toISOString(),
-        isEdited: false,
-    };
-
-    feedbacks[currentNoticeId].push(newFeedback);
-    saveFeedbacks(feedbacks);
-
-    // UI 업데이트
-    showSubmittedFeedback(newFeedback);
-
-    // 폼 초기화
-    feedbackText.value = '';
-    charCount.textContent = '0';
-    feedbackSubmit.disabled = true;
-
-    // 매니저라면 의견 목록 업데이트
-    if (isAdmin) {
-        updateAdminFeedbackList();
-    }
-});
-
-// 제출된 의견 표시
-function showSubmittedFeedback(feedback) {
-    feedbackForm.style.display = 'none';
-    feedbackSubmitted.style.display = 'block';
-    submittedContent.textContent = feedback.text;
-}
-
-// 의견 수정 버튼
-feedbackEdit.addEventListener('click', () => {
-    const currentText = submittedContent.textContent;
-    feedbackText.value = currentText;
-    charCount.textContent = currentText.length;
-    feedbackSubmit.disabled = false;
-
-    feedbackForm.style.display = 'block';
-    feedbackSubmitted.style.display = 'none';
-});
-
-// 매니저용 의견 목록 업데이트
-function updateAdminFeedbackList() {
-    const feedbacks = getFeedbacks();
-    const noticeFeedbacks = feedbacks[currentNoticeId] || [];
-
-    feedbackCount.textContent = noticeFeedbacks.length;
-
-    feedbackItems.innerHTML = '';
-
-    noticeFeedbacks.forEach((feedback) => {
-        const feedbackItem = document.createElement('div');
-        feedbackItem.className = 'feedback-item';
-
-        const date = new Date(feedback.createdAt);
-        const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-        feedbackItem.innerHTML = `
-            <div class="feedback-item-header">
-                <div class="feedback-user">
-                    <i class="fas fa-user-circle"></i>
-                    <span>${feedback.userName}</span>
-                </div>
-                <span class="feedback-date">${dateStr}</span>
-            </div>
-            <p class="feedback-text">${feedback.text}</p>
-        `;
-
-        feedbackItems.appendChild(feedbackItem);
-    });
-}
-
-// 모달 열기 시 의견 초기화 추가
-const originalOpenNoticeModal = openNoticeModal;
-openNoticeModal = function (notice) {
-    originalOpenNoticeModal(notice);
-
-    currentNoticeId = notice.id;
-
-    // 의견 폼 초기화
-    feedbackText.value = '';
-    charCount.textContent = '0';
-    feedbackSubmit.disabled = true;
-
-    // 기존 의견 확인
-    const feedbacks = getFeedbacks();
-    const userFeedback = (feedbacks[notice.id] || []).find((f) => f.userId === 'user123');
-
-    if (userFeedback) {
-        showSubmittedFeedback(userFeedback);
-    } else {
-        feedbackForm.style.display = 'block';
-        feedbackSubmitted.style.display = 'none';
-    }
-
-    // 매니저 여부 확인 (실제로는 서버에서 확인)
-    isAdmin = false; // 테스트를 위해 true로 변경 가능
-
-    if (isAdmin) {
-        adminFeedbackList.style.display = 'block';
-        updateAdminFeedbackList();
-    } else {
-        adminFeedbackList.style.display = 'none';
-    }
-};
-
-// 글쓰기 모달 열기
-function openWriteModal() {
-    const writeModal = document.getElementById('writeModal');
-    if (writeModal) {
-        writeModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-
-        // 폼 초기화
-        const form = document.getElementById('noticeForm');
-        if (form) {
-            form.reset();
+            showFeedbackMessage(result.error, 'error');
+            return;
         }
+
+        showFeedbackMessage('의견이 성공적으로 제출되었습니다.', 'success');
+        
+        // 의견 영역 새로고침
+        setTimeout(() => {
+            loadFeedbackForNotice(currentNotice.id);
+        }, 1000);
+
+    } catch (error) {
+        console.error('의견 제출 실패:', error);
+        showFeedbackMessage('의견 제출 중 오류가 발생했습니다.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> 의견 제출';
     }
 }
 
-// 글쓰기 모달 닫기
-function closeWriteModal() {
-    const writeModal = document.getElementById('writeModal');
-    if (writeModal) {
-        writeModal.classList.remove('active');
-        document.body.style.overflow = '';
+/**
+ * 의견 수정
+ */
+function editFeedback() {
+    const editBtn = document.getElementById('feedbackEdit');
+    const feedbackForm = document.querySelector('.feedback-form');
+    const feedbackSubmitted = document.getElementById('feedbackSubmitted');
+    const feedbackText = document.getElementById('feedbackText');
+    
+    if (!editBtn || !feedbackForm || !feedbackSubmitted || !feedbackText) return;
+
+    const originalContent = editBtn.dataset.originalContent || '';
+    
+    // 수정 모드로 전환
+    feedbackSubmitted.style.display = 'none';
+    feedbackForm.style.display = 'block';
+    feedbackText.value = originalContent;
+    
+    // 문자 수 업데이트
+    const charCount = document.getElementById('charCount');
+    if (charCount) {
+        charCount.textContent = originalContent.length;
+    }
+
+    // 제출 버튼을 수정 버튼으로 변경
+    const submitBtn = document.getElementById('feedbackSubmit');
+    if (submitBtn) {
+        submitBtn.innerHTML = '<i class="fas fa-edit"></i> 의견 수정';
+        submitBtn.onclick = () => updateFeedback(editBtn.dataset.feedbackId);
+    }
+
+    feedbackText.focus();
+}
+
+/**
+ * 의견 업데이트
+ */
+async function updateFeedback(feedbackId) {
+    const feedbackText = document.getElementById('feedbackText');
+    const submitBtn = document.getElementById('feedbackSubmit');
+    
+    if (!feedbackText || !submitBtn || !feedbackId) return;
+    
+    const content = feedbackText.value.trim();
+    
+    if (!content) {
+        showFeedbackMessage('의견을 입력해주세요.', 'error');
+        return;
+    }
+
+    if (content.length > 500) {
+        showFeedbackMessage('의견은 500자 이내로 작성해주세요.', 'error');
+        return;
+    }
+
+    try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 수정 중...';
+
+        const result = await window.feedbackService.updateFeedback(feedbackId, content);
+        
+        if (result.error) {
+            showFeedbackMessage(result.error, 'error');
+            return;
+        }
+
+        showFeedbackMessage('의견이 성공적으로 수정되었습니다.', 'success');
+        
+        // 의견 영역 새로고침
+        const currentNotice = currentFilteredNotices[currentNoticeIndex];
+        setTimeout(() => {
+            loadFeedbackForNotice(currentNotice.id);
+        }, 1000);
+
+    } catch (error) {
+        console.error('의견 수정 실패:', error);
+        showFeedbackMessage('의견 수정 중 오류가 발생했습니다.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> 의견 제출';
+        submitBtn.onclick = submitFeedback;
     }
 }
 
-// 공지사항 제출 처리
-function handleNoticeSubmit(e) {
-    e.preventDefault();
-
-    const form = e.target;
-    const formData = new FormData(form);
-
-    // 새 공지사항 객체 생성
-    const newNotice = {
-        id: mockNotices.length + 1,
-        category: formData.get('category'),
-        title: formData.get('title'),
-        content: formData.get('content'),
-        team: formData.get('team'),
-        viewCount: 0,
-        createdAt: new Date().toISOString().split('T')[0],
-        isPinned: formData.get('pinned') === 'on',
-        isNew: true,
-    };
-
-    // 상단 고정이면 맨 앞에, 아니면 두 번째에 추가 (첫 번째는 보통 고정 공지)
-    if (newNotice.isPinned) {
-        mockNotices.unshift(newNotice);
-    } else {
-        // 고정 공지 다음에 추가
-        const pinnedCount = mockNotices.filter((n) => n.isPinned).length;
-        mockNotices.splice(pinnedCount, 0, newNotice);
+/**
+ * 의견 메시지 표시
+ */
+function showFeedbackMessage(message, type = 'info') {
+    // 기존 메시지 제거
+    const existingMessage = document.querySelector('.feedback-message');
+    if (existingMessage) {
+        existingMessage.remove();
     }
 
-    // 목록 새로고침
-    filteredNotices = [...mockNotices];
-    currentPage = 1;
-    renderNotices();
-    renderPagination();
+    // 새 메시지 생성
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `feedback-message feedback-${type}`;
+    messageDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+    `;
 
-    // 모달 닫기
-    closeWriteModal();
+    // 의견 섹션에 추가
+    const feedbackSection = document.querySelector('.modal-feedback');
+    if (feedbackSection) {
+        feedbackSection.insertBefore(messageDiv, feedbackSection.firstChild);
+        
+        // 3초 후 자동 제거
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, 3000);
+    }
+}
 
-    // 성공 메시지 (실제로는 토스트 메시지 등으로 표시)
-    if (window.showSuccessMessage) {
-        showSuccessMessage('공지사항이 등록되었습니다.');
+/**
+ * 의견 개수 표시 업데이트 (관리자용)
+ */
+function updateFeedbackCountDisplay(count) {
+    const feedbackHeader = document.querySelector('.feedback-header');
+    if (feedbackHeader && count > 0) {
+        let countSpan = feedbackHeader.querySelector('.feedback-count-admin');
+        if (!countSpan) {
+            countSpan = document.createElement('span');
+            countSpan.className = 'feedback-count-admin';
+            countSpan.style.cssText = 'background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 8px;';
+            feedbackHeader.querySelector('.feedback-title').appendChild(countSpan);
+        }
+        countSpan.textContent = `${count}개의 의견`;
+    }
+}
+
+/**
+ * 네비게이션 버튼 상태 업데이트
+ */
+function updateNavigationButtons() {
+    const prevBtn = document.getElementById('modalPrevBtn');
+    const nextBtn = document.getElementById('modalNextBtn');
+    
+    if (!prevBtn || !nextBtn || !currentFilteredNotices || currentFilteredNotices.length === 0) {
+        return;
+    }
+
+    const totalNotices = currentFilteredNotices.length;
+    const currentIndex = currentNoticeIndex;
+
+    // 공지사항이 1개만 있으면 양쪽 모두 비활성화
+    if (totalNotices <= 1) {
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+    }
+
+    // 첫 번째 공지사항이면 이전 버튼 비활성화
+    prevBtn.disabled = (currentIndex === 0);
+    
+    // 마지막 공지사항이면 다음 버튼 비활성화
+    nextBtn.disabled = (currentIndex === totalNotices - 1);
+
+    // 버튼에 툴팁 추가
+    if (currentIndex === 0) {
+        prevBtn.title = '첫 번째 공지사항입니다';
     } else {
-        alert('공지사항이 등록되었습니다.');
+        prevBtn.title = '이전 공지사항';
+    }
+
+    if (currentIndex === totalNotices - 1) {
+        nextBtn.title = '마지막 공지사항입니다';
+    } else {
+        nextBtn.title = '다음 공지사항';
+    }
+
+    console.log(`네비게이션 상태: ${currentIndex + 1}/${totalNotices} (이전: ${!prevBtn.disabled}, 다음: ${!nextBtn.disabled})`);
+}
+
+/**
+ * 공지사항 네비게이션 (이전/다음)
+ */
+function navigateNotice(direction) {
+    if (!currentFilteredNotices || currentFilteredNotices.length === 0) {
+        return;
+    }
+
+    const currentIndex = currentNoticeIndex;
+    let newIndex;
+
+    if (direction === 'prev') {
+        newIndex = currentIndex > 0 ? currentIndex - 1 : currentFilteredNotices.length - 1;
+    } else if (direction === 'next') {
+        newIndex = currentIndex < currentFilteredNotices.length - 1 ? currentIndex + 1 : 0;
+    } else {
+        return;
+    }
+
+    currentNoticeIndex = newIndex;
+    const notice = currentFilteredNotices[newIndex];
+    
+    if (notice && window.noticeService) {
+        // 조회수 증가
+        window.noticeService.incrementViewCount(notice.id);
+        // 모달 업데이트
+        openNoticeModal(notice);
     }
 }

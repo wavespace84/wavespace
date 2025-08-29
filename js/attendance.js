@@ -1552,11 +1552,19 @@ function celebrateCheckIn() {
     // 색종이 효과 또는 파티클 애니메이션
     const container = document.querySelector('.attendance-status');
 
+    // 요소가 존재하는지 확인
+    if (!container) {
+        console.warn('⚠️ .attendance-status 요소를 찾을 수 없습니다');
+        return;
+    }
+
     // 간단한 축하 효과
     container.style.animation = 'celebrate 0.5s ease';
 
     setTimeout(() => {
-        container.style.animation = '';
+        if (container) {
+            container.style.animation = '';
+        }
     }, 500);
 }
 

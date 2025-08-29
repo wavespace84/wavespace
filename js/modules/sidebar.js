@@ -103,8 +103,8 @@ export function initSidebar() {
             // 상태 저장
             saveSidebarState();
 
-            // 카테고리 토글 후 스크롤 체크
-            setTimeout(checkScrollNeeded, 300);
+            // 카테고리 토글 후 스크롤 체크 - 지연 시간 단축
+            requestAnimationFrame(checkScrollNeeded);
         });
     });
 

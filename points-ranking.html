@@ -3,7 +3,12 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://sishloxzcqapontycuyz.supabase.co wss://sishloxzcqapontycuyz.supabase.co;"
+        />
         <title>전체랭킹 - WAVE SPACE</title>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <script src="preload.js"></script>
         <link rel="stylesheet" href="common.css" />
         <link rel="stylesheet" href="styles.css?v=7" />
@@ -261,21 +266,8 @@
                         </button>
 
                         <!-- 사용자 프로필 -->
-                        <div class="user-profile">
-                            <div class="user-avatar">
-                                <span>박</span>
-                                <div class="user-badge">
-                                    <i class="fas fa-crown"></i>
-                                </div>
-                            </div>
-                            <div class="user-info">
-                                <p class="user-name">박승학님</p>
-                                <div class="user-meta">
-                                    <span class="user-title">소통리더</span>
-                                    <span class="user-points">• 100,000P</span>
-                                </div>
-                            </div>
-                            <i class="fas fa-chevron-down user-dropdown-icon"></i>
+                        <div id="userInfoContainer">
+                            <!-- AuthService가 동적으로 사용자 정보를 여기에 표시 -->
                         </div>
                     </div>
                 </header>
@@ -303,14 +295,16 @@
                                 <!-- 2등 -->
                                 <div class="podium-item second" id="rank-2">
                                     <div class="rank-number">2</div>
-                                    <div class="user-avatar">
-                                        <span>김</span>
+                                    <div class="user-avatar-container">
+                                        <div class="user-avatar">
+                                            <span>김</span>
+                                        </div>
+                                        <div class="membership-type">분양기획</div>
                                     </div>
-                                    <div class="membership-type">분양기획</div>
                                     <div class="user-info">
                                         <div class="nickname">김영업</div>
                                         <div class="representative-badge-text">
-                                            <span class="badge-name">얼리버드</span>
+                                            <span class="badge-name">ㅣ얼리버드ㅣ</span>
                                         </div>
                                     </div>
                                 </div>
@@ -318,14 +312,16 @@
                                 <!-- 1등 (가장 크게) -->
                                 <div class="podium-item first" id="rank-1">
                                     <div class="rank-number">1</div>
-                                    <div class="user-avatar">
-                                        <span>박</span>
+                                    <div class="user-avatar-container">
+                                        <div class="user-avatar">
+                                            <span>박</span>
+                                        </div>
+                                        <div class="membership-type">분양기획</div>
                                     </div>
-                                    <div class="membership-type">분양기획</div>
                                     <div class="user-info">
                                         <div class="nickname">부동산여왕</div>
                                         <div class="representative-badge-text">
-                                            <span class="badge-name">우승자</span>
+                                            <span class="badge-name">ㅣ우승자ㅣ</span>
                                         </div>
                                     </div>
                                     <div class="crown-decoration">
@@ -336,14 +332,16 @@
                                 <!-- 3등 -->
                                 <div class="podium-item third" id="rank-3">
                                     <div class="rank-number">3</div>
-                                    <div class="user-avatar">
-                                        <span>이</span>
+                                    <div class="user-avatar-container">
+                                        <div class="user-avatar">
+                                            <span>이</span>
+                                        </div>
+                                        <div class="membership-type">분양영업</div>
                                     </div>
-                                    <div class="membership-type">분양영업</div>
                                     <div class="user-info">
                                         <div class="nickname">서초베테랑</div>
                                         <div class="representative-badge-text">
-                                            <span class="badge-name">핑크다이아</span>
+                                            <span class="badge-name">ㅣ핑크다이아ㅣ</span>
                                         </div>
                                     </div>
                                 </div>
@@ -602,7 +600,10 @@
         </div>
 
         <script src="script.js"></script>
-        <script src="js/mockUsers.js"></script>
-        <script src="points-ranking.js"></script>
+        
+        <!-- Supabase 통합 -->
+        <script type="module" src="js/config/supabase.js"></script>
+        <script type="module" src="js/services/authService.js"></script>
+        <script type="module" src="js/pages/pointsRankingSupabase.js"></script>
     </body>
 </html>

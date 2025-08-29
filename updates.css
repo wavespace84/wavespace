@@ -281,6 +281,47 @@
     border-color: rgba(48, 128, 255, 0.5);
 }
 
+/* Type별 카테고리 스타일 */
+.update-category.type-기능추가 {
+    background: rgba(139, 92, 246, 0.1);
+    color: #7c3aed;
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+.update-category.type-기능추가 i {
+    color: #7c3aed;
+}
+
+.update-category.type-개선 {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.update-category.type-개선 i {
+    color: #2563eb;
+}
+
+.update-category.type-버그수정 {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.update-category.type-버그수정 i {
+    color: #059669;
+}
+
+.update-category.type-보안 {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.update-category.type-보안 i {
+    color: #dc2626;
+}
+
 .update-latest {
     display: inline-flex;
     align-items: center;
@@ -458,7 +499,7 @@
     opacity: 1;
 }
 
-.modal-container {
+.modal-content {
     background: white;
     border-radius: 16px;
     max-width: 900px;
@@ -471,13 +512,13 @@
     transition: transform 0.3s ease;
 }
 
-.modal-overlay.active .modal-container {
+.modal-overlay.active .modal-content {
     transform: scale(1);
 }
 
 /* 모달 헤더 */
 .modal-header {
-    padding: 24px 48px 20px;
+    padding: 32px 48px;
     border-bottom: 1px solid var(--gray-100);
     position: relative;
 }
@@ -486,11 +527,10 @@
     position: absolute;
     top: 24px;
     right: 24px;
+    display: flex;
+    gap: 8px;
 }
 
-.modal-title-section {
-    flex: 1;
-}
 
 .modal-title {
     font-size: 26px;
@@ -500,56 +540,76 @@
     line-height: 1.4;
 }
 
+/* modal-badges 스타일 추가 (공지사항과 동일) */
+.modal-badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+/* modal-meta는 body 밖으로 분리된 섹션용 (공지사항과 동일) */
 .modal-meta {
     display: flex;
     align-items: center;
-    gap: 12px;
-}
-
-.modal-date {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    gap: 24px;
+    padding: 24px 48px;
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-100);
     font-size: 14px;
     color: var(--gray-600);
 }
 
-.modal-date i {
-    font-size: 13px;
-    color: var(--gray-400);
+.modal-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.modal-close {
-    position: absolute;
-    top: 32px;
-    right: 32px;
-    width: 40px;
-    height: 40px;
+.modal-meta-item i {
+    font-size: 13px;
+    color: var(--gray-500);
+}
+
+/* 네비게이션 버튼 스타일 (공지사항과 동일) */
+.modal-nav-btn {
+    width: 32px;
+    height: 32px;
     border: none;
     background: var(--gray-100);
-    border-radius: 50%;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.modal-close:hover {
-    background: var(--gray-200);
-    transform: rotate(90deg);
-}
-
-.modal-close i {
-    font-size: 16px;
+    font-size: 14px;
     color: var(--gray-600);
+}
+
+.modal-nav-btn:hover:not(:disabled) {
+    background: var(--gray-200);
+    color: var(--gray-800);
+}
+
+.modal-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.modal-close-btn {
+    background: var(--gray-100) !important;
+}
+
+.modal-close-btn:hover {
+    background: var(--gray-200) !important;
+    transform: rotate(90deg);
 }
 
 /* 모달 바디 */
 .modal-body {
-    padding: 24px 48px;
+    padding: 48px;
     overflow-y: auto;
-    max-height: calc(90vh - 180px);
+    max-height: calc(90vh - 220px);
 }
 
 .modal-description {
@@ -964,4 +1024,110 @@ legend {
     font-weight: 600;
     color: var(--gray-700);
     margin-bottom: 12px;
+}
+
+/* 로딩 상태 */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--gray-200);
+    border-top: 4px solid var(--primary-500);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+    color: var(--gray-600);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* 에러 상태 */
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.error-state i {
+    font-size: 48px;
+    color: var(--red-500);
+    margin-bottom: 16px;
+}
+
+.error-state h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 8px 0;
+}
+
+.error-state p {
+    color: var(--gray-600);
+    font-size: 14px;
+    margin: 0 0 24px 0;
+}
+
+.btn-retry {
+    padding: 12px 24px;
+    background: var(--primary-500);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-retry:hover {
+    background: var(--primary-600);
+    transform: translateY(-1px);
+}
+
+/* 빈 상태 */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: var(--gray-400);
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 8px 0;
+}
+
+.empty-state p {
+    color: var(--gray-600);
+    font-size: 14px;
+    margin: 0;
 }

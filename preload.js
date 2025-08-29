@@ -1,61 +1,122 @@
 // 페이지 전환 시 깜빡임 방지를 위한 프리로드
-document.documentElement.style.visibility = 'hidden';
+// visibility hidden 제거 - 즉시 표시로 변경
 
-// WaveSpaceData 전역 객체 먼저 초기화
-(async function initializeWaveSpaceData() {
-    try {
-        // ES6 모듈을 동적으로 로드
-        const module = await import('./js/core/WaveSpaceData.js');
-        console.log('[PRELOAD] WaveSpaceData 초기화 완료');
-    } catch (error) {
-        console.error('[PRELOAD] WaveSpaceData 초기화 실패:', error);
-        // 폴백으로 기본 객체 생성
-        window.WaveSpaceData = {
-            errorHandler: {
-                log: (level, message, details) => console.log(`[${level}] ${message}`, details),
-                showUserError: (message) => alert(message)
-            },
-            security: {
-                sanitizeInput: (input) => input
+// WaveSpaceData 전역 객체 직접 초기화 (CORS 문제 완전 해결)
+(function initializeWaveSpaceData() {
+    // 에러 핸들러 클래스
+    class ErrorHandler {
+        constructor() {
+            this.errors = [];
+        }
+
+        log(level, message, details = {}) {
+            const error = {
+                level,
+                message,
+                details,
+                timestamp: new Date().toISOString(),
+                url: window.location.href
+            };
+            
+            this.errors.push(error);
+            
+            // 콘솔에도 출력
+            switch (level) {
+                case 'error':
+                    console.error(`[${level.toUpperCase()}] ${message}`, details);
+                    break;
+                case 'warn':
+                    console.warn(`[${level.toUpperCase()}] ${message}`, details);
+                    break;
+                default:
+                    console.log(`[${level.toUpperCase()}] ${message}`, details);
             }
-        };
+            
+            // 에러가 10개 이상 쌓이면 오래된 것 제거
+            if (this.errors.length > 10) {
+                this.errors.shift();
+            }
+        }
+        
+        showUserError(message) {
+            if (window.WaveSpaceData?.toast?.show) {
+                window.WaveSpaceData.toast.show(message, 'error');
+            } else {
+                alert(message);
+            }
+        }
+        
+        getErrors() {
+            return [...this.errors];
+        }
+        
+        clearErrors() {
+            this.errors = [];
+        }
     }
+
+    // 보안 관리자 클래스
+    class SecurityManager {
+        constructor() {
+            this.xssPatterns = [
+                /<script[^>]*>.*?<\/script>/gi,
+                /<iframe[^>]*>.*?<\/iframe>/gi,
+                /javascript:/gi,
+                /on\w+\s*=/gi
+            ];
+        }
+        
+        sanitizeInput(input) {
+            if (typeof input !== 'string') {
+                return input;
+            }
+            
+            let sanitized = input;
+            
+            // XSS 패턴 제거
+            this.xssPatterns.forEach(pattern => {
+                sanitized = sanitized.replace(pattern, '');
+            });
+            
+            // HTML 엔티티 인코딩
+            sanitized = sanitized
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;');
+                
+            return sanitized;
+        }
+        
+        validateToken(token) {
+            return token && token.length > 0;
+        }
+    }
+
+    // WaveSpaceData 메인 클래스
+    class WaveSpaceData {
+        constructor() {
+            this.errorHandler = new ErrorHandler();
+            this.security = new SecurityManager();
+            this.config = {
+                apiEndpoint: '/api',
+                version: '1.0.0',
+                debug: true
+            };
+            
+            console.log('[PRELOAD] WaveSpaceData 전역 데이터 시스템 초기화 완료');
+        }
+    }
+
+    // 전역 인스턴스 생성
+    const waveSpaceData = new WaveSpaceData();
+    
+    // 전역 접근 가능하도록 설정
+    window.WaveSpaceData = waveSpaceData;
+    
+    console.log('[PRELOAD] WaveSpaceData 전역 객체 초기화 성공');
 })();
 
-let pageShown = false;
-
-function showPage() {
-    if (pageShown) return; // 이미 표시된 경우 중복 실행 방지
-    
-    pageShown = true;
-    document.documentElement.style.visibility = 'visible';
-    console.log('[PRELOAD] 페이지 표시됨 - ', new Date().toISOString());
-}
-
-// DOM이 준비되면 즉시 표시
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', showPage);
-} else {
-    // 이미 DOM이 로드된 경우 즉시 실행
-    showPage();
-}
-
-// 추가 안전장치 - window load 이벤트
-window.addEventListener('load', () => {
-    console.log('[PRELOAD] Window load 이벤트 발생');
-    setTimeout(showPage, 10);
-});
-
-// 빠른 타임아웃 설정 (500ms 후 강제 표시)
-setTimeout(() => {
-    console.log('[PRELOAD] 타임아웃으로 페이지 강제 표시');
-    showPage();
-}, 500);
-
-// 최종 안전장치 (1초 후 강제 표시)
-setTimeout(() => {
-    if (!pageShown) {
-        console.warn('[PRELOAD] 최종 타임아웃으로 페이지 강제 표시');
-        showPage();
-    }
-}, 1000);
+// 페이지 즉시 표시 - 깜빡임 제거
+console.log('[PRELOAD] 페이지 즉시 표시 모드');

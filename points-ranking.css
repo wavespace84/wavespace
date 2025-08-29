@@ -163,12 +163,52 @@
     border: 1px solid rgba(0, 102, 255, 0.2);
 }
 
-/* 순위 번호 */
+/* 아바타 컨테이너 - 아바타와 회원유형 오버레이 */
+.user-avatar-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* 포디움 아이템 회원유형 - 아바타 하단 오버레이 */
+.podium-item .membership-type {
+    font-size: 10px;
+    color: var(--primary-blue);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2px 8px;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 500;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.first .membership-type {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    bottom: -10px;
+}
+
+/* 순위 번호 - "위" 접미사 스타일링 */
 .rank-number {
     font-size: 36px;
     font-weight: 700;
     margin-bottom: 16px;
     line-height: 1;
+}
+
+.rank-number .rank-suffix {
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 2px;
 }
 
 .first .rank-number {
@@ -200,7 +240,7 @@
     justify-content: center;
     font-size: 24px;
     font-weight: 600;
-    margin: 0 auto 16px;
+    margin-bottom: 0;
     position: relative;
 }
 
@@ -212,7 +252,11 @@
     color: white;
 }
 
-/* 사용자 정보 */
+/* 사용자 정보 - 닉네임 위치 조정 */
+.podium-item .user-info {
+    margin-top: 8px;
+}
+
 .podium-item .user-info .nickname {
     font-size: 16px;
     font-weight: 600;
@@ -224,7 +268,7 @@
     font-size: 18px;
 }
 
-/* 대표배지 스타일 */
+/* 대표배지 스타일 - 순수 텍스트 ㅣ내용ㅣ 형식 */
 .representative-badge-text {
     margin-top: 6px;
 }
@@ -232,9 +276,6 @@
 .representative-badge-text .badge-name {
     font-size: 11px;
     color: var(--gray-600);
-    background: rgba(0, 0, 0, 0.05);
-    padding: 2px 8px;
-    border-radius: 8px;
     font-weight: 500;
 }
 
@@ -396,7 +437,7 @@
     justify-content: center;
     font-size: 24px;
     font-weight: 600;
-    margin: 0 auto 16px;
+    margin-bottom: 0;
     position: relative;
 }
 

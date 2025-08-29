@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self';"
+            content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://sishloxzcqapontycuyz.supabase.co wss://sishloxzcqapontycuyz.supabase.co;"
         />
         <title>WAVE space - 대한민국 No.1 분양실무자 대표 커뮤니티</title>
         <script src="preload.js"></script>
@@ -264,21 +264,12 @@
                         </button>
 
                         <!-- 사용자 프로필 -->
-                        <div class="user-profile">
-                            <div class="user-avatar">
-                                <span>박</span>
-                                <div class="user-badge">
-                                    <i class="fas fa-crown"></i>
-                                </div>
+                        <div class="user-info" id="userInfoContainer">
+                            <!-- 로그인 상태에 따라 동적으로 변경됨 -->
+                            <div class="auth-buttons anonymous-only">
+                                <button class="btn-login">로그인</button>
+                                <button class="btn-signup">회원가입</button>
                             </div>
-                            <div class="user-info">
-                                <p class="user-name">박승학님</p>
-                                <div class="user-meta">
-                                    <span class="user-title">소통리더</span>
-                                    <span class="user-points">• 100,000P</span>
-                                </div>
-                            </div>
-                            <i class="fas fa-chevron-down user-dropdown-icon"></i>
                         </div>
                     </div>
                 </header>
@@ -740,9 +731,824 @@
             </div>
         </div>
 
+        <!-- Supabase CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        
+        <!-- Supabase 서비스 -->
+        <script src="js/config/supabase.js"></script>
+        <script src="js/services/authService.js"></script>
+        <script src="js/modules/auth-guard.js"></script>
+        <script src="js/services/postService.js"></script>
+        <script src="js/services/pointService.js"></script>
+        <script src="js/services/fileService.js"></script>
+        
         <!-- 레거시 스크립트 (폴백용) -->
         <script src="script.js?v=20250120203000"></script>
+        <script src="js/services/commonAuthService.js"></script>
         <!-- ES6 모듈 시스템 (향상된 기능) -->
         <script type="module" src="js/main.js"></script>
+        
+        <!-- 인증 버튼 이벤트 바인딩 -->
+        <script>
+        // 안전한 이벤트 바인딩
+        function setupAuthButtons() {
+            console.log('🔄 인증 버튼 이벤트 설정 중...');
+            
+            // 로그인 버튼
+            const loginBtns = document.querySelectorAll('.btn-login');
+            loginBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🔄 로그인 버튼 클릭됨');
+                    
+                    if (window.authService && typeof window.authService.showLogin === 'function') {
+                        window.authService.showLogin();
+                    } else {
+                        console.log('🔄 폴백: 직접 로그인 페이지로 이동');
+                        window.location.href = 'login.html';
+                    }
+                });
+            });
+            
+            // 회원가입 버튼
+            const signupBtns = document.querySelectorAll('.btn-signup');
+            signupBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🔄 회원가입 버튼 클릭됨');
+                    
+                    if (window.authService && typeof window.authService.showSignup === 'function') {
+                        window.authService.showSignup();
+                    } else {
+                        console.log('🔄 폴백: 직접 회원가입 페이지로 이동');
+                        window.location.href = 'signup.html';
+                    }
+                });
+            });
+            
+            console.log('✅ 인증 버튼 이벤트 설정 완료');
+        }
+
+        // DOM 로드 완료 후 이벤트 바인딩
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupAuthButtons);
+        } else {
+            setupAuthButtons();
+        }
+
+        // authService 로드 완료 후 재바인딩
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                setupAuthButtons();
+            }, 1000); // authService 초기화 대기
+        });
+        </script>
+
+    <!-- 로그인 모달 -->
+    <div class="auth-modal" id="loginModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">로그인</h2>
+                <button class="modal-close" onclick="closeModal('loginModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="auth-form" id="modalLoginForm" onsubmit="handleModalLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="modalLoginEmail">이메일</label>
+                        <input type="email" id="modalLoginEmail" class="form-input" required placeholder="이메일을 입력하세요">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="modalLoginPassword">비밀번호</label>
+                        <input type="password" id="modalLoginPassword" class="form-input" required placeholder="비밀번호를 입력하세요">
+                    </div>
+                    
+                    <button type="submit" class="btn-auth-modal" id="modalLoginBtn">
+                        <span class="btn-text">로그인</span>
+                        <span class="loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                    
+                    <div id="modalLoginError" class="error-message"></div>
+                </form>
+                
+                <div class="modal-footer">
+                    <div class="forgot-password">
+                        <a href="#" onclick="resetModalPassword()">비밀번호를 잊으셨나요?</a>
+                    </div>
+                    <div class="switch-auth">
+                        아직 계정이 없으신가요? 
+                        <a href="signup.html">회원가입하기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        /* 인증 모달 스타일 */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-modal.active {
+            display: flex;
+        }
+
+        .auth-modal .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+        }
+
+        .auth-modal .modal-content {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .auth-modal .modal-header {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 24px;
+        }
+
+        .auth-modal .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0;
+        }
+
+        .auth-modal .modal-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--gray-500);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .auth-modal .modal-close:hover {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .auth-modal .modal-body {
+            padding: 0 24px 24px;
+        }
+
+        .auth-modal .auth-form {
+            margin-bottom: 20px;
+        }
+
+        .auth-modal .form-group {
+            margin-bottom: 16px;
+        }
+
+        .auth-modal .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--gray-700);
+            font-size: 14px;
+        }
+
+        .auth-modal .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            background: var(--white);
+        }
+
+        .auth-modal .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .auth-modal .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .auth-modal .btn-auth-modal {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .auth-modal .btn-auth-modal:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .auth-modal .btn-auth-modal:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-modal .loading {
+            display: none;
+        }
+
+        .auth-modal .loading.show {
+            display: inline-block;
+        }
+
+        .auth-modal .error-message {
+            color: var(--red);
+            font-size: 12px;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .auth-modal .modal-footer {
+            border-top: 1px solid var(--gray-200);
+            padding-top: 16px;
+            text-align: center;
+        }
+
+        .auth-modal .forgot-password {
+            margin-bottom: 12px;
+        }
+
+        .auth-modal .forgot-password a {
+            color: var(--gray-600);
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .auth-modal .forgot-password a:hover {
+            color: var(--primary-blue);
+            text-decoration: underline;
+        }
+
+        .auth-modal .switch-auth {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+
+        .auth-modal .switch-auth a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-modal .switch-auth a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-modal .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .auth-modal .terms-checkbox input[type="checkbox"] {
+            margin-top: 2px;
+        }
+
+        .auth-modal .terms-text {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.4;
+        }
+
+        .auth-modal .terms-text a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .auth-modal .terms-text a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-modal .modal-content {
+                max-width: 95%;
+                margin: 20px;
+            }
+            
+            .auth-modal .modal-header,
+            .auth-modal .modal-body {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            
+            .auth-modal .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        // 모달 제어 함수들
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                // 폼 리셋
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.reset();
+                    form.querySelector('.error-message').textContent = '';
+                }
+            }
+        }
+
+        function switchToLogin() {
+            closeModal('signupModal');
+            openModal('loginModal');
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                const modal = event.target.closest('.auth-modal');
+                if (modal) {
+                    closeModal(modal.id);
+                }
+            }
+        });
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const activeModal = document.querySelector('.auth-modal.active');
+                if (activeModal) {
+                    closeModal(activeModal.id);
+                }
+            }
+        });
+
+        // 모달 로그인 처리
+        async function handleModalLogin(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('modalLoginBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            const errorMessage = document.getElementById('modalLoginError');
+            
+            // 로딩 상태 시작
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            loading.classList.add('show');
+            errorMessage.textContent = '';
+            
+            try {
+                const email = document.getElementById('modalLoginEmail').value;
+                const password = document.getElementById('modalLoginPassword').value;
+                
+                if (window.authService && typeof window.authService.signIn === 'function') {
+                    const result = await authService.signIn(email, password);
+                    
+                    if (result.success) {
+                        closeModal('loginModal');
+                        // 페이지 새로고침으로 UI 업데이트
+                        window.location.reload();
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } else {
+                    throw new Error('인증 서비스를 사용할 수 없습니다.');
+                }
+                
+            } catch (error) {
+                console.error('로그인 오류:', error);
+                
+                let errorText = '로그인에 실패했습니다.';
+                if (error.message.includes('Invalid login credentials')) {
+                    errorText = '이메일 또는 비밀번호가 올바르지 않습니다.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorText = '이메일 인증이 필요합니다. 이메일을 확인해주세요.';
+                } else if (error.message.includes('Too many requests')) {
+                    errorText = '너무 많은 시도입니다. 잠시 후 다시 시도해주세요.';
+                }
+                
+                errorMessage.textContent = errorText;
+            } finally {
+                // 로딩 상태 종료
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                loading.classList.remove('show');
+            }
+        }
+
+
+        // 모달 비밀번호 재설정
+        async function resetModalPassword() {
+            const email = document.getElementById('modalLoginEmail').value;
+            
+            if (!email) {
+                alert('이메일을 입력해주세요.');
+                return;
+            }
+            
+            try {
+                if (window.authService && typeof window.authService.resetPassword === 'function') {
+                    const result = await authService.resetPassword(email);
+                    if (result.success) {
+                        alert('비밀번호 재설정 링크를 이메일로 보내드렸습니다.');
+                    } else {
+                        alert('비밀번호 재설정 요청에 실패했습니다.');
+                    }
+                } else {
+                    alert('인증 서비스를 사용할 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('비밀번호 재설정 오류:', error);
+                alert('비밀번호 재설정 요청에 실패했습니다.');
+            }
+        }
+
+        // 마이페이지 모달 제어 함수들
+        function openMypageModal() {
+            if (window.authService && typeof window.authService.openMypageModal === 'function') {
+                window.authService.openMypageModal();
+            } else {
+                // 폴백: 직접 모달 제어
+                const modal = document.getElementById('mypageModal');
+                if (modal) {
+                    modal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+        }
+
+        function closeMypageModal() {
+            if (window.authService && typeof window.authService.closeMypageModal === 'function') {
+                window.authService.closeMypageModal();
+            } else {
+                // 폴백: 직접 모달 제어
+                const modal = document.getElementById('mypageModal');
+                if (modal) {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            }
+        }
+
+        function switchMypageTab(tabName) {
+            if (window.authService && typeof window.authService.switchMypageTab === 'function') {
+                window.authService.switchMypageTab(tabName);
+            }
+        }
+
+        // 실무자 업로드 함수들
+        function uploadMarketResearch() {
+            if (confirm('시장조사서 페이지로 이동하여 업로드하시겠습니까?\n\n실무자 인증을 위해 3건 이상 업로드가 필요합니다.')) {
+                window.location.href = 'market-research.html?from=practitioner';
+            }
+        }
+
+        function uploadProposal() {
+            if (confirm('제안서 페이지로 이동하여 업로드하시겠습니까?\n\n실무자 인증을 위해 3건 이상 업로드가 필요합니다.')) {
+                window.location.href = 'proposal.html?from=practitioner';
+            }
+        }
+
+        // 마이페이지 모달 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            // 탭 네비게이션 이벤트
+            const navItems = document.querySelectorAll('.mypage-nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const tabName = this.dataset.tab;
+                    switchMypageTab(tabName);
+                });
+            });
+
+            // 모달 외부 클릭 시 닫기
+            const modalOverlay = document.getElementById('mypageModal');
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', function(e) {
+                    if (e.target === modalOverlay) {
+                        closeMypageModal();
+                    }
+                });
+            }
+
+            // ESC 키로 모달 닫기
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('mypageModal');
+                    if (modal && modal.classList.contains('show')) {
+                        closeMypageModal();
+                    }
+                }
+            });
+        });
+    </script>
+
+    <!-- 마이페이지 모달 -->
+    <div class="mypage-modal-overlay" id="mypageModal">
+        <div class="mypage-modal">
+            <div class="mypage-modal-header">
+                <h2>마이페이지</h2>
+                <button class="mypage-modal-close" onclick="closeMypageModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mypage-modal-nav">
+                <button class="mypage-nav-item active" data-tab="profile">내 정보</button>
+                <button class="mypage-nav-item" data-tab="activity">활동 내역</button>
+                <button class="mypage-nav-item" data-tab="points">포인트</button>
+                <button class="mypage-nav-item" data-tab="badges">뱃지</button>
+                <button class="mypage-nav-item" data-tab="purchases">구매 내역</button>
+                <button class="mypage-nav-item" data-tab="settings">설정</button>
+            </div>
+            
+            <div class="mypage-modal-content">
+                <!-- 내 정보 탭 -->
+                <div class="mypage-tab-content active" id="profile-tab">
+                    <div class="mypage-profile-header">
+                        <div class="mypage-avatar-container">
+                            <div class="mypage-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <button class="mypage-avatar-edit">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <div class="mypage-profile-info">
+                            <h3 id="mypage-username">사용자명</h3>
+                            <p id="mypage-email">user@example.com</p>
+                            <div class="mypage-level-badge" id="mypage-level">
+                                <i class="fas fa-star"></i>
+                                <span>Level 1</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mypage-practitioner-status" id="mypage-practitioner">
+                        <div class="mypage-status-card">
+                            <div class="mypage-status-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="mypage-status-info">
+                                <h4>실무자 인증</h4>
+                                <p class="mypage-status-text">인증 대기중</p>
+                                <div class="mypage-progress-bar">
+                                    <div class="mypage-progress-fill" style="width: 33%"></div>
+                                </div>
+                                <p class="mypage-progress-text">3건 중 1건 업로드 완료</p>
+                            </div>
+                            <div class="mypage-status-actions">
+                                <button class="mypage-upload-btn" onclick="uploadMarketResearch()">
+                                    시장조사서 업로드
+                                </button>
+                                <button class="mypage-upload-btn" onclick="uploadProposal()">
+                                    제안서 업로드
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mypage-info-cards">
+                        <div class="mypage-info-card">
+                            <div class="mypage-card-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="mypage-card-content">
+                                <h4>보유 포인트</h4>
+                                <p class="mypage-card-value" id="mypage-points">0 P</p>
+                            </div>
+                        </div>
+                        <div class="mypage-info-card">
+                            <div class="mypage-card-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="mypage-card-content">
+                                <h4>전체 순위</h4>
+                                <p class="mypage-card-value" id="mypage-rank">#-</p>
+                            </div>
+                        </div>
+                        <div class="mypage-info-card">
+                            <div class="mypage-card-icon">
+                                <i class="fas fa-medal"></i>
+                            </div>
+                            <div class="mypage-card-content">
+                                <h4>보유 뱃지</h4>
+                                <p class="mypage-card-value" id="mypage-badge-count">0개</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 활동 내역 탭 -->
+                <div class="mypage-tab-content" id="activity-tab">
+                    <div class="mypage-activity-filters">
+                        <button class="mypage-filter-btn active" data-filter="all">전체</button>
+                        <button class="mypage-filter-btn" data-filter="posts">게시글</button>
+                        <button class="mypage-filter-btn" data-filter="comments">댓글</button>
+                        <button class="mypage-filter-btn" data-filter="uploads">업로드</button>
+                    </div>
+                    <div class="mypage-activity-list" id="mypage-activity-list">
+                        <div class="mypage-activity-empty">
+                            <i class="fas fa-inbox"></i>
+                            <p>아직 활동 내역이 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 포인트 탭 -->
+                <div class="mypage-tab-content" id="points-tab">
+                    <div class="mypage-points-summary">
+                        <div class="mypage-points-card">
+                            <h4>현재 포인트</h4>
+                            <p class="mypage-points-value" id="mypage-current-points">0 P</p>
+                        </div>
+                        <div class="mypage-points-card">
+                            <h4>이번 달 획득</h4>
+                            <p class="mypage-points-value" id="mypage-monthly-points">0 P</p>
+                        </div>
+                    </div>
+                    <div class="mypage-points-actions">
+                        <button class="mypage-action-btn" onclick="location.href='points-charge.html'">
+                            <i class="fas fa-credit-card"></i>
+                            포인트 충전
+                        </button>
+                        <button class="mypage-action-btn" onclick="location.href='points-shop.html'">
+                            <i class="fas fa-store"></i>
+                            포인트 상점
+                        </button>
+                    </div>
+                    <div class="mypage-points-history" id="mypage-points-history">
+                        <h4>포인트 내역</h4>
+                        <div class="mypage-points-empty">
+                            <i class="fas fa-coins"></i>
+                            <p>포인트 내역이 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 뱃지 탭 -->
+                <div class="mypage-tab-content" id="badges-tab">
+                    <div class="mypage-badge-stats">
+                        <div class="mypage-badge-stat">
+                            <h4>보유 뱃지</h4>
+                            <p id="mypage-total-badges">0 / 28</p>
+                        </div>
+                        <div class="mypage-badge-stat">
+                            <h4>달성률</h4>
+                            <p id="mypage-badge-progress">0%</p>
+                        </div>
+                    </div>
+                    <div class="mypage-badge-grid" id="mypage-badge-grid">
+                        <div class="mypage-badge-empty">
+                            <i class="fas fa-medal"></i>
+                            <p>아직 획득한 뱃지가 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 구매 내역 탭 -->
+                <div class="mypage-tab-content" id="purchases-tab">
+                    <div class="mypage-purchase-filters">
+                        <button class="mypage-filter-btn active" data-filter="all">전체</button>
+                        <button class="mypage-filter-btn" data-filter="points">포인트 충전</button>
+                        <button class="mypage-filter-btn" data-filter="items">아이템 구매</button>
+                        <button class="mypage-filter-btn" data-filter="membership">멤버십</button>
+                    </div>
+                    <div class="mypage-purchase-list" id="mypage-purchase-list">
+                        <div class="mypage-purchase-empty">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>구매 내역이 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 설정 탭 -->
+                <div class="mypage-tab-content" id="settings-tab">
+                    <div class="mypage-setting-section">
+                        <h4>계정 설정</h4>
+                        <div class="mypage-setting-item">
+                            <div class="mypage-setting-info">
+                                <h5>이메일 변경</h5>
+                                <p>로그인에 사용되는 이메일을 변경합니다.</p>
+                            </div>
+                            <button class="mypage-setting-btn">변경</button>
+                        </div>
+                        <div class="mypage-setting-item">
+                            <div class="mypage-setting-info">
+                                <h5>비밀번호 변경</h5>
+                                <p>계정 보안을 위해 주기적으로 변경해주세요.</p>
+                            </div>
+                            <button class="mypage-setting-btn">변경</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mypage-setting-section">
+                        <h4>알림 설정</h4>
+                        <div class="mypage-setting-item">
+                            <div class="mypage-setting-info">
+                                <h5>이메일 알림</h5>
+                                <p>중요한 공지사항을 이메일로 받습니다.</p>
+                            </div>
+                            <label class="mypage-toggle">
+                                <input type="checkbox" id="emailNotification" checked>
+                                <span class="mypage-toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="mypage-setting-item">
+                            <div class="mypage-setting-info">
+                                <h5>브라우저 알림</h5>
+                                <p>댓글, 답변 등의 알림을 브라우저로 받습니다.</p>
+                            </div>
+                            <label class="mypage-toggle">
+                                <input type="checkbox" id="browserNotification">
+                                <span class="mypage-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mypage-setting-section">
+                        <h4>개인정보</h4>
+                        <div class="mypage-setting-item">
+                            <div class="mypage-setting-info">
+                                <h5>개인정보 다운로드</h5>
+                                <p>내 계정의 모든 데이터를 다운로드합니다.</p>
+                            </div>
+                            <button class="mypage-setting-btn">다운로드</button>
+                        </div>
+                        <div class="mypage-setting-item danger">
+                            <div class="mypage-setting-info">
+                                <h5>계정 삭제</h5>
+                                <p>계정을 영구적으로 삭제합니다. 이 작업은 되돌릴 수 없습니다.</p>
+                            </div>
+                            <button class="mypage-setting-btn danger">삭제</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </body>
 </html>

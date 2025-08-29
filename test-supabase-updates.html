@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Updates 테스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Supabase Updates 테이블 연결 테스트</h1>
+    <div id="status">로딩 중...</div>
+    <div id="data"></div>
+    
+    <script>
+        const SUPABASE_URL = 'https://sishloxzcqapontycuyz.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpc2hsb3h6Y3FhcG9udHljdXl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NTA2MzAsImV4cCI6MjA3MDEyNjYzMH0.23aVcOSXDSvCi7yRtnCumy9knjIkL_mTAudSyubANZs';
+
+        async function testConnection() {
+            const statusDiv = document.getElementById('status');
+            const dataDiv = document.getElementById('data');
+            
+            try {
+                statusDiv.innerHTML = '🔄 Supabase 클라이언트 초기화 중...';
+                console.log('Supabase 라이브러리:', typeof window.supabase);
+                
+                const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log('Supabase 클라이언트 생성됨:', client);
+                
+                statusDiv.innerHTML = '📊 updates 테이블 데이터 조회 중...';
+                console.log('데이터 조회 시작...');
+                
+                const { data, error } = await client
+                    .from('updates')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('released_at', { ascending: false });
+                
+                console.log('쿼리 결과 - 데이터:', data);
+                console.log('쿼리 결과 - 에러:', error);
+                
+                if (error) {
+                    statusDiv.innerHTML = `❌ 오류: ${error.message}`;
+                    console.error('쿼리 오류:', error);
+                    return;
+                }
+                
+                statusDiv.innerHTML = `✅ 성공! ${data?.length || 0}개의 업데이트를 찾았습니다.`;
+                
+                if (data && data.length > 0) {
+                    dataDiv.innerHTML = `
+                        <h2>업데이트 데이터:</h2>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    dataDiv.innerHTML = '<h2>데이터가 없습니다.</h2>';
+                }
+                
+            } catch (error) {
+                console.error('테스트 실패:', error);
+                statusDiv.innerHTML = `❌ 테스트 실패: ${error.message}`;
+            }
+        }
+        
+        // 페이지 로드 후 테스트 실행
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 1000); // 1초 후 실행
+        });
+    </script>
+</body>
+</html>

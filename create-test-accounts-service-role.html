@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테스트 계정 생성기 (Service Role Key)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #0066ff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .btn:hover {
+            background: #0052cc;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background: #f0f0f0;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+        .info {
+            color: blue;
+        }
+        .progress {
+            margin: 20px 0;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #0066ff;
+            transition: width 0.3s;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>수파베이스 테스트 계정 생성기</h1>
+        
+        <div class="warning">
+            ⚠️ 이 도구는 Service Role Key가 필요합니다. 
+            수파베이스 대시보드 > Settings > API에서 찾을 수 있습니다.
+        </div>
+
+        <div class="input-group">
+            <label class="input-label" for="serviceKey">Service Role Key:</label>
+            <input type="password" id="serviceKey" class="input-field" 
+                   placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+        </div>
+        
+        <button id="createBtn" class="btn" onclick="createTestAccounts()">
+            테스트 계정 30개 생성 시작
+        </button>
+        
+        <div class="progress" id="progressContainer" style="display: none;">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+        
+        <div id="status"></div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        
+        // 수파베이스 설정
+        const SUPABASE_URL = 'https://sishloxzcqapontycuyz.supabase.co';
+        
+        // 로그 추가 함수
+        function addLog(message, type = 'info') {
+            const status = document.getElementById('status');
+            const time = new Date().toLocaleTimeString('ko-KR');
+            status.innerHTML += `<div class="${type}">[${time}] ${message}</div>`;
+            status.scrollTop = status.scrollHeight;
+        }
+        
+        // 진행률 업데이트
+        function updateProgress(current, total) {
+            const percentage = Math.round((current / total) * 100);
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = percentage + '%';
+        }
+        
+        // 회원 유형과 실무자 여부 결정
+        function getUserTypeInfo(index) {
+            let memberType, isPractitioner, practitionerVerifiedAt;
+            
+            if (index <= 6) {
+                memberType = '분양기획';
+            } else if (index <= 12) {
+                memberType = '분양영업';
+            } else if (index <= 18) {
+                memberType = '청약상담';
+            } else if (index <= 24) {
+                memberType = '관계사';
+            } else {
+                memberType = '일반';
+            }
+            
+            if (index <= 5 || index >= 26) {
+                isPractitioner = false;
+                practitionerVerifiedAt = null;
+            } else {
+                isPractitioner = true;
+                // 랜덤한 날짜 생성 (최근 1년 이내)
+                const date = new Date();
+                date.setDate(date.getDate() - Math.floor(Math.random() * 365));
+                practitionerVerifiedAt = date.toISOString();
+            }
+            
+            return { memberType, isPractitioner, practitionerVerifiedAt };
+        }
+        
+        // 테스트 계정 생성 함수
+        async function createSingleAccount(supabase, index) {
+            const email = `test${index}@g.com`;
+            const password = '1234';
+            const username = `Test${index}`;
+            const fullName = `테스트사용자${index}`;
+            const phone = `010-1231-${String(index).padStart(4, '0')}`;
+            const company = `테스트부동산${index}`;
+            const points = Math.floor(Math.random() * 4900) + 100;
+            const { memberType, isPractitioner, practitionerVerifiedAt } = getUserTypeInfo(index);
+            
+            try {
+                addLog(`계정 ${username} 생성 중...`);
+                
+                // Admin API를 사용하여 사용자 생성
+                const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+                    email: email,
+                    password: password,
+                    email_confirm: true,
+                    user_metadata: {
+                        username: username,
+                        full_name: fullName
+                    }
+                });
+                
+                if (authError) throw authError;
+                
+                // Public users 테이블에 프로필 정보 추가
+                const { error: profileError } = await supabase
+                    .from('users')
+                    .insert({
+                        auth_user_id: authData.user.id,
+                        username: username,
+                        full_name: fullName,
+                        email: email,
+                        phone: phone,
+                        company: company,
+                        points: points,
+                        member_type: memberType,
+                        is_practitioner: isPractitioner,
+                        practitioner_verified_at: practitionerVerifiedAt
+                    });
+                
+                if (profileError) throw profileError;
+                
+                addLog(`✅ ${username} (${email}) 생성 완료`, 'success');
+                return true;
+                
+            } catch (error) {
+                addLog(`❌ ${username} 생성 실패: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        // 메인 함수
+        window.createTestAccounts = async function() {
+            const serviceKey = document.getElementById('serviceKey').value.trim();
+            
+            if (!serviceKey) {
+                addLog('❌ Service Role Key를 입력해주세요.', 'error');
+                return;
+            }
+            
+            // Service Role Key로 Supabase 클라이언트 생성
+            const supabase = createClient(SUPABASE_URL, serviceKey, {
+                auth: {
+                    autoRefreshToken: false,
+                    persistSession: false
+                }
+            });
+            
+            const btn = document.getElementById('createBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            
+            btn.disabled = true;
+            btn.textContent = '생성 중...';
+            progressContainer.style.display = 'block';
+            
+            addLog('테스트 계정 생성을 시작합니다...', 'info');
+            addLog('Service Role Key를 사용하여 Admin API로 생성합니다.', 'info');
+            
+            let successCount = 0;
+            const total = 30;
+            
+            // 먼저 기존 계정 삭제
+            addLog('기존 test 계정 삭제 중...', 'info');
+            for (let i = 1; i <= total; i++) {
+                try {
+                    // 먼저 public.users에서 삭제
+                    await supabase.from('users').delete().eq('email', `test${i}@g.com`);
+                    
+                    // auth 사용자 삭제 (Admin API 사용)
+                    const { data: users } = await supabase.auth.admin.listUsers({
+                        filter: `email.eq.test${i}@g.com`
+                    });
+                    
+                    if (users && users.users && users.users.length > 0) {
+                        await supabase.auth.admin.deleteUser(users.users[0].id);
+                    }
+                } catch (error) {
+                    // 삭제 실패는 무시 (계정이 없을 수 있음)
+                }
+            }
+            
+            addLog('새 계정 생성 시작...', 'info');
+            
+            for (let i = 1; i <= total; i++) {
+                const success = await createSingleAccount(supabase, i);
+                if (success) successCount++;
+                updateProgress(i, total);
+                
+                // 너무 빠른 요청 방지를 위한 딜레이
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            
+            addLog(`\n===== 완료 =====`, 'info');
+            addLog(`총 ${total}개 중 ${successCount}개 계정 생성 성공`, successCount === total ? 'success' : 'error');
+            
+            if (successCount > 0) {
+                addLog(`\n생성된 계정으로 로그인하려면:`, 'info');
+                addLog(`이메일: test1@g.com ~ test${successCount}@g.com`, 'info');
+                addLog(`비밀번호: 1234`, 'info');
+            }
+            
+            btn.disabled = false;
+            btn.textContent = '완료';
+        }
+    </script>
+</body>
+</html>

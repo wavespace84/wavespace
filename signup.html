@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원가입 - WAVE SPACE</title>
+    <script src="preload.js"></script>
+    <link rel="stylesheet" href="common.css" />
+    <link rel="stylesheet" href="styles.css?v=7" />
+    <link rel="stylesheet" href="signup.css" />
+    <link rel="stylesheet" href="mobile-fix.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body data-page="signup">
+    <!-- 전체 컨테이너 -->
+    <div class="app-container">
+        <!-- 사이드바 -->
+        <aside class="sidebar">
+            <!-- 로고 영역 -->
+            <div class="sidebar-header">
+                <a href="index.html" class="logo-container">
+                    <span class="logo-text">WAVE space</span>
+                    <span class="beta-badge">BETA</span>
+                </a>
+            </div>
+
+            <!-- 슬로건 -->
+            <div class="sidebar-slogan">
+                <p>대한민국 No.1 분양실무자 대표 커뮤니티</p>
+            </div>
+
+            <!-- 네비게이션 -->
+            <nav class="sidebar-nav">
+                <!-- 안내 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-book-open"></i>
+                                <span>안내</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="notice.html" class="nav-item">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span>공지사항</span>
+                                </a>
+                                <a href="updates.html" class="nav-item">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>업데이트</span>
+                                </a>
+                                <a href="support.html" class="nav-item">
+                                    <i class="fas fa-life-ring"></i>
+                                    <span>고객센터</span>
+                                </a>
+                                <a href="plus-membership.html" class="nav-item">
+                                    <i class="fas fa-rocket"></i>
+                                    <span>+Plus Membership</span>
+                                </a>
+                                <a href="events.html" class="nav-item">
+                                    <i class="fas fa-gift"></i>
+                                    <span>이벤트</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 커뮤니티 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-users"></i>
+                                <span>커뮤니티</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="hall-of-fame.html" class="nav-item hall-of-fame highlighted">
+                                    <i class="fas fa-trophy"></i>
+                                    <span>명예의전당</span>
+                                </a>
+                                <a href="attendance.html" class="nav-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>출석체크</span>
+                                </a>
+                                <a href="forum.html" class="nav-item">
+                                    <i class="fas fa-comments"></i>
+                                    <span>자유게시판</span>
+                                </a>
+                                <a href="humor.html" class="nav-item">
+                                    <i class="fas fa-laugh"></i>
+                                    <span>유머재미</span>
+                                </a>
+                                <a href="qna.html" class="nav-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>질문답변</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 분양자료 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-folder-open"></i>
+                                <span>분양자료</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="market-research.html" class="nav-item">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>시장조사서</span>
+                                </a>
+                                <a href="proposal.html" class="nav-item">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>제안서</span>
+                                </a>
+                                <a href="education.html" class="nav-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>교육자료</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 포인트 섹션 -->
+                <div class="nav-section">
+                    <div class="nav-category">
+                        <div class="nav-category-wrapper">
+                            <button class="nav-category-button">
+                                <i class="fas fa-coins"></i>
+                                <span>포인트</span>
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                            </button>
+                            <div class="nav-items">
+                                <a href="points-ranking.html" class="nav-item">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>전체랭킹</span>
+                                </a>
+                                <a href="points-charge.html" class="nav-item">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>충전하기</span>
+                                </a>
+                                <a href="points-shop.html" class="nav-item">
+                                    <i class="fas fa-store"></i>
+                                    <span>상점</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <div class="main-container">
+            <!-- 헤더 -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+
+                <div class="header-right">
+                    <!-- 검색 버튼 -->
+                    <button class="header-icon-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+
+                    <!-- 알림 버튼 -->
+                    <button class="header-icon-btn notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+
+                    <!-- 사용자 프로필 -->
+                    <div id="userInfoContainer">
+                        <!-- AuthService가 동적으로 사용자 정보를 여기에 표시 -->
+                    </div>
+                </div>
+            </header>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="main-content">
+                <div class="signup-container">
+                    <!-- 헤더 -->
+                    <div class="signup-header">
+                        <h1 class="signup-title">회원가입</h1>
+                        <p class="signup-subtitle">새로운 계정을 만들어보세요</p>
+                    </div>
+
+                    <!-- 회원가입 폼 -->
+                    <div class="signup-card">
+                        <!-- 기본 정보 섹션 -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-user"></i>
+                                기본 정보
+                            </h3>
+                            <p class="section-description">회원가입에 필요한 기본 정보를 입력해주세요.</p>
+
+                            <form id="signupForm" onsubmit="handleSignup(event)">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="userId">
+                                            아이디 <span class="required">*</span>
+                                        </label>
+                                        <div class="input-with-button">
+                                            <input type="text" id="userId" class="form-input" required 
+                                                   placeholder="아이디를 입력하세요" minlength="4" maxlength="20">
+                                            <button type="button" class="check-btn" onclick="checkUserIdDuplicate()">중복확인</button>
+                                        </div>
+                                        <div id="userIdStatus" class="field-status"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="nickname">
+                                            닉네임 <span class="required">*</span>
+                                        </label>
+                                        <div class="input-with-button">
+                                            <input type="text" id="nickname" class="form-input" required 
+                                                   placeholder="닉네임을 입력하세요" minlength="2" maxlength="15">
+                                            <button type="button" class="check-btn" onclick="checkNicknameDuplicate()">중복확인</button>
+                                        </div>
+                                        <div id="nicknameStatus" class="field-status"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="password">
+                                            비밀번호 <span class="required">*</span>
+                                        </label>
+                                        <input type="password" id="password" class="form-input" required 
+                                               placeholder="8자 이상, 특수문자 포함" minlength="8">
+                                        <div class="password-requirements">
+                                            <span class="requirement" id="lengthReq">✗ 8자 이상</span>
+                                            <span class="requirement" id="specialReq">✗ 특수문자</span>
+                                            <span class="requirement" id="numberReq">✗ 숫자</span>
+                                        </div>
+                                        <div id="passwordStatus" class="field-status"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="confirmPassword">
+                                            비밀번호 확인 <span class="required">*</span>
+                                        </label>
+                                        <input type="password" id="confirmPassword" class="form-input" required 
+                                               placeholder="비밀번호를 다시 입력하세요" minlength="8">
+                                        <div id="confirmPasswordStatus" class="field-status"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="email">
+                                            이메일 <span class="required">*</span>
+                                        </label>
+                                        <input type="email" id="email" class="form-input" required 
+                                               placeholder="이메일을 입력하세요">
+                                        <div id="emailStatus" class="field-status"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="fullName">
+                                            실명 <span class="required">*</span>
+                                        </label>
+                                        <input type="text" id="fullName" class="form-input" required 
+                                               placeholder="실명을 입력하세요">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="phone">
+                                            연락처 <span class="required">*</span>
+                                        </label>
+                                        <div class="input-with-button">
+                                            <input type="tel" id="phone" class="form-input" required 
+                                                   placeholder="010-1234-5678" pattern="010-[0-9]{4}-[0-9]{4}">
+                                            <button type="button" class="check-btn" id="requestVerificationBtn" onclick="requestPhoneVerification()" disabled style="opacity: 0.6;">본인인증</button>
+                                        </div>
+                                        <div id="phoneStatus" class="field-status"></div>
+                                        
+                                        <!-- reCAPTCHA 컨테이너 (visible 모드) -->
+                                        <div class="recaptcha-wrapper" style="margin: 16px 0;">
+                                            <div id="recaptcha-container">
+                                                <div style="width: 304px; height: 78px; border: 2px dashed #d3d3d3; border-radius: 3px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #666;">
+                                                    <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
+                                                    reCAPTCHA 로딩 중...
+                                                </div>
+                                            </div>
+                                            <div class="recaptcha-help-text" id="recaptcha-help-text" style="display: none;">
+                                                로봇이 아님을 체크한 후 본인인증 버튼을 클릭하세요.
+                                                <br><span style="font-size: 10px; color: #999;">(localhost에서는 테스트 모드로 동작합니다)</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 인증번호 입력 섹션 (처음에는 숨김) -->
+                                        <div id="verificationSection" class="verification-section" style="display: none;">
+                                            
+                                            <div class="form-group verification-group">
+                                                <label class="form-label" for="verificationCode">
+                                                    인증번호 <span class="required">*</span>
+                                                </label>
+                                                <div class="input-with-button">
+                                                    <input type="text" id="verificationCode" class="form-input" 
+                                                           placeholder="6자리 인증번호 입력" maxlength="6" pattern="[0-9]{6}">
+                                                    <button type="button" class="check-btn" onclick="verifyPhoneCode()">확인</button>
+                                                </div>
+                                                <div class="verification-info">
+                                                    <span id="verificationTimer" class="timer">03:00</span>
+                                                    <button type="button" class="resend-btn" id="resendBtn" onclick="requestPhoneVerification()" disabled>재발송</button>
+                                                </div>
+                                                <div id="verificationCodeStatus" class="field-status"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+
+                        <!-- 회원 유형 선택 섹션 -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-briefcase"></i>
+                                회원 유형
+                            </h3>
+                            <p class="section-description">귀하의 직업이나 관심 분야를 선택해주세요.</p>
+                            
+                            <div class="member-type-list">
+                                <div class="member-type-item selected" onclick="selectMemberType('일반')">
+                                    <input type="radio" name="memberType" value="일반" id="general" checked>
+                                    <div class="member-type-title">일반 회원</div>
+                                    <div class="member-type-desc">부동산에 관심 있는 일반인</div>
+                                </div>
+
+                                <div class="member-type-item" onclick="selectMemberType('분양기획')" data-practitioner="true">
+                                    <input type="radio" name="memberType" value="분양기획" id="planning">
+                                    <div class="member-type-title">분양기획</div>
+                                    <div class="member-type-desc">분양기획 업무 담당자 <span class="practitioner-badge">실무자 인증 가능</span></div>
+                                </div>
+
+                                <div class="member-type-item" onclick="selectMemberType('분양영업')">
+                                    <input type="radio" name="memberType" value="분양영업" id="sales">
+                                    <div class="member-type-title">분양영업</div>
+                                    <div class="member-type-desc">분양영업 업무 담당자</div>
+                                </div>
+
+                                <div class="member-type-item" onclick="selectMemberType('청약상담')">
+                                    <input type="radio" name="memberType" value="청약상담" id="consulting">
+                                    <div class="member-type-title">청약상담</div>
+                                    <div class="member-type-desc">청약상담 업무 담당자</div>
+                                </div>
+
+                                <div class="member-type-item" onclick="selectMemberType('관계사')" data-practitioner="true">
+                                    <input type="radio" name="memberType" value="관계사" id="partner">
+                                    <div class="member-type-title">관계사</div>
+                                    <div class="member-type-desc">협력업체 및 관련 기업 <span class="practitioner-badge">실무자 인증 가능</span></div>
+                                </div>
+                            </div>
+
+                            <!-- 실무자 인증 안내 -->
+                            <div id="practitionerNotice" class="practitioner-notice" style="display: none;">
+                                <div class="notice-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="notice-content">
+                                    <strong>실무자 인증 안내</strong>
+                                    <p>분양기획, 관계사 회원은 가입 후 마이페이지에서 실무자 인증을 받으실 수 있습니다.</p>
+                                    <p>실무자 인증 시 시장조사서 및 제안서 다운로드 권한이 부여됩니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 상세 정보 입력 (선택한 유형에 따라 표시) -->
+                            <div id="additionalInfoSection" class="additional-info" style="display: none;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="company">회사명</label>
+                                        <input type="text" id="company" class="form-input" placeholder="소속 회사를 입력하세요">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="department">부서/직책</label>
+                                        <input type="text" id="department" class="form-input" placeholder="부서나 직책을 입력하세요">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="experience">경력</label>
+                                    <select id="experience" class="form-input">
+                                        <option value="">경력을 선택하세요</option>
+                                        <option value="신입">신입</option>
+                                        <option value="1-3년">1-3년</option>
+                                        <option value="3-5년">3-5년</option>
+                                        <option value="5-10년">5-10년</option>
+                                        <option value="10년 이상">10년 이상</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 약관 동의 섹션 -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-file-contract"></i>
+                                약관 동의
+                            </h3>
+
+                            <div class="terms-section">
+                                <div class="terms-all" onclick="toggleAllTerms()">
+                                    <div class="terms-checkbox" id="allTermsCheck">
+                                        <i class="fas fa-check" style="display: none;"></i>
+                                    </div>
+                                    <div class="terms-text">
+                                        <strong>전체 약관에 동의합니다</strong>
+                                    </div>
+                                </div>
+
+                                <div class="terms-list">
+                                    <div class="terms-item" onclick="toggleTerm('terms1')">
+                                        <div class="terms-checkbox" id="terms1Check">
+                                            <i class="fas fa-check" style="display: none;"></i>
+                                        </div>
+                                        <div class="terms-text">
+                                            <span class="required">*</span> 서비스 이용약관 동의
+                                        </div>
+                                        <a href="#" class="terms-link">보기</a>
+                                    </div>
+
+                                    <div class="terms-item" onclick="toggleTerm('terms2')">
+                                        <div class="terms-checkbox" id="terms2Check">
+                                            <i class="fas fa-check" style="display: none;"></i>
+                                        </div>
+                                        <div class="terms-text">
+                                            <span class="required">*</span> 개인정보 수집 및 이용 동의
+                                        </div>
+                                        <a href="#" class="terms-link">보기</a>
+                                    </div>
+
+                                    <div class="terms-item" onclick="toggleTerm('terms3')">
+                                        <div class="terms-checkbox" id="terms3Check">
+                                            <i class="fas fa-check" style="display: none;"></i>
+                                        </div>
+                                        <div class="terms-text">
+                                            마케팅 정보 수신 동의 (선택)
+                                        </div>
+                                        <a href="#" class="terms-link">보기</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 제출 섹션 -->
+                        <div class="submit-section">
+                            <button type="submit" class="btn-submit" id="submitBtn">
+                                <span class="btn-text">회원가입</span>
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </button>
+
+                            <div id="errorMessage" class="error-message"></div>
+                            <div id="successMessage" class="success-message"></div>
+                        </div>
+
+                        </form>
+
+                        <!-- 로그인 링크 -->
+                        <div class="login-link">
+                            이미 계정이 있으신가요? 
+                            <a href="login.html">로그인하기</a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js?v=2025082903"></script>
+    <script src="js/config/supabase.js?v=2025082903"></script>
+    <script src="js/config/firebase.js?v=2025082903"></script>
+    <script src="js/services/phoneAuthService.js?v=2025082903"></script>
+    <script src="js/services/authService.js?v=2025082903"></script>
+    <script src="js/modules/toast.js?v=2025082903"></script>
+    
+    <script>
+        // 페이지 로딩 시 즉시 보이게 하기
+        document.body.classList.add('loaded');
+        
+        // Firebase 자동 초기화 (페이지 로드 완료 후)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Firebase 서비스가 로드될 때까지 대기
+            let initAttempts = 0;
+            const maxAttempts = 50; // 5초 대기
+            
+            const initFirebase = () => {
+                if (window.firebaseService && typeof window.firebaseService.init === 'function') {
+                    console.log('🔥 Firebase 자동 초기화 시작...');
+                    window.firebaseService.init();
+                } else if (initAttempts < maxAttempts) {
+                    initAttempts++;
+                    setTimeout(initFirebase, 100);
+                } else {
+                    console.warn('⚠️ Firebase 서비스를 찾을 수 없습니다. 수동으로 초기화해주세요.');
+                }
+            };
+            
+            // 100ms 후 초기화 시작
+            setTimeout(initFirebase, 100);
+        });
+        
+        // 전역 변수
+        let isUserIdValid = false;
+        let isNicknameValid = false;
+        let isPhoneVerified = false;
+        let verificationTimer = null;
+        let timeLeft = 180; // 3분 = 180초
+        let selectedMemberType = '일반'; // 기본값을 '일반'으로 설정
+        let termsAgreed = {
+            terms1: false,
+            terms2: false,
+            terms3: false
+        };
+
+        // 아이디 중복 확인
+        async function checkUserIdDuplicate() {
+            const userId = document.getElementById('userId').value;
+            const statusElement = document.getElementById('userIdStatus');
+            const inputElement = document.getElementById('userId');
+            
+            if (!userId || userId.length < 4) {
+                statusElement.textContent = '아이디는 4자 이상 입력해주세요.';
+                statusElement.className = 'field-status invalid';
+                inputElement.className = 'form-input invalid';
+                isUserIdValid = false;
+                return;
+            }
+            
+            try {
+                statusElement.textContent = '중복 확인 중...';
+                statusElement.className = 'field-status checking';
+                inputElement.className = 'form-input checking';
+                
+                // authService가 없거나 함수가 없으면 기본 통과 (개발 모드)
+                if (!window.authService || typeof window.authService.checkUserIdDuplicate !== 'function') {
+                    console.warn('AuthService 중복 확인 기능을 사용할 수 없습니다. 개발 모드로 진행합니다.');
+                    statusElement.textContent = '사용 가능한 아이디입니다. (개발모드)';
+                    statusElement.className = 'field-status valid';
+                    inputElement.className = 'form-input valid';
+                    isUserIdValid = true;
+                    return;
+                }
+                
+                const result = await authService.checkUserIdDuplicate(userId);
+                
+                if (result.available) {
+                    statusElement.textContent = '사용 가능한 아이디입니다.';
+                    statusElement.className = 'field-status valid';
+                    inputElement.className = 'form-input valid';
+                    isUserIdValid = true;
+                } else {
+                    statusElement.textContent = '이미 사용 중인 아이디입니다.';
+                    statusElement.className = 'field-status invalid';
+                    inputElement.className = 'form-input invalid';
+                    isUserIdValid = false;
+                }
+            } catch (error) {
+                console.error('아이디 중복 확인 오류:', error);
+                // 오류 발생 시에도 개발 모드로 통과 허용
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    statusElement.textContent = '사용 가능한 아이디입니다. (로컬 개발모드)';
+                    statusElement.className = 'field-status valid';
+                    inputElement.className = 'form-input valid';
+                    isUserIdValid = true;
+                } else {
+                    statusElement.textContent = '중복 확인 중 오류가 발생했습니다.';
+                    statusElement.className = 'field-status invalid';
+                    inputElement.className = 'form-input invalid';
+                    isUserIdValid = false;
+                }
+            }
+        }
+
+        // 닉네임 중복 확인
+        async function checkNicknameDuplicate() {
+            const nickname = document.getElementById('nickname').value;
+            const statusElement = document.getElementById('nicknameStatus');
+            const inputElement = document.getElementById('nickname');
+            
+            if (!nickname || nickname.length < 2) {
+                statusElement.textContent = '닉네임은 2자 이상 입력해주세요.';
+                statusElement.className = 'field-status invalid';
+                inputElement.className = 'form-input invalid';
+                isNicknameValid = false;
+                return;
+            }
+            
+            try {
+                statusElement.textContent = '중복 확인 중...';
+                statusElement.className = 'field-status checking';
+                inputElement.className = 'form-input checking';
+                
+                // authService가 없거나 함수가 없으면 기본 통과 (개발 모드)
+                if (!window.authService || typeof window.authService.checkNicknameDuplicate !== 'function') {
+                    console.warn('AuthService 중복 확인 기능을 사용할 수 없습니다. 개발 모드로 진행합니다.');
+                    statusElement.textContent = '사용 가능한 닉네임입니다. (개발모드)';
+                    statusElement.className = 'field-status valid';
+                    inputElement.className = 'form-input valid';
+                    isNicknameValid = true;
+                    return;
+                }
+                
+                const result = await authService.checkNicknameDuplicate(nickname);
+                
+                if (result.available) {
+                    statusElement.textContent = '사용 가능한 닉네임입니다.';
+                    statusElement.className = 'field-status valid';
+                    inputElement.className = 'form-input valid';
+                    isNicknameValid = true;
+                } else {
+                    statusElement.textContent = '이미 사용 중인 닉네임입니다.';
+                    statusElement.className = 'field-status invalid';
+                    inputElement.className = 'form-input invalid';
+                    isNicknameValid = false;
+                }
+            } catch (error) {
+                console.error('닉네임 중복 확인 오류:', error);
+                // 오류 발생 시에도 개발 모드로 통과 허용
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    statusElement.textContent = '사용 가능한 닉네임입니다. (로컬 개발모드)';
+                    statusElement.className = 'field-status valid';
+                    inputElement.className = 'form-input valid';
+                    isNicknameValid = true;
+                } else {
+                    statusElement.textContent = '중복 확인 중 오류가 발생했습니다.';
+                    statusElement.className = 'field-status invalid';
+                    inputElement.className = 'form-input invalid';
+                    isNicknameValid = false;
+                }
+            }
+        }
+
+        // 핸드폰 본인인증 요청 (Firebase 사용)
+        async function requestPhoneVerification() {
+            const phone = document.getElementById('phone').value;
+            const phoneStatus = document.getElementById('phoneStatus');
+            const requestBtn = document.getElementById('requestVerificationBtn');
+            const recaptchaContainer = document.getElementById('recaptcha-container');
+            
+            // 핸드폰 번호 유효성 검사
+            const phonePattern = /^010-\d{4}-\d{4}$/;
+            if (!phone || !phonePattern.test(phone)) {
+                phoneStatus.textContent = '올바른 핸드폰 번호를 입력해주세요 (010-0000-0000)';
+                phoneStatus.className = 'field-status invalid';
+                return;
+            }
+            
+            try {
+                // 로딩 상태
+                requestBtn.disabled = true;
+                requestBtn.textContent = '발송중...';
+                phoneStatus.textContent = '인증번호를 발송하고 있습니다...';
+                phoneStatus.className = 'field-status checking';
+                
+                // Firebase 인증 서비스 사용
+                let result;
+                if (window.phoneAuthService) {
+                    result = await phoneAuthService.requestVerification(phone);
+                    
+                    // 실제 SMS 발송 성공
+                    if (result.success) {
+                        startVerificationTimer();
+                    }
+                } else {
+                    throw new Error('전화번호 인증 서비스를 사용할 수 없습니다. 페이지를 새로고침해주세요.');
+                }
+                
+                if (result.success) {
+                    // 성공 메시지
+                    phoneStatus.textContent = result.message;
+                    phoneStatus.className = 'field-status valid';
+                    
+                    // 인증번호 입력 섹션 표시
+                    document.getElementById('verificationSection').style.display = 'block';
+                    
+                    // 버튼 상태 변경
+                    requestBtn.textContent = '재발송';
+                    requestBtn.disabled = false;
+                    requestBtn.style.opacity = '1';
+                } else {
+                    throw new Error(result.error);
+                }
+                
+            } catch (error) {
+                console.error('인증번호 발송 오류:', error);
+                
+                // 사용자 친화적 에러 메시지
+                let userMessage = error.message;
+                if (error.message.includes('reCAPTCHA가 초기화되지 않았습니다')) {
+                    userMessage = 'reCAPTCHA 로딩 중입니다. 잠시 후 다시 시도해주세요.';
+                } else if (error.message.includes('reCAPTCHA가 로드되지 않았습니다')) {
+                    userMessage = 'reCAPTCHA를 먼저 체크해주세요.';
+                } else if (error.message.includes('reCAPTCHA 인증에 문제가 있습니다')) {
+                    userMessage = 'reCAPTCHA를 다시 체크한 후 시도해주세요.';
+                }
+                
+                phoneStatus.textContent = userMessage;
+                phoneStatus.className = 'field-status invalid';
+                requestBtn.disabled = true;
+                requestBtn.style.opacity = '0.6';
+                requestBtn.textContent = '본인인증';
+            }
+        }
+
+        // 인증번호 확인 (Firebase 사용)
+        async function verifyPhoneCode() {
+            const inputCode = document.getElementById('verificationCode').value;
+            const codeStatus = document.getElementById('verificationCodeStatus');
+            const verifyBtn = document.querySelector('#verificationSection .check-btn');
+            
+            if (!inputCode || inputCode.length !== 6) {
+                codeStatus.textContent = '6자리 인증번호를 입력해주세요.';
+                codeStatus.className = 'field-status invalid';
+                return;
+            }
+            
+            try {
+                // 로딩 상태
+                verifyBtn.disabled = true;
+                verifyBtn.textContent = '확인중...';
+                codeStatus.textContent = '인증번호를 확인하고 있습니다...';
+                codeStatus.className = 'field-status checking';
+                
+                // PhoneAuthService를 통한 실제 Firebase 인증
+                if (!window.phoneAuthService || !window.phoneAuthService.confirmationResult) {
+                    throw new Error('인증 세션이 만료되었습니다. 다시 요청해주세요.');
+                }
+                
+                const result = await phoneAuthService.verifyCode(inputCode);
+                
+                if (result.success) {
+                    codeStatus.textContent = result.message;
+                    codeStatus.className = 'field-status valid';
+                    isPhoneVerified = true;
+                    
+                    // 인증 완료 후 UI 비활성화
+                    document.getElementById('verificationCode').disabled = true;
+                    verifyBtn.disabled = true;
+                    verifyBtn.textContent = '인증완료';
+                    document.getElementById('resendBtn').disabled = true;
+                    document.getElementById('verificationTimer').textContent = '인증완료';
+                    
+                    // reCAPTCHA 컨테이너 숨기기
+                    document.getElementById('recaptcha-container').style.display = 'none';
+                    
+                } else {
+                    throw new Error(result.error);
+                }
+                
+            } catch (error) {
+                console.error('인증번호 확인 오류:', error);
+                codeStatus.textContent = error.message || '인증번호가 일치하지 않습니다.';
+                codeStatus.className = 'field-status invalid';
+                isPhoneVerified = false;
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = '확인';
+            }
+        }
+
+        // 인증 타이머 시작 (PhoneAuthService가 없을 때 Fallback용)
+        function startVerificationTimer() {
+            // PhoneAuthService가 타이머를 관리하는 경우 중복 실행 방지
+            if (window.phoneAuthService && window.phoneAuthService.verificationTimer) {
+                return;
+            }
+            
+            timeLeft = 180; // 3분 초기화
+            const timerElement = document.getElementById('verificationTimer');
+            const resendBtn = document.getElementById('resendBtn');
+            
+            // 재발송 버튼 비활성화
+            if (resendBtn) resendBtn.disabled = true;
+            
+            verificationTimer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                if (timerElement) {
+                    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(verificationTimer);
+                    if (timerElement) timerElement.textContent = '시간초과';
+                    if (resendBtn) resendBtn.disabled = false;
+                    // 타이머 정리
+                }
+                
+                timeLeft--;
+            }, 1000);
+        }
+
+        // 회원 유형 선택
+        function selectMemberType(type) {
+            // 모든 선택 해제
+            document.querySelectorAll('.member-type-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // 선택한 항목 활성화
+            const selectedItem = document.querySelector(`.member-type-item input[value="${type}"]`).closest('.member-type-item');
+            selectedItem.classList.add('selected');
+            
+            // 라디오 버튼 체크
+            const radioId = selectedItem.querySelector('input').id;
+            document.getElementById(radioId).checked = true;
+            selectedMemberType = type;
+            
+            // 상세 정보 섹션 표시/숨김
+            const additionalSection = document.getElementById('additionalInfoSection');
+            if (type !== '일반') {
+                additionalSection.style.display = 'block';
+            } else {
+                additionalSection.style.display = 'none';
+            }
+            
+            // 실무자 인증 안내 표시/숨김
+            const practitionerNotice = document.getElementById('practitionerNotice');
+            if (type === '분양기획' || type === '관계사') {
+                practitionerNotice.style.display = 'block';
+            } else {
+                practitionerNotice.style.display = 'none';
+            }
+        }
+
+        // 약관 개별 토글
+        function toggleTerm(termId) {
+            termsAgreed[termId] = !termsAgreed[termId];
+            
+            const checkbox = document.getElementById(termId + 'Check');
+            const checkIcon = checkbox.querySelector('i');
+            
+            if (termsAgreed[termId]) {
+                checkbox.classList.add('checked');
+                checkIcon.style.display = 'block';
+            } else {
+                checkbox.classList.remove('checked');
+                checkIcon.style.display = 'none';
+            }
+            
+            // 전체 동의 상태 업데이트
+            updateAllTermsState();
+        }
+
+        // 전체 약관 동의 토글
+        function toggleAllTerms() {
+            const allChecked = termsAgreed.terms1 && termsAgreed.terms2 && termsAgreed.terms3;
+            const newState = !allChecked;
+            
+            // 모든 약관 상태 변경
+            Object.keys(termsAgreed).forEach(termId => {
+                termsAgreed[termId] = newState;
+                
+                const checkbox = document.getElementById(termId + 'Check');
+                const checkIcon = checkbox.querySelector('i');
+                
+                if (newState) {
+                    checkbox.classList.add('checked');
+                    checkIcon.style.display = 'block';
+                } else {
+                    checkbox.classList.remove('checked');
+                    checkIcon.style.display = 'none';
+                }
+            });
+            
+            // 전체 동의 체크박스 업데이트
+            updateAllTermsState();
+        }
+
+        // 전체 약관 동의 상태 업데이트
+        function updateAllTermsState() {
+            const allTermsCheck = document.getElementById('allTermsCheck');
+            const allTermsIcon = allTermsCheck.querySelector('i');
+            const termsAllContainer = document.querySelector('.terms-all');
+            
+            const allChecked = termsAgreed.terms1 && termsAgreed.terms2 && termsAgreed.terms3;
+            
+            if (allChecked) {
+                allTermsCheck.classList.add('checked');
+                allTermsIcon.style.display = 'block';
+                termsAllContainer.classList.add('checked');
+            } else {
+                allTermsCheck.classList.remove('checked');
+                allTermsIcon.style.display = 'none';
+                termsAllContainer.classList.remove('checked');
+            }
+        }
+
+        // 비밀번호 유효성 검사
+        function validatePassword(password) {
+            const lengthReq = document.getElementById('lengthReq');
+            const specialReq = document.getElementById('specialReq');
+            const numberReq = document.getElementById('numberReq');
+            
+            const hasMinLength = password.length >= 8;
+            const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password);
+            const hasNumber = /\d/.test(password);
+            
+            // 길이 요구사항
+            if (hasMinLength) {
+                lengthReq.textContent = '✓ 8자 이상';
+                lengthReq.className = 'requirement valid';
+            } else {
+                lengthReq.textContent = '✗ 8자 이상';
+                lengthReq.className = 'requirement invalid';
+            }
+            
+            // 특수문자 요구사항
+            if (hasSpecialChar) {
+                specialReq.textContent = '✓ 특수문자';
+                specialReq.className = 'requirement valid';
+            } else {
+                specialReq.textContent = '✗ 특수문자';
+                specialReq.className = 'requirement invalid';
+            }
+            
+            // 숫자 요구사항 (권장)
+            if (hasNumber) {
+                numberReq.textContent = '✓ 숫자';
+                numberReq.className = 'requirement valid';
+            } else {
+                numberReq.textContent = '✗ 숫자';
+                numberReq.className = 'requirement optional';
+            }
+            
+            return hasMinLength && hasSpecialChar;
+        }
+
+        // 실시간 유효성 검사
+        document.getElementById('userId').addEventListener('input', function() {
+            isUserIdValid = false;
+            const statusElement = document.getElementById('userIdStatus');
+            statusElement.textContent = '';
+            statusElement.className = 'field-status';
+            this.className = 'form-input';
+        });
+
+        document.getElementById('nickname').addEventListener('input', function() {
+            isNicknameValid = false;
+            const statusElement = document.getElementById('nicknameStatus');
+            statusElement.textContent = '';
+            statusElement.className = 'field-status';
+            this.className = 'form-input';
+        });
+
+        // 비밀번호 실시간 검사
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const isValid = validatePassword(password);
+            const statusElement = document.getElementById('passwordStatus');
+            
+            if (password.length === 0) {
+                statusElement.textContent = '';
+                statusElement.className = 'field-status';
+            } else if (isValid) {
+                statusElement.textContent = '안전한 비밀번호입니다.';
+                statusElement.className = 'field-status valid';
+            } else {
+                statusElement.textContent = '비밀번호가 요구사항을 충족하지 않습니다.';
+                statusElement.className = 'field-status invalid';
+            }
+        });
+
+        // 비밀번호 확인 실시간 검사
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const statusElement = document.getElementById('confirmPasswordStatus');
+            
+            if (confirmPassword && password !== confirmPassword) {
+                statusElement.textContent = '비밀번호가 일치하지 않습니다.';
+                statusElement.className = 'field-status invalid';
+                this.className = 'form-input invalid';
+            } else if (confirmPassword && password === confirmPassword) {
+                statusElement.textContent = '비밀번호가 일치합니다.';
+                statusElement.className = 'field-status valid';
+                this.className = 'form-input valid';
+            } else {
+                statusElement.textContent = '';
+                statusElement.className = 'field-status';
+                this.className = 'form-input';
+            }
+        });
+
+        // 폼 제출 처리
+        async function handleSignup(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // 로딩 상태 시작
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            loading.classList.add('show');
+            errorMessage.textContent = '';
+            errorMessage.classList.remove('show');
+            successMessage.textContent = '';
+            successMessage.classList.remove('show');
+            
+            try {
+                // 유효성 검사
+                if (!isUserIdValid) {
+                    throw new Error('아이디 중복 확인을 완료해주세요.');
+                }
+                
+                if (!isNicknameValid) {
+                    throw new Error('닉네임 중복 확인을 완료해주세요.');
+                }
+                
+                if (!isPhoneVerified) {
+                    throw new Error('핸드폰 본인인증을 완료해주세요.');
+                }
+                
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // 비밀번호 규칙 검사
+                if (!validatePassword(password)) {
+                    throw new Error('비밀번호는 8자 이상이며 특수문자를 포함해야 합니다.');
+                }
+                
+                if (password !== confirmPassword) {
+                    throw new Error('비밀번호가 일치하지 않습니다.');
+                }
+                
+                if (!selectedMemberType) {
+                    throw new Error('회원 유형을 선택해주세요.');
+                }
+                
+                if (!termsAgreed.terms1 || !termsAgreed.terms2) {
+                    throw new Error('필수 약관에 동의해주세요.');
+                }
+                
+                // 폼 데이터 수집
+                const formData = {
+                    username: document.getElementById('userId').value,
+                    password: password,
+                    nickname: document.getElementById('nickname').value,
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    memberType: selectedMemberType,
+                    additionalInfo: {
+                        company: document.getElementById('company')?.value || '',
+                        department: document.getElementById('department')?.value || '',
+                        experience: document.getElementById('experience')?.value || ''
+                    },
+                    additionalData: {
+                        marketingConsent: termsAgreed.terms3
+                    }
+                };
+                
+                // authService 사용 가능한지 확인
+                if (window.authService && typeof window.authService.signUp === 'function') {
+                    const result = await authService.signUp(
+                        formData.username,
+                        formData.password,
+                        formData.nickname,
+                        formData.fullName,
+                        formData.email,
+                        formData.phone,
+                        formData.memberType,
+                        formData.additionalInfo,
+                        formData.additionalData
+                    );
+                    
+                    if (result.success) {
+                        successMessage.textContent = '회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.';
+                        successMessage.classList.add('show');
+                        
+                        // 3초 후 로그인 페이지로 이동
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 3000);
+                    } else {
+                        throw new Error(result.error || '회원가입에 실패했습니다.');
+                    }
+                } else {
+                    // 폴백 처리
+                    console.warn('AuthService를 사용할 수 없습니다. 폴백 처리 중...');
+                    window.fallbackSignup(formData);
+                }
+                
+            } catch (error) {
+                console.error('회원가입 오류:', error);
+                
+                let errorText = error.message || '회원가입에 실패했습니다.';
+                if (error.message.includes('Email already registered')) {
+                    errorText = '이미 가입된 이메일입니다.';
+                } else if (error.message.includes('Email address') && error.message.includes('is invalid')) {
+                    errorText = 'Supabase SMTP 설정이 필요합니다. 개발 환경에서는 임시 이메일이 사용됩니다.';
+                } else if (error.message.includes('Password should be at least')) {
+                    errorText = '비밀번호는 8자 이상이며 특수문자를 포함해야 합니다.';
+                }
+                
+                errorMessage.textContent = errorText;
+                errorMessage.classList.add('show');
+            } finally {
+                // 로딩 상태 종료
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                loading.classList.remove('show');
+            }
+        }
+        
+        // 인증번호 입력 필드에 숫자만 허용
+        document.getElementById('verificationCode').addEventListener('input', function(e) {
+            // 숫자가 아닌 문자 제거
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        // 핸드폰 입력 상태 초기화
+        document.getElementById('phone').addEventListener('input', function() {
+            isPhoneVerified = false;
+            document.getElementById('phoneStatus').textContent = '';
+            document.getElementById('phoneStatus').className = 'field-status';
+            
+            // 인증 섹션 숨기기
+            const verificationSection = document.getElementById('verificationSection');
+            const recaptchaContainer = document.getElementById('recaptcha-container');
+            if (verificationSection.style.display !== 'none') {
+                verificationSection.style.display = 'none';
+                recaptchaContainer.style.display = 'none';
+                
+                // Firebase reCAPTCHA 정리
+                if (window.firebaseService) {
+                    firebaseService.clearExistingRecaptcha();
+                }
+                
+                // 타이머 정리
+                if (window.phoneAuthService) {
+                    phoneAuthService.reset();
+                } else {
+                    clearInterval(verificationTimer);
+                }
+            }
+            
+            // 버튼 텍스트 초기화
+            const requestBtn = document.getElementById('requestVerificationBtn');
+            requestBtn.textContent = '본인인증';
+            requestBtn.disabled = true;  // reCAPTCHA 체크 전까지 비활성화
+            requestBtn.style.opacity = '0.6';
+        });
+
+        // Enter 키로 다음 입력 필드로 이동
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.target.classList.contains('form-input')) {
+                const form = document.getElementById('signupForm');
+                const inputs = Array.from(form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], input[type="tel"], select'));
+                const currentIndex = inputs.indexOf(e.target);
+                
+                if (currentIndex < inputs.length - 1) {
+                    e.preventDefault();
+                    inputs[currentIndex + 1].focus();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

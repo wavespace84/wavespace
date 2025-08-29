@@ -97,6 +97,7 @@
     border-radius: 50%;
     font-size: 20px;
     cursor: pointer;
+    pointer-events: auto;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(46, 140, 230, 0.35);
     pointer-events: all;

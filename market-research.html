@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self'; worker-src 'self' blob:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https://sishloxzcqapontycuyz.supabase.co wss://sishloxzcqapontycuyz.supabase.co; worker-src 'self' blob:;">
     <title>시장조사서 - WAVE SPACE</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="preload.js"></script>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="common.css">
@@ -263,21 +264,8 @@
                         <i class="fas fa-bell"></i>
                         <span class="notification-dot"></span>
                     </button>
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <span>박</span>
-                            <div class="user-badge">
-                                <i class="fas fa-crown"></i>
-                            </div>
-                        </div>
-                        <div class="user-info">
-                            <p class="user-name">박승학님</p>
-                            <div class="user-meta">
-                                <span class="user-title">소통리더</span>
-                                <span class="user-points">• 100,000P</span>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-down user-dropdown-icon"></i>
+                    <div id="userInfoContainer">
+                        <!-- AuthService가 동적으로 사용자 정보를 여기에 표시 -->
                     </div>
                 </div>
             </header>
@@ -1497,8 +1485,105 @@
             }
         }
         
+        // URL 파라미터에서 실무자 인증 컨텍스트 체크
+        function checkPractitionerContext() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromPractitioner = urlParams.get('from') === 'practitioner';
+            
+            if (fromPractitioner) {
+                // 실무자 인증 안내 배너 표시
+                showPractitionerBanner();
+                
+                // 자동으로 업로드 모달 오픈 (0.5초 후)
+                setTimeout(() => {
+                    const uploadBtn = document.querySelector('.upload-button');
+                    if (uploadBtn) {
+                        uploadBtn.click();
+                    }
+                }, 500);
+            }
+        }
+        
+        function showPractitionerBanner() {
+            // 기존 배너가 있다면 제거
+            const existingBanner = document.getElementById('practitionerBanner');
+            if (existingBanner) {
+                existingBanner.remove();
+            }
+            
+            // 새 배너 생성
+            const banner = document.createElement('div');
+            banner.id = 'practitionerBanner';
+            banner.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #0ea5e9, #0284c7);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+                z-index: 9999;
+                font-size: 14px;
+                font-weight: 500;
+                max-width: 90vw;
+                text-align: center;
+                animation: bannerSlideDown 0.5s ease-out;
+            `;
+            
+            banner.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px;">
+                    <i class="fas fa-user-tie" style="font-size: 16px;"></i>
+                    <span>실무자 인증을 위한 시장조사서 업로드</span>
+                    <span style="color: #bfdbfe; font-size: 12px;">• 3건 이상 업로드 필요</span>
+                    <button onclick="closePractitionerBanner()" style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 16px;
+                        cursor: pointer;
+                        padding: 0 4px;
+                        margin-left: 8px;
+                        opacity: 0.8;
+                    ">×</button>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; opacity: 0.9;">
+                    업로드 완료 후 <a href="#" onclick="openMypageModal(); return false;" style="color: #bfdbfe; text-decoration: underline;">마이페이지</a>로 돌아가 인증을 완료하세요
+                </div>
+            `;
+            
+            // CSS 애니메이션 추가
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes bannerSlideDown {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-50%) translateY(-20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(banner);
+        }
+        
+        function closePractitionerBanner() {
+            const banner = document.getElementById('practitionerBanner');
+            if (banner) {
+                banner.style.animation = 'bannerSlideDown 0.3s ease-out reverse';
+                setTimeout(() => banner.remove(), 300);
+            }
+        }
+        
         // 닫기 버튼 이벤트
         document.addEventListener('DOMContentLoaded', () => {
+            // 실무자 인증 컨텍스트 체크
+            checkPractitionerContext();
             const closeBtn = document.getElementById('previewClose');
             const modal = document.getElementById('previewModal');
             const overlay = document.querySelector('.preview-overlay');
@@ -1568,9 +1653,15 @@
     <!-- 공통 데이터 모듈 (반드시 market-research.js보다 먼저 로드) -->
     <script src="js/modules/common-data.js"></script>
     <!-- ES6 모듈 시스템 (file:// 프로토콜에서는 CORS 오류 발생하므로 비활성화) -->
-    <!-- <script type="module" src="js/main.js"></script> -->
+    <!-- <script src="js/main.js"></script> -->
     <script src="script.js"></script>
     <script src="sidebar-debug.js"></script>
     <script src="sidebar-diagnosis.js"></script>
+    
+    <!-- Supabase 통합 -->
+    <script src="js/config/supabase.js"></script>
+    <script src="js/services/authService.js"></script>
+    <script src="js/services/fileService.js"></script>
+    <script src="js/pages/marketResearchSupabase.js"></script>
 </body>
 </html>

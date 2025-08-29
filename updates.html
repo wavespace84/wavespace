@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>업데이트 - WAVE SPACE</title>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <script src="preload.js"></script>
         <link rel="stylesheet" href="common.css" />
         <link rel="stylesheet" href="styles.css?v=7" />
@@ -258,21 +259,8 @@
                             <i class="fas fa-bell"></i>
                             <span class="notification-dot"></span>
                         </button>
-                        <div class="user-profile">
-                            <div class="user-avatar">
-                                <span>박</span>
-                                <div class="user-badge">
-                                    <i class="fas fa-crown"></i>
-                                </div>
-                            </div>
-                            <div class="user-info">
-                                <p class="user-name">박승학님</p>
-                                <div class="user-meta">
-                                    <span class="user-title">소통리더</span>
-                                    <span class="user-points">• 100,000P</span>
-                                </div>
-                            </div>
-                            <i class="fas fa-chevron-down user-dropdown-icon"></i>
+                        <div id="userInfoContainer">
+                            <!-- AuthService가 동적으로 사용자 정보를 여기에 표시 -->
                         </div>
                     </div>
                 </header>
@@ -294,25 +282,25 @@
                                     <span class="tab-check"></span>
                                     <span>전체</span>
                                 </label>
-                                <label class="checkbox-tab" data-category="major">
+                                <label class="checkbox-tab" data-category="기능추가">
                                     <input type="radio" name="update-filter" />
                                     <span class="tab-check"></span>
-                                    <span>주요 업데이트</span>
+                                    <span>기능추가</span>
                                 </label>
-                                <label class="checkbox-tab" data-category="minor">
+                                <label class="checkbox-tab" data-category="개선">
                                     <input type="radio" name="update-filter" />
                                     <span class="tab-check"></span>
-                                    <span>기능 개선</span>
+                                    <span>개선</span>
                                 </label>
-                                <label class="checkbox-tab" data-category="patch">
+                                <label class="checkbox-tab" data-category="버그수정">
                                     <input type="radio" name="update-filter" />
                                     <span class="tab-check"></span>
-                                    <span>버그 수정</span>
+                                    <span>버그수정</span>
                                 </label>
-                                <label class="checkbox-tab" data-category="hotfix">
+                                <label class="checkbox-tab" data-category="보안">
                                     <input type="radio" name="update-filter" />
                                     <span class="tab-check"></span>
-                                    <span>긴급 패치</span>
+                                    <span>보안</span>
                                 </label>
                             </div>
                             <div class="search-box">
@@ -343,21 +331,8 @@
 
         <!-- 업데이트 상세 모달 -->
         <div class="modal-overlay" id="updateModal">
-            <div class="modal-container">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <div class="modal-title-section">
-                        <h2 class="modal-title" id="modalTitle">업데이트 제목</h2>
-                        <div class="modal-meta">
-                            <span class="update-category" id="modalCategory">
-                                <i class="fas fa-sparkles"></i>
-                                <span>카테고리</span>
-                            </span>
-                            <span class="modal-date" id="modalDate">
-                                <i class="fas fa-calendar"></i>
-                                <span>2024-01-18</span>
-                            </span>
-                        </div>
-                    </div>
                     <div class="modal-nav-buttons">
                         <button class="modal-nav-btn" onclick="navigateUpdate('prev')" disabled>
                             <i class="fas fa-chevron-left"></i>
@@ -369,8 +344,14 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
+                    <div class="modal-badges" id="modalBadges">
+                        <span class="update-category" id="modalCategory">
+                            <i class="fas fa-sparkles"></i>
+                            <span>카테고리</span>
+                        </span>
+                    </div>
+                    <h2 class="modal-title" id="modalTitle">업데이트 제목</h2>
                 </div>
-
                 <div class="modal-body">
                     <div class="modal-description" id="modalDescription">업데이트 설명이 여기에 표시됩니다.</div>
 
@@ -384,12 +365,18 @@
                         </ul>
                     </div>
                 </div>
+                <div class="modal-meta">
+                    <div class="modal-meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span id="modalDateText">2024-01-18</span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- 업데이트 글쓰기 모달 -->
         <div class="modal-overlay" id="writeUpdateModal">
-            <div class="modal-container write-modal">
+            <div class="modal-content write-modal">
                 <div class="modal-header">
                     <h2 class="modal-title">업데이트 작성</h2>
                     <button class="modal-close" id="writeModalClose">
@@ -533,6 +520,9 @@
             </div>
         </div>
 
+        <!-- JavaScript -->
+        <script src="js/config/supabase.js"></script>
+        <script src="js/pages/updatesSupabase.js"></script>
         <script src="script.js"></script>
         <script src="updates.js"></script>
     </body>

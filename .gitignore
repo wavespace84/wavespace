@@ -44,6 +44,9 @@ saramin_css/node_modules/
 # 로컬 설정
 .claude/
 
+# MCP configuration (contains tokens)
+.mcp.json
+
 # Logs
 logs/
 *.log

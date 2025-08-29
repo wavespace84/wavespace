@@ -1,7 +1,7 @@
 // WaveSpaceData.js - 전역 데이터 및 유틸리티 객체
 // 누락된 전역 객체들을 정의하여 JavaScript 오류 방지
 
-export class WaveSpaceData {
+class WaveSpaceData {
     constructor() {
         this.errorHandler = new ErrorHandler();
         this.security = new SecurityManager();
@@ -115,5 +115,3 @@ const waveSpaceData = new WaveSpaceData();
 if (typeof window !== 'undefined') {
     window.WaveSpaceData = waveSpaceData;
 }
-
-export default waveSpaceData;

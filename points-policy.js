@@ -90,10 +90,10 @@ class PointsPolicyManager {
                 
                 // 포인트
                 { category: "포인트", item: "충전하기", summary: "유료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "points-charge.html" },
-                { category: "", item: "상점", summary: "부분유료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "△Plus", link: "points-shop.html" },
+                { category: "", item: "상점", summary: "포인트사용", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "△Plus", link: "points-shop.html" },
                 
                 // 미니게임
-                { category: "미니게임", item: "모든게임", summary: "게임별", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "#" }
+                { category: "미니게임", item: "모든게임", summary: "게임별", merged: true, mergedText: "모든 게임에서 포인트가 획득/손실될 수 있습니다", link: "#" }
             ]
         };
     }
@@ -298,19 +298,43 @@ class PointsPolicyManager {
                 });
             }
 
-            const cells = [
-                categoryCell,
-                this.createCell(item.item, 'item'),
-                this.createCell(item.summary, 'summary'),
-                this.createPointCell(item.read),
-                this.createPointCell(item.write),
-                this.createPointCell(item.comment),
-                this.createPointCell(item.delete),
-                this.createPointCell(item.upload),
-                this.createPointCell(item.download)
-            ];
+            // 미니게임 특별 처리 (셀 병합)
+            if (item.merged) {
+                const cells = [
+                    categoryCell,
+                    this.createCell(item.item, 'item'),
+                    this.createCell(item.summary, 'summary')
+                ];
+                
+                // 병합된 셀 생성 (읽기~다운로드 6개 컬럼)
+                const mergedCell = document.createElement('td');
+                mergedCell.colSpan = 6;
+                mergedCell.style.textAlign = 'center';
+                mergedCell.style.fontStyle = 'italic';
+                mergedCell.style.color = 'var(--gray-600)';
+                mergedCell.style.padding = '8px 12px';
+                mergedCell.style.fontSize = '12px';
+                mergedCell.style.lineHeight = '1.2';
+                mergedCell.textContent = item.mergedText;
+                
+                cells.push(mergedCell);
+                cells.forEach(cell => row.appendChild(cell));
+            } else {
+                // 기존 로직
+                const cells = [
+                    categoryCell,
+                    this.createCell(item.item, 'item'),
+                    this.createCell(item.summary, 'summary'),
+                    this.createPointCell(item.read),
+                    this.createPointCell(item.write),
+                    this.createPointCell(item.comment),
+                    this.createPointCell(item.delete),
+                    this.createPointCell(item.upload),
+                    this.createPointCell(item.download)
+                ];
+                cells.forEach(cell => row.appendChild(cell));
+            }
 
-            cells.forEach(cell => row.appendChild(cell));
             tbody.appendChild(row);
         });
     }
@@ -336,6 +360,10 @@ class PointsPolicyManager {
             symbol.classList.add('permission-all');
         } else if (value.startsWith('△')) {
             symbol.classList.add('permission-partial');
+            // △Plus 특별 처리
+            if (value === '△Plus') {
+                symbol.classList.add('plus-badge');
+            }
         } else {
             symbol.classList.add('permission-none');
         }
@@ -359,6 +387,10 @@ class PointsPolicyManager {
             pointValue.className = 'permission-symbol permission-all';
         } else if (value.startsWith('△')) {
             pointValue.className = 'permission-symbol permission-partial';
+            // △Plus 특별 처리
+            if (value === '△Plus') {
+                pointValue.classList.add('plus-badge');
+            }
         } else if (value === '-') {
             pointValue.className = 'permission-symbol permission-none';
         } else {
@@ -400,6 +432,11 @@ class PointsPolicyManager {
         const permissionRows = document.querySelectorAll('#permissionsTableBody tr');
         const pointRows = document.querySelectorAll('#pointsTableBody tr');
 
+        // 기존 visible-last-row 클래스 제거
+        document.querySelectorAll('.visible-last-row').forEach(row => {
+            row.classList.remove('visible-last-row');
+        });
+
         // 카테고리 그룹 매핑
         const categoryGroups = {
             '일반활동': ['첫로그인', '지인추천', '공지읽기', '이벤트제안'],
@@ -433,6 +470,18 @@ class PointsPolicyManager {
                 row.style.display = shouldShow ? '' : 'none';
             }
         });
+
+        // 각 테이블별로 보이는 마지막 행 찾기 및 클래스 추가
+        const visiblePermissionRows = Array.from(permissionRows).filter(row => row.style.display !== 'none');
+        const visiblePointRows = Array.from(pointRows).filter(row => row.style.display !== 'none');
+
+        // 마지막 행에 클래스 추가
+        if (visiblePermissionRows.length > 0) {
+            visiblePermissionRows[visiblePermissionRows.length - 1].classList.add('visible-last-row');
+        }
+        if (visiblePointRows.length > 0) {
+            visiblePointRows[visiblePointRows.length - 1].classList.add('visible-last-row');
+        }
     }
 
 
