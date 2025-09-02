@@ -29,32 +29,72 @@ async function initializeUpdatesPage() {
     try {
         console.log('🔄 업데이트 페이지 초기화 중...');
         
-        // UpdatesSupabase 초기화 대기
+        // 1단계: WaveSupabase 초기화 대기
+        console.log('📍 1단계: WaveSupabase 초기화 대기...');
         let attempts = 0;
         const maxAttempts = 50;
+        
+        while (!window.WaveSupabase && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+            if (attempts % 10 === 0) {
+                console.log(`⏳ WaveSupabase 대기 중... (${attempts}/${maxAttempts})`);
+            }
+        }
+        
+        if (!window.WaveSupabase) {
+            throw new Error('WaveSupabase가 로드되지 않았습니다. 네트워크 연결을 확인해주세요.');
+        }
+        
+        console.log('✅ 1단계 완료: WaveSupabase 로드됨');
+        
+        // 2단계: UpdatesSupabase 초기화 대기
+        console.log('📍 2단계: UpdatesSupabase 초기화 대기...');
+        attempts = 0;
         
         while (!window.UpdatesSupabase && attempts < maxAttempts) {
             await new Promise(resolve => setTimeout(resolve, 100));
             attempts++;
+            if (attempts % 10 === 0) {
+                console.log(`⏳ UpdatesSupabase 대기 중... (${attempts}/${maxAttempts})`);
+            }
         }
         
         if (!window.UpdatesSupabase) {
             throw new Error('UpdatesSupabase가 로드되지 않았습니다.');
         }
         
-        // 로딩 상태 표시
+        console.log('✅ 2단계 완료: UpdatesSupabase 로드됨');
+        
+        // 3단계: UpdatesSupabase 초기화 실행
+        console.log('📍 3단계: UpdatesSupabase 초기화 실행...');
+        const initSuccess = await window.UpdatesSupabase.init();
+        if (!initSuccess) {
+            throw new Error('UpdatesSupabase 초기화에 실패했습니다.');
+        }
+        
+        console.log('✅ 3단계 완료: UpdatesSupabase 초기화 성공');
+        
+        // 4단계: 로딩 상태 표시
+        console.log('📍 4단계: UI 초기화...');
         showLoadingState();
         
-        // 초기 데이터 로드
+        // 5단계: 초기 데이터 로드
+        console.log('📍 5단계: 데이터 로드 시작...');
         await loadUpdates();
         
-        // 실시간 업데이트 구독
+        // 6단계: 실시간 업데이트 구독
+        console.log('📍 6단계: 실시간 구독 설정...');
         subscribeToRealTimeUpdates();
         
         console.log('✅ 업데이트 페이지 초기화 완료');
         
     } catch (error) {
-        console.error('❌ 업데이트 페이지 초기화 실패:', error);
+        console.error('❌ 업데이트 페이지 초기화 실패:', {
+            message: error.message,
+            stack: error.stack,
+            stage: '초기화 과정'
+        });
         showErrorState(error);
     }
 }
@@ -62,7 +102,16 @@ async function initializeUpdatesPage() {
 // 업데이트 데이터 로드
 async function loadUpdates(options = {}) {
     try {
+        console.log('🔄 loadUpdates 시작:', options);
+        
+        // UpdatesSupabase 객체 존재 여부 재확인
+        if (!window.UpdatesSupabase) {
+            throw new Error('UpdatesSupabase가 초기화되지 않았습니다.');
+        }
+        
         const loadingState = window.UpdatesSupabase.getLoadingState();
+        console.log('📊 현재 로딩 상태:', loadingState);
+        
         if (loadingState.isLoading) {
             console.log('⏳ 이미 데이터 로딩 중...');
             return;
@@ -74,26 +123,55 @@ async function loadUpdates(options = {}) {
             forceRefresh = false
         } = options;
         
+        console.log('📋 데이터 로드 옵션:', {
+            category,
+            searchTerm,
+            forceRefresh,
+            activeCategory
+        });
+        
         // 데이터 로드
+        console.log('🔍 fetchUpdates 호출...');
         const updates = await window.UpdatesSupabase.fetchUpdates({
             category,
             searchTerm,
             limit: 100 // 충분한 데이터 로드
         });
         
+        console.log('📦 fetchUpdates 결과:', {
+            updates: updates,
+            length: updates ? updates.length : 0,
+            isArray: Array.isArray(updates)
+        });
+        
         // 성공적으로 로드된 경우
         if (updates && updates.length > 0) {
+            console.log('✅ 데이터 로드 성공, UI 업데이트 시작');
             filteredUpdates = updates;
             hideLoadingState();
             hideErrorState();
+            
+            console.log('🎨 renderUpdates 호출...');
             renderUpdates();
+            
+            console.log('📄 renderPagination 호출...');
             renderPagination();
-        } else if (!loadingState.hasData) {
-            showEmptyState();
+            
+            console.log('✅ UI 업데이트 완료');
+        } else {
+            console.warn('⚠️ 데이터가 없거나 빈 배열');
+            if (!loadingState.hasData) {
+                showEmptyState();
+            }
         }
         
     } catch (error) {
-        console.error('❌ 업데이트 데이터 로드 실패:', error);
+        console.error('❌ 업데이트 데이터 로드 실패:', {
+            message: error.message,
+            stack: error.stack,
+            options: options,
+            activeCategory: activeCategory
+        });
         hideLoadingState();
         showErrorState(error);
     }

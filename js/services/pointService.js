@@ -22,39 +22,40 @@ class PointService {
     /**
      * 포인트 적립
      */
-    async earnPoints(userId, amount, type, description, relatedId = null) {
+    async earnPoints(userId, amount, category = 'general', description = '포인트 적립', relatedId = null) {
         try {
-            // 1. 포인트 내역 추가
-            const { data: historyData, error: historyError } = await this.supabase
-                .from('point_history')
-                .insert([{
-                    user_id: userId,
-                    amount: Math.abs(amount), // 적립은 항상 양수
-                    type: type,
-                    description: description,
-                    related_id: relatedId
-                }])
-                .select()
+            // 새로운 safe_earn_points 함수 사용 (트랜잭션 처리)
+            const { data: transactionId, error } = await this.supabase
+                .rpc('safe_earn_points', {
+                    p_user_id: userId,
+                    p_amount: Math.abs(amount),
+                    p_category: category,
+                    p_description: description,
+                    p_related_id: relatedId
+                });
+
+            if (error) throw error;
+
+            // 현재 포인트 잔액 조회
+            const { data: balanceData } = await this.supabase
+                .from('point_balances')
+                .select('current_points')
+                .eq('user_id', userId)
                 .single();
 
-            if (historyError) throw historyError;
+            const newPoints = balanceData?.current_points || 0;
 
-            // 2. 사용자 포인트 업데이트
-            const { error: updateError } = await this.supabase
-                .from('users')
-                .update({ 
-                    points: this.supabase.rpc('increment_user_points', {
-                        user_uuid: userId,
-                        points_delta: Math.abs(amount)
-                    })
-                })
-                .eq('id', userId);
-
-            if (updateError) throw updateError;
-
-            return { success: true, data: historyData };
+            console.log(`✅ 포인트 적립 성공: ${description} +${Math.abs(amount)}P (총 ${newPoints}P)`);
+            
+            return { 
+                success: true, 
+                newPoints: newPoints,
+                amount: Math.abs(amount),
+                description: description,
+                transactionId: transactionId
+            };
         } catch (error) {
-            console.error('포인트 적립 실패:', error);
+            console.error('❌ 포인트 적립 실패:', error);
             return { success: false, error: error.message };
         }
     }
@@ -62,50 +63,46 @@ class PointService {
     /**
      * 포인트 차감
      */
-    async spendPoints(userId, amount, type, description, relatedId = null) {
+    async spendPoints(userId, amount, category = 'general', description = '포인트 사용', relatedId = null) {
         try {
-            // 1. 현재 포인트 확인
-            const { data: userData } = await this.supabase
-                .from('users')
-                .select('points')
-                .eq('id', userId)
-                .single();
+            // 새로운 safe_spend_points 함수 사용 (트랜잭션 처리, 잔액 확인 포함)
+            const { data: transactionId, error } = await this.supabase
+                .rpc('safe_spend_points', {
+                    p_user_id: userId,
+                    p_amount: Math.abs(amount),
+                    p_category: category,
+                    p_description: description,
+                    p_related_id: relatedId
+                });
 
-            if (!userData || userData.points < Math.abs(amount)) {
-                throw new Error('포인트가 부족합니다.');
+            if (error) {
+                // 포인트 부족 에러 처리
+                if (error.message.includes('Insufficient points') || error.message.includes('insufficient_points')) {
+                    throw new Error('포인트가 부족합니다.');
+                }
+                throw error;
             }
 
-            // 2. 포인트 내역 추가
-            const { data: historyData, error: historyError } = await this.supabase
-                .from('point_history')
-                .insert([{
-                    user_id: userId,
-                    amount: -Math.abs(amount), // 차감은 항상 음수
-                    type: type,
-                    description: description,
-                    related_id: relatedId
-                }])
-                .select()
+            // 현재 포인트 잔액 조회
+            const { data: balanceData } = await this.supabase
+                .from('point_balances')
+                .select('current_points')
+                .eq('user_id', userId)
                 .single();
 
-            if (historyError) throw historyError;
+            const newPoints = balanceData?.current_points || 0;
 
-            // 3. 사용자 포인트 업데이트
-            const { error: updateError } = await this.supabase
-                .from('users')
-                .update({ 
-                    points: this.supabase.rpc('decrement_user_points', {
-                        user_uuid: userId,
-                        points_delta: Math.abs(amount)
-                    })
-                })
-                .eq('id', userId);
-
-            if (updateError) throw updateError;
-
-            return { success: true, data: historyData };
+            console.log(`✅ 포인트 차감 성공: ${description} -${Math.abs(amount)}P (남은 포인트: ${newPoints}P)`);
+            
+            return { 
+                success: true, 
+                newPoints: newPoints,
+                amount: Math.abs(amount),
+                description: description,
+                transactionId: transactionId
+            };
         } catch (error) {
-            console.error('포인트 차감 실패:', error);
+            console.error('❌ 포인트 차감 실패:', error);
             return { success: false, error: error.message };
         }
     }
@@ -115,18 +112,74 @@ class PointService {
      */
     async getPointHistory(userId, page = 1, limit = 20) {
         try {
+            const offset = (page - 1) * limit;
+            
+            // 새로운 point_transactions 테이블에서 직접 조회
             const { data, error } = await this.supabase
-                .from('point_history')
-                .select('*')
+                .from('point_transactions')
+                .select(`
+                    id,
+                    amount,
+                    transaction_type,
+                    category,
+                    description,
+                    related_id,
+                    created_at
+                `)
                 .eq('user_id', userId)
                 .order('created_at', { ascending: false })
-                .range((page - 1) * limit, page * limit - 1);
+                .range(offset, offset + limit - 1);
 
             if (error) throw error;
-            return { success: true, data };
+
+            // 기존 형식에 맞게 데이터 변환
+            const transformedData = data.map(transaction => ({
+                id: transaction.id,
+                user_id: userId,
+                amount: transaction.transaction_type === 'spend' ? -Math.abs(transaction.amount) : Math.abs(transaction.amount),
+                type: transaction.category,
+                description: transaction.description,
+                related_id: transaction.related_id,
+                created_at: transaction.created_at
+            }));
+
+            console.log(`✅ 포인트 내역 조회 성공: ${transformedData?.length || 0}건 (페이지: ${page})`);
+            return { success: true, data: transformedData || [] };
         } catch (error) {
-            console.error('포인트 내역 조회 실패:', error);
-            return { success: false, error: error.message };
+            console.error('❌ 포인트 내역 조회 실패:', error);
+            return { success: false, error: error.message, data: [] };
+        }
+    }
+
+    /**
+     * 현재 포인트 조회
+     */
+    async getCurrentPoints(userId) {
+        try {
+            const { data: balanceData, error } = await this.supabase
+                .from('point_balances')
+                .select('current_points, total_earned, total_spent, last_transaction_at')
+                .eq('user_id', userId)
+                .single();
+
+            if (error) {
+                // 포인트 잔액 레코드가 없으면 0으로 처리
+                if (error.code === 'PGRST116') {
+                    return { success: true, points: 0, total_earned: 0, total_spent: 0 };
+                }
+                throw error;
+            }
+
+            return { 
+                success: true, 
+                points: balanceData.current_points || 0,
+                total_earned: balanceData.total_earned || 0,
+                total_spent: balanceData.total_spent || 0,
+                last_transaction_at: balanceData.last_transaction_at
+            };
+        } catch (error) {
+            console.error('❌ 현재 포인트 조회 실패:', error);
+            return { success: false, error: error.message, points: 0 };
         }
     }
 
@@ -135,24 +188,37 @@ class PointService {
      */
     async getPointRanking(limit = 50) {
         try {
+            // users 테이블과 point_balances 테이블을 조인하여 랭킹 조회
             const { data, error } = await this.supabase
                 .from('users')
                 .select(`
                     id,
                     username,
                     full_name,
-                    points,
                     profile_image_url,
-                    user_badges!inner(
+                    point_balances(current_points),
+                    user_badges(
                         badges(name, badge_type, color)
                     )
                 `)
                 .eq('is_active', true)
-                .order('points', { ascending: false })
+                .not('point_balances', 'is', null)
+                .order('point_balances.current_points', { ascending: false })
                 .limit(limit);
 
             if (error) throw error;
-            return { success: true, data };
+
+            // 데이터 구조 변환 (기존 형식 유지)
+            const transformedData = data.map(user => ({
+                id: user.id,
+                username: user.username,
+                full_name: user.full_name,
+                points: user.point_balances?.[0]?.current_points || 0,
+                profile_image_url: user.profile_image_url,
+                user_badges: user.user_badges || []
+            }));
+
+            return { success: true, data: transformedData };
         } catch (error) {
             console.error('포인트 랭킹 조회 실패:', error);
             return { success: false, error: error.message };
@@ -168,15 +234,15 @@ class PointService {
             const endDate = new Date(year, month, 0);
 
             const { data, error } = await this.supabase
-                .from('point_history')
+                .from('point_transactions')
                 .select(`
                     user_id,
-                    users:user_id(username, profile_image_url),
-                    amount
+                    amount,
+                    users:user_id(username, profile_image_url)
                 `)
+                .eq('transaction_type', 'earn') // 적립 포인트만
                 .gte('created_at', startDate.toISOString())
-                .lte('created_at', endDate.toISOString())
-                .gt('amount', 0); // 적립 포인트만
+                .lte('created_at', endDate.toISOString());
 
             if (error) throw error;
 
@@ -212,67 +278,47 @@ class PointService {
      */
     async checkAttendance(userId) {
         try {
-            const today = new Date().toISOString().split('T')[0];
-            
-            // 오늘 이미 출석했는지 확인
-            const { data: existing } = await this.supabase
-                .from('attendance')
-                .select('*')
-                .eq('user_id', userId)
-                .eq('check_date', today)
-                .single();
+            // 새로운 process_daily_attendance 함수 사용
+            const { data, error } = await this.supabase
+                .rpc('process_daily_attendance', {
+                    p_user_id: userId
+                });
 
-            if (existing) {
-                return { success: false, error: '이미 출석체크를 완료했습니다.' };
+            if (error) {
+                // 이미 출석한 경우
+                if (error.message.includes('already_attended') || error.message.includes('Already attended')) {
+                    return { success: false, error: '이미 출석체크를 완료했습니다.' };
+                }
+                throw error;
             }
 
-            // 어제 출석 여부 확인 (연속 출석 계산)
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-            const { data: yesterdayData } = await this.supabase
-                .from('attendance')
-                .select('consecutive_days')
+            // 출석 결과 조회
+            const today = new Date().toISOString().split('T')[0];
+            const { data: attendanceData } = await this.supabase
+                .from('attendance_records')
+                .select('consecutive_days, points_earned')
                 .eq('user_id', userId)
-                .eq('check_date', yesterdayStr)
+                .eq('attendance_date', today)
                 .single();
 
-            const consecutiveDays = yesterdayData ? yesterdayData.consecutive_days + 1 : 1;
-            
-            // 연속 출석 보너스 계산
-            let pointsEarned = 10; // 기본 출석 포인트
-            if (consecutiveDays >= 7) pointsEarned += 20; // 7일 연속 보너스
-            if (consecutiveDays >= 30) pointsEarned += 50; // 30일 연속 보너스
+            // 현재 포인트 조회
+            const pointsResult = await this.getCurrentPoints(userId);
 
-            // 출석 기록 저장
-            const { data, error } = await this.supabase
-                .from('attendance')
-                .insert([{
-                    user_id: userId,
-                    check_date: today,
-                    consecutive_days: consecutiveDays,
-                    points_earned: pointsEarned
-                }])
-                .select()
-                .single();
-
-            if (error) throw error;
-
-            // 포인트 지급
-            await this.earnPoints(userId, pointsEarned, 'earn', `출석체크 (${consecutiveDays}일 연속)`, data.id);
-
-            // 연속 출석 뱃지 체크
-            if (consecutiveDays === 7) {
-                await authService.awardBadge(userId, '출첵리더');
+            // 연속 출석 뱃지 체크 (7일, 30일)
+            if (attendanceData?.consecutive_days === 7) {
+                // TODO: 뱃지 시스템 연동 (authService.awardBadge 구현 후)
+                console.log('7일 연속 출석 뱃지 획득!');
+            }
+            if (attendanceData?.consecutive_days === 30) {
+                console.log('30일 연속 출석 뱃지 획득!');
             }
 
             return { 
                 success: true, 
                 data: {
-                    consecutiveDays,
-                    pointsEarned,
-                    totalPoints: userData.points + pointsEarned
+                    consecutiveDays: attendanceData?.consecutive_days || 1,
+                    pointsEarned: attendanceData?.points_earned || 10,
+                    totalPoints: pointsResult.points || 0
                 }
             };
         } catch (error) {
@@ -290,15 +336,23 @@ class PointService {
             const endDate = new Date(year, month, 0);
 
             const { data, error } = await this.supabase
-                .from('attendance')
-                .select('check_date, consecutive_days, points_earned')
+                .from('attendance_records')
+                .select('attendance_date, consecutive_days, points_earned')
                 .eq('user_id', userId)
-                .gte('check_date', startDate.toISOString().split('T')[0])
-                .lte('check_date', endDate.toISOString().split('T')[0])
-                .order('check_date');
+                .gte('attendance_date', startDate.toISOString().split('T')[0])
+                .lte('attendance_date', endDate.toISOString().split('T')[0])
+                .order('attendance_date');
 
             if (error) throw error;
-            return { success: true, data };
+
+            // 기존 형식에 맞게 데이터 변환
+            const transformedData = data.map(record => ({
+                check_date: record.attendance_date,
+                consecutive_days: record.consecutive_days,
+                points_earned: record.points_earned
+            }));
+
+            return { success: true, data: transformedData };
         } catch (error) {
             console.error('월간 출석 현황 조회 실패:', error);
             return { success: false, error: error.message };
@@ -320,7 +374,7 @@ class PointService {
             const result = await this.spendPoints(
                 currentUser.id,
                 cost,
-                'spend',
+                'shop',
                 `포인트 상점 아이템 구매: ${itemId}`,
                 itemId
             );
@@ -364,35 +418,29 @@ class PointService {
                 throw new Error('자신에게는 포인트를 선물할 수 없습니다.');
             }
 
-            // 보내는 사람 포인트 차감
-            const spendResult = await this.spendPoints(
-                currentUser.id,
-                amount,
-                'spend',
-                `포인트 선물: ${receiverUsername}에게 전송`,
-                receiver.id
-            );
+            // 새로운 safe_transfer_points 함수 사용 (원자적 트랜잭션)
+            const { data: transactionId, error } = await this.supabase
+                .rpc('safe_transfer_points', {
+                    p_from_user: currentUser.id,
+                    p_to_user: receiver.id,
+                    p_amount: Math.abs(amount),
+                    p_description: message || `포인트 선물 (${currentUser.username} → ${receiverUsername})`
+                });
 
-            if (!spendResult.success) {
-                throw new Error(spendResult.error);
+            if (error) {
+                if (error.message.includes('insufficient_points') || error.message.includes('Insufficient points')) {
+                    throw new Error('포인트가 부족합니다.');
+                }
+                throw error;
             }
 
-            // 받는 사람 포인트 적립
-            const earnResult = await this.earnPoints(
-                receiver.id,
-                amount,
-                'earn',
-                `포인트 선물: ${authService.getLocalUser().username}님이 보냄`,
-                currentUser.id
-            );
-
-            if (!earnResult.success) {
-                // 실패 시 롤백
-                await this.earnPoints(currentUser.id, amount, 'earn', '포인트 선물 실패 롤백');
-                throw new Error('포인트 선물에 실패했습니다.');
-            }
-
-            return { success: true };
+            console.log(`✅ 포인트 선물 성공: ${currentUser.username} → ${receiverUsername} (${amount}P)`);
+            
+            return { 
+                success: true, 
+                transactionId: transactionId,
+                message: `${receiverUsername}님에게 ${amount}P를 선물했습니다.`
+            };
         } catch (error) {
             console.error('포인트 선물 실패:', error);
             return { success: false, error: error.message };
@@ -413,10 +461,10 @@ class PointService {
 
             // 오늘 이미 완료했는지 확인
             const { data: existing } = await this.supabase
-                .from('point_history')
+                .from('point_transactions')
                 .select('id')
                 .eq('user_id', currentUser.id)
-                .eq('type', 'daily_mission')
+                .eq('category', 'daily_mission')
                 .eq('description', `데일리 미션 완료: ${missionId}`)
                 .gte('created_at', `${today}T00:00:00.000Z`)
                 .single();
@@ -475,7 +523,7 @@ class PointService {
             const result = await this.spendPoints(
                 currentUser.id,
                 cost,
-                'spend',
+                'shop',
                 `${boosterType} 부스터 사용 (${duration/60}분)`
             );
 

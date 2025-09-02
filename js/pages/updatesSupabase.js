@@ -21,6 +21,14 @@ class UpdatesSupabase {
             if (window.WaveSupabase) {
                 this.client = window.WaveSupabase.getClient();
                 console.log('✅ UpdatesSupabase 초기화 완료');
+                
+                // 클라이언트 연결 테스트
+                console.log('🔍 Supabase 클라이언트 상태:', {
+                    client: !!this.client,
+                    url: this.client?.supabaseUrl,
+                    key: this.client?.supabaseKey ? '존재함' : '없음'
+                });
+                
                 return true;
             } else {
                 throw new Error('WaveSupabase가 초기화되지 않았습니다.');
@@ -81,12 +89,35 @@ class UpdatesSupabase {
                 error: error,
                 hasData: !!data,
                 category: category,
-                searchTerm: searchTerm
+                searchTerm: searchTerm,
+                queryDetails: {
+                    table: 'updates',
+                    filters: { is_active: true, type: category !== 'all' ? category : '전체' },
+                    orderBy: 'released_at DESC'
+                }
             });
 
             if (error) {
-                console.error('❌ Supabase 쿼리 에러:', error);
+                console.error('❌ Supabase 쿼리 에러 상세:', {
+                    message: error.message,
+                    details: error.details,
+                    hint: error.hint,
+                    code: error.code
+                });
                 throw error;
+            }
+
+            // 원시 데이터 샘플 로깅
+            if (data && data.length > 0) {
+                console.log('📋 원시 데이터 첫 번째 항목:', {
+                    id: data[0].id,
+                    title: data[0].title,
+                    type: data[0].type,
+                    content_length: data[0].content ? data[0].content.length : 0,
+                    released_at: data[0].released_at,
+                    is_active: data[0].is_active,
+                    all_keys: Object.keys(data[0])
+                });
             }
 
             // 데이터가 있는지 확인
@@ -123,44 +154,82 @@ class UpdatesSupabase {
     transformUpdates(supabaseData) {
         console.log('🔧 데이터 변환 시작:', supabaseData.length, '개 항목');
         
+        if (!Array.isArray(supabaseData)) {
+            console.error('❌ 변환할 데이터가 배열이 아닙니다:', typeof supabaseData);
+            return [];
+        }
+
         return supabaseData.map((item, index) => {
-            console.log(`📋 아이템 ${index + 1} 변환 중:`, {
-                id: item.id,
-                title: item.title,
-                type: item.type,
-                content: item.content ? item.content.substring(0, 100) + '...' : '없음',
-                released_at: item.released_at
-            });
+            try {
+                console.log(`📋 아이템 ${index + 1} 변환 중:`, {
+                    id: item.id,
+                    title: item.title,
+                    type: item.type,
+                    content: item.content ? item.content.substring(0, 100) + '...' : '없음',
+                    released_at: item.released_at
+                });
 
-            // content에서 변경사항 추출
-            const changes = this.extractChanges(item.content);
-            const description = this.extractDescription(item.content);
-            
-            // 날짜 포맷팅
-            const releaseDate = new Date(item.released_at).toISOString().split('T')[0];
-            
-            const transformedItem = {
-                id: item.id,
-                version: this.generateVersion(item.type, item.id),
-                title: item.title || '제목 없음',
-                type: this.mapUpdateType(item.type),
-                category: item.type || '개선', // type과 category가 동일
-                description: description,
-                changes: changes,
-                releaseDate: releaseDate,
-                isLatest: index === 0 // 첫 번째가 최신
-            };
+                // 필수 필드 검증
+                if (!item.id || !item.title) {
+                    console.warn('⚠️ 필수 필드 누락:', { id: item.id, title: item.title });
+                }
 
-            console.log(`✅ 변환 완료:`, {
-                id: transformedItem.id,
-                title: transformedItem.title,
-                description: transformedItem.description.substring(0, 50) + '...',
-                changesCount: transformedItem.changes.length,
-                changes: transformedItem.changes
-            });
-            
-            return transformedItem;
-        });
+                // content에서 변경사항 추출
+                const changes = this.extractChanges(item.content);
+                const description = this.extractDescription(item.content);
+                
+                // 날짜 포맷팅 (안전한 처리)
+                let releaseDate;
+                try {
+                    releaseDate = item.released_at 
+                        ? new Date(item.released_at).toISOString().split('T')[0]
+                        : new Date().toISOString().split('T')[0];
+                } catch (dateError) {
+                    console.warn('⚠️ 날짜 파싱 오류:', item.released_at, dateError);
+                    releaseDate = new Date().toISOString().split('T')[0];
+                }
+                
+                const transformedItem = {
+                    id: item.id,
+                    version: this.generateVersion(item.type, item.id),
+                    title: item.title || '제목 없음',
+                    type: this.mapUpdateType(item.type),
+                    category: item.type || '개선', // type과 category가 동일
+                    description: description,
+                    changes: changes,
+                    releaseDate: releaseDate,
+                    isLatest: index === 0 // 첫 번째가 최신
+                };
+
+                console.log(`✅ 변환 완료:`, {
+                    id: transformedItem.id,
+                    title: transformedItem.title,
+                    category: transformedItem.category,
+                    description: transformedItem.description.substring(0, 50) + '...',
+                    changesCount: transformedItem.changes.length,
+                    changes: transformedItem.changes,
+                    releaseDate: transformedItem.releaseDate
+                });
+                
+                return transformedItem;
+            } catch (transformError) {
+                console.error(`❌ 아이템 ${index + 1} 변환 실패:`, transformError);
+                console.error('문제가 된 원시 데이터:', item);
+                
+                // 기본값으로 변환
+                return {
+                    id: item.id || Date.now(),
+                    version: 'v1.0.0',
+                    title: item.title || '제목 없음',
+                    type: 'minor',
+                    category: item.type || '개선',
+                    description: '업데이트 설명이 없습니다.',
+                    changes: ['업데이트 내용을 확인하세요.'],
+                    releaseDate: new Date().toISOString().split('T')[0],
+                    isLatest: false
+                };
+            }
+        }).filter(item => item !== null);
     }
 
     /**

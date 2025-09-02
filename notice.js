@@ -59,16 +59,46 @@ document.addEventListener('DOMContentLoaded', async () => {
  */
 async function waitForServices() {
     let attempts = 0;
-    const maxAttempts = 50;
+    const maxAttempts = 100; // 10초로 증가
     
+    console.log('⏳ 서비스 초기화 대기 중...');
+    
+    // 먼저 WaveSupabase 초기화를 기다림
+    while (attempts < maxAttempts) {
+        if (window.WaveSupabase && window.WaveSupabase.getClient) {
+            console.log('✅ WaveSupabase 발견');
+            break;
+        }
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+    }
+    
+    // 서비스 초기화
+    if (!window.noticeService) {
+        console.log('📦 NoticeService 생성 및 초기화...');
+        window.noticeService = new NoticeService();
+        await window.noticeService.init();
+    }
+    
+    if (!window.feedbackService) {
+        console.log('📦 FeedbackService 생성 및 초기화...');
+        window.feedbackService = new FeedbackService();
+        await window.feedbackService.init();
+    }
+    
+    // 모든 서비스가 준비될 때까지 대기
+    attempts = 0;
     while (attempts < maxAttempts) {
         if (window.noticeService && window.authService && window.feedbackService) {
+            console.log('✅ 모든 서비스 준비 완료');
             return;
         }
         await new Promise(resolve => setTimeout(resolve, 100));
         attempts++;
     }
-    throw new Error('서비스 초기화 시간 초과');
+    
+    // 부분적으로라도 진행
+    console.warn('⚠️ 일부 서비스가 초기화되지 않았지만 계속 진행');
 }
 
 /**
@@ -77,12 +107,19 @@ async function waitForServices() {
 async function checkUserPermission() {
     try {
         if (window.authService) {
-            const user = await window.authService.getCurrentUser();
-            console.log('ℹ️ 현재 사용자:', user);
+            const isLoggedIn = window.authService.isLoggedIn();
+            console.log('ℹ️ 로그인 상태:', isLoggedIn);
             
-            if (user) {
-                userRole = user.role || 'user';
-                hasWritePermission = ['admin', 'super_admin'].includes(userRole);
+            if (isLoggedIn) {
+                const localUser = window.authService.getLocalUser();
+                const isAdminUser = window.authService.isAdmin();
+                
+                console.log('ℹ️ 로컬 사용자 정보:', localUser);
+                console.log('ℹ️ 관리자 여부:', isAdminUser);
+                
+                userRole = localUser.role || 'user';
+                hasWritePermission = isAdminUser;
+                
                 console.log(`✅ 사용자 권한 확인: 역할=${userRole}, 쓰기권한=${hasWritePermission}`);
             } else {
                 console.log('ℹ️ 비로그인 사용자');

@@ -151,8 +151,8 @@ body {
 }
 
 .sidebar-nav.has-overflow::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 2px;
+    height: 2px;
 }
 
 .sidebar-nav.has-overflow::-webkit-scrollbar-track {

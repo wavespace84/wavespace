@@ -36,23 +36,46 @@ export class AccessibilityManager {
         const style = document.createElement('style');
         style.textContent = `
             .skip-links {
-                position: absolute;
-                top: -100px;
+                position: fixed;
+                top: 0;
                 left: 0;
-                z-index: 9999;
+                z-index: 10000;
+                width: 100%;
+                pointer-events: none;
             }
             .skip-link {
                 position: absolute;
+                top: -50px;
+                left: 10px;
                 padding: 8px 16px;
-                background: #000;
+                background: #0066FF;
                 color: #fff;
                 text-decoration: none;
-                border-radius: 0 0 4px 0;
-                font-weight: bold;
-                transition: top 0.3s;
+                border-radius: 0 0 8px 8px;
+                font-weight: 600;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+                transition: all 0.2s ease-in-out;
+                pointer-events: auto;
+                opacity: 0;
+                transform: translateY(-10px);
             }
-            .skip-link:focus {
+            .skip-link:focus,
+            .skip-link:focus-visible {
                 top: 0;
+                opacity: 1;
+                transform: translateY(0);
+                outline: 2px solid #fff;
+                outline-offset: 2px;
+            }
+            .skip-link:hover {
+                background: #0052CC;
+            }
+            .skip-link + .skip-link {
+                left: 170px;
+            }
+            .skip-link + .skip-link + .skip-link {
+                left: 340px;
             }
         `;
 
@@ -243,6 +266,40 @@ export class AccessibilityManager {
             } else {
                 console.warn('[Accessibility] 라벨이 없는 입력 필드 발견:', input);
             }
+        }
+    }
+
+    // 🔍 입력 필드 유효성 검사 aria 속성 추가
+    addInputValidationAria(input) {
+        // invalid 상태를 위한 aria-invalid 초기화
+        if (!input.hasAttribute('aria-invalid')) {
+            input.setAttribute('aria-invalid', 'false');
+        }
+
+        // 입력 검증 이벤트 리스너 추가
+        input.addEventListener('blur', () => {
+            const isValid = input.checkValidity();
+            input.setAttribute('aria-invalid', !isValid);
+            
+            // 에러 메시지와 연결
+            const errorId = input.id + '-error';
+            const errorElement = document.getElementById(errorId);
+            
+            if (!isValid && errorElement) {
+                input.setAttribute('aria-describedby', errorId);
+            } else if (isValid) {
+                input.removeAttribute('aria-describedby');
+            }
+        });
+
+        // 실시간 검증 (선택적)
+        if (input.type === 'email' || input.type === 'url' || input.hasAttribute('pattern')) {
+            input.addEventListener('input', () => {
+                if (input.value) {
+                    const isValid = input.checkValidity();
+                    input.setAttribute('aria-invalid', !isValid);
+                }
+            });
         }
     }
 

@@ -85,6 +85,309 @@ body {
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
+/* ====================================
+   마이페이지 사이드패널 - 완전 재설계
+   ==================================== */
+
+/* 오버레이 배경 */
+.mypage-sidepanel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mypage-sidepanel-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 사이드패널 본체 */
+.mypage-sidepanel {
+    position: fixed;
+    top: 0;
+    right: -480px;
+    width: 480px;
+    height: 100vh;
+    background: var(--white);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+}
+
+.mypage-sidepanel-overlay.show .mypage-sidepanel {
+    right: 0;
+}
+
+/* 헤더 영역 */
+.mypage-sidepanel-header {
+    padding: 24px;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.mypage-sidepanel-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+.mypage-sidepanel-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--gray-600);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.mypage-sidepanel-close:hover {
+    background: var(--gray-100);
+    color: var(--gray-900);
+}
+
+/* 네비게이션 탭 */
+.mypage-sidepanel-nav {
+    padding: 16px;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.mypage-nav-item {
+    padding: 8px 16px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 20px;
+    color: var(--gray-700);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mypage-nav-item:hover {
+    background: var(--gray-100);
+    border-color: var(--gray-300);
+}
+
+.mypage-nav-item.active {
+    background: var(--primary-blue);
+    color: var(--white);
+    border-color: var(--primary-blue);
+}
+
+/* 콘텐츠 영역 */
+.mypage-sidepanel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: var(--gray-50);
+}
+
+.mypage-tab-content {
+    display: none;
+}
+
+.mypage-tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* 프로필 섹션 */
+.mypage-section-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.mypage-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 20px;
+}
+
+/* 아바타 */
+.mypage-avatar-container {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.mypage-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--gray-600);
+    overflow: hidden;
+}
+
+.mypage-avatar-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mypage-avatar-edit {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    background: var(--primary-blue);
+    color: var(--white);
+    border: 2px solid var(--white);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.mypage-avatar-edit:hover {
+    background: var(--deep-blue);
+    transform: scale(1.1);
+}
+
+/* 프로필 요약 */
+.mypage-profile-summary {
+    flex: 1;
+}
+
+.mypage-profile-summary h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+/* 대표 뱃지 - 완전 재설계 */
+.mypage-representative-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: var(--white);
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+    margin-top: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mypage-representative-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+.mypage-representative-badge i {
+    font-size: 14px;
+}
+
+/* 헤더의 사용자 레벨 뱃지 스타일 - 마이페이지 스타일과 차별화 */
+.user-level-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: var(--white);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* 정보 그리드 */
+.mypage-profile-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mypage-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.mypage-info-row:last-child {
+    border-bottom: none;
+}
+
+.mypage-info-label {
+    font-size: 14px;
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.mypage-info-value {
+    font-size: 14px;
+    color: var(--gray-900);
+    font-weight: 600;
+    text-align: right;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 모바일 대응 */
+@media (max-width: 640px) {
+    .mypage-sidepanel {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .mypage-profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
 /* 링크 클릭 시 깜빡임 방지 */
 a {
     -webkit-tap-highlight-color: transparent;
@@ -183,7 +486,7 @@ a {
 /* ====================================== */
 .toast-message {
     position: fixed !important;
-    bottom: -100px;
+    top: -100px; /* 위에서 시작 */
     left: 50%;
     transform: translateX(-50%);
     background: white;
@@ -200,7 +503,7 @@ a {
 }
 
 .toast-message.show {
-    bottom: 30px !important;
+    top: 80px !important; /* 헤더(60px) 아래에 표시 */
 }
 
 .toast-content {
@@ -292,7 +595,7 @@ a {
     }
     
     .toast-message.show {
-        bottom: 20px;
+        top: 70px; /* 모바일 헤더 아래에 표시 */
     }
     
     .toast-content {
@@ -369,7 +672,230 @@ a {
     background: #FECACA;
 }
 
-/* 로그인된 사용자 프로필 */
+/* 헤더 사용자 정보 - 강제 가로 정렬 */
+.user-header-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+    white-space: nowrap !important;
+    width: auto !important;
+    min-width: 200px !important;
+    max-width: none !important;
+    overflow: visible !important;
+    flex-wrap: nowrap !important;
+}
+
+.user-header-wrapper:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* 아바타 컨테이너 */
+.user-avatar-container {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.user-avatar-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #E5E7EB;
+}
+
+.user-avatar-default {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9CA3AF;
+    font-size: 16px;
+    border: 1px solid #E5E7EB;
+}
+
+/* 회원유형 라벨 - 더 이상 사용하지 않음 (호환성 유지를 위해 숨김) */
+.member-type-label {
+    display: none !important;
+}
+
+/* 사용자 정보 컨테이너 - 1줄 가로 정렬 */
+.user-info-single-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    padding: 2px 0 !important;
+}
+
+/* 기존 컨테이너 호환성 유지 */
+.user-info-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+    flex: 0 0 auto !important;
+    min-width: 120px !important;
+    max-width: 150px !important;
+    overflow: visible !important;
+}
+
+.user-name-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 3px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #1F2937;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap !important;
+}
+
+.verified-icon {
+    color: #6B7280;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-left: 3px;
+}
+
+.user-badge-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+}
+
+.user-level-badge {
+    border: 1px solid rgba(0, 102, 255, 0.4);
+    background: rgba(0, 102, 255, 0.08);
+    color: #0066FF;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+    white-space: nowrap !important;
+    flex-shrink: 0;
+    display: inline-block !important;
+}
+
+.divider {
+    color: #9CA3AF;
+    font-size: 9px;
+    font-weight: 300;
+    flex-shrink: 0;
+    display: inline-block !important;
+}
+
+.user-points-display {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-weight: 600;
+    color: #1F2937;
+    font-size: 11px;
+    white-space: nowrap !important;
+    flex-shrink: 0;
+    padding: 2px 6px !important;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+}
+
+.user-points-display i {
+    color: #F59E0B;
+    font-size: 10px;
+    flex-shrink: 0;
+    display: inline-block !important;
+}
+
+/* 헤더 드롭다운 아이콘 */
+.header-dropdown-icon {
+    color: #9CA3AF;
+    font-size: 12px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 2px;
+}
+
+.user-header-wrapper:hover .header-dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* 심플 헤더 아이콘들 */
+.header-simple-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.header-icon-btn:hover {
+    background: rgba(0, 102, 255, 0.1);
+    color: #0066FF;
+    transform: scale(1.05);
+}
+
+.header-points-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 102, 255, 0.08);
+    color: #0066FF;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+}
+
+.header-points-display i {
+    font-size: 16px;
+}
+
+/* 로그아웃 버튼 - 다른 아이콘들과 동일한 스타일 사용 */
+
+.header-points-display span {
+    color: #0066FF;
+}
+
+/* 기존 스타일 호환성 유지 */
 .user-profile {
     display: flex;
     align-items: center;
@@ -524,51 +1050,64 @@ a {
     background: #FEF2F2;
 }
 
-/* ===== 마이페이지 모달 스타일 ===== */
-.mypage-modal-overlay {
+/* ===== 마이페이지 사이드패널 스타일 ===== */
+.mypage-sidepanel-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    z-index: 10000;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    animation: modalFadeIn 0.3s ease-out;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.mypage-modal-overlay.show {
-    display: flex;
+.mypage-sidepanel-overlay.show {
+    opacity: 1;
+    visibility: visible;
 }
 
-.mypage-modal {
+.mypage-sidepanel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 600px;
     background: white;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 900px;
-    height: 85vh;
-    max-height: 700px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 9999;
+    box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-    animation: modalSlideUp 0.3s ease-out;
     overflow: hidden;
 }
 
-.mypage-modal-header {
-    background: linear-gradient(135deg, #0066FF 0%, #0099FF 100%);
-    color: white;
-    padding: 20px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 16px 16px 0 0;
+.mypage-sidepanel-overlay.show .mypage-sidepanel {
+    transform: translateX(0);
 }
 
-.mypage-modal-title {
+.mypage-sidepanel-header {
+    background: var(--white, #ffffff) !important;
+    color: var(--gray-900, #1e293b) !important;
+    padding: 24px 28px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-radius: 16px 16px 0 0 !important;
+    border-bottom: 1px solid var(--gray-100, #f1f5f9) !important;
+}
+
+.mypage-sidepanel-header h2 {
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: var(--gray-900, #1e293b) !important;
+    margin: 0 !important;
+}
+
+.mypage-sidepanel-title {
     font-size: 20px;
     font-weight: 700;
     margin: 0;
@@ -632,7 +1171,7 @@ a {
     background: #0066FF;
 }
 
-.mypage-modal-content {
+.mypage-sidepanel-content {
     flex: 1;
     overflow-y: auto;
     padding: 24px;
@@ -952,16 +1491,17 @@ a {
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-    .mypage-modal {
-        width: 95%;
-        height: 90vh;
+    .mypage-sidepanel {
+        width: 100%;
+        left: 0;
+        right: 0;
     }
     
-    .mypage-modal-header {
+    .mypage-sidepanel-header {
         padding: 16px 20px;
     }
     
-    .mypage-modal-title {
+    .mypage-sidepanel-title {
         font-size: 18px;
     }
     
@@ -970,7 +1510,7 @@ a {
         font-size: 13px;
     }
     
-    .mypage-modal-content {
+    .mypage-sidepanel-content {
         padding: 20px;
     }
     
@@ -991,5 +1531,724 @@ a {
     
     .mypage-profile-stats {
         justify-content: center;
+    }
+}
+
+/* 마이페이지 모달 추가 스타일 */
+
+/* 섹션 카드 - 고객센터/충전하기와 일관된 디자인 */
+.mypage-section-card {
+    background: var(--white, #ffffff) !important;
+    border: 1px solid var(--gray-200, #e2e8f0) !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    margin-bottom: 24px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.mypage-section-title {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: var(--gray-900, #1e293b) !important;
+    margin: 0 0 20px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.mypage-section-title:before {
+    content: "";
+    width: 4px;
+    height: 20px;
+    background: var(--primary-blue, #0066FF);
+    border-radius: 2px;
+}
+
+/* 프로필 헤더 개선 */
+.mypage-profile-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    margin-bottom: 24px !important;
+    padding-bottom: 24px !important;
+    border-bottom: 1px solid var(--gray-200, #e2e8f0) !important;
+}
+
+.mypage-profile-summary {
+    flex: 1;
+}
+
+.mypage-profile-summary h3 {
+    margin: 0 0 8px 0 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: var(--gray-900, #1e293b) !important;
+}
+
+/* 회원 정보 그리드 */
+.mypage-profile-info-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0 !important;
+    margin-top: 0 !important;
+}
+
+.mypage-info-row {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 0 !important;
+    border-bottom: 1px solid var(--gray-100, #f1f5f9) !important;
+}
+
+.mypage-info-row:last-child,
+.mypage-info-row:nth-last-child(2) {
+    border-bottom: none !important;
+}
+
+.mypage-info-label {
+    font-size: 14px !important;
+    color: var(--gray-600, #64748b) !important;
+    font-weight: 500 !important;
+    width: 120px !important;
+    flex-shrink: 0 !important;
+}
+
+.mypage-info-value {
+    font-size: 14px !important;
+    color: var(--gray-900, #1e293b) !important;
+    font-weight: 400 !important;
+    flex: 1 !important;
+}
+
+/* 아바타 개선 */
+.mypage-avatar-preview {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 3px solid var(--gray-200, #e2e8f0) !important;
+}
+
+/* 닫기 버튼 */
+.mypage-sidepanel-close {
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: var(--radius-lg, 8px) !important;
+    color: var(--gray-500, #64748b) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-size: 20px !important;
+}
+
+.mypage-sidepanel-close:hover {
+    background: var(--gray-100, #f1f5f9) !important;
+    color: var(--gray-900, #1e293b) !important;
+}
+
+/* 네비게이션 탭 */
+.mypage-sidepanel-nav {
+    display: flex !important;
+    background: var(--gray-50, #f8fafc) !important;
+    border-bottom: 1px solid var(--gray-200, #e2e8f0) !important;
+    overflow-x: auto;
+    flex-shrink: 0;
+    padding: 0 28px !important;
+    min-height: 56px;
+}
+
+.mypage-nav-item {
+    background: none !important;
+    border: none !important;
+    padding: 16px 20px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: var(--gray-600, #64748b) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+    position: relative !important;
+    min-width: max-content !important;
+    display: inline-block !important;
+}
+
+.mypage-nav-item:hover {
+    color: var(--primary-blue, #0066FF) !important;
+    background: rgba(0, 102, 255, 0.05) !important;
+}
+
+.mypage-nav-item.active {
+    color: var(--primary-blue, #0066FF) !important;
+    font-weight: 600 !important;
+}
+
+.mypage-nav-item.active::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 2px !important;
+    background: var(--primary-blue, #0066FF) !important;
+}
+
+/* 탭 콘텐츠 */
+.mypage-tab-content {
+    display: none;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.mypage-tab-content.active {
+    display: block;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 프로필 헤더 */
+.mypage-avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+.mypage-avatar-edit {
+    position: absolute !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    background: #0066FF !important;
+    border: 3px solid white !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    font-size: 14px !important;
+    z-index: 10 !important;
+}
+
+.mypage-avatar-edit:hover {
+    background: #0052CC;
+    transform: scale(1.1);
+}
+
+.mypage-profile-info {
+    flex: 1;
+}
+
+.mypage-level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+/* 실무자 인증 상태 */
+.mypage-practitioner-status {
+    margin: 24px 0;
+}
+
+.mypage-status-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.mypage-status-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+}
+
+.mypage-status-icon.pending {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.mypage-status-icon.approved {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+}
+
+.mypage-status-icon.rejected {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.mypage-status-info {
+    flex: 1;
+}
+
+.mypage-status-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.mypage-status-text {
+    margin: 0 0 12px 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.mypage-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.mypage-progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #0066FF 0%, #0099FF 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.mypage-progress-text {
+    margin: 0;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.mypage-status-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-left: auto;
+}
+
+.mypage-upload-btn {
+    background: linear-gradient(135deg, #0066FF 0%, #0099FF 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    white-space: nowrap !important;
+    display: block !important;
+}
+
+.mypage-upload-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+
+/* 정보 카드 */
+.mypage-info-cards {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    margin-top: 24px !important;
+}
+
+.mypage-info-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mypage-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.mypage-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    background: linear-gradient(135deg, #0066FF 0%, #0099FF 100%);
+}
+
+.mypage-card-content h4 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.mypage-card-value {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* 활동 내역 */
+.mypage-activity-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.mypage-filter-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mypage-filter-btn:hover {
+    background: rgba(0, 102, 255, 0.05);
+    color: #0066FF;
+    border-color: #0066FF;
+}
+
+.mypage-filter-btn.active {
+    background: #0066FF;
+    color: white;
+    border-color: #0066FF;
+}
+
+.mypage-activity-list,
+.mypage-points-history,
+.mypage-purchase-list {
+    min-height: 200px;
+}
+
+.mypage-activity-empty,
+.mypage-points-empty,
+.mypage-purchase-empty,
+.mypage-badge-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px 24px;
+    color: #64748b;
+    text-align: center;
+}
+
+.mypage-activity-empty i,
+.mypage-points-empty i,
+.mypage-purchase-empty i,
+.mypage-badge-empty i {
+    font-size: 48px;
+    color: #cbd5e1;
+}
+
+/* 포인트 */
+.mypage-points-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.mypage-points-card {
+    background: linear-gradient(135deg, #0066FF 0%, #0099FF 100%);
+    color: white;
+    padding: 24px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.mypage-points-card h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.mypage-points-value {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.mypage-points-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.mypage-action-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    min-width: max-content;
+}
+
+.mypage-action-btn:hover {
+    background: rgba(0, 102, 255, 0.05);
+    border-color: #0066FF;
+    color: #0066FF;
+}
+
+/* 뱃지 */
+.mypage-badge-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.mypage-badge-stat {
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.mypage-badge-stat h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.mypage-badge-stat p {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0066FF;
+}
+
+.mypage-badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+    min-height: 200px;
+}
+
+/* 설정 */
+.mypage-setting-section {
+    margin-bottom: 32px;
+}
+
+.mypage-setting-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.mypage-setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+    border-bottom: 1px solid #e2e8f0;
+    gap: 20px;
+}
+
+.mypage-setting-item:last-child {
+    border-bottom: none;
+}
+
+.mypage-setting-item.danger {
+    border-color: #fecaca;
+    background: #fef2f2;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.mypage-setting-info {
+    flex: 1;
+}
+
+.mypage-setting-info h5 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.mypage-setting-item.danger .mypage-setting-info h5 {
+    color: #dc2626;
+}
+
+.mypage-setting-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.mypage-setting-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: max-content;
+}
+
+.mypage-setting-btn:hover {
+    background: rgba(0, 102, 255, 0.05);
+    border-color: #0066FF;
+    color: #0066FF;
+}
+
+.mypage-setting-btn.danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+}
+
+.mypage-setting-btn.danger:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
+/* 토글 스위치 */
+.mypage-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.mypage-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.mypage-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: 0.3s;
+    border-radius: 28px;
+}
+
+.mypage-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mypage-toggle input:checked + .mypage-toggle-slider {
+    background-color: #0066FF;
+}
+
+.mypage-toggle input:checked + .mypage-toggle-slider:before {
+    transform: translateX(22px);
+}
+
+/* 반응형 디자인 - 추가 */
+@media (max-width: 640px) {
+    .mypage-sidepanel-nav {
+        padding: 0 16px;
+    }
+    
+    .mypage-nav-item {
+        padding: 12px 12px;
+        font-size: 13px;
+    }
+    
+    .mypage-status-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .mypage-status-actions {
+        flex-direction: row;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .mypage-info-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .mypage-points-actions {
+        flex-direction: column;
+    }
+    
+    .mypage-action-btn {
+        flex: none;
+    }
+    
+    .mypage-setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .mypage-setting-item .mypage-toggle {
+        align-self: flex-end;
     }
 }

@@ -252,12 +252,23 @@ const searchInput = document.getElementById('searchInput');
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
+    // 필수 UI 요소만 먼저 초기화
     initializeFilters();
     initializeEventListeners();
-    initializeAdBanner();
-    renderPinnedBanner();
-    updateStatistics();
-    renderJobList();
+    
+    // 무거운 작업들은 지연 실행하여 페이지 네비게이션이 즉시 되도록 함
+    requestAnimationFrame(() => {
+        // 첫 번째 프레임: 광고와 통계
+        initializeAdBanner();
+        updateStatistics();
+        
+        // 다음 프레임: 배너와 구인공고 목록
+        requestAnimationFrame(() => {
+            renderPinnedBanner();
+            renderJobList();
+            renderPagination(); // 페이지네이션도 여기서 함께 렌더링
+        });
+    });
 });
 
 // 필터 초기화
@@ -1668,7 +1679,4 @@ function goToPage(page) {
     return false;
 }
 
-// 페이지네이션 초기화 (DOMContentLoaded 이벤트에 추가)
-document.addEventListener('DOMContentLoaded', () => {
-    renderPagination();
-});
+// 페이지네이션 초기화는 이제 메인 DOMContentLoaded에서 처리됨

@@ -3,6 +3,43 @@
 // 공통 데이터는 js/modules/common-data.js에서 로드됨
 // 사용 방법: window.WaveSpaceData.regionData, window.WaveSpaceData.regionNames 등
 
+// ===========================================
+// Supabase 연동 모듈 초기화
+// ===========================================
+
+let marketResearchSupabase = null;
+let isInitialized = false; // 중복 초기화 방지 플래그
+let pointService = null; // 포인트 서비스 인스턴스
+
+// Supabase 모듈 초기화 (레거시 - initializeSupabaseData에서 통합 처리)
+// 이 함수는 더 이상 사용되지 않음
+async function initMarketResearchSupabase() {
+    console.warn('⚠️ initMarketResearchSupabase는 더 이상 사용되지 않습니다. initializeSupabaseData를 사용하세요.');
+    return false;
+}
+
+// Supabase에서 문서 목록 로드
+async function loadDocumentsFromSupabase() {
+    try {
+        if (!marketResearchSupabase) return;
+        
+        // fetchDocuments 메서드 호출 (getDocuments는 이제 fetchDocuments를 호출함)
+        const documents = await marketResearchSupabase.fetchDocuments({
+            limit: 100, // 충분한 수의 문서 로드
+            sortBy: 'latest'
+        });
+        
+        if (documents && documents.length > 0) {
+            // Supabase 데이터를 우선하여 설정 (기존 Mock 데이터와 병합하지 않음)
+            currentDocuments = documents;
+            console.log(`📄 Supabase에서 ${documents.length}개 문서 로드 완료`);
+        }
+    } catch (error) {
+        console.error('❌ Supabase 문서 로드 실패:', error);
+        console.warn('💡 Mock 데이터로 대체하여 실행합니다.');
+    }
+}
+
 // debounce 유틸리티 함수
 function debounce(func, wait) {
     let timeout;
@@ -16,6 +53,55 @@ function debounce(func, wait) {
     };
 }
 
+// 페이지 수 기반 포인트 계산 함수
+function calculatePointsByPages(pages, daysDiff, isUpload = false) {
+    const basePoints = isUpload ? 3000 : 7000;
+    
+    // 페이지 지수 계산
+    let pageMultiplier = 1.0;
+    if (pages >= 40) {
+        pageMultiplier = 1.2; // 120%
+    } else if (pages >= 30) {
+        pageMultiplier = 1.1; // 110%
+    } else if (pages >= 20) {
+        pageMultiplier = 1.0; // 100%
+    } else if (pages >= 10) {
+        pageMultiplier = 0.9; // 90%
+    } else {
+        pageMultiplier = 0.6; // 60%
+    }
+    
+    // 최신성 지수 계산 (기존과 동일)
+    let freshnessMultiplier = 1.0;
+    if (daysDiff <= 180) { // 6개월 이내
+        freshnessMultiplier = 1.2; // 120%
+    } else if (daysDiff <= 365) { // 1년 이내
+        freshnessMultiplier = 1.0; // 100%
+    } else if (daysDiff <= 730) { // 2년 이내
+        freshnessMultiplier = 0.7; // 70%
+    } else {
+        return 0; // 2년 초과는 업로드 불가
+    }
+    
+    return Math.round(basePoints * pageMultiplier * freshnessMultiplier);
+}
+
+// PDF 파일에서 페이지 수 추출 함수
+async function extractPageCount(file) {
+    if (file.type === 'application/pdf') {
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            return pdf.numPages;
+        } catch (error) {
+            console.warn('PDF 페이지 수 추출 실패:', error);
+            return null;
+        }
+    }
+    // PDF가 아닌 경우 기본값 반환
+    return null;
+}
+
 // 미리보기 모달 관련 전역 변수
 let currentDocIndex = 0;
 let currentFilteredDocs = [];
@@ -23,731 +109,20 @@ let currentFilteredDocs = [];
 // 상품 유형 정의
 const productTypes = [
     { id: 'apartment', name: '아파트', color: '#3b82f6' },
-    { id: 'profit-ot', name: '수익형 오피스텔', color: '#8b5cf6' },
-    { id: 'residential-ot', name: '주거형 오피스텔', color: '#10b981' },
-    { id: 'office', name: '오피스', color: '#f59e0b' },
-    { id: 'urban', name: '도시형생활주택', color: '#22c55e' },
-    { id: 'commercial', name: '상가/상업시설', color: '#ef4444' },
+    { id: 'officetel-residential', name: '주거형OT', color: '#10b981' },
+    { id: 'officetel-profit', name: '수익형OT', color: '#8b5cf6' },
+    { id: 'urban', name: '도생', color: '#22c55e' },
+    { id: 'commercial', name: '상가', color: '#ef4444' },
     { id: 'lifestyle-lodge', name: '생활형숙박시설', color: '#a855f7' },
     { id: 'knowledge', name: '지식산업센터', color: '#06b6d4' },
+    { id: 'office', name: '오피스', color: '#f59e0b' },
     { id: 'other', name: '기타', color: '#6b7280' }
 ];
 
 // 업로드된 파일을 관리하는 변수
 let uploadedFile = null;
 
-// 샘플 문서 데이터 (자료 마켓플레이스용)
-const sampleDocuments = [
-    {
-        id: 1,
-        title: '서울 강남구 아파트 민간분양 시장조사서',
-        type: 'apartment',
-        region: '서울',
-        district: '강남구',
-        location: '서울 강남구',
-        date: '2024.01.15',
-        createDate: '자료생성일: 2024.01.15',
-        fileSize: '12.5MB',
-        fileType: 'PDF',
-        pages: 45,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['프리미엄', '투자가치', '신축'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '삼성동 일대 아파트 시장 동향 및 가격 분석',
-        pdfPath: null, // 실제 PDF 파일 없음 (테스트용)
-    },
-    {
-        id: 2,
-        title: '경기 성남시 수익형오피스텔 민간분양 시장조사서',
-        type: 'profit-ot',
-        region: '경기',
-        district: '성남시',
-        location: '경기 성남시',
-        date: '2024.01.14',
-        createDate: '자료생성일: 2024.01.14',
-        fileSize: '8.3MB',
-        fileType: 'PPT',
-        pages: 32,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['테크노밸리', '오피스텔', '임대수익'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '판교 테크노밸리 오피스텔 투자 가치 분석',
-        pdfPath: null, // PDF 파일 없음
-    },
-    {
-        id: 3,
-        title: '서울 마포구 상가 민간분양 시장조사서',
-        type: 'commercial',
-        region: '서울',
-        district: '마포구',
-        location: '서울 마포구',
-        date: '2024.01.13',
-        createDate: '자료생성일: 2024.01.13',
-        fileSize: '15.2MB',
-        fileType: 'PDF',
-        pages: 67,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['홍대상권', '상가투자', '젠트리피케이션'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fce7f3"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23ec4899" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '홍대 상권 분석 및 상가 투자 전략',
-        pdfPath: '/samples/sample3.pdf', // 실제 PDF 파일 경로 있음 (데모용 이미지 표시)
-    },
-    {
-        id: 4,
-        title: '서울 금천구 지식산업센터 민간분양 시장조사서',
-        type: 'knowledge',
-        region: '서울',
-        district: '금천구',
-        location: '서울 금천구',
-        date: '2024.01.12',
-        createDate: '자료생성일: 2024.01.12',
-        fileSize: '23.7MB',
-        fileType: 'PDF',
-        pages: 89,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['지식산업센터', 'IT산업', '임대현황'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23d4f4e6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%2310b981" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '가산디지털단지 지식산업센터 시장 현황 및 투자 전망',
-        pdfPath: null, // PDF 파일 없음
-    },
-    {
-        id: 5,
-        title: '부산 해운대구 아파트 공공분양 시장조사서',
-        type: 'apartment',
-        region: '부산',
-        district: '해운대구',
-        location: '부산 해운대구',
-        date: '2024.01.11',
-        createDate: '자료생성일: 2024.01.11',
-        fileSize: '18.9MB',
-        fileType: 'PPT',
-        pages: 56,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '공공분양',
-        isPremium: false,
-        keywords: ['해운대', '신도시', '공공분양'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23e0e7ff"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%235b5fc7" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '해운대 신도시 공공분양 아파트 시장 분석',
-        pdfPath: null, // PDF 파일 없음
-    },
-    {
-        id: 6,
-        title: '서울 영등포구 주거형오피스텔 민간임대 시장조사서',
-        type: 'residential-ot',
-        region: '서울',
-        district: '영등포구',
-        location: '서울 영등포구',
-        date: '2024.01.10',
-        createDate: '자료생성일: 2024.01.10',
-        fileSize: '11.3MB',
-        fileType: 'PDF',
-        pages: 42,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간임대',
-        isPremium: false,
-        keywords: ['여의도', 'IFC', '프리미엄오피스'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fef3c7"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23f59e0b" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '여의도 IFC 주변 오피스텔 투자 가치 분석',
-        pdfPath: null, // PDF 파일 없음
-    },
-    {
-        id: 7,
-        title: '서울 송파구 주거형오피스텔 민간분양 시장조사서',
-        type: 'residential-ot',
-        region: '서울',
-        district: '송파구',
-        location: '서울 송파구',
-        date: '2024.01.08',
-        createDate: '자료생성일: 2024.01.08',
-        fileSize: '7.8MB',
-        fileType: 'PDF',
-        pages: 28,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['송파', '헬리오시티', '주거형'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '송파 헬리오시티 주거형 오피스텔 시장 분석',
-        pdfPath: null, // PDF 파일 없음
-    },
-    {
-        id: 8,
-        title: '서울 강남구 수익형오피스텔 민간분양 시장조사서',
-        type: 'profit-ot',
-        region: '서울',
-        district: '강남구',
-        location: '서울 강남구',
-        date: '2024.01.07',
-        createDate: '자료생성일: 2024.01.07',
-        fileSize: '11.2MB',
-        fileType: 'PDF',
-        pages: 42,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: true,
-        keywords: ['강남역', '수익형', '투자'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23e0f2fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%230284c7" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '강남역 일대 수익형 오피스텔 투자 전략',
-        pdfPath: null, // PDF 파일 없음
-    },
-    {
-        id: 9,
-        title: '경기 성남시 주거형오피스텔 공공분양 시장조사서',
-        type: 'residential-ot',
-        region: '경기',
-        district: '성남시',
-        location: '경기 성남시',
-        date: '2024.01.06',
-        createDate: '자료생성일: 2024.01.06',
-        fileSize: '9.1MB',
-        fileType: 'PPT',
-        pages: 35,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '공공분양',
-        isPremium: false,
-        keywords: ['분당', '정자동', '주거형'],
-        thumbnail:
-            'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23fee2e2"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%23dc2626" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '분당 정자동 주거형 오피스텔 입지 분석',
-        pdfPath: null, // PDF 파일 없음
-    },
-    {
-        id: 10,
-        title: '서울 송파구 상가 민간분양 시장조사서',
-        type: 'commercial',
-        region: '서울',
-        district: '송파구',
-        location: '서울 송파구',
-        date: '2024.01.05',
-        createDate: '자료생성일: 2024.01.05',
-        fileSize: '11.3MB',
-        fileType: 'PDF',
-        pages: 42,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['잠실', '상가', '투자'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '잠실동 상가 시장 현황 및 투자 전망',
-        pdfPath: null,
-    },
-    {
-        id: 11,
-        title: '대전 서구 기타 민간분양 시장조사서',
-        type: 'other',
-        region: '대전',
-        district: '서구',
-        location: '대전 서구',
-        date: '2024.01.04',
-        createDate: '자료생성일: 2024.01.04',
-        fileSize: '7.8MB',
-        fileType: 'PDF',
-        pages: 28,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['둔산동', '오피스', '업무시설'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '대전 둔산동 오피스 시장 현황',
-        pdfPath: null,
-    },
-    {
-        id: 12,
-        title: '부산 해운대구 아파트 민간분양 시장조사서',
-        type: 'apartment',
-        region: '부산',
-        district: '해운대구',
-        location: '부산 해운대구',
-        date: '2024.01.03',
-        createDate: '자료생성일: 2024.01.03',
-        fileSize: '14.2MB',
-        fileType: 'PDF',
-        pages: 55,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['해운대', '아파트', '분양'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '해운대구 아파트 분양시장 동향',
-        pdfPath: null,
-    },
-    {
-        id: 13,
-        title: '인천 연수구 지식산업센터 민간분양 시장조사서',
-        type: 'knowledge',
-        region: '인천',
-        district: '연수구',
-        location: '인천 연수구',
-        date: '2024.01.02',
-        createDate: '자료생성일: 2024.01.02',
-        fileSize: '16.5MB',
-        fileType: 'PDF',
-        pages: 72,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['연수구', '지식산업센터', '송도'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '연수구 지식산업센터 입주 현황 분석',
-        pdfPath: null,
-    },
-    {
-        id: 14,
-        title: '광주 서구 상가 민간분양 시장조사서',
-        type: 'commercial',
-        region: '광주',
-        district: '서구',
-        location: '광주 서구',
-        date: '2024.01.01',
-        createDate: '자료생성일: 2024.01.01',
-        fileSize: '8.9MB',
-        fileType: 'PPT',
-        pages: 33,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['상무지구', '상가', '광주'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '광주 상무지구 상가 시장 분석',
-        pdfPath: null,
-    },
-    {
-        id: 15,
-        title: '경기 용인시 아파트 민간분양 시장조사서',
-        type: 'apartment',
-        region: '경기',
-        district: '용인시',
-        location: '경기 용인시',
-        date: '2023.12.31',
-        createDate: '자료생성일: 2023.12.31',
-        fileSize: '10.7MB',
-        fileType: 'PDF',
-        pages: 48,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['수지구', '아파트', '용인'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '용인 수지구 아파트 시장 동향',
-        pdfPath: null,
-    },
-    {
-        id: 16,
-        title: '대구 수성구 수익형오피스텔 민간분양 시장조사서',
-        type: 'profit-ot',
-        region: '대구',
-        district: '수성구',
-        location: '대구 수성구',
-        date: '2023.12.30',
-        createDate: '자료생성일: 2023.12.30',
-        fileSize: '9.4MB',
-        fileType: 'PPT',
-        pages: 37,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['수성구', '오피스텔', '수익형'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '대구 수성구 수익형 오피스텔 투자 분석',
-        pdfPath: null,
-    },
-    {
-        id: 17,
-        title: '세종 세종시 도시형생활주택 공공분양 시장조사서',
-        type: 'urban',
-        region: '세종',
-        district: '세종시',
-        location: '세종시',
-        date: '2023.12.29',
-        createDate: '자료생성일: 2023.12.29',
-        fileSize: '11.8MB',
-        fileType: 'PDF',
-        pages: 51,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '공공분양',
-        isPremium: false,
-        keywords: ['세종시', '도생', '공공주택'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '세종시 도시형생활주택 시장 현황',
-        pdfPath: null,
-    },
-    {
-        id: 18,
-        title: '울산 남구 아파트 민간분양 시장조사서',
-        type: 'apartment',
-        region: '울산',
-        district: '남구',
-        location: '울산 남구',
-        date: '2023.12.28',
-        createDate: '자료생성일: 2023.12.28',
-        fileSize: '7.2MB',
-        fileType: 'PDF',
-        pages: 31,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['울산', '남구', '아파트'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '울산 남구 아파트 분양시장 분석',
-        pdfPath: null,
-    },
-    {
-        id: 19,
-        title: '충남 천안시 지식산업센터 민간분양 시장조사서',
-        type: 'knowledge',
-        region: '충남',
-        district: '천안시',
-        location: '충남 천안시',
-        date: '2023.12.27',
-        createDate: '자료생성일: 2023.12.27',
-        fileSize: '13.5MB',
-        fileType: 'PDF',
-        pages: 62,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['천안', '지식산업센터', '투자'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '천안시 지식산업센터 투자 전망',
-        pdfPath: null,
-    },
-    {
-        id: 20,
-        title: '전북 전주시 아파트 공공분양 시장조사서',
-        type: 'apartment',
-        region: '전북',
-        district: '전주시',
-        location: '전북 전주시',
-        date: '2023.12.26',
-        createDate: '자료생성일: 2023.12.26',
-        fileSize: '9.8MB',
-        fileType: 'PPT',
-        pages: 41,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '공공분양',
-        isPremium: false,
-        keywords: ['전주', '혁신도시', '아파트'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '전주 혁신도시 아파트 시장 분석',
-        pdfPath: null,
-    },
-    {
-        id: 21,
-        title: '경남 창원시 상가 민간임대 시장조사서',
-        type: 'commercial',
-        region: '경남',
-        district: '창원시',
-        location: '경남 창원시',
-        date: '2023.12.25',
-        createDate: '자료생성일: 2023.12.25',
-        fileSize: '8.4MB',
-        fileType: 'PDF',
-        pages: 36,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간임대',
-        isPremium: false,
-        keywords: ['창원', '상가', '임대'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '창원시 상가 임대시장 현황',
-        pdfPath: null,
-    },
-    {
-        id: 22,
-        title: '충북 청주시 기타 민간분양 시장조사서',
-        type: 'other',
-        region: '충북',
-        district: '청주시',
-        location: '충북 청주시',
-        date: '2023.12.24',
-        createDate: '자료생성일: 2023.12.24',
-        fileSize: '6.9MB',
-        fileType: 'PPT',
-        pages: 29,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['청주', '오피스', '업무시설'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '청주시 오피스 시장 전망 분석',
-        pdfPath: null,
-    },
-    {
-        id: 23,
-        title: '제주 제주시 생활형숙박시설 민간분양 시장조사서',
-        type: 'lifestyle-lodge',
-        region: '제주',
-        district: '제주시',
-        location: '제주 제주시',
-        date: '2023.12.23',
-        createDate: '자료생성일: 2023.12.23',
-        fileSize: '15.7MB',
-        fileType: 'PDF',
-        pages: 68,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['제주', '생활형숙박시설', '투자'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '제주시 생활형숙박시설 투자 전망',
-        pdfPath: null,
-    },
-    {
-        id: 24,
-        title: '경북 포항시 아파트 민간분양 시장조사서',
-        type: 'apartment',
-        region: '경북',
-        district: '포항시',
-        location: '경북 포항시',
-        date: '2023.12.22',
-        createDate: '자료생성일: 2023.12.22',
-        fileSize: '10.2MB',
-        fileType: 'PDF',
-        pages: 44,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['포항', '아파트', '분양'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '포항시 아파트 분양시장 현황',
-        pdfPath: null,
-    },
-    {
-        id: 25,
-        title: '강원 춘천시 주거형오피스텔 민간분양 시장조사서',
-        type: 'residential-ot',
-        region: '강원',
-        district: '춘천시',
-        location: '강원 춘천시',
-        date: '2023.12.21',
-        createDate: '자료생성일: 2023.12.21',
-        fileSize: '7.6MB',
-        fileType: 'PPT',
-        pages: 32,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['춘천', '오피스텔', '주거형'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '춘천시 주거형 오피스텔 시장 분석',
-        pdfPath: null,
-    },
-    {
-        id: 26,
-        title: '전남 여수시 오피스 민간분양 시장조사서',
-        type: 'office',
-        region: '전남',
-        district: '여수시',
-        location: '전남 여수시',
-        date: '2023.12.20',
-        createDate: '자료생성일: 2023.12.20',
-        fileSize: '12.3MB',
-        fileType: 'PDF',
-        pages: 53,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['여수', '오피스', '업무시설'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '여수시 오피스 빌딩 시장 전망',
-        pdfPath: null,
-    },
-    {
-        id: 27,
-        title: '경기 안양시 지식산업센터 민간분양 시장조사서',
-        type: 'knowledge',
-        region: '경기',
-        district: '안양시',
-        location: '경기 안양시',
-        date: '2023.12.19',
-        createDate: '자료생성일: 2023.12.19',
-        fileSize: '14.8MB',
-        fileType: 'PDF',
-        pages: 64,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['안양', '지식산업센터', 'IT'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '안양시 지식산업센터 입주 현황',
-        pdfPath: null,
-    },
-    {
-        id: 28,
-        title: '경기 김포시 아파트 민간분양 시장조사서',
-        type: 'apartment',
-        region: '경기',
-        district: '김포시',
-        location: '경기 김포시',
-        date: '2023.12.18',
-        createDate: '자료생성일: 2023.12.18',
-        fileSize: '11.1MB',
-        fileType: 'PDF',
-        pages: 47,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['김포', '아파트', '신도시'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '김포시 아파트 분양시장 전망',
-        pdfPath: null,
-    },
-    {
-        id: 29,
-        title: '전남 목포시 상가 민간분양 시장조사서',
-        type: 'commercial',
-        region: '전남',
-        district: '목포시',
-        location: '전남 목포시',
-        date: '2023.12.17',
-        createDate: '자료생성일: 2023.12.17',
-        fileSize: '8.7MB',
-        fileType: 'PPT',
-        pages: 38,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '민간분양',
-        isPremium: false,
-        keywords: ['목포', '상가', '지역상권'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '목포시 상가 시장 투자 분석',
-        pdfPath: null,
-    },
-    {
-        id: 30,
-        title: '경기 성남시 아파트 공공임대 시장조사서',
-        type: 'apartment',
-        region: '경기',
-        district: '성남시',
-        location: '경기 성남시',
-        date: '2023.12.16',
-        createDate: '자료생성일: 2023.12.16',
-        fileSize: '9.2MB',
-        fileType: 'PDF',
-        pages: 40,
-        points: 4900,  // 7000 * 1.0(2-5MB) * 0.7(1-2년) = 4900
-        supplyType: '공공임대',
-        isPremium: false,
-        keywords: ['공공임대', '성남', 'LH'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '성남시 공공임대 아파트 공급 현황',
-        pdfPath: null,
-    },
-    {
-        id: 31,
-        title: '서울시 역세권 공공임대 주택',
-        type: 'urban',
-        region: '서울',
-        district: '영등포구',
-        location: '서울 영등포구',
-        date: '2023.12.15',
-        createDate: '자료생성일: 2023.12.15',
-        fileSize: '11.5MB',
-        fileType: 'PDF',
-        pages: 52,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '공공임대',
-        isPremium: false,
-        keywords: ['역세권', '공공임대', '청년주택'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '서울시 역세권 공공임대 주택 사업',
-        pdfPath: null,
-    },
-    {
-        id: 32,
-        title: '부산 영도구 재개발 사업 분석',
-        type: 'other',
-        region: '부산',
-        district: '영도구',
-        location: '부산 영도구',
-        date: '2023.12.14',
-        createDate: '자료생성일: 2023.12.14',
-        fileSize: '13.8MB',
-        fileType: 'PDF',
-        pages: 61,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '기타',
-        isPremium: false,
-        keywords: ['재개발', '영도구', '도시재생'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '부산 영도구 재개발 사업 타당성 분석',
-        pdfPath: null,
-    },
-    {
-        id: 33,
-        title: '대전 중구 주거형 오피스텔',
-        type: 'residential-ot',
-        region: '대전',
-        district: '중구',
-        location: '대전 중구',
-        date: '2023.12.13',
-        createDate: '자료생성일: 2023.12.13',
-        fileSize: '7.3MB',
-        fileType: 'PPT',
-        pages: 30,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '공공임대',
-        isPremium: false,
-        keywords: ['주거형', '오피스텔', '공공임대'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23ddd6fe"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%237c3aed" font-size="12"%3EPPT%3C/text%3E%3C/svg%3E',
-        description: '대전 중구 공공임대 주거형 오피스텔',
-        pdfPath: null,
-    },
-    {
-        id: 34,
-        title: '경남 통영시 펜션 사업 분석',
-        type: 'other',
-        region: '경남',
-        district: '통영시',
-        location: '경남 통영시',
-        date: '2023.12.12',
-        createDate: '자료생성일: 2023.12.12',
-        fileSize: '10.9MB',
-        fileType: 'PDF',
-        pages: 46,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '기타',
-        isPremium: false,
-        keywords: ['펜션', '통영', '관광숙박'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '통영시 펜션 사업 투자 분석',
-        pdfPath: null,
-    },
-    {
-        id: 35,
-        title: '인천 서구 물류센터 개발 계획',
-        type: 'other',
-        region: '인천',
-        district: '서구',
-        location: '인천 서구',
-        date: '2023.12.11',
-        createDate: '자료생성일: 2023.12.11',
-        fileSize: '18.2MB',
-        fileType: 'PDF',
-        pages: 78,
-        points: 5390,  // 7000 * 1.1(5MB이상) * 0.7(1-2년) = 5390
-        supplyType: '기타',
-        isPremium: false,
-        keywords: ['물류센터', '인천', '산업시설'],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: '인천 서구 물류센터 개발 사업 계획',
-        pdfPath: null,
-    },
-];
+// Mock 데이터 제거 완료 - 이제 Supabase 데이터만 사용
 
 // 전역 상태 관리
 let currentFilters = {
@@ -760,12 +135,54 @@ let currentFilters = {
     supplyType: 'all',
 };
 
-// 유저 데이터 (모의 데이터)
-const userData = {
-    isLoggedIn: true,
-    points: 2850,
-    role: 'planning', // planning, sales, general
-};
+// 실제 사용자 데이터 (AuthService 연동)
+let userData = null;
+
+/**
+ * 현재 로그인된 사용자 정보를 AuthService에서 가져오기
+ */
+async function loadCurrentUser() {
+    try {
+        if (!window.authService) {
+            console.warn('⚠️ AuthService가 초기화되지 않았습니다.');
+            userData = null;
+            return null;
+        }
+        
+        const isLoggedIn = authService.isLoggedIn();
+        if (!isLoggedIn) {
+            console.log('🔓 로그인되지 않은 상태');
+            userData = null;
+            return null;
+        }
+        
+        const user = authService.getCurrentUser();
+        const profile = authService.getUserProfile();
+        
+        if (!user) {
+            console.warn('⚠️ 사용자 정보를 가져올 수 없습니다.');
+            userData = null;
+            return null;
+        }
+        
+        userData = {
+            id: user.id,
+            name: profile?.nickname || profile?.full_name || user.email?.split('@')[0] || '사용자',
+            email: user.email,
+            isLoggedIn: true,
+            points: profile?.points || 0,
+            role: profile?.role || 'user'
+        };
+        
+        console.log('✅ 사용자 정보 로드 완료:', userData);
+        return userData;
+        
+    } catch (error) {
+        console.error('❌ 사용자 정보 로드 실패:', error);
+        userData = null;
+        return null;
+    }
+}
 
 // ===========================================
 // 필터 초기화 및 관리
@@ -1124,78 +541,13 @@ function handleFilterChange() {
 // 필터 적용
 function applyFilters() {
     console.log('필터 적용 중, currentFilters:', currentFilters);
-    const filteredDocuments = filterDocuments();
-    console.log('필터링 결과:', filteredDocuments.length, '개 문서');
-    renderDocuments(filteredDocuments);
-    updateResultCount(filteredDocuments.length);
+    applyFiltersAndSearch();
 }
 
-// 문서 필터링
+// 문서 필터링 (기존 함수 - 호환성을 위해 유지)
 function filterDocuments() {
-    return sampleDocuments.filter((doc) => {
-        // 상품 유형 필터
-        if (currentFilters.productType !== 'all' && doc.type !== currentFilters.productType) {
-            return false;
-        }
-
-        // 공급 유형 필터
-        if (currentFilters.supplyType !== 'all') {
-            // 공급 유형 매핑
-            const supplyTypeMap = {
-                'private-sale': '민간분양',
-                'public-sale': '공공분양',
-                'private-rental': '민간임대',
-                'public-rental': '공공임대',
-                other: '기타',
-            };
-
-            const mappedSupplyType = supplyTypeMap[currentFilters.supplyType];
-            if (mappedSupplyType && doc.supplyType !== mappedSupplyType) {
-                return false;
-            }
-        }
-
-        // 지역 필터 적용
-        if (currentFilters.selectedRegions.length > 0) {
-            // 문서의 지역과 선택된 지역 비교
-            if (!doc.region) return false;
-
-            // selectedRegions 배열의 지역 중 하나라도 일치하면 표시
-            const docLocation = `${doc.region} ${doc.district || ''}`;
-            const match = currentFilters.selectedRegions.some((selectedRegion) => {
-                // "전체" 처리
-                if (selectedRegion.endsWith(' 전체')) {
-                    const regionPrefix = selectedRegion.replace(' 전체', '');
-                    return docLocation.startsWith(regionPrefix);
-                }
-                // 특정 지역 처리 - 완전 일치
-                return docLocation.trim() === selectedRegion;
-            });
-
-            if (!match) return false;
-        }
-
-        // 키워드 필터
-        if (currentFilters.keyword) {
-            const keyword = currentFilters.keyword.toLowerCase();
-            const searchableText = [
-                doc.title || '',
-                doc.description || '',
-                doc.keywords ? doc.keywords.join(' ') : '',
-                doc.location || '',
-                doc.region || '',
-                doc.district || ''
-            ].join(' ').toLowerCase();
-            
-            console.log(`검색중: "${keyword}" in "${searchableText.substring(0, 100)}..."`);
-            
-            if (!searchableText.includes(keyword)) {
-                return false;
-            }
-        }
-
-        return true;
-    });
+    // 새로운 필터링 함수 사용
+    return getFilteredDocuments();
 }
 
 // 페이지네이션 관련 변수
@@ -1259,8 +611,8 @@ function renderDocuments(documents) {
                             ${doc.fileType}
                         </span>
                         <span style="color: #9ca3af; font-size: 11px;">
-                            <i class="fas fa-hdd" style="font-size: 10px; margin-right: 4px;"></i>
-                            ${doc.fileSize} (${doc.pages || 0}p)
+                            <i class="fas fa-file-alt" style="font-size: 10px; margin-right: 4px;"></i>
+                            ${doc.fileSize} • ${doc.pages || 0}페이지
                         </span>
                         <span style="color: #9ca3af; font-size: 11px;">
                             <i class="fas fa-calendar-alt" style="font-size: 10px; margin-right: 4px;"></i>
@@ -1642,7 +994,7 @@ function showDocumentPreview(doc) {
 
 // 장바구니 추가 처리
 function handleAddToCart(docId) {
-    const doc = sampleDocuments.find((d) => d.id == docId);
+    const doc = currentDocuments.find((d) => d.id == docId);
     if (doc) {
         // 장바구니 추가 성공 메시지
         const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
@@ -1665,22 +1017,33 @@ function handleAddToCart(docId) {
 }
 
 // 다운로드 버튼 직접 클릭 처리
-function handleDirectDownload(docId, points) {
-    const doc = sampleDocuments.find((d) => d.id == docId);
-    if (!doc) return;
-
-    // 로그인 체크
-    if (!userData.isLoggedIn) {
-        showToastMessage('로그인이 필요한 서비스입니다.', 'error');
+async function handleDirectDownload(docId, points) {
+    // 권한 체크 (로그인 체크 포함)
+    if (!(await checkDownloadPermission())) {
         return;
     }
 
-    // 포인트 체크
-    if (userData.points < points) {
-        showToastMessage(
-            `포인트가 부족합니다. 필요: ${points}P, 보유: ${userData.points}P`,
-            'error'
-        );
+    const doc = currentDocuments.find((d) => d.id == docId);
+    if (!doc) return;
+
+    // 포인트 차감 (실제 DB 연동)
+    const currentUser = await loadCurrentUser();
+    if (!currentUser) {
+        showToastMessage('로그인이 필요합니다.', 'error');
+        return;
+    }
+    
+    // DB에서 포인트 차감
+    const success = await spendPoints(
+        points,
+        `시장조사서 다운로드: ${doc.title}`,
+        null,
+        'download',
+        docId
+    );
+    
+    if (!success) {
+        // spendPoints에서 이미 에러 메시지 표시됨
         return;
     }
 
@@ -1698,13 +1061,18 @@ function handleDirectDownload(docId, points) {
     const downloadBtn = event?.currentTarget || document.querySelector(`[data-id="${docId}"]`);
     spendPoints(points, `"${doc.title}" 다운로드 완료!`, downloadBtn);
 
-    // 실제로는 여기서 파일 다운로드 처리
-    // window.location.href = `/api/download/${docId}`;
+    // Supabase를 통한 실제 파일 다운로드
+    try {
+        await downloadDocument(docId);
+    } catch (error) {
+        console.error('❌ 다운로드 실패:', error);
+        alert(`다운로드 실패: ${error.message}`);
+    }
 }
 
 // 기존 handleDownload 함수 (미리보기 모달에서 사용)
-function handleDownload(docId, points) {
-    handleDirectDownload(docId, points);
+async function handleDownload(docId, points) {
+    await handleDirectDownload(docId, points);
 }
 
 // 미리보기 PDF 렌더링 함수
@@ -1712,7 +1080,7 @@ async function renderPreviewPDF(pdfPath, docId) {
     const previewArea = document.querySelector('.preview-pages-layout');
 
     // 문서 정보 가져오기
-    const doc = sampleDocuments.find((d) => d.id == docId);
+    const doc = currentDocuments.find((d) => d.id == docId);
 
     // PDF 파일이 없는 경우 안내 메시지 표시
     if (!doc || !doc.pdfPath || doc.pdfPath === null) {
@@ -2026,10 +1394,12 @@ function renderPage6(ctx, width, height) {
     ctx.fillText('✓ 분산 투자', 15, 158);
 }
 
-function updateUserPoints() {
+async function updateUserPoints() {
     const pointsElement = document.querySelector('.user-points .points');
     if (pointsElement) {
-        pointsElement.textContent = `${userData.points.toLocaleString()}P`;
+        const currentUser = await loadCurrentUser();
+        const userPoints = currentUser?.points || 0;
+        pointsElement.textContent = `${userPoints.toLocaleString()}P`;
     }
 }
 
@@ -2050,14 +1420,30 @@ const uploadSystem = {
         this.checkUserPermissions();
     },
     
-    checkUserPermissions() {
+    async checkUserPermissions() {
         const uploadBtn = document.querySelector('.upload-btn');
         if (!uploadBtn) return;
         
-        if (userData.role !== 'planning') {
+        const currentUser = await window.authService?.getCurrentUser();
+        if (!currentUser) {
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> 로그인 필요';
+            uploadBtn.title = '로그인이 필요합니다';
+            return;
+        }
+        
+        // 사용자 권한 체크: member_type이 '분양기획' 또는 'planning'인 경우만 업로드 가능
+        const memberType = currentUser.member_type || currentUser.role || 'general';
+        const allowedTypes = ['분양기획', 'planning', 'developer', 'affiliate'];
+        
+        if (!allowedTypes.includes(memberType)) {
             uploadBtn.disabled = true;
             uploadBtn.innerHTML = '<i class="fas fa-lock"></i> 실무자 인증 필요';
-            uploadBtn.title = '기획/개발팀만 업로드 가능합니다';
+            uploadBtn.title = '분양기획/개발팀만 업로드 가능합니다';
+        } else {
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '<i class="fas fa-upload"></i> 파일 업로드';
+            uploadBtn.title = '파일을 업로드할 수 있습니다';
         }
     },
     
@@ -2074,9 +1460,18 @@ const uploadSystem = {
         
         // 업로드 버튼 클릭
         if (uploadBtn) {
-            uploadBtn.addEventListener('click', (e) => {
+            uploadBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
-                if (userData.role === 'planning') {
+                const currentUser = await loadCurrentUser();
+                if (!currentUser) {
+                    alert('로그인이 필요합니다.');
+                    return;
+                }
+                
+                const memberType = currentUser.member_type || currentUser.role || 'general';
+                const allowedTypes = ['분양기획', 'planning', 'developer', 'affiliate'];
+                
+                if (allowedTypes.includes(memberType)) {
                     this.openModal();
                 } else {
                     alert('실무자 인증이 필요합니다. (기획/개발팀만 업로드 가능)');
@@ -2395,10 +1790,15 @@ const uploadSystem = {
             
             alert('시장조사서가 성공적으로 업로드되었습니다!\n검토 후 100P가 지급됩니다.');
             
-            // 포인트 지급 시뮬레이션 (실제로는 서버에서 처리)
-            setTimeout(() => {
-                userData.points += 100;
-                updateUserPoints();
+            // 포인트 지급 (실제 DB 연동)
+            setTimeout(async () => {
+                await earnPoints(
+                    100,
+                    '시장조사서 업로드',
+                    null,
+                    'upload',
+                    Date.now() // 임시 ID, 실제로는 업로드된 문서 ID 사용
+                );
             }, 1000);
             
             this.closeModal();
@@ -2413,7 +1813,8 @@ const uploadSystem = {
     
     checkDuplicate() {
         // 중복 검사 로직 (실제로는 서버에서 처리)
-        const similarDoc = sampleDocuments.find(doc => {
+        const allDocuments = [...currentDocuments];
+        const similarDoc = allDocuments.find(doc => {
             const docRegion = Object.keys(window.WaveSpaceData.regionNames).find(key => window.WaveSpaceData.regionNames[key] === doc.region);
             return doc.type === this.formData.type && 
                    docRegion === this.formData.region1 &&
@@ -2555,14 +1956,30 @@ const uploadSystem = {
         this.initRegionData();
     },
     
-    checkUserPermissions() {
+    async checkUserPermissions() {
         const uploadBtn = document.querySelector('.upload-btn');
         if (!uploadBtn) return;
         
-        if (userData.role !== 'planning') {
+        const currentUser = await window.authService?.getCurrentUser();
+        if (!currentUser) {
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> 로그인 필요';
+            uploadBtn.title = '로그인이 필요합니다';
+            return;
+        }
+        
+        // 사용자 권한 체크: member_type이 '분양기획' 또는 'planning'인 경우만 업로드 가능
+        const memberType = currentUser.member_type || currentUser.role || 'general';
+        const allowedTypes = ['분양기획', 'planning', 'developer', 'affiliate'];
+        
+        if (!allowedTypes.includes(memberType)) {
             uploadBtn.disabled = true;
             uploadBtn.innerHTML = '<i class="fas fa-lock"></i> 실무자 인증 필요';
-            uploadBtn.title = '기획/개발팀만 업로드 가능합니다';
+            uploadBtn.title = '분양기획/개발팀만 업로드 가능합니다';
+        } else {
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '<i class="fas fa-upload"></i> 파일 업로드';
+            uploadBtn.title = '파일을 업로드할 수 있습니다';
         }
     },
     
@@ -2804,7 +2221,24 @@ const uploadSystem = {
         const uploadBtn = document.getElementById('uploadBtn');
         
         if (fileName) fileName.textContent = file.name;
-        if (fileSize) fileSize.textContent = this.formData.fileSize + ' MB';
+        
+        // 페이지 수 추출 시도
+        if (file.type === 'application/pdf') {
+            extractPageCount(file).then(pageCount => {
+                if (pageCount && fileSize) {
+                    fileSize.textContent = `${this.formData.fileSize} MB • ${pageCount}페이지`;
+                    this.formData.pages = pageCount;
+                } else if (fileSize) {
+                    fileSize.textContent = this.formData.fileSize + ' MB';
+                }
+            }).catch(error => {
+                console.warn('페이지 수 추출 실패:', error);
+                if (fileSize) fileSize.textContent = this.formData.fileSize + ' MB';
+            });
+        } else if (fileSize) {
+            fileSize.textContent = this.formData.fileSize + ' MB • 추정 25페이지';
+            this.formData.pages = 25; // 기본값
+        }
         
         // 파일 타입에 따른 아이콘
         const icon = fileInfo?.querySelector('.simple-file-icon i');
@@ -2841,20 +2275,26 @@ const uploadSystem = {
         
         const basePoints = 3000;
         
-        // 1. 파일 크기 지수
-        const fileSize = parseFloat(this.formData.fileSize);
-        let sizeMultiplier = 0;
-        let sizeCategory = '';
+        // 1. 페이지 지수
+        const pageCount = this.formData.pages || 25; // 기본 25페이지
+        let pageMultiplier = 0;
+        let pageCategory = '';
         
-        if (fileSize >= 5) {
-            sizeMultiplier = 1.1; // 110%
-            sizeCategory = '5mb';
-        } else if (fileSize >= 2) {
-            sizeMultiplier = 1.0; // 100%
-            sizeCategory = '2mb';
+        if (pageCount >= 40) {
+            pageMultiplier = 1.2; // 120%
+            pageCategory = 'page40';
+        } else if (pageCount >= 30) {
+            pageMultiplier = 1.1; // 110%
+            pageCategory = 'page30';
+        } else if (pageCount >= 20) {
+            pageMultiplier = 1.0; // 100%
+            pageCategory = 'page20';
+        } else if (pageCount >= 10) {
+            pageMultiplier = 0.9; // 90%
+            pageCategory = 'page10';
         } else {
-            sizeMultiplier = 0.7; // 70%
-            sizeCategory = 'under2mb';
+            pageMultiplier = 0.6; // 60%
+            pageCategory = 'pageUnder10';
         }
         
         // 2. 최신성 지수 (연/월/일 선택 기준)
@@ -2884,13 +2324,13 @@ const uploadSystem = {
             }
         }
         
-        // 최종 포인트 계산: 기본 3000P × 파일크기 지수 × 최신성 지수
-        const totalPoints = Math.round(basePoints * sizeMultiplier * freshnessMultiplier);
+        // 최종 포인트 계산: 기본 3000P × 페이지 지수 × 최신성 지수
+        const totalPoints = Math.round(basePoints * pageMultiplier * freshnessMultiplier);
         this.calculatedPoints = totalPoints;
         this.updatePointsDisplay(this.calculatedPoints);
         
         // 해당 지수 강조 표시
-        this.highlightSelectedFactors(sizeCategory, freshnessCategory, sizeMultiplier, freshnessMultiplier, totalPoints);
+        this.highlightSelectedFactors(pageCategory, freshnessCategory, pageMultiplier, freshnessMultiplier, totalPoints);
     },
     
     clearHighlights() {
@@ -3010,7 +2450,12 @@ const uploadSystem = {
         }
     },
     
-    handleSubmit() {
+    async handleSubmit() {
+        // 업로드 권한 체크
+        if (!(await checkUploadPermission())) {
+            return;
+        }
+
         // 필수 필드 검증
         const title = document.getElementById('documentTitle')?.value;
         const region1 = document.getElementById('uploadRegion1')?.value;
@@ -3024,42 +2469,74 @@ const uploadSystem = {
             return;
         }
         
-        // 중복 키 저장
-        const duplicateKey = `${this.formData.fileSize}_${fileDate}_${region1}_${region2}_${productType}_${supplyType}`;
-        uploadedFilesRegistry.add(duplicateKey);
-        
-        // 포인트 증가
-        userData.points += this.calculatedPoints;
-        updateUserPoints();
-        
-        // 문서 목록에 추가
-        const newDoc = {
-            id: sampleDocuments.length + 1,
-            title: title,
-            type: productType,
-            region: region1,
-            district: region2,
-            location: `${window.WaveSpaceData.regionNames[region1]} ${region2}`,
-            date: new Date().toLocaleDateString('ko-KR').replace(/\\. /g, '.').replace(/\\.$/, ''),
-            createDate: `자료생성일: ${fileDate}`,
-            fileSize: this.formData.fileSize + 'MB',
-            fileType: 'PDF',
-            pages: Math.floor(Math.random() * 40) + 20,
-            points: this.calculatedPoints,
-            supplyType: this.getSupplyTypeName(supplyType),
-            isPremium: this.calculatedPoints >= 400,
-            keywords: [],
-            thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-            description: title
-        };
-        
-        sampleDocuments.unshift(newDoc);
-        renderDocuments(sampleDocuments);
-        updateResultCount(sampleDocuments.length);
-        
-        alert(`업로드가 성공적으로 완료되었습니다!\n+${this.calculatedPoints}P가 적립되었습니다.`);
-        
-        this.closeModal();
+        try {
+            // 로딩 상태 표시
+            const submitBtn = document.getElementById('uploadBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = '업로드 중...';
+            }
+            
+            // Supabase 업로드 시도 (디버깅 강화)
+            console.log('🔄 Supabase 업로드 시도 중...');
+            console.log('📊 업로드 환경 확인:', {
+                hasMarketResearchSupabase: !!window.marketResearchSupabase,
+                hasClient: !!(window.marketResearchSupabase?.client),
+                hasWaveSupabase: !!window.WaveSupabase,
+                currentUser: window.WaveSupabase?.currentUser,
+                storageDisabled: window.marketResearchSupabase?.storageDisabled
+            });
+            
+            if (window.marketResearchSupabase && window.marketResearchSupabase.client) {
+                // 사용자 ID 확인 및 설정
+                const currentUser = window.WaveSupabase?.currentUser;
+                const userId = currentUser?.id || `temp_user_${Date.now()}`;
+                
+                console.log('👤 사용자 ID:', userId);
+
+                const metadata = {
+                    title: title,
+                    region1: region1,
+                    region2: region2,
+                    productType: productType,
+                    supplyType: supplyType,
+                    fileCreatedDate: fileDate,
+                    fileSize: this.formData.fileSize,
+                    pages: this.formData.pages || 25,
+                    keywords: [],
+                    userId: userId
+                };
+                
+                console.log('📋 메타데이터 준비 완료:', metadata);
+                
+                const result = await window.marketResearchSupabase.uploadFile(this.formData.file, metadata);
+                
+                if (result) {
+                    // 업로드 성공 - 문서 목록 새로고침
+                    await refreshDocuments();
+                    
+                    alert(`업로드가 성공적으로 완료되었습니다!\n+${this.calculatedPoints}P가 적립되었습니다.`);
+                    this.closeModal();
+                    return;
+                }
+            } else {
+                // Supabase 업로드 실패 시 오류 메시지만 표시
+                console.error('❌ Supabase 업로드 실패');
+                alert('업로드에 실패했습니다. 다시 시도해주세요.');
+                return;
+            }
+            
+        } catch (error) {
+            console.error('❌ 업로드 실패:', error);
+            alert(`업로드 중 오류가 발생했습니다: ${error.message}`);
+        } finally {
+            // 버튼 상태 복원
+            const submitBtn = document.getElementById('uploadBtn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '업로드';
+            }
+        }
     },
     
     getSupplyTypeName(type) {
@@ -3294,8 +2771,30 @@ async function handleFileUpload(file) {
         file: file,
         year: '',
         month: '',
-        day: ''
+        day: '',
+        pages: null
     };
+    
+    // PDF 페이지 수 추출
+    if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        try {
+            const pageCount = await extractPageCount(file);
+            if (pageCount) {
+                uploadedFile.pages = pageCount;
+                console.log('PDF 페이지 수 추출 성공:', pageCount);
+            } else {
+                uploadedFile.pages = 25; // 기본값
+                console.log('PDF 페이지 수 추출 실패, 기본값 사용: 25');
+            }
+        } catch (error) {
+            console.warn('PDF 페이지 수 추출 중 오류:', error);
+            uploadedFile.pages = 25; // 기본값
+        }
+    } else {
+        // PDF가 아닌 파일은 기본값 25페이지
+        uploadedFile.pages = 25;
+        console.log('PDF가 아닌 파일, 기본 페이지 수 할당: 25');
+    }
     
     // UI 업데이트
     updateFileUI();
@@ -3348,7 +2847,7 @@ function updateFileUI() {
             </div>
             <div class="simple-file-details">
                 <div class="simple-file-name">${fileData.file.name}</div>
-                <div class="simple-file-size">${(fileData.file.size / (1024 * 1024)).toFixed(1)} MB</div>
+                <div class="simple-file-size">${(fileData.file.size / (1024 * 1024)).toFixed(1)} MB${fileData.pages ? ` • ${fileData.pages}페이지` : ''}</div>
                 <div class="file-date-select" style="margin-top: 12px;">
                     <label style="font-size: 13px; color: #374151; font-weight: 600; display: block; margin-bottom: 8px;">
                         <i class="fas fa-calendar-check" style="color: #6b7280; margin-right: 4px;"></i>
@@ -3848,23 +3347,24 @@ function generateTitle() {
 }
 
 // 다운로드 포인트 계산 (기준 7,000P)
-function calculateDownloadPoints(fileSizeMB, createDateStr) {
+function calculateDownloadPoints(pageCount, createDateStr) {
     const basePoints = 7000; // 기준 포인트 7,000P
 
-    // 파일 크기를 숫자로 변환 (예: "12.5MB" → 12.5)
-    const fileSize =
-        typeof fileSizeMB === 'string'
-            ? parseFloat(fileSizeMB.replace(/[^0-9.]/g, ''))
-            : parseFloat(fileSizeMB);
+    // 페이지 수를 숫자로 변환
+    const pages = typeof pageCount === 'string' ? parseInt(pageCount) : pageCount;
 
-    // 파일 크기 지수
-    let sizeMultiplier = 1.0;
-    if (fileSize >= 5) {
-        sizeMultiplier = 1.1; // 110%
-    } else if (fileSize >= 2) {
-        sizeMultiplier = 1.0; // 100%
+    // 페이지 지수
+    let pageMultiplier = 1.0;
+    if (pages >= 40) {
+        pageMultiplier = 1.2; // 120%
+    } else if (pages >= 30) {
+        pageMultiplier = 1.1; // 110%
+    } else if (pages >= 20) {
+        pageMultiplier = 1.0; // 100%
+    } else if (pages >= 10) {
+        pageMultiplier = 0.9; // 90%
     } else {
-        sizeMultiplier = 0.7; // 70%
+        pageMultiplier = 0.6; // 60%
     }
 
     // 날짜 파싱 (예: "자료생성일: 2024.01.15" 또는 "2024.01.15" 또는 "2024년 1월 15일")
@@ -3888,8 +3388,8 @@ function calculateDownloadPoints(fileSizeMB, createDateStr) {
     // Invalid Date 체크
     if (isNaN(createDate.getTime())) {
         console.error('Invalid date format:', createDateStr);
-        // 날짜 파싱 실패 시 1년 이내로 가정 (기본 10,000P)
-        return Math.round((basePoints * sizeMultiplier * 1.0) / 10) * 10;
+        // 날짜 파싱 실패 시 1년 이내로 가정 (기본 포인트)
+        return Math.round((basePoints * pageMultiplier * 1.0) / 10) * 10;
     }
 
     const today = new Date();
@@ -3911,7 +3411,7 @@ function calculateDownloadPoints(fileSizeMB, createDateStr) {
     }
 
     // 최종 포인트 계산 후 10단위 반올림
-    const totalPoints = basePoints * sizeMultiplier * freshnessMultiplier;
+    const totalPoints = basePoints * pageMultiplier * freshnessMultiplier;
     return Math.round(totalPoints / 10) * 10;
 }
 
@@ -3926,18 +3426,22 @@ function calculatePoints() {
     }
 
     const fileData = uploadedFile;
-        const fileSize = fileData.file.size / (1024 * 1024); // MB
+        const pageCount = fileData.pages || 0; // 페이지 수
         const basePoints = 3000; // 기본 포인트 3000P
         let filePoints = 0;
 
-        // 파일 크기 지수
-        let sizeMultiplier = 0;
-        if (fileSize >= 5) {
-            sizeMultiplier = 1.1; // 110%
-        } else if (fileSize >= 2) {
-            sizeMultiplier = 1.0; // 100%
+        // 페이지 지수
+        let pageMultiplier = 0;
+        if (pageCount >= 40) {
+            pageMultiplier = 1.2; // 120%
+        } else if (pageCount >= 30) {
+            pageMultiplier = 1.1; // 110%
+        } else if (pageCount >= 20) {
+            pageMultiplier = 1.0; // 100%
+        } else if (pageCount >= 10) {
+            pageMultiplier = 0.9; // 90%
         } else {
-            sizeMultiplier = 0.7; // 70%
+            pageMultiplier = 0.6; // 60%
         }
 
         // 최신성 지수 (연/월/일 선택 기준)
@@ -3965,8 +3469,8 @@ function calculatePoints() {
             }
         }
 
-        // 파일 포인트 계산 (기본 3000P × 최신성 지수 × 파일크기 지수)
-        filePoints = basePoints * sizeMultiplier * freshnessMultiplier;
+        // 파일 포인트 계산 (기본 3000P × 최신성 지수 × 페이지 지수)
+        filePoints = basePoints * pageMultiplier * freshnessMultiplier;
         
     // 최종 포인트를 10단위로 반올림
     console.log('반올림 전 포인트:', filePoints);
@@ -3980,7 +3484,7 @@ function calculatePoints() {
     }
 
     // 체크표시 업데이트
-    highlightPointFactors(fileSize, daysDiff, sizeMultiplier, freshnessMultiplier, totalPoints);
+    highlightPointFactors(pageCount, daysDiff, pageMultiplier, freshnessMultiplier, totalPoints);
 
     // 2년 초과 시 경고 메시지 표시
     if (hasOverTwoYears) {
@@ -4043,9 +3547,9 @@ function updateUploadButton(isDuplicate = false) {
 
 // 포인트 요소 강조 표시 함수
 function highlightPointFactors(
-    fileSize,
+    pageCount,
     daysDiff,
-    sizeMultiplier,
+    pageMultiplier,
     freshnessMultiplier,
     totalPoints
 ) {
@@ -4054,18 +3558,22 @@ function highlightPointFactors(
     const fresh1y = document.getElementById('fresh-1y-value');
     const fresh2y = document.getElementById('fresh-2y-value');
     const freshOver2y = document.getElementById('fresh-over2y-value');
-    const size5mb = document.getElementById('size-5mb-value');
-    const size2mb = document.getElementById('size-2mb-value');
-    const sizeUnder2mb = document.getElementById('size-under2mb-value');
+    const page40 = document.getElementById('page-40-value');
+    const page30 = document.getElementById('page-30-value');
+    const page20 = document.getElementById('page-20-value');
+    const page10 = document.getElementById('page-10-value');
+    const pageUnder10 = document.getElementById('page-under10-value');
 
     // 초기화
     if (fresh6m) fresh6m.innerHTML = '120%';
     if (fresh1y) fresh1y.innerHTML = '100%';
     if (fresh2y) fresh2y.innerHTML = '70%';
     if (freshOver2y) freshOver2y.innerHTML = '업로드 불가';
-    if (size5mb) size5mb.innerHTML = '110%';
-    if (size2mb) size2mb.innerHTML = '100%';
-    if (sizeUnder2mb) sizeUnder2mb.innerHTML = '70%';
+    if (page40) page40.innerHTML = '120%';
+    if (page30) page30.innerHTML = '110%';
+    if (page20) page20.innerHTML = '100%';
+    if (page10) page10.innerHTML = '90%';
+    if (pageUnder10) pageUnder10.innerHTML = '60%';
 
     // 모든 행 스타일 초기화
     document.querySelectorAll('#pointDetailsDropdown table tr').forEach((row) => {
@@ -4093,19 +3601,27 @@ function highlightPointFactors(
         freshOver2y.parentElement.style.backgroundColor = '#fee2e2';
     }
 
-    // 파일크기 지수 강조
-    if (sizeMultiplier === 1.1 && size5mb) {
-        // 5MB 이상 - 110%
-        size5mb.innerHTML = '<span style="color: #22c55e; font-weight: bold;">✓</span> 110%';
-        size5mb.parentElement.style.backgroundColor = '#fef3c7';
-    } else if (sizeMultiplier === 1.0 && fileSize >= 2 && size2mb) {
-        // 2~5MB - 100%
-        size2mb.innerHTML = '<span style="color: #22c55e; font-weight: bold;">✓</span> 100%';
-        size2mb.parentElement.style.backgroundColor = '#fef3c7';
-    } else if (sizeMultiplier === 0.7 && sizeUnder2mb) {
-        // 2MB 미만 - 70%
-        sizeUnder2mb.innerHTML = '<span style="color: #22c55e; font-weight: bold;">✓</span> 70%';
-        sizeUnder2mb.parentElement.style.backgroundColor = '#fef3c7';
+    // 페이지 지수 강조
+    if (pageMultiplier === 1.2 && page40) {
+        // 40페이지 이상 - 120%
+        page40.innerHTML = '<span style="color: #22c55e; font-weight: bold;">✓</span> 120%';
+        page40.parentElement.style.backgroundColor = '#fef3c7';
+    } else if (pageMultiplier === 1.1 && page30) {
+        // 30-39페이지 - 110%
+        page30.innerHTML = '<span style="color: #22c55e; font-weight: bold;">✓</span> 110%';
+        page30.parentElement.style.backgroundColor = '#fef3c7';
+    } else if (pageMultiplier === 1.0 && page20) {
+        // 20-29페이지 - 100%
+        page20.innerHTML = '<span style="color: #22c55e; font-weight: bold;">✓</span> 100%';
+        page20.parentElement.style.backgroundColor = '#fef3c7';
+    } else if (pageMultiplier === 0.9 && page10) {
+        // 10-19페이지 - 90%
+        page10.innerHTML = '<span style="color: #22c55e; font-weight: bold;">✓</span> 90%';
+        page10.parentElement.style.backgroundColor = '#fef3c7';
+    } else if (pageMultiplier === 0.6 && pageUnder10) {
+        // 10페이지 미만 - 60%
+        pageUnder10.innerHTML = '<span style="color: #22c55e; font-weight: bold;">✓</span> 60%';
+        pageUnder10.parentElement.style.backgroundColor = '#fef3c7';
     }
 }
 
@@ -4338,58 +3854,123 @@ window.showWarningMessage = function(message, duration) {
 // ===========================================
 
 // 포인트 획득 함수 (증가)
-function earnPoints(amount, message = '포인트를 획득했습니다!', sourceElement = null) {
+async function earnPoints(amount, message = '포인트를 획득했습니다!', sourceElement = null, type = 'earn', relatedId = null) {
     if (amount <= 0) return;
 
-    const currentPoints = userData.points || 0;
-    const newPoints = currentPoints + amount;
-
-    // 1. 플라잉 애니메이션 (sourceElement가 있으면 그 위치에서 시작)
-    if (sourceElement) {
-        animatePointsEarnedFromElement(amount, sourceElement);
-    } else {
-        animatePointsEarned(amount);
-    }
-
-    // 2. 카운팅 애니메이션 (0.5초 후 시작)
-    setTimeout(() => {
-        animatePointsCounter(currentPoints, newPoints);
-        userData.points = newPoints;
-        // localStorage에도 저장
-        if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('userPoints', newPoints);
+    try {
+        // PointService 초기화 확인
+        if (typeof PointService === 'undefined') {
+            console.warn('PointService가 로드되지 않았습니다. 포인트 적립을 건너뜁니다.');
+            return;
         }
-    }, 500);
+        
+        if (!pointService) {
+            pointService = new PointService();
+            await pointService.init();
+        }
 
-    // 3. 토스트 메시지
-    showToastMessage(`${message} +${amount.toLocaleString()}P`, 'success');
+        const currentUser = await loadCurrentUser();
+        if (!currentUser) {
+            console.warn('포인트 적립 실패: 로그인되지 않은 상태');
+            return;
+        }
+
+        // 1. 플라잉 애니메이션 (sourceElement가 있으면 그 위치에서 시작)
+        if (sourceElement) {
+            animatePointsEarnedFromElement(amount, sourceElement);
+        } else {
+            animatePointsEarned(amount);
+        }
+
+        // 2. DB에서 포인트 적립
+        const result = await pointService.earnPoints(
+            currentUser.id, 
+            amount, 
+            type, 
+            message, 
+            relatedId
+        );
+
+        if (result.success) {
+            // 3. 카운팅 애니메이션 (0.5초 후 시작)
+            setTimeout(async () => {
+                const currentPoints = currentUser?.points || 0;
+                animatePointsCounter(currentPoints, result.newPoints);
+                await updateUserPoints();
+            }, 500);
+
+            // 4. 토스트 메시지
+            showToastMessage(`${message} +${amount.toLocaleString()}P`, 'success');
+            console.log(`✅ 포인트 적립 성공: +${amount}P (총 ${result.newPoints}P)`);
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error) {
+        console.error('❌ 포인트 적립 실패:', error);
+        showToastMessage('포인트 적립에 실패했습니다.', 'error');
+    }
 }
 
 // 포인트 사용 함수 (감소)
-function spendPoints(amount, message = '포인트를 사용했습니다.', targetElement = null) {
+async function spendPoints(amount, message = '포인트를 사용했습니다.', targetElement = null, type = 'spend', relatedId = null) {
     if (amount <= 0) return;
 
-    const currentPoints = userData.points || 0;
-    const newPoints = Math.max(0, currentPoints - amount); // 음수 방지
+    try {
+        // PointService 초기화 확인
+        if (typeof PointService === 'undefined') {
+            console.warn('PointService가 로드되지 않았습니다. 포인트 차감을 건너뜁니다.');
+            return false;
+        }
+        
+        if (!pointService) {
+            pointService = new PointService();
+            await pointService.init();
+        }
 
-    // 1. 사용 애니메이션 (빨간색으로 아래로 떨어지는 효과)
-    if (targetElement) {
-        animatePointsSpentToElement(amount, targetElement);
-    } else {
-        animatePointsSpent(amount);
+        const currentUser = await loadCurrentUser();
+        if (!currentUser) {
+            console.warn('포인트 차감 실패: 로그인되지 않은 상태');
+            return false;
+        }
+
+        // 1. 사용 애니메이션 (빨간색으로 아래로 떨어지는 효과)
+        if (targetElement) {
+            animatePointsSpentToElement(amount, targetElement);
+        } else {
+            animatePointsSpent(amount);
+        }
+
+        // 2. DB에서 포인트 차감
+        const result = await pointService.spendPoints(
+            currentUser.id, 
+            amount, 
+            type, 
+            message, 
+            relatedId
+        );
+
+        if (result.success) {
+            // 3. 카운팅 애니메이션 (즉시 시작)
+            const currentPoints = currentUser?.points || 0;
+            animatePointsCounter(currentPoints, result.newPoints, 1000, 'decrease');
+            await updateUserPoints();
+
+            // 4. 토스트 메시지
+            showToastMessage(`${message} -${amount.toLocaleString()}P`, 'info');
+            console.log(`✅ 포인트 차감 성공: -${amount}P (남은 포인트: ${result.newPoints}P)`);
+            return true;
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error) {
+        console.error('❌ 포인트 차감 실패:', error);
+        if (error.message.includes('부족')) {
+            showToastMessage('포인트가 부족합니다.', 'error');
+        } else {
+            showToastMessage('포인트 차감에 실패했습니다.', 'error');
+        }
+        return false;
     }
-
-    // 2. 카운팅 애니메이션 (즉시 시작)
-    animatePointsCounter(currentPoints, newPoints, 1000, 'decrease');
-    userData.points = newPoints;
-
-    // localStorage에도 저장
-    if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('userPoints', newPoints);
-    }
-
-    // 3. 토스트 메시지
-    showToastMessage(`${message} -${amount.toLocaleString()}P`, 'info');
 }
 
 // 포인트 사용 애니메이션 (감소)
@@ -4627,166 +4208,219 @@ function removeUploadedFile() {
     }
 }
 
-// 업로드 제출
-function submitUpload() {
+// 업로드 제출 (Supabase 연동)
+async function submitUpload() {
     const region1 = document.getElementById('uploadRegion1');
     const region2 = document.getElementById('uploadRegion2');
     const productBtn = document.querySelector('.upload-product-types .upload-type-btn.active');
     const supplyBtn = document.querySelector('.upload-supply-types .upload-type-btn.active');
     const modal = document.getElementById('uploadModal');
+    const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
 
-    // 유효성 검사
-    if (!uploadedFile) {
-        showToastMessage('파일을 선택해주세요.', 'error');
-        return;
+    // 버튼 비활성화 및 로딩 표시
+    if (uploadSubmitBtn) {
+        uploadSubmitBtn.disabled = true;
+        uploadSubmitBtn.textContent = '업로드 중...';
     }
 
-    if (!region1 || !region1.value || !region2 || !region2.value) {
-        showToastMessage('지역을 선택해주세요.', 'error');
-        return;
+    try {
+        // 1. 유효성 검사
+        if (!uploadedFile) {
+            throw new Error('파일을 선택해주세요.');
+        }
+
+        if (!region1?.value || !region2?.value) {
+            throw new Error('지역을 선택해주세요.');
+        }
+
+        if (!uploadedFile.year || !uploadedFile.month || !uploadedFile.day) {
+            throw new Error('파일의 생성 날짜를 선택해주세요.');
+        }
+        
+        // 2년 초과 확인
+        const fileCreatedDate = new Date(uploadedFile.year, uploadedFile.month - 1, uploadedFile.day);
+        const currentDate = new Date();
+        const daysDiff = Math.floor((currentDate - fileCreatedDate) / (1000 * 60 * 60 * 24));
+        
+        if (daysDiff > 730) {
+            throw new Error('24개월이 경과된 자료는 업로드할 수 없습니다.');
+        }
+
+        if (!productBtn || !supplyBtn) {
+            throw new Error('상품유형과 공급유형을 모두 선택해주세요.');
+        }
+
+        // 2. 메타데이터 수집
+        const region1Text = region1.options[region1.selectedIndex].text;
+        const region2Text = region2.value;
+        const productType = productBtn.getAttribute('data-type');
+        const supplyType = supplyBtn.getAttribute('data-type');
+        const productName = productBtn.getAttribute('data-name') || productBtn.querySelector('span').textContent;
+        const supplyName = supplyBtn.getAttribute('data-name') || supplyBtn.querySelector('span').textContent;
+        
+        // 제목 생성
+        const title = `${region1Text} ${region2Text} ${productName} ${supplyName} 시장조사서`;
+        const description = `${region1Text} ${region2Text} 지역의 ${productName} ${supplyName} 시장조사 자료입니다.`;
+        
+        // 3. 포인트 계산
+        const pageCount = uploadedFile.pages || 25;
+        const basePoints = 3000;
+        let pageMultiplier = 1.0;
+        let freshnessMultiplier = 1.0;
+        
+        // 페이지 지수
+        if (pageCount >= 40) pageMultiplier = 1.2;
+        else if (pageCount >= 30) pageMultiplier = 1.1;
+        else if (pageCount >= 20) pageMultiplier = 1.0;
+        else if (pageCount >= 10) pageMultiplier = 0.9;
+        else pageMultiplier = 0.6;
+        
+        // 최신성 지수
+        if (daysDiff <= 180) freshnessMultiplier = 1.2;
+        else if (daysDiff <= 365) freshnessMultiplier = 1.0;
+        else if (daysDiff <= 730) freshnessMultiplier = 0.7;
+        
+        const uploadPoints = Math.round((basePoints * pageMultiplier * freshnessMultiplier) / 10) * 10;
+        
+        // 4. Supabase 업로드 시도
+        let uploadResult = null;
+        let useSupabase = false;
+        
+        if (marketResearchSupabase) {
+            try {
+                // 사용자 ID 개선
+                const currentUser = window.WaveSupabase?.currentUser;
+                const userId = currentUser?.id || `temp_user_${Date.now()}`;
+                
+                console.log('👤 두 번째 업로드 경로 - 사용자 ID:', userId);
+                
+                const metadata = {
+                    userId: userId,
+                    title: title,
+                    description: description,
+                    region1: region1.value,
+                    region2: region2Text,
+                    productType: productType,
+                    supplyType: supplyType,
+                    fileCreatedDate: `${uploadedFile.year}-${String(uploadedFile.month).padStart(2, '0')}-${String(uploadedFile.day).padStart(2, '0')}`,
+                    pageCount: pageCount
+                };
+                
+                uploadResult = await marketResearchSupabase.uploadFile(uploadedFile.file, metadata);
+                useSupabase = true;
+                
+                console.log('✅ Supabase 업로드 성공:', uploadResult);
+                
+                // Supabase에서 문서 목록 다시 로드
+                await loadDocumentsFromSupabase();
+                
+                // 현재 필터 적용된 문서들로 다시 렌더링
+                applyFilters();
+                
+            } catch (supabaseError) {
+                console.warn('⚠️ Supabase 업로드 실패:', supabaseError.message);
+                console.log('💡 로컬 저장으로 대체합니다.');
+                useSupabase = false;
+            }
+        }
+        
+        // 5. 로컬 저장 (Supabase 실패 시 또는 비활성화 시)
+        if (!useSupabase) {
+            // 중복 검사
+            if (typeof uploadedFilesRegistry === 'undefined') {
+                window.uploadedFilesRegistry = new Set();
+            }
+            
+            const monthStr = String(uploadedFile.month).padStart(2, '0');
+            const dayStr = String(uploadedFile.day).padStart(2, '0');
+            const duplicateKey = `${region1.value}_${region2Text}_${uploadedFile.year}-${monthStr}-${dayStr}_${Math.round(uploadedFile.file.size / (1024 * 1024))}MB_${productType}_${supplyType}`;
+            
+            if (uploadedFilesRegistry.has(duplicateKey)) {
+                throw new Error('동일한 문서가 이미 업로드되었습니다.');
+            }
+            
+            // 로컬 저장
+            uploadedFilesRegistry.add(duplicateKey);
+        }
+        
+        // 6. UI 업데이트
+        const newDoc = {
+            id: useSupabase ? uploadResult.id : Date.now(),
+            title: title,
+            description: description,
+            type: productType,
+            region: region1.value,
+            district: region2Text,
+            location: `${region1Text} ${region2Text}`,
+            date: `${uploadedFile.year}.${String(uploadedFile.month).padStart(2, '0')}.${String(uploadedFile.day).padStart(2, '0')}`,
+            createDate: `자료생성일: ${uploadedFile.year}년 ${uploadedFile.month}월 ${uploadedFile.day}일`,
+            fileSize: (uploadedFile.file.size / (1024 * 1024)).toFixed(1) + ' MB',
+            fileType: uploadedFile.file.name.split('.').pop().toUpperCase(),
+            pages: pageCount,
+            uploadPoints: uploadPoints,
+            points: Math.round(uploadPoints * 2.3), // 다운로드 포인트 (업로드 포인트의 2.3배)
+            supplyType: supplyName,
+            isPremium: uploadPoints >= 3000,
+            keywords: [],
+            thumbnail: useSupabase && uploadResult?.thumbnailUrl ? 
+                uploadResult.thumbnailUrl : 
+                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
+            author: '익명', // TODO: 실제 사용자 이름으로 교체
+            downloads: 0,
+            views: 0,
+            isSupabase: useSupabase,
+            fileUrl: useSupabase ? uploadResult?.fileUrl : null
+        };
+        
+        // 문서 목록에 추가
+        currentDocuments.unshift(newDoc);
+        
+        // 화면 갱신
+        renderDocuments(currentDocuments);
+        updateResultCount(currentDocuments.length);
+        
+        // 미리보기 모달 이벤트 재초기화
+        setTimeout(() => {
+            initializePreviewModal();
+        }, 100);
+        
+        // 포인트 획득 처리
+        const uploadButton = document.querySelector('.upload-btn') || uploadSubmitBtn;
+        earnPoints(uploadPoints, `문서가 성공적으로 업로드되었습니다!`, uploadButton);
+        
+        // 성공 메시지
+        const storageType = useSupabase ? 'Supabase' : '로컬';
+        showToastMessage(`업로드가 완료되었습니다! (${storageType} 저장) +${uploadPoints.toLocaleString()}P`, 'success');
+        
+        // Supabase에서 최신 데이터 다시 로드 (동기화)
+        if (useSupabase) {
+            console.log('🔄 업로드 완료 후 Supabase 데이터 동기화...');
+            try {
+                await loadDocumentsFromSupabase();
+                console.log('✅ 업로드 후 데이터 동기화 완료');
+            } catch (syncError) {
+                console.warn('⚠️ 업로드 후 동기화 실패:', syncError);
+                // 동기화 실패해도 업로드는 성공적으로 완료됨
+            }
+        }
+        
+        // 모달 닫기
+        setTimeout(() => {
+            if (modal) modal.classList.remove('active');
+            resetUploadForm();
+        }, 1000);
+        
+    } catch (error) {
+        console.error('❌ 업로드 실패:', error);
+        showToastMessage(`업로드 중 오류가 발생했습니다: ${error.message}`, 'error');
+        
+    } finally {
+        // 버튼 상태 복원
+        if (uploadSubmitBtn) {
+            uploadSubmitBtn.disabled = false;
+            uploadSubmitBtn.textContent = '업로드 완료';
+        }
     }
-
-    // 파일의 날짜가 선택되었는지 확인
-    if (!uploadedFile.year || !uploadedFile.month || !uploadedFile.day) {
-        showToastMessage('파일의 생성 날짜를 선택해주세요.', 'error');
-        return;
-    }
-    
-    // 2년 초과 확인
-    const fileUploadDate = new Date(uploadedFile.year, uploadedFile.month - 1, uploadedFile.day);
-    const currentDay = new Date();
-    const uploadDaysDiff = Math.floor((currentDay - fileUploadDate) / (1000 * 60 * 60 * 24));
-    
-    if (uploadDaysDiff > 730) {
-        showToastMessage(`${uploadedFile.file.name}: 24개월이 경과된 자료는 업로드할 수 없습니다.`, 'error');
-        return;
-    }
-
-    if (!productBtn) {
-        showToastMessage('상품유형을 선택해주세요.', 'error');
-        return;
-    }
-
-    if (!supplyBtn) {
-        showToastMessage('공급유형을 선택해주세요.', 'error');
-        return;
-    }
-
-    // 중복 검사 및 파일 업로드 처리
-    if (typeof uploadedFilesRegistry === 'undefined') {
-        window.uploadedFilesRegistry = new Set();
-    }
-
-    const region1Text = region1.options[region1.selectedIndex].text;
-    const productName = productBtn.getAttribute('data-name') || productBtn.querySelector('span').textContent;
-    const supplyName = supplyBtn.getAttribute('data-name') || supplyBtn.querySelector('span').textContent;
-    const productType = productBtn.getAttribute('data-type');
-    const supplyType = supplyBtn.getAttribute('data-type');
-    
-    // 단일 파일 처리
-    const fileSize = (uploadedFile.file.size / (1024 * 1024)).toFixed(1);
-    const fileDate = `${uploadedFile.year}년 ${uploadedFile.month}월 ${uploadedFile.day}일`;
-    const formattedFileDate = `${uploadedFile.year}.${String(uploadedFile.month).padStart(2, '0')}.${String(uploadedFile.day).padStart(2, '0')}`;
-    
-    // 중복 키 생성
-    const monthStr = String(uploadedFile.month).padStart(2, '0');
-    const dayStr = String(uploadedFile.day).padStart(2, '0');
-    const duplicateKey = `${region1.value}_${region2.value}_${uploadedFile.year}-${monthStr}-${dayStr}_${Math.round(uploadedFile.file.size / (1024 * 1024))}MB_${productType}_${supplyType}`;
-    
-    // 중복 여부 확인
-    if (uploadedFilesRegistry.has(duplicateKey)) {
-        showToastMessage(`${uploadedFile.file.name}: 동일한 문서가 이미 업로드되었습니다.`, 'error');
-        return;
-    }
-    
-    // 파일 포인트 계산
-    const basePoints = 3000;
-    let sizeMultiplier = 1.0;
-    let freshnessMultiplier = 1.0;
-    
-    const fileSizeMB = parseFloat(fileSize);
-    if (fileSizeMB >= 5) sizeMultiplier = 1.1;
-    else if (fileSizeMB < 2) sizeMultiplier = 0.7;
-    
-    // 날짜 변수들을 새로 선언 (다른 이름 사용)
-    const fileSelectedDate = new Date(uploadedFile.year, uploadedFile.month - 1, uploadedFile.day);
-    const currentDate = new Date();
-    const fileDaysDiff = Math.floor((currentDate - fileSelectedDate) / (1000 * 60 * 60 * 24));
-    
-    if (fileDaysDiff <= 180) freshnessMultiplier = 1.2;
-    else if (fileDaysDiff <= 365) freshnessMultiplier = 1.0;
-    else if (fileDaysDiff <= 730) freshnessMultiplier = 0.7;
-    
-    const filePoints = Math.round((basePoints * sizeMultiplier * freshnessMultiplier) / 10) * 10;
-    
-    // 다운로드 포인트 계산
-    const downloadPoints = calculateDownloadPoints(fileSize, `자료생성일: ${fileDate}`);
-    
-    // 제목 생성 (자동생성 대신 직접 생성)
-    const title = `${region1Text} ${region2.value} ${productName} ${supplyName} 시장조사서`;
-    
-    // 새 문서 객체 생성
-    const newDoc = {
-        id: sampleDocuments.length + 1,
-        title: title,
-        type: productType,
-        region: region1.value,
-        district: region2.value,
-        location: `${region1Text} ${region2.value}`,
-        date: formattedFileDate,
-        createDate: `자료생성일: ${fileDate}`,
-        fileSize: fileSize + ' MB',
-        fileType: uploadedFile.file.name.split('.').pop().toUpperCase(),
-        pages: Math.floor(Math.random() * 40) + 20,
-        uploadPoints: filePoints,
-        points: downloadPoints,
-        supplyType: supplyName,
-        isPremium: filePoints >= 3000,
-        keywords: [],
-        thumbnail: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="160"%3E%3Crect width="120" height="160" fill="%23f3f4f6"/%3E%3Ctext x="50%" y="50%" text-anchor="middle" fill="%236b7280" font-size="12"%3EPDF%3C/text%3E%3C/svg%3E',
-        description: title,
-        author: userData.name || '익명',
-        downloads: 0,
-        views: 0,
-    };
-    
-    // 문서 목록에 추가
-    sampleDocuments.unshift(newDoc);
-    
-    // 업로드 성공 후 레지스트리에 추가
-    uploadedFilesRegistry.add(duplicateKey);
-    
-    console.log('업로드 정보:', {
-        file: uploadedFile.file.name,
-        title: title,
-        region1: region1.value,
-        region2: region2.value,
-        fileDate: fileDate,
-        productType: productType,
-        supplyType: supplyType,
-        points: filePoints,
-    });
-
-    // 화면 갱신
-    renderDocuments(sampleDocuments);
-    updateResultCount(sampleDocuments.length);
-
-    // 미리보기 모달 이벤트 재초기화 (업로드 후 이벤트 유지)
-    setTimeout(() => {
-        initializePreviewModal();
-    }, 100);
-
-    // 글로벌 포인트 시스템 사용 - 업로드 버튼 요소 찾기
-    const uploadButton = document.getElementById('btnUpload');
-
-    // 포인트 획득 처리 (애니메이션과 업데이트 모두 처리)
-    earnPoints(filePoints, `문서가 성공적으로 업로드되었습니다!`, uploadButton);
-
-    // 모달 닫기 (애니메이션 시작 후 바로)
-    setTimeout(() => {
-        if (modal) modal.classList.remove('active');
-        resetUploadForm();
-    }, 300);
 }
 
 // ===========================================
@@ -4851,6 +4485,7 @@ function showMinimalPreview(doc) {
     // 배지 배경색 제거 (그라디언트 CSS로 처리)
     document.getElementById('previewLocation').textContent = doc.location;
     document.getElementById('previewFileSize').textContent = doc.fileSize;
+    document.getElementById('previewPages').textContent = doc.pages || 0;
     document.getElementById('previewDate').textContent = doc.createDate.replace('자료생성일: ', '');
     // 포인트를 천 단위 구분 쉼표로 표시
     const pointsEl = document.getElementById('previewPoints');
@@ -4891,33 +4526,40 @@ function showMinimalPreview(doc) {
         freshnessMultiplier = 0.5;
     }
 
-    // 파일크기 지수 표시
-    let sizeText = '';
-    let sizeMultiplier = 0;
-    if (fileSize >= 5) {
-        sizeText = `${doc.fileSize} (110%)`;
-        sizeMultiplier = 1.1;
-    } else if (fileSize >= 2) {
-        sizeText = `${doc.fileSize} (100%)`;
-        sizeMultiplier = 1.0;
+    // 페이지 지수 표시
+    const pages = doc.pages || 0;
+    let pageText = '';
+    let pageMultiplier = 0;
+    if (pages >= 40) {
+        pageText = `${pages}페이지 (120%)`;
+        pageMultiplier = 1.2;
+    } else if (pages >= 30) {
+        pageText = `${pages}페이지 (110%)`;
+        pageMultiplier = 1.1;
+    } else if (pages >= 20) {
+        pageText = `${pages}페이지 (100%)`;
+        pageMultiplier = 1.0;
+    } else if (pages >= 10) {
+        pageText = `${pages}페이지 (90%)`;
+        pageMultiplier = 0.9;
     } else {
-        sizeText = `${doc.fileSize} (70%)`;
-        sizeMultiplier = 0.7;
+        pageText = `${pages}페이지 (60%)`;
+        pageMultiplier = 0.6;
     }
 
     // 요소 업데이트
     const freshnessElement = document.getElementById('freshnessIndex');
     if (freshnessElement) freshnessElement.textContent = freshnessText;
 
-    const sizeElement = document.getElementById('fileSizeIndex');
-    if (sizeElement) sizeElement.textContent = sizeText;
+    const pageElement = document.getElementById('pageIndex');
+    if (pageElement) pageElement.textContent = pageText;
 
     // 계산식 업데이트
     const formulaElement = document.getElementById('pointFormula');
     if (formulaElement) {
         const calculatedPoints =
-            Math.round((7000 * freshnessMultiplier * sizeMultiplier) / 10) * 10;
-        formulaElement.textContent = `기준 7,000P × ${freshnessMultiplier} × ${sizeMultiplier} = ${calculatedPoints.toLocaleString('ko-KR')}P`;
+            Math.round((7000 * freshnessMultiplier * pageMultiplier) / 10) * 10;
+        formulaElement.textContent = `기준 7,000P × ${freshnessMultiplier} × ${pageMultiplier} = ${calculatedPoints.toLocaleString('ko-KR')}P`;
     }
 
     // 카운터 업데이트 - 사용자 요청에 따라 비활성화
@@ -4943,6 +4585,14 @@ function showMinimalPreview(doc) {
     // 모달 표시
     modal.classList.add('active');
     document.body.classList.add('modal-open');
+    
+    // 체크 표시 함수 호출
+    if (typeof highlightActiveRows === 'function') {
+        // 약간의 지연을 두어 DOM이 업데이트된 후 호출
+        setTimeout(() => {
+            highlightActiveRows();
+        }, 100);
+    }
 }
 
 // 인덱스 감소 - 목록에서 위에 있는 문서로 이동
@@ -5093,75 +4743,134 @@ function updatePreviewModal(doc) {
 }
 
 // ===========================================
+// 로딩 상태 관리
+// ===========================================
+
+// 로딩 상태 표시
+function showLoadingState() {
+    const totalCount = document.getElementById('totalCount');
+    if (totalCount) {
+        totalCount.textContent = '로딩 중...';
+    }
+    
+    // 문서 목록 영역에 로딩 메시지 표시
+    const documentGrid = document.querySelector('.document-grid');
+    if (documentGrid) {
+        documentGrid.innerHTML = `
+            <div style="
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                height: 200px; 
+                color: #6b7280;
+                font-size: 16px;
+                grid-column: 1 / -1;
+            ">
+                <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
+                데이터를 불러오는 중...
+            </div>
+        `;
+    }
+}
+
+// 로딩 상태 숨기기
+function hideLoadingState() {
+    // 로딩 표시는 실제 데이터로 교체됨
+    console.log('✅ 로딩 상태 완료');
+}
+
+// ===========================================
 // DOM 로드 완료 시 초기화
 // ===========================================
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Market Research page loaded');
-    console.log('Checking for filter elements...');
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Market Research page loaded - 초기화 시작');
+    
+    // 로딩 상태 표시
+    showLoadingState();
+    
+    try {
+        // 1. 기본 변수 초기화 (빈 배열로 시작)
+        console.log('📋 currentDocuments 초기화: 빈 배열로 시작');
+        currentDocuments = []; // 명시적으로 빈 배열 초기화
+        
+        // 2. 권한에 따른 UI 업데이트
+        await updateUIPermissions();
 
-    // 기존 sampleDocuments의 포인트를 다운로드 포인트로 재계산
-    sampleDocuments.forEach((doc) => {
-        // 업로드 포인트 저장 (기존 points 값을 업로드 포인트로 사용)
-        doc.uploadPoints = doc.points || 3000;
+        // 3. 필터 요소들 확인 및 초기화
+        const regionSelectors = document.querySelectorAll('.region-filter .nav-selector');
+        const productSelectors = document.querySelectorAll('#productTypeFilters .checkbox-tab');
+        const supplySelectors = document.querySelectorAll('#supplyTypeFilters .checkbox-tab');
 
-        // 다운로드 포인트 계산
-        doc.points = calculateDownloadPoints(doc.fileSize, doc.createDate);
-    });
+        console.log('🔍 필터 요소 검색 결과:');
+        console.log('  - 지역 선택자:', regionSelectors.length);
+        console.log('  - 상품 선택자:', productSelectors.length);
+        console.log('  - 공급 선택자:', supplySelectors.length);
 
-    // 필터 요소들 확인
-    const regionSelectors = document.querySelectorAll('.region-filter .nav-selector');
-    const productSelectors = document.querySelectorAll('#productTypeFilters .checkbox-tab');
-    const supplySelectors = document.querySelectorAll('#supplyTypeFilters .checkbox-tab');
+        // 4. 초기 상태 설정 - '전체' 탭을 active로
+        const allRegionSelector = document.querySelector('.nav-selector[data-value="all"]');
+        if (allRegionSelector) {
+            allRegionSelector.classList.add('selected', 'active');
+        }
 
-    console.log('Found region selectors:', regionSelectors.length);
-    console.log('Found product selectors:', productSelectors.length);
-    console.log('Found supply selectors:', supplySelectors.length);
+        const allProductTab = document.querySelector('.product-filter .checkbox-tab[data-type="all"]');
+        if (allProductTab) {
+            allProductTab.classList.add('active');
+            const input = allProductTab.querySelector('input[type="radio"]');
+            if (input) input.checked = true;
+        }
 
-    // 초기 상태 설정 - '전체' 탭을 active로
-    const allRegionSelector = document.querySelector('.nav-selector[data-value="all"]');
-    if (allRegionSelector) {
-        allRegionSelector.classList.add('selected', 'active');
+        const allSupplyTab = document.querySelector('.supply-filter .checkbox-tab[data-type="all"]');
+        if (allSupplyTab) {
+            allSupplyTab.classList.add('active');
+            const input = allSupplyTab.querySelector('input[type="radio"]');
+            if (input) input.checked = true;
+        }
+
+        // 5. 필터 초기화
+        initializeFilters();
+
+        // 6. 이벤트 리스너 초기화
+        initializeEventListeners();
+
+        // 7. 개선된 업로드 모달 기능 초기화
+        initEnhancedUploadModal();
+
+        // 8. 미리보기 모달 초기화
+        initializePreviewModal();
+
+        // 9. 신고 기능 초기화
+        initializeReportEventListeners();
+
+        // 10. 초기 UI 상태 표시 (빈 상태)
+        renderDocuments(currentDocuments);
+        updateResultCount(0);
+        
+        // 11. Supabase 초기화 및 데이터 로드 (비동기, 마지막에 실행)
+        console.log('🔄 Supabase 데이터 로드 시작...');
+        await initializeSupabaseData();
+        
+        // 12. 로딩 완료 상태로 변경
+        hideLoadingState();
+        
+        // 13. 사용자 포인트 표시
+        updateUserPoints();
+        
+        console.log('✅ Market Research 페이지 초기화 완료');
+        console.log('');
+        console.log('🛠️ 새로고침 문제 해결 업데이트 적용됨');
+        console.log('💡 문제 발생 시 콘솔에서 사용 가능한 명령어:');
+        console.log('  - debugMarketResearch.diagnoseProblem() : 문제 진단');
+        console.log('  - debugMarketResearch.reinitialize() : 강제 재초기화');
+        console.log('  - quickSetup() : Storage 버킷 생성 가이드');
+        
+    } catch (error) {
+        console.error('❌ 페이지 초기화 중 오류 발생:', error);
+        hideLoadingState();
+        // 에러 발생 시에도 기본 UI는 표시
+        renderDocuments([]);
+        updateResultCount(0);
     }
-
-    const allProductTab = document.querySelector('.product-filter .checkbox-tab[data-type="all"]');
-    if (allProductTab) {
-        allProductTab.classList.add('active');
-        const input = allProductTab.querySelector('input[type="radio"]');
-        if (input) input.checked = true;
-    }
-
-    const allSupplyTab = document.querySelector('.supply-filter .checkbox-tab[data-type="all"]');
-    if (allSupplyTab) {
-        allSupplyTab.classList.add('active');
-        const input = allSupplyTab.querySelector('input[type="radio"]');
-        if (input) input.checked = true;
-    }
-
-    // 필터 초기화
-    initializeFilters();
-
-    // 이벤트 리스너 초기화
-    initializeEventListeners();
-
-    // uploadSystem.init() 제거 - 새로운 업로드 시스템 사용
-    // uploadSystem.init();
-
-    // 개선된 업로드 모달 기능 초기화
-    initEnhancedUploadModal();
-
-    // 미리보기 모달 초기화
-    initializePreviewModal();
-
-    // 신고 기능 초기화
-    initializeReportEventListeners();
-
-    // 초기 문서 렌더링
-    renderDocuments(sampleDocuments);
-    updateResultCount(sampleDocuments.length);
-
-    // 사용자 포인트 표시
-    updateUserPoints();
 });
 
 // ===========================================
@@ -5172,8 +4881,15 @@ document.addEventListener('DOMContentLoaded', () => {
 let cartItems = JSON.parse(localStorage.getItem('marketResearchCart')) || [];
 
 // 장바구니에 담기
-function addToCart(docId) {
-    const doc = sampleDocuments.find(d => d.id === docId);
+async function addToCart(docId) {
+    // 권한 체크 추가
+    const permissions = await checkUserPermissions();
+    if (!permissions.canDownload) {
+        alert(permissions.reason);
+        return;
+    }
+
+    const doc = currentDocuments.find(d => d.id === docId);
     if (!doc) return;
     
     // 이미 장바구니에 있는지 확인
@@ -5215,7 +4931,7 @@ function addToCart(docId) {
 
 // 신고 모달 표시
 function showReportModal(docId) {
-    const doc = sampleDocuments.find(d => d.id === docId);
+    const doc = currentDocuments.find(d => d.id === docId);
     if (!doc) return;
     
     const modal = document.getElementById('reportModal');
@@ -5347,7 +5063,7 @@ function renderPagination() {
     const paginationContainer = document.getElementById('pagination');
     if (!paginationContainer) return;
     
-    const totalPages = Math.ceil(sampleDocuments.length / itemsPerPage);
+    const totalPages = Math.ceil(currentDocuments.length / itemsPerPage);
     if (totalPages <= 1) {
         paginationContainer.innerHTML = '';
         return;
@@ -5387,13 +5103,613 @@ function renderPagination() {
 
 // 페이지 이동 함수
 function goToPage(page) {
-    const totalPages = Math.ceil(sampleDocuments.length / itemsPerPage);
+    const totalPages = Math.ceil(currentDocuments.length / itemsPerPage);
     if (page < 1 || page > totalPages) return;
     
     currentPage = page;
-    displayDocuments(sampleDocuments); // 기존 표시 함수 호출
+    displayDocuments(currentDocuments); // 현재 문서 목록 사용
     renderPagination();
     
     // 페이지 이동 시 스크롤 위치 유지
     return false;
 }
+
+// ===========================================
+// Supabase 데이터 통합
+// ===========================================
+
+// 현재 문서 목록을 전역 변수로 관리
+let currentDocuments = [];
+
+// 회원 권한 체크 함수들
+async function checkUserPermissions() {
+    const user = await window.authService?.getCurrentUser();
+    if (!user) {
+        return { canUpload: false, canDownload: false, reason: '로그인이 필요합니다.' };
+    }
+    
+    // 회원 타입 확인
+    const memberType = user.member_type || user.role || 'general';
+    const isPractitioner = user.is_practitioner || user.is_worker_approved || false;
+    
+    // 분양기획, 관계사 회원 유형 확인
+    const allowedMemberTypes = ['분양기획', '관계사', 'planning', 'developer', 'affiliate'];
+    const canUpload = allowedMemberTypes.includes(memberType);
+    
+    // 다운로드는 분양기획/관계사 중 실무자 승인된 회원만
+    const canDownload = canUpload && isPractitioner;
+    
+    let reason = '';
+    if (!canUpload) {
+        reason = '분양기획 또는 관계사 회원만 이용 가능합니다.';
+    } else if (!canDownload) {
+        reason = '실무자 승인이 필요합니다. 관리자에게 문의하세요.';
+    }
+    
+    return { canUpload, canDownload, reason, memberType, isPractitioner };
+}
+
+// 다운로드 권한 체크
+async function checkDownloadPermission() {
+    const permissions = await checkUserPermissions();
+    if (!permissions.canDownload) {
+        alert(permissions.reason);
+        return false;
+    }
+    return true;
+}
+
+// 업로드 권한 체크
+async function checkUploadPermission() {
+    const permissions = await checkUserPermissions();
+    if (!permissions.canUpload) {
+        alert(permissions.reason);
+        return false;
+    }
+    return true;
+}
+
+// UI 권한 업데이트 (페이지 로드 시 호출)
+async function updateUIPermissions() {
+    const permissions = await checkUserPermissions();
+    
+    // 업로드 버튼 표시/숨김
+    const uploadBtn = document.querySelector('.upload-btn, #uploadModalBtn');
+    if (uploadBtn) {
+        if (permissions.canUpload) {
+            uploadBtn.style.display = 'block';
+        } else {
+            uploadBtn.style.display = 'none';
+        }
+    }
+    
+    // 다운로드 권한에 따른 UI 업데이트 (선택사항)
+    const downloadBtns = document.querySelectorAll('.download-btn');
+    downloadBtns.forEach(btn => {
+        if (!permissions.canDownload) {
+            btn.setAttribute('title', permissions.reason);
+            btn.style.opacity = '0.5';
+        }
+    });
+}
+
+// 문서 목록 새로고침 함수
+async function refreshDocuments() {
+    try {
+        if (window.marketResearchSupabase && window.marketResearchSupabase.client) {
+            console.log('📋 문서 목록 새로고침 중...');
+            const documents = await window.marketResearchSupabase.fetchDocuments({
+                limit: 50,
+                sortBy: 'latest'
+            });
+            
+            currentDocuments = documents;
+            renderDocuments(currentDocuments);
+            updateResultCount(currentDocuments.length);
+            
+            console.log(`✅ ${documents.length}개 문서 새로고침 완료`);
+        }
+    } catch (error) {
+        console.error('❌ 문서 새로고침 실패:', error);
+    }
+}
+
+// Supabase 데이터 초기화
+async function initializeSupabaseData() {
+    // 중복 초기화 방지
+    if (isInitialized) {
+        console.log('ℹ️ Supabase 데이터 이미 초기화됨 - 스킵');
+        return true;
+    }
+    
+    try {
+        console.log('📍 Supabase 데이터 초기화 시작...');
+        
+        // Supabase 초기화 완료를 명시적으로 대기
+        if (window.supabaseInitPromise) {
+            console.log('⏳ Supabase 초기화 완료 대기 중...');
+            await window.supabaseInitPromise;
+            console.log('✅ Supabase 초기화 완료 확인됨');
+        }
+        
+        console.log('🔍 환경 상태 점검:');
+        console.log('  - window.WaveSupabase:', !!window.WaveSupabase);
+        console.log('  - window.MarketResearchSupabase:', !!window.MarketResearchSupabase);
+        console.log('  - window.marketResearchSupabase:', !!window.marketResearchSupabase);
+        
+        // MarketResearchSupabase 클래스가 로드될 때까지 대기
+        let attempts = 0;
+        const maxAttempts = 50;
+        
+        while (!window.MarketResearchSupabase && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        // 이미 초기화된 경우 스킛
+        if (window.marketResearchSupabase) {
+            console.log('ℹ️ MarketResearchSupabase 이미 초기화됨');
+        } else {
+            // MarketResearchSupabase 클래스에서 인스턴스 생성
+            if (window.MarketResearchSupabase) {
+                console.log('📦 MarketResearchSupabase 인스턴스 생성 중...');
+                window.marketResearchSupabase = new window.MarketResearchSupabase();
+                
+                // 초기화 시도
+                const initialized = await window.marketResearchSupabase.init();
+                if (!initialized) {
+                    console.warn('⚠️ MarketResearchSupabase 초기화 실패');
+                    window.marketResearchSupabase = null;
+                    currentDocuments = [];
+                    renderDocuments(currentDocuments);
+                    updateResultCount(currentDocuments.length);
+                    return false;
+                }
+                console.log('✅ MarketResearchSupabase 초기화 성공');
+            } else {
+                console.warn('⚠️ MarketResearchSupabase 클래스를 찾을 수 없습니다.');
+                currentDocuments = [];
+                renderDocuments(currentDocuments);
+                updateResultCount(currentDocuments.length);
+                return false;
+            }
+        }
+        
+        // 문서 로드 시도
+        if (window.marketResearchSupabase) {
+            console.log('📋 시장조사서 문서 로드 중...');
+            console.log('  - fetchDocuments 옵션: { limit: 50, sortBy: "latest" }');
+            const documents = await window.marketResearchSupabase.fetchDocuments({
+                limit: 50,
+                sortBy: 'latest'
+            });
+            
+            console.log(`📊 문서 로드 결과: ${documents.length}개`);
+            if (documents.length > 0) {
+                console.log(`  - 첫 번째 문서:`, {
+                    id: documents[0].id,
+                    title: documents[0].title,
+                    type: documents[0].type
+                });
+            }
+            currentDocuments = documents;
+            
+            // UI 업데이트
+            renderDocuments(currentDocuments);
+            updateResultCount(currentDocuments.length);
+            
+            // 초기화 완료 플래그 설정
+            isInitialized = true;
+            console.log('🎯 Supabase 데이터 초기화 완료');
+            return true;
+        } else {
+            console.warn('⚠️ marketResearchSupabase를 찾을 수 없습니다.');
+            // 빈 데이터로 초기화
+            currentDocuments = [];
+            renderDocuments(currentDocuments);
+            updateResultCount(currentDocuments.length);
+            return false;
+        }
+        
+    } catch (error) {
+        console.error('❌ Supabase 데이터 초기화 실패:', error);
+        
+        // 상세 에러 정보 로깅
+        if (error.message) {
+            console.error('❌ 에러 메시지:', error.message);
+        }
+        if (error.stack) {
+            console.error('❌ 에러 스택:', error.stack);
+        }
+        
+        // Storage 권한 문제에 대한 구체적인 안내
+        if (error.message && error.message.includes('storage') || error.message.includes('bucket')) {
+            console.log('💡 Storage 문제 해결 가이드:');
+            console.log('  1. 콘솔에서 quickSetup() 실행');
+            console.log('  2. 또는 createBucketGuide() 실행');
+            console.log('  3. Supabase 대시보드에서 Storage 버킷 생성');
+        }
+        
+        // 사용자 친화적인 에러 메시지 표시
+        if (document.getElementById('documentGrid')) {
+            document.getElementById('documentGrid').innerHTML = `
+                <div class="error-message" style="
+                    text-align: center;
+                    padding: 40px;
+                    color: #666;
+                    background: #f9f9f9;
+                    border-radius: 8px;
+                    margin: 20px 0;
+                ">
+                    <h3>⚠️ 데이터 로드 실패</h3>
+                    <p>시장조사서 데이터를 불러오는데 실패했습니다.</p>
+                    <p>페이지를 새로고침하거나 잠시 후 다시 시도해주세요.</p>
+                    <button onclick="debugMarketResearch.reinitialize()" 
+                            style="margin-top: 10px; padding: 8px 16px; 
+                                   background: #0066FF; color: white; 
+                                   border: none; border-radius: 4px; cursor: pointer;">
+                        다시 시도
+                    </button>
+                </div>
+            `;
+        }
+        
+        // 빈 데이터로 초기화
+        currentDocuments = [];
+        updateResultCount(0);
+        
+        // 실패 시 플래그 리셋 (재시도 허용)
+        isInitialized = false;
+        return false;
+    }
+}
+
+// 필터링된 문서 반환 (Supabase 데이터 지원)
+function getFilteredDocuments() {
+    return currentDocuments.filter((doc) => {
+        return matchesFilters(doc);
+    });
+}
+
+// 필터 조건 매칭 함수
+function matchesFilters(doc) {
+    const selectedRegions = Array.from(
+        document.querySelectorAll('#regionCheckboxes input[type="checkbox"]:checked')
+    ).map(cb => cb.value);
+
+    const selectedTypes = Array.from(
+        document.querySelectorAll('#typeCheckboxes input[type="checkbox"]:checked')
+    ).map(cb => cb.value);
+
+    const selectedSupplyTypes = Array.from(
+        document.querySelectorAll('#supplyTypeCheckboxes input[type="checkbox"]:checked')
+    ).map(cb => cb.value);
+
+    const searchTerm = document.getElementById('searchInput')?.value?.toLowerCase() || '';
+
+    // 지역 필터링
+    if (selectedRegions.length > 0) {
+        const docRegion = doc.region || '';
+        if (!selectedRegions.some(region => docRegion.includes(region))) {
+            return false;
+        }
+    }
+
+    // 상품 유형 필터링
+    if (selectedTypes.length > 0 && !selectedTypes.includes(doc.type)) {
+        return false;
+    }
+
+    // 공급 유형 필터링
+    if (selectedSupplyTypes.length > 0 && !selectedSupplyTypes.includes(doc.supplyType)) {
+        return false;
+    }
+
+    // 검색어 필터링
+    if (searchTerm) {
+        const searchableText = [
+            doc.title,
+            doc.description,
+            doc.location,
+            ...(doc.keywords || [])
+        ].join(' ').toLowerCase();
+        
+        if (!searchableText.includes(searchTerm)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// 기존 함수 수정: filterDocuments
+function filterDocuments() {
+    return getFilteredDocuments();
+}
+
+// 문서 다운로드 함수 (Supabase 연동)
+async function downloadDocument(docId) {
+    try {
+        if (!window.marketResearchSupabase || !window.marketResearchSupabase.client) {
+            throw new Error('MarketResearchSupabase가 초기화되지 않았습니다.');
+        }
+
+        // 현재 사용자 ID 가져오기
+        const userId = window.WaveSupabase?.currentUser?.id;
+        if (!userId) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+
+        console.log(`📥 문서 다운로드 시작: ${docId}`);
+        
+        const downloadInfo = await window.marketResearchSupabase.downloadFile(docId, userId);
+        
+        // 다운로드 실행
+        const link = document.createElement('a');
+        link.href = downloadInfo.url;
+        link.download = downloadInfo.filename;
+        link.click();
+        
+        console.log('✅ 문서 다운로드 완료');
+        alert('다운로드가 시작되었습니다.');
+        
+        // 문서 목록 새로고침 (다운로드 카운트 업데이트)
+        await refreshDocuments();
+        
+    } catch (error) {
+        console.error('❌ 문서 다운로드 실패:', error);
+        alert(`다운로드 실패: ${error.message}`);
+    }
+}
+
+// 현재 사용자 ID 가져오기 (임시 구현)
+function getCurrentUserId() {
+    // 실제로는 인증 시스템에서 가져와야 함
+    // 임시로 localStorage에서 가져오거나 하드코딩
+    return localStorage.getItem('currentUserId') || null;
+}
+
+// 문서 목록 새로고침
+async function refreshDocuments() {
+    try {
+        if (window.MarketResearchSupabase) {
+            const documents = await window.MarketResearchSupabase.fetchDocuments({
+                limit: 50,
+                sortBy: 'latest'
+            });
+            
+            currentDocuments = documents;
+            renderDocuments(filterDocuments());
+            updateResultCount(filterDocuments().length);
+        }
+    } catch (error) {
+        console.error('❌ 문서 새로고침 실패:', error);
+    }
+}
+
+// 검색 및 필터 이벤트 리스너에서 사용할 함수
+function applyFiltersAndSearch() {
+    const filteredDocs = filterDocuments();
+    renderDocuments(filteredDocs);
+    updateResultCount(filteredDocs.length);
+    
+    // 페이지 초기화
+    currentPage = 1;
+    renderPagination();
+}
+
+// ===========================================
+// 디버깅 도구
+// ===========================================
+
+// 전역 디버깅 헬퍼 (콘솔에서 사용 가능)
+window.debugMarketResearch = {
+    // 초기화 상태 확인
+    checkInitStatus: function() {
+        console.group('🔍 시장조사서 디버깅 정보');
+        console.log('📊 초기화 상태:');
+        console.log('  - isInitialized:', isInitialized);
+        console.log('  - Supabase Client:', !!window.supabase);
+        console.log('  - WaveSupabase:', !!window.WaveSupabase);
+        console.log('  - MarketResearchSupabase 클래스:', !!window.MarketResearchSupabase);
+        console.log('  - marketResearchSupabase 인스턴스:', !!window.marketResearchSupabase);
+        
+        if (window.marketResearchSupabase) {
+            console.log('📁 Storage 상태:');
+            console.log('  - Storage Disabled:', window.marketResearchSupabase.storageDisabled);
+            console.log('  - Client 연결:', !!window.marketResearchSupabase.client);
+            console.log('  - 로딩 상태:', window.marketResearchSupabase.isLoading);
+            console.log('  - 에러:', window.marketResearchSupabase.error);
+        }
+        
+        console.log('📄 문서 상태:');
+        console.log('  - currentDocuments 수:', currentDocuments.length);
+        console.log('  - 현재 필터:', currentFilters);
+        
+        console.groupEnd();
+        return {
+            initialized: isInitialized,
+            hasSupabase: !!window.supabase,
+            hasInstance: !!window.marketResearchSupabase,
+            documentsCount: currentDocuments.length
+        };
+    },
+    
+    // 강제 재초기화
+    reinitialize: async function() {
+        console.log('🔄 강제 재초기화 시작...');
+        isInitialized = false;
+        const result = await initializeSupabaseData();
+        console.log('🔄 재초기화 결과:', result);
+        return result;
+    },
+    
+    // 새로고침 문제 진단
+    diagnoseProblem: function() {
+        console.group('🔧 새로고침 문제 진단');
+        
+        console.log('1️⃣ 초기화 상태 확인:');
+        console.log('  - isInitialized:', isInitialized);
+        console.log('  - currentDocuments.length:', currentDocuments.length);
+        
+        console.log('2️⃣ Supabase 연결 확인:');
+        console.log('  - WaveSupabase 로드:', !!window.WaveSupabase);
+        console.log('  - MarketResearchSupabase 클래스:', !!window.MarketResearchSupabase);
+        console.log('  - marketResearchSupabase 인스턴스:', !!window.marketResearchSupabase);
+        
+        if (window.marketResearchSupabase) {
+            console.log('  - Storage 비활성화:', window.marketResearchSupabase.storageDisabled);
+            console.log('  - 에러:', window.marketResearchSupabase.error?.message);
+        }
+        
+        console.log('3️⃣ 권장 해결책:');
+        if (!window.marketResearchSupabase) {
+            console.log('  ❌ Supabase 미연결 → debugMarketResearch.reinitialize() 실행');
+        } else if (window.marketResearchSupabase.storageDisabled) {
+            console.log('  ⚠️ Storage 비활성화 → 콘솔에서 quickSetup() 실행');
+        } else if (currentDocuments.length === 0) {
+            console.log('  📄 빈 데이터 → debugMarketResearch.testDataLoad() 실행');
+        } else {
+            console.log('  ✅ 정상 상태');
+        }
+        
+        console.groupEnd();
+    },
+    
+    // 테스트 데이터 로드
+    testDataLoad: async function() {
+        if (!window.marketResearchSupabase) {
+            console.error('❌ marketResearchSupabase 인스턴스가 없습니다.');
+            return false;
+        }
+        
+        try {
+            console.log('📡 테스트 데이터 로드 중...');
+            const documents = await window.marketResearchSupabase.fetchDocuments({
+                limit: 10,
+                sortBy: 'latest'
+            });
+            
+            console.log('✅ 테스트 로드 성공:', documents.length, '개 문서');
+            console.table(documents.slice(0, 3)); // 처음 3개만 테이블로 표시
+            return documents;
+        } catch (error) {
+            console.error('❌ 테스트 로드 실패:', error);
+            return false;
+        }
+    },
+    
+    // Storage 버킷 상태 확인
+    checkStorageBucket: async function() {
+        if (!window.marketResearchSupabase) {
+            console.error('❌ marketResearchSupabase 인스턴스가 없습니다.');
+            return false;
+        }
+        
+        try {
+            console.log('🪣 Storage 버킷 상태 확인 중...');
+            await window.marketResearchSupabase.ensureStorageBucket();
+            console.log('✅ Storage 버킷 확인 완료');
+            return true;
+        } catch (error) {
+            console.error('❌ Storage 버킷 확인 실패:', error);
+            return false;
+        }
+    },
+    
+    // 현재 상태 요약
+    getStatus: function() {
+        return {
+            initialized: isInitialized,
+            hasSupabaseClient: !!window.supabase,
+            hasMarketInstance: !!window.marketResearchSupabase,
+            storageDisabled: window.marketResearchSupabase?.storageDisabled || false,
+            documentsCount: currentDocuments.length,
+            hasErrors: !!window.marketResearchSupabase?.error
+        };
+    },
+    
+    // 헬스체크 - 전체 시스템 상태 확인
+    healthCheck: async function() {
+        console.group('🏥 시장조사서 시스템 헬스체크');
+        
+        const results = {
+            supabaseClient: false,
+            marketInstance: false,
+            dataLoad: false,
+            ui: false,
+            overall: false
+        };
+        
+        try {
+            // 1. Supabase 클라이언트 확인
+            if (window.supabase || (window.WaveSupabase && window.WaveSupabase.getClient())) {
+                results.supabaseClient = true;
+                console.log('✅ Supabase 클라이언트 연결됨');
+            } else {
+                console.error('❌ Supabase 클라이언트 없음');
+            }
+            
+            // 2. MarketResearch 인스턴스 확인
+            if (window.marketResearchSupabase && window.marketResearchSupabase.init) {
+                results.marketInstance = true;
+                console.log('✅ MarketResearchSupabase 인스턴스 정상');
+            } else {
+                console.error('❌ MarketResearchSupabase 인스턴스 없음');
+            }
+            
+            // 3. 데이터 로드 테스트
+            try {
+                const testResult = await this.testDataLoad();
+                if (testResult && testResult.length >= 0) {
+                    results.dataLoad = true;
+                    console.log('✅ 데이터 로드 테스트 통과');
+                } else {
+                    console.error('❌ 데이터 로드 테스트 실패');
+                }
+            } catch (error) {
+                console.error('❌ 데이터 로드 테스트 에러:', error.message);
+            }
+            
+            // 4. UI 요소 확인
+            const documentGrid = document.getElementById('documentGrid');
+            const uploadModal = document.getElementById('uploadModal');
+            if (documentGrid && uploadModal) {
+                results.ui = true;
+                console.log('✅ UI 요소 정상');
+            } else {
+                console.error('❌ UI 요소 누락:', {
+                    documentGrid: !!documentGrid,
+                    uploadModal: !!uploadModal
+                });
+            }
+            
+            // 전체 상태 판정
+            const passedChecks = Object.values(results).filter(Boolean).length;
+            results.overall = passedChecks >= 3; // 4개 중 3개 이상 통과
+            
+            console.log('📊 헬스체크 결과:', results);
+            console.log(results.overall ? '✅ 전체 시스템 정상' : '⚠️ 시스템에 문제 있음');
+            
+        } catch (error) {
+            console.error('❌ 헬스체크 중 에러:', error);
+            results.overall = false;
+        }
+        
+        console.groupEnd();
+        return results;
+    }
+};
+
+// 페이지 로드 시 디버깅 도구 안내
+setTimeout(() => {
+    if (window.console && window.console.log) {
+        console.log('🛠️ 시장조사서 디버깅 도구 사용 가능:');
+        console.log('  debugMarketResearch.healthCheck() - 전체 시스템 헬스체크');
+        console.log('  debugMarketResearch.checkInitStatus() - 초기화 상태 확인');
+        console.log('  debugMarketResearch.reinitialize() - 강제 재초기화');
+        console.log('  debugMarketResearch.testDataLoad() - 데이터 로드 테스트');
+        console.log('  debugMarketResearch.getStatus() - 현재 상태 요약');
+    }
+}, 2000); // 2초 후 안내 메시지 표시

@@ -111,7 +111,22 @@ class SecurityManager {
 // 전역 인스턴스 생성 및 window 객체에 등록
 const waveSpaceData = new WaveSpaceData();
 
-// 전역 접근 가능하도록 설정
+// 전역 접근 가능하도록 설정 (기존 데이터 보존)
 if (typeof window !== 'undefined') {
-    window.WaveSpaceData = waveSpaceData;
+    // 기존 WaveSpaceData가 있다면 속성들을 보존
+    const existingData = window.WaveSpaceData || {};
+    
+    // 새 인스턴스의 속성들을 기존 객체에 병합
+    window.WaveSpaceData = Object.assign(existingData, {
+        errorHandler: waveSpaceData.errorHandler,
+        security: waveSpaceData.security,
+        config: waveSpaceData.config
+    });
+    
+    console.log('[WaveSpaceData] 기존 데이터 보존하며 전역 객체 설정 완료');
+}
+
+// ES6 모듈 환경에서도 접근 가능하도록 설정
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = waveSpaceData;
 }

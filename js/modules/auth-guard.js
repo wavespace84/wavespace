@@ -6,7 +6,6 @@
 class AuthGuard {
     constructor() {
         this.protectedPages = [
-            'forum.html',
             'qna.html', 
             'attendance.html',
             'points-ranking.html',

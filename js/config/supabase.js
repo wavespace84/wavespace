@@ -17,14 +17,28 @@ if (typeof supabase === 'undefined') {
     document.head.appendChild(script);
 }
 
-// Supabase 프로젝트 설정
+// 환경변수 가져오기 (index.html에서 설정해야 함)
 const SUPABASE_CONFIG = {
-    url: 'https://sishloxzcqapontycuyz.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpc2hsb3h6Y3FhcG9udHljdXl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NTA2MzAsImV4cCI6MjA3MDEyNjYzMH0.23aVcOSXDSvCi7yRtnCumy9knjIkL_mTAudSyubANZs'
+    url: window.SUPABASE_URL || 'https://sishloxzcqapontycuyz.supabase.co',
+    anonKey: window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpc2hsb3h6Y3FhcG9udHljdXl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NTA2MzAsImV4cCI6MjA3MDEyNjYzMH0.23aVcOSXDSvCi7yRtnCumy9knjIkL_mTAudSyubANZs'
 };
+
+// 환경변수 검증
+if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) {
+    console.error('❌ Supabase 환경변수가 설정되지 않았습니다.');
+    console.warn('💡 index.html에 다음 스크립트를 추가하세요:');
+    console.warn(`
+<script>
+    // 환경변수 설정 (배포 시 실제 값으로 교체)
+    window.SUPABASE_URL = 'your-supabase-url';
+    window.SUPABASE_ANON_KEY = 'your-anon-key';
+</script>
+    `);
+}
 
 // Supabase 클라이언트 초기화
 let supabaseClient;
+let supabaseInitPromise; // 초기화 Promise
 
 /**
  * Supabase 클라이언트 초기화
@@ -146,12 +160,36 @@ window.WaveSupabase = {
     onAuthStateChange
 };
 
+// 초기화 완료 이벤트 생성
+const supabaseInitEvent = new Event('supabaseInitialized');
+
 // 페이지 로드 시 자동 초기화
 document.addEventListener('DOMContentLoaded', async () => {
+    // 초기화 Promise를 전역에 노출
+    window.supabaseInitPromise = (async () => {
+        try {
+            console.log('🔄 Supabase 초기화 시작...');
+            await initSupabase();
+            // await checkConnection(); // 임시 비활성화
+            
+            console.log('✅ Supabase 초기화 완료');
+            return true;
+        } catch (error) {
+            console.error('❌ Supabase 초기화 실패:', error);
+            throw error;
+        }
+    })();
+    
     try {
-        await initSupabase();
-        // await checkConnection(); // 임시 비활성화
+        await window.supabaseInitPromise;
+        
+        // 초기화 완료 이벤트 발생
+        console.log('✅ Supabase 초기화 완료, 이벤트 발생');
+        window.dispatchEvent(supabaseInitEvent);
+        
     } catch (error) {
         console.error('Supabase 초기화 실패:', error);
+        // 실패해도 이벤트는 발생시켜 대기 중인 코드가 진행되도록 함
+        window.dispatchEvent(supabaseInitEvent);
     }
 });

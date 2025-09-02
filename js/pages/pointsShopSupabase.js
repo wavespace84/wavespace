@@ -115,7 +115,7 @@ class PointsShopManager {
             const { data: user, error } = await supabase
                 .from('users')
                 .select('points')
-                .eq('id', this.currentUser.id)
+                .eq('auth_user_id', this.currentUser.id)
                 .single();
 
             if (error) throw error;

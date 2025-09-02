@@ -1069,7 +1069,7 @@ legend {
 
 .error-state i {
     font-size: 48px;
-    color: var(--red-500);
+    color: #ef4444;
     margin-bottom: 16px;
 }
 
@@ -1083,12 +1083,28 @@ legend {
 .error-state p {
     color: var(--gray-600);
     font-size: 14px;
-    margin: 0 0 24px 0;
+    margin: 0 0 8px 0;
+}
+
+.error-state .error-detail {
+    color: #dc2626;
+    font-size: 13px;
+    font-family: monospace;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin: 8px 0 24px 0;
+}
+
+.error-state .error-help {
+    color: var(--gray-500);
+    font-size: 13px;
+    margin-top: 16px;
 }
 
 .btn-retry {
     padding: 12px 24px;
-    background: var(--primary-500);
+    background: var(--primary-blue);
     color: white;
     border: none;
     border-radius: 8px;
@@ -1096,11 +1112,20 @@ legend {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-retry:hover {
-    background: var(--primary-600);
+    background: #2563eb;
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(48, 128, 255, 0.3);
+}
+
+.btn-retry i {
+    font-size: 14px;
+    color: white;
 }
 
 /* 빈 상태 */
@@ -1130,4 +1155,10 @@ legend {
     color: var(--gray-600);
     font-size: 14px;
     margin: 0;
+}
+
+.empty-state .empty-state-hint {
+    color: var(--gray-500);
+    font-size: 13px;
+    margin-top: 8px;
 }

@@ -582,7 +582,7 @@ class AdminService {
             const { data: user } = await supabase
                 .from('users')
                 .select('points, username')
-                .eq('id', userId)
+                .eq('auth_user_id', userId)
                 .single();
 
             const newPoints = Math.max(0, (user.points || 0) + amount);
@@ -593,7 +593,7 @@ class AdminService {
                     points: newPoints,
                     updated_at: new Date().toISOString()
                 })
-                .eq('id', userId)
+                .eq('auth_user_id', userId)
                 .select()
                 .single();
 

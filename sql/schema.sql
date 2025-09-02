@@ -5,6 +5,7 @@
 CREATE TABLE IF NOT EXISTS users (
     id UUID REFERENCES auth.users(id) PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
+    nickname VARCHAR(50) UNIQUE,  -- 닉네임 추가
     full_name VARCHAR(100),
     email VARCHAR(255) UNIQUE NOT NULL,
     phone VARCHAR(20),

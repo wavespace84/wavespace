@@ -28,10 +28,9 @@ export function initPreload() {
     window.addEventListener('load', () => {
         document.body.classList.add('loaded');
 
-        // 로딩 성능 측정
-        if (window.performance && window.performance.timing) {
-            const timing = window.performance.timing;
-            const loadTime = timing.loadEventEnd - timing.navigationStart;
+        // 로딩 성능 측정 - performance.now() 사용
+        if (window.performance) {
+            const loadTime = Math.round(performance.now());
             console.log(`Page load time: ${loadTime}ms`);
         }
     });

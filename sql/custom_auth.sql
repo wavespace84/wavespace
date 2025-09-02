@@ -45,6 +45,7 @@ BEGIN
             'id', user_record.id,
             'auth_user_id', user_record.auth_user_id,
             'username', user_record.username,
+            'nickname', user_record.nickname,  -- 닉네임 추가
             'email', user_record.email,
             'full_name', user_record.full_name,
             'role', user_record.role,
@@ -80,7 +81,7 @@ BEGIN
     LEFT JOIN user_badges ub ON u.auth_user_id = ub.auth_user_id
     LEFT JOIN badges b ON ub.badge_id = b.id
     WHERE u.username = input_username
-    GROUP BY u.id, u.auth_user_id, u.username, u.email, u.full_name, 
+    GROUP BY u.id, u.auth_user_id, u.username, u.nickname, u.email, u.full_name, 
              u.phone, u.role, u.points, u.level, u.is_active, 
              u.postal_code, u.address, u.detail_address, 
              u.member_type, u.additional_info, u.profile_image_url,

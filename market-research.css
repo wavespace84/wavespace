@@ -2752,6 +2752,25 @@ body
     color: white;
 }
 
+/* 미리보기 모달 포인트 테이블 활성 상태 스타일 */
+.preview-point-table tr.active {
+    background-color: #fef3c7 !important;
+    border-left: 3px solid #22c55e !important;
+}
+
+.preview-point-table tr.active td {
+    font-weight: 600 !important;
+}
+
+.preview-point-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.preview-point-table td {
+    transition: all 0.2s ease;
+}
+
 .points-rules-info {
     background: #f0f9ff;
     padding: 12px;

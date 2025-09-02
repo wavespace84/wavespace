@@ -1,751 +1,1010 @@
 /**
- * WAVE SPACE - 시장조사서 페이지 Supabase 연동
- * 시장조사서 업로드, 관리 및 AI 분석 시스템
+ * WAVE SPACE - Market Research Supabase Integration
+ * 시장조사서 페이지 Supabase 연동 모듈
  */
 
-import { supabase } from '../config/supabase.js';
-import { authService } from '../services/authService.js';
-import { fileService } from '../services/fileService.js';
-
-class MarketResearchManager {
+class MarketResearchSupabase {
     constructor() {
-        this.currentUser = null;
-        this.researchFiles = [];
-        this.currentFilter = 'all';
-        this.currentSort = 'recent';
-        this.selectedFiles = [];
-        this.uploadProgress = {};
+        this.client = null;
+        this.documents = [];
+        this.filteredDocuments = [];
         this.isLoading = false;
-        this.init();
+        this.error = null;
+        this.bucketName = 'market-research';
     }
 
+    /**
+     * Supabase 클라이언트 초기화 (디버깅 강화)
+     */
     async init() {
         try {
-            await authService.init();
-            this.currentUser = await authService.getCurrentUser();
+            console.log('🔧 MarketResearchSupabase 초기화 시작...');
             
-            if (this.currentUser) {
-                await this.loadResearchFiles();
-                await this.loadUserStats();
+            // Supabase 초기화 완료를 명시적으로 대기
+            if (window.supabaseInitPromise) {
+                console.log('⏳ Supabase 초기화 완료 대기 중...');
+                await window.supabaseInitPromise;
             }
             
-            this.setupEventListeners();
-            this.updateAuthUI();
-            this.setupRealtimeSubscription();
+            if (!window.WaveSupabase) {
+                throw new Error('WaveSupabase가 초기화되지 않았습니다.');
+            }
+            
+            this.client = window.WaveSupabase.getClient();
+            
+            if (!this.client) {
+                throw new Error('Supabase 클라이언트를 가져올 수 없습니다.');
+            }
+            
+            console.log('✅ Supabase 클라이언트 연결 완료');
+            
+            // Storage 버킷 확인 및 생성
+            console.log('🪣 Storage 버킷 확인 중...');
+            const bucketResult = await this.ensureStorageBucket();
+            
+            if (bucketResult) {
+                console.log('✅ MarketResearchSupabase 초기화 성공 (Storage 활성화)');
+            } else {
+                console.log('⚠️ MarketResearchSupabase 초기화 완료 (Storage 비활성화)');
+            }
+            
+            return true;
         } catch (error) {
-            console.error('시장조사서 페이지 초기화 오류:', error);
+            console.error('❌ MarketResearchSupabase 초기화 실패:', error);
+            this.error = error;
+            this.storageDisabled = true; // 초기화 실패 시 Storage 비활성화
+            return false;
         }
     }
 
-    setupEventListeners() {
-        // 파일 업로드
-        const uploadBtn = document.querySelector('.upload-btn');
-        const fileInput = document.querySelector('#file-input, .file-upload-input');
-        
-        if (uploadBtn && fileInput) {
-            uploadBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', (e) => this.handleFileUpload(e.target.files));
-        }
-
-        // 드래그 앤 드롭
-        const dropZone = document.querySelector('.upload-zone, .drop-zone');
-        if (dropZone) {
-            dropZone.addEventListener('dragover', (e) => this.handleDragOver(e));
-            dropZone.addEventListener('drop', (e) => this.handleFileDrop(e));
-        }
-
-        // 필터 및 정렬
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const filter = e.target.dataset.filter || 'all';
-                this.filterFiles(filter);
-            });
-        });
-
-        const sortSelect = document.querySelector('.sort-select');
-        if (sortSelect) {
-            sortSelect.addEventListener('change', (e) => {
-                this.sortFiles(e.target.value);
-            });
-        }
-
-        // 검색
-        const searchInput = document.querySelector('.search-input');
-        if (searchInput) {
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.searchFiles(e.target.value);
-                }
-            });
-        }
-    }
-
-    async updateAuthUI() {
-        const userInfo = document.querySelector('.user-info, .upload-user-info');
-        
-        if (this.currentUser) {
-            if (userInfo) {
-                userInfo.innerHTML = `
-                    <div class="user-profile">
-                        <img src="${this.currentUser.profile_image_url || '/assets/default-avatar.png'}" 
-                             alt="프로필" class="profile-avatar">
-                        <div class="user-details">
-                            <span class="username">${this.currentUser.username}</span>
-                            <span class="user-points">${this.formatNumber(this.currentUser.points || 0)} P</span>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // 업로드 권한 확인
-            this.checkUploadPermissions();
-        } else {
-            if (userInfo) {
-                userInfo.innerHTML = `
-                    <div class="login-required">
-                        <p>시장조사서를 업로드하려면 로그인이 필요합니다.</p>
-                        <a href="login.html" class="btn btn-primary">로그인</a>
-                    </div>
-                `;
-            }
-        }
-    }
-
-    async checkUploadPermissions() {
-        if (!this.currentUser) return;
-
+    /**
+     * Storage 버킷 확인 및 생성 (개선된 버전)
+     */
+    async ensureStorageBucket() {
         try {
-            // 사용자의 업로드 권한 및 할당량 확인
-            const { data: permissions, error } = await supabase
-                .from('user_upload_permissions')
-                .select(`
-                    max_file_size,
-                    max_files_per_day,
-                    allowed_file_types,
-                    can_upload_ai_analysis
-                `)
-                .eq('user_id', this.currentUser.id)
-                .single();
+            console.log('🔍 Storage 버킷 확인 중...');
+            
+            // 버킷 목록 조회 (권한 확인)
+            const { data: buckets, error: listError } = await this.client.storage.listBuckets();
+            
+            if (listError) {
+                // RLS 정책이나 권한 문제로 버킷 목록 조회 실패
+                console.warn('⚠️ Storage 버킷 목록 조회 실패:', listError.message);
+                
+                if (listError.message.includes('permission')) {
+                    console.log('🔐 권한 문제로 Storage 기능을 비활성화합니다.');
+                    console.log('💡 해결방법: Supabase 대시보드에서 Storage RLS 정책을 확인하세요.');
+                } else {
+                    console.log('❓ 알 수 없는 문제로 Storage 기능을 비활성화합니다.');
+                }
+                
+                console.log('🔧 수동 해결: createBucketGuide() 실행');
+                
+                // Storage 기능 비활성화 플래그 설정
+                this.storageDisabled = true;
+                return false;
+            }
 
-            if (error && error.code !== 'PGRST116') {
+            console.log(`📦 총 ${buckets.length}개 버킷 발견`);
+            const bucketExists = buckets?.some(bucket => bucket.name === this.bucketName);
+
+            if (!bucketExists) {
+                console.log(`🛠️ '${this.bucketName}' 버킷 생성 시도...`);
+                
+                // 버킷 생성 시도
+                const { error: createError } = await this.client.storage.createBucket(this.bucketName, {
+                    public: true, // public으로 설정하여 RLS 문제 해결
+                    allowedMimeTypes: [
+                        'application/pdf',
+                        'application/vnd.ms-powerpoint',
+                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    ],
+                    fileSizeLimit: 50 * 1024 * 1024 // 50MB
+                });
+
+                if (createError) {
+                    console.error('❌ 버킷 생성 실패:', createError.message);
+                    
+                    if (createError.message?.includes('RLS') || createError.message?.includes('policy')) {
+                        console.log('🔐 RLS 정책 문제입니다. Storage 기능을 비활성화합니다.');
+                        console.log('💡 해결방법: Supabase 대시보드에서 Storage 정책을 확인하세요.');
+                    } else if (createError.message?.includes('already exists')) {
+                        console.log('ℹ️ 버킷이 이미 존재합니다 (다른 방식으로 생성됨)');
+                        return true;
+                    } else if (createError.message?.includes('permission')) {
+                        console.log('🔐 권한 부족 문제입니다.');
+                        console.log('💡 관리자 권한으로 Supabase 대시보드에서 버킷을 생성하세요.');
+                    } else {
+                        console.log('❓ 예상치 못한 오류입니다.');
+                    }
+                    
+                    console.log('🔧 수동 해결: createBucketGuide() 실행');
+                    this.storageDisabled = true;
+                    return false;
+                } else {
+                    console.log('✅ Storage 버킷 생성 성공:', this.bucketName);
+                    this.storageDisabled = false;
+                    return true;
+                }
+            } else {
+                console.log('✅ Storage 버킷 확인 완료:', this.bucketName);
+                this.storageDisabled = false;
+                
+                // 버킷이 존재하면 간단한 업로드 테스트 실행
+                const testResult = await this.testBucketAccess();
+                if (!testResult) {
+                    console.warn('⚠️ 버킷은 존재하지만 업로드 권한이 없습니다.');
+                    this.storageDisabled = true;
+                    return false;
+                }
+                
+                return true;
+            }
+        } catch (error) {
+            // 네트워크 오류나 기타 예상치 못한 오류
+            console.error('❌ Storage 버킷 확인 중 예외 발생:', error.message);
+            console.log('💡 네트워크 문제이거나 Supabase 서비스 오류일 수 있습니다.');
+            console.log('🔧 잠시 후 다시 시도하거나 createBucketGuide() 실행');
+            
+            this.storageDisabled = true;
+            return false;
+        }
+    }
+
+    /**
+     * 버킷 접근 권한 테스트 (작은 더미 파일로)
+     */
+    async testBucketAccess() {
+        try {
+            const testBlob = new Blob(['access-test'], { type: 'text/plain' });
+            const testPath = `test/access-${Date.now()}.txt`;
+            
+            const { error: uploadError } = await this.client.storage
+                .from(this.bucketName)
+                .upload(testPath, testBlob);
+            
+            if (uploadError) {
+                console.warn('⚠️ 버킷 업로드 테스트 실패:', uploadError.message);
+                return false;
+            }
+            
+            // 테스트 파일 즉시 삭제
+            await this.client.storage.from(this.bucketName).remove([testPath]);
+            console.log('✅ 버킷 접근 권한 확인 완료');
+            return true;
+        } catch (error) {
+            console.warn('⚠️ 버킷 접근 테스트 중 예외:', error.message);
+            return false;
+        }
+    }
+
+    /**
+     * 시장조사서 목록 가져오기 (호환성을 위한 getDocuments 메서드)
+     */
+    async getDocuments(options = {}) {
+        return await this.fetchDocuments(options);
+    }
+
+    /**
+     * 시장조사서 목록 가져오기
+     */
+    async fetchDocuments(options = {}) {
+        try {
+            this.isLoading = true;
+            this.error = null;
+
+            const {
+                limit = 50,
+                offset = 0,
+                region1 = null,
+                region2 = null,
+                productType = null,
+                supplyType = null,
+                searchTerm = '',
+                sortBy = 'latest'
+            } = options;
+
+            let query = this.client
+                .from('market_research_uploads')
+                .select(`
+                    id, title, description, file_url, file_size, file_type,
+                    original_filename, page_count, download_count, thumbnail_url,
+                    region1, region2, full_location, product_type, supply_type,
+                    upload_points, download_points, keywords, tags,
+                    file_created_date, created_at, updated_at,
+                    is_verified, is_active,
+                    users!market_research_uploads_user_id_fkey (
+                        username, full_name
+                    )
+                `)
+                .eq('is_active', true)
+                .eq('is_verified', true);
+
+            // 지역 필터링
+            if (region1 && region1 !== 'all') {
+                query = query.eq('region1', region1);
+            }
+            if (region2 && region2 !== 'all') {
+                query = query.eq('region2', region2);
+            }
+
+            // 상품 유형 필터링
+            if (productType && productType !== 'all') {
+                query = query.eq('product_type', productType);
+            }
+
+            // 공급 유형 필터링
+            if (supplyType && supplyType !== 'all') {
+                query = query.eq('supply_type', supplyType);
+            }
+
+            // 검색어 필터링
+            if (searchTerm) {
+                query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,full_location.ilike.%${searchTerm}%`);
+            }
+
+            // 정렬
+            switch (sortBy) {
+                case 'latest':
+                    query = query.order('created_at', { ascending: false });
+                    break;
+                case 'filesize':
+                    query = query.order('file_size', { ascending: false });
+                    break;
+                case 'popular':
+                    query = query.order('download_count', { ascending: false });
+                    break;
+                default:
+                    query = query.order('created_at', { ascending: false });
+            }
+
+            // 페이지네이션
+            if (limit > 0) {
+                query = query.range(offset, offset + limit - 1);
+            }
+
+            const { data, error } = await query;
+
+            if (error) {
+                console.error('❌ 시장조사서 조회 실패:', error);
                 throw error;
             }
 
-            this.uploadPermissions = permissions || {
-                max_file_size: 10485760, // 10MB
-                max_files_per_day: 5,
-                allowed_file_types: ['pdf', 'doc', 'docx'],
-                can_upload_ai_analysis: false
-            };
+            // 데이터 변환
+            this.documents = this.transformDocuments(data || []);
+            this.filteredDocuments = [...this.documents];
 
-            this.updateUploadUI();
+            console.log(`✅ 시장조사서 ${this.documents.length}개 로드 완료`);
+            return this.documents;
 
         } catch (error) {
-            console.error('업로드 권한 확인 오류:', error);
+            console.error('❌ 시장조사서 데이터 로드 실패:', error);
+            this.error = error;
+            return [];
+        } finally {
+            this.isLoading = false;
         }
     }
 
-    updateUploadUI() {
-        const uploadInfo = document.querySelector('.upload-info, .upload-limits');
-        if (uploadInfo && this.uploadPermissions) {
-            uploadInfo.innerHTML = `
-                <div class="upload-limits">
-                    <div class="limit-item">
-                        <span class="limit-label">최대 파일 크기:</span>
-                        <span class="limit-value">${this.formatFileSize(this.uploadPermissions.max_file_size)}</span>
-                    </div>
-                    <div class="limit-item">
-                        <span class="limit-label">일일 업로드 제한:</span>
-                        <span class="limit-value">${this.uploadPermissions.max_files_per_day}개</span>
-                    </div>
-                    <div class="limit-item">
-                        <span class="limit-label">지원 형식:</span>
-                        <span class="limit-value">${this.uploadPermissions.allowed_file_types.join(', ').toUpperCase()}</span>
-                    </div>
-                </div>
-            `;
-        }
-    }
-
-    async handleFileUpload(files) {
-        if (!this.currentUser) {
-            alert('로그인이 필요합니다.');
-            return;
-        }
-
-        if (!files || files.length === 0) return;
-
-        for (const file of files) {
-            if (!this.validateFile(file)) continue;
-            
-            try {
-                await this.uploadFile(file);
-            } catch (error) {
-                console.error(`파일 업로드 오류 (${file.name}):`, error);
-                this.showError(`${file.name} 업로드 실패`);
-            }
-        }
-    }
-
-    validateFile(file) {
-        // 파일 크기 검증
-        if (file.size > this.uploadPermissions.max_file_size) {
-            this.showError(`파일 크기가 너무 큽니다. 최대 ${this.formatFileSize(this.uploadPermissions.max_file_size)}까지 지원됩니다.`);
-            return false;
-        }
-
-        // 파일 형식 검증
-        const fileExtension = file.name.split('.').pop().toLowerCase();
-        if (!this.uploadPermissions.allowed_file_types.includes(fileExtension)) {
-            this.showError(`지원하지 않는 파일 형식입니다. ${this.uploadPermissions.allowed_file_types.join(', ').toUpperCase()} 파일만 업로드 가능합니다.`);
-            return false;
-        }
-
-        return true;
-    }
-
-    async uploadFile(file) {
-        const fileId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        
+    /**
+     * 파일 업로드 (디버깅 강화 버전)
+     */
+    async uploadFile(file, metadata) {
         try {
-            // 파일 업로드 진행률 표시
-            this.showUploadProgress(fileId, file.name);
+            console.log('🚀 파일 업로드 시작');
+            console.log('📄 파일 정보:', {
+                name: file.name,
+                size: file.size,
+                type: file.type
+            });
+            console.log('📋 메타데이터:', metadata);
+            
+            this.isLoading = true;
 
-            // Supabase Storage에 파일 업로드
-            const filePath = `market-research/${this.currentUser.id}/${fileId}-${file.name}`;
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('documents')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
+            // 1. 필수 매개변수 확인
+            if (!file) {
+                throw new Error('파일이 제공되지 않았습니다.');
+            }
+            if (!metadata) {
+                throw new Error('메타데이터가 제공되지 않았습니다.');
+            }
+            if (!metadata.userId) {
+                // AuthService에서 실제 사용자 ID 가져오기
+                const authService = window.authService || window.AuthService;
+                const currentUser = authService?.getCurrentUser();
+                
+                if (currentUser && currentUser.id) {
+                    metadata.userId = currentUser.id;
+                    console.log('✅ AuthService에서 userId 가져옴:', metadata.userId);
+                } else {
+                    console.warn('⚠️ AuthService에서 userId를 찾을 수 없습니다. 임시 ID를 사용합니다.');
+                    metadata.userId = 'anonymous-' + Date.now();
+                }
+            }
 
-            if (uploadError) throw uploadError;
+            // 2. Supabase 클라이언트 확인
+            if (!this.client) {
+                throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
+            }
 
-            // 데이터베이스에 파일 정보 저장
-            const { data: fileRecord, error: dbError } = await supabase
-                .from('market_research_files')
+            // 3. 파일 검증
+            const validation = this.validateFile(file, metadata);
+            if (!validation.isValid) {
+                throw new Error(validation.message);
+            }
+            
+            console.log('✅ 기본 검증 통과');
+
+            // 2. 파일 해시 생성 (중복 검사용)
+            const fileHash = await this.generateFileHash(file);
+            
+            // 3. 중복 파일 확인
+            const duplicate = await this.checkDuplicateFile(fileHash);
+            if (duplicate) {
+                throw new Error('이미 업로드된 파일입니다.');
+            }
+
+            // 4. 페이지 수 추출 (PDF만)
+            let pageCount = metadata.pageCount || 0;
+            if (file.type === 'application/pdf' && window.pdfjsLib) {
+                pageCount = await this.extractPdfPageCount(file);
+            }
+
+            // 5. 포인트 계산
+            const points = this.calculateUploadPoints(pageCount, metadata.fileCreatedDate);
+
+            let filePath = null;
+            let fileUrl = null;
+
+            // 6. Storage 업로드 (개선된 버전)
+            if (!this.storageDisabled) {
+                try {
+                    console.log('📤 Storage 업로드 시작...');
+                    
+                    // AuthService를 통해 로그인 상태 확인
+                    const authService = window.authService || window.AuthService;
+                    const currentUser = authService?.getCurrentUser();
+                    
+                    console.log('🔐 AuthService 인증 상태:', {
+                        hasAuthService: !!authService,
+                        hasUser: !!currentUser,
+                        userId: currentUser?.id,
+                        authUserId: currentUser?.auth_user_id,
+                        memberType: currentUser?.member_type,
+                        isPractitioner: currentUser?.is_practitioner,
+                        userEmail: currentUser?.email
+                    });
+                    
+                    // AuthService에서 사용자가 없으면 Supabase 직접 확인
+                    let user = null;
+                    if (currentUser) {
+                        // AuthService에서 사용자 정보가 있으면 사용
+                        user = { 
+                            id: currentUser.auth_user_id, 
+                            email: currentUser.email 
+                        };
+                        console.log('✅ AuthService에서 로그인 사용자 확인됨');
+                    } else {
+                        // AuthService에 사용자가 없으면 직접 확인
+                        const { data: { user: supabaseUser }, error: authError } = await this.client.auth.getUser();
+                        user = supabaseUser;
+                        console.log('🔍 Supabase 직접 인증 체크:', {
+                            hasUser: !!user,
+                            userId: user?.id,
+                            authError: authError?.message
+                        });
+                        
+                        // 여전히 사용자가 없으면 익명 로그인 시도
+                        if (!user) {
+                            console.log('🔑 익명 로그인 시도...');
+                            const { data: anonData, error: anonError } = await this.client.auth.signInAnonymously();
+                            if (anonError) {
+                                console.warn('⚠️ 익명 로그인 실패:', anonError.message);
+                            } else {
+                                console.log('✅ 익명 로그인 성공:', anonData.user?.id);
+                                user = anonData.user;
+                            }
+                        }
+                    }
+                    
+                    // 파일명 생성 (UUID + 원본 확장자)
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    const fileName = `${crypto.randomUUID()}.${fileExtension}`;
+                    filePath = `uploads/${fileName}`;
+
+                    console.log(`📁 업로드 경로: ${filePath}`);
+                    console.log(`📏 파일 크기: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+
+                    // Storage에 파일 업로드
+                    const { data: uploadData, error: uploadError } = await this.client.storage
+                        .from(this.bucketName)
+                        .upload(filePath, file, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (uploadError) {
+                        console.error('❌ Storage 업로드 실패:', uploadError.message);
+                        
+                        // 구체적인 오류 분석
+                        if (uploadError.message.includes('RLS')) {
+                            console.log('🔐 RLS 정책 문제입니다.');
+                            console.log('💡 Supabase 대시보드에서 Storage 정책을 확인하세요.');
+                        } else if (uploadError.message.includes('permission')) {
+                            console.log('🔐 권한 문제입니다.');
+                        } else if (uploadError.message.includes('size')) {
+                            console.log('📏 파일 크기 문제입니다.');
+                        } else {
+                            console.log('❓ 예상치 못한 Storage 오류입니다.');
+                        }
+                        
+                        console.log('💡 메타데이터만 저장하고 계속 진행합니다.');
+                        fileUrl = null;
+                        filePath = null;
+                    } else {
+                        console.log('✅ Storage 업로드 성공:', uploadData.path);
+                        
+                        // 파일 공개 URL 가져오기
+                        const { data: urlData } = this.client.storage
+                            .from(this.bucketName)
+                            .getPublicUrl(filePath);
+                        fileUrl = urlData?.publicUrl;
+
+                        if (!fileUrl) {
+                            console.warn('⚠️ 파일 URL 생성 실패');
+                            fileUrl = null;
+                        } else {
+                            console.log('🔗 공개 URL 생성 완료');
+                        }
+                    }
+                } catch (storageError) {
+                    console.error('❌ Storage 처리 중 예외 발생:', storageError.message);
+                    console.log('💡 메타데이터만 저장하고 계속 진행합니다.');
+                    fileUrl = null;
+                    filePath = null;
+                }
+            } else {
+                console.warn('⚠️ Storage 기능 비활성화됨');
+                console.log('💡 메타데이터만 데이터베이스에 저장합니다.');
+                console.log('🔧 Storage 복원: checkStorageHealth() 실행 후 문제 해결');
+                fileUrl = null;
+                filePath = null;
+            }
+
+            // 9. 데이터베이스에 레코드 생성
+            const { data: dbData, error: dbError } = await this.client
+                .from('market_research_uploads')
                 .insert({
-                    id: fileId,
-                    user_id: this.currentUser.id,
-                    file_name: file.name,
-                    file_path: filePath,
+                    user_id: metadata.userId,
+                    title: metadata.title,
+                    description: metadata.description,
+                    file_url: fileUrl,
                     file_size: file.size,
-                    file_type: file.type,
-                    upload_status: 'completed',
-                    created_at: new Date().toISOString()
+                    file_type: '시장조사서',
+                    original_filename: file.name,
+                    region1: metadata.region1,
+                    region2: metadata.region2,
+                    full_location: `${metadata.region1} ${metadata.region2}`,
+                    product_type: metadata.productType,
+                    supply_type: metadata.supplyType,
+                    page_count: pageCount,
+                    file_created_date: metadata.fileCreatedDate,
+                    file_hash: fileHash,
+                    upload_points: points,
+                    download_points: this.calculateDownloadPoints(pageCount, metadata.fileCreatedDate),
+                    keywords: metadata.keywords || [],
+                    tags: metadata.tags || [],
+                    search_text: this.generateSearchText(metadata),
+                    is_verified: true, // 개발 환경에서는 바로 활성화 (운영 환경에서는 false)
+                    is_active: true
                 })
                 .select()
                 .single();
 
-            if (dbError) throw dbError;
-
-            // AI 분석 요청 (권한이 있는 경우)
-            if (this.uploadPermissions.can_upload_ai_analysis) {
-                this.requestAIAnalysis(fileId);
+            if (dbError) {
+                // Storage에 업로드된 파일이 있다면 삭제
+                if (filePath && !this.storageDisabled) {
+                    try {
+                        await this.client.storage.from(this.bucketName).remove([filePath]);
+                    } catch (deleteError) {
+                        console.warn('⚠️ 업로드 실패한 파일 삭제 중 오류:', deleteError.message);
+                    }
+                }
+                throw dbError;
             }
 
-            // 업로드 완료 처리
-            this.hideUploadProgress(fileId);
-            this.showSuccess(`${file.name} 업로드 완료!`);
+            // 10. 사용자 포인트 업데이트
+            await this.updateUserPoints(metadata.userId, points);
             
-            // 파일 목록 새로고침
-            await this.loadResearchFiles();
+            // 11. 업로드 카운트 업데이트
+            await this.updateUserUploadCount(metadata.userId);
+
+            console.log('✅ 파일 업로드 완료:', dbData);
+            return dbData;
 
         } catch (error) {
-            this.hideUploadProgress(fileId);
+            console.error('❌ 파일 업로드 실패:', error);
+            throw error;
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    /**
+     * 파일 다운로드
+     */
+    async downloadFile(documentId, userId) {
+        try {
+            // 1. 문서 정보 조회
+            const { data: document, error: docError } = await this.client
+                .from('market_research_uploads')
+                .select('*')
+                .eq('id', documentId)
+                .eq('is_active', true)
+                .eq('is_verified', true)
+                .single();
+
+            if (docError || !document) {
+                throw new Error('문서를 찾을 수 없습니다.');
+            }
+
+            // 2. 사용자 포인트 확인
+            const { data: user, error: userError } = await this.client
+                .from('users')
+                .select('points')
+                .eq('auth_user_id', userId)
+                .single();
+
+            if (userError || !user) {
+                throw new Error('사용자 정보를 찾을 수 없습니다.');
+            }
+
+            if (user.points < document.download_points) {
+                throw new Error(`포인트가 부족합니다. 필요: ${document.download_points}P, 보유: ${user.points}P`);
+            }
+
+            // 3. 포인트 차감 및 다운로드 카운트 업데이트 (트랜잭션)
+            const { error: updateError } = await this.client.rpc('download_market_research', {
+                p_document_id: documentId,
+                p_user_id: userId,
+                p_points_to_deduct: document.download_points
+            });
+
+            if (updateError) {
+                throw updateError;
+            }
+
+            // 4. 파일 다운로드 URL 생성
+            if (!document.file_url) {
+                throw new Error('파일이 저장되어 있지 않습니다.');
+            }
+
+            // Storage에서 실제 파일 경로 추출
+            const urlParts = document.file_url.split('/');
+            const fileName = urlParts[urlParts.length - 1];
+            const filePath = `uploads/${fileName}`;
+
+            // 임시 서명된 URL 생성 (1시간 유효)
+            const { data: signedUrl, error: urlError } = await this.client.storage
+                .from(this.bucketName)
+                .createSignedUrl(filePath, 3600);
+
+            if (urlError) {
+                throw new Error(`파일 다운로드 URL 생성 실패: ${urlError.message}`);
+            }
+
+            console.log('✅ 파일 다운로드 준비 완료');
+            return {
+                url: signedUrl.signedUrl,
+                filename: document.original_filename || `document_${documentId}.pdf`
+            };
+
+        } catch (error) {
+            console.error('❌ 파일 다운로드 실패:', error);
             throw error;
         }
     }
 
-    async requestAIAnalysis(fileId) {
-        try {
-            const { error } = await supabase
-                .from('ai_analysis_queue')
-                .insert({
-                    file_id: fileId,
-                    analysis_type: 'market_research',
-                    priority: 'normal',
-                    requested_at: new Date().toISOString()
-                });
-
-            if (error) throw error;
-
-            this.showNotification('AI 분석이 요청되었습니다. 분석 완료 시 알림을 드립니다.');
-
-        } catch (error) {
-            console.error('AI 분석 요청 오류:', error);
-        }
+    /**
+     * 데이터 변환 (기존 sampleDocuments 형식에 맞게)
+     */
+    transformDocuments(supabaseData) {
+        return supabaseData.map(item => ({
+            id: item.id,
+            title: item.title,
+            type: item.product_type,
+            region: item.region1,
+            district: item.region2,
+            location: item.full_location,
+            date: new Date(item.created_at).toLocaleDateString('ko-KR').replace(/\./g, '.'),
+            createDate: `자료생성일: ${new Date(item.file_created_date).toLocaleDateString('ko-KR').replace(/\./g, '.')}`,
+            fileSize: this.formatFileSize(item.file_size),
+            fileType: this.getFileTypeFromUrl(item.file_url),
+            pages: item.page_count,
+            points: item.download_points,
+            supplyType: item.supply_type,
+            isPremium: false,
+            keywords: item.keywords || [],
+            thumbnail: item.thumbnail_url || this.generateThumbnail(item.file_type),
+            description: item.description,
+            pdfPath: item.file_url,
+            downloadCount: item.download_count,
+            uploader: item.users?.full_name || item.users?.username,
+            isVerified: item.is_verified
+        }));
     }
 
-    async loadResearchFiles() {
-        if (!this.currentUser) return;
+    // 유틸리티 메서드들
+    validateFile(file, metadata) {
+        const allowedTypes = [
+            'application/pdf',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'application/msword', 
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
 
-        try {
-            this.isLoading = true;
-            this.showLoading();
-
-            let query = supabase
-                .from('market_research_files')
-                .select(`
-                    id,
-                    file_name,
-                    file_path,
-                    file_size,
-                    file_type,
-                    upload_status,
-                    analysis_status,
-                    analysis_summary,
-                    download_count,
-                    is_public,
-                    created_at,
-                    ai_analysis (
-                        id,
-                        analysis_result,
-                        confidence_score,
-                        key_insights
-                    )
-                `)
-                .eq('user_id', this.currentUser.id)
-                .order('created_at', { ascending: false });
-
-            if (this.currentFilter !== 'all') {
-                query = query.eq('analysis_status', this.currentFilter);
-            }
-
-            const { data: files, error } = await query;
-
-            if (error) throw error;
-
-            this.researchFiles = files || [];
-            this.renderResearchFiles();
-
-        } catch (error) {
-            console.error('시장조사서 파일 로딩 오류:', error);
-            this.showError('파일 목록을 불러올 수 없습니다.');
-        } finally {
-            this.isLoading = false;
-            this.hideLoading();
-        }
-    }
-
-    renderResearchFiles() {
-        const container = document.querySelector('.file-list, .research-files');
-        if (!container) return;
-
-        if (this.researchFiles.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-file-upload"></i>
-                    <h3>업로드된 시장조사서가 없습니다</h3>
-                    <p>시장조사서를 업로드하여 AI 분석을 받아보세요!</p>
-                    ${this.currentUser ? '<button class="btn btn-primary upload-btn">파일 업로드</button>' : ''}
-                </div>
-            `;
-            return;
+        if (!allowedTypes.includes(file.type)) {
+            return { isValid: false, message: '지원하지 않는 파일 형식입니다.' };
         }
 
-        const filesHTML = this.researchFiles.map(file => `
-            <div class="file-item" data-file-id="${file.id}">
-                <div class="file-icon">
-                    ${this.getFileIcon(file.file_type)}
-                </div>
-
-                <div class="file-info">
-                    <h3 class="file-name">${file.file_name}</h3>
-                    <div class="file-meta">
-                        <span class="file-size">${this.formatFileSize(file.file_size)}</span>
-                        <span class="upload-date">${this.formatDate(file.created_at)}</span>
-                        <span class="download-count">
-                            <i class="fas fa-download"></i>
-                            ${file.download_count || 0}
-                        </span>
-                    </div>
-                </div>
-
-                <div class="file-status">
-                    <div class="upload-status ${file.upload_status}">
-                        ${this.getUploadStatusLabel(file.upload_status)}
-                    </div>
-                    <div class="analysis-status ${file.analysis_status || 'pending'}">
-                        ${this.getAnalysisStatusLabel(file.analysis_status)}
-                    </div>
-                </div>
-
-                <div class="file-actions">
-                    <button class="action-btn download-btn" onclick="marketResearchManager.downloadFile('${file.id}')">
-                        <i class="fas fa-download"></i>
-                    </button>
-                    ${file.analysis_status === 'completed' ? `
-                        <button class="action-btn analysis-btn" onclick="marketResearchManager.viewAnalysis('${file.id}')">
-                            <i class="fas fa-chart-line"></i>
-                        </button>
-                    ` : ''}
-                    ${file.is_public ? `
-                        <button class="action-btn share-btn" onclick="marketResearchManager.shareFile('${file.id}')">
-                            <i class="fas fa-share"></i>
-                        </button>
-                    ` : ''}
-                    <button class="action-btn delete-btn" onclick="marketResearchManager.deleteFile('${file.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-
-                ${file.ai_analysis && file.ai_analysis.length > 0 ? `
-                    <div class="analysis-preview">
-                        <h4>AI 분석 요약</h4>
-                        <p>${file.ai_analysis[0].key_insights?.slice(0, 3).join(', ') || '분석 완료'}</p>
-                        <div class="confidence-score">
-                            신뢰도: ${file.ai_analysis[0].confidence_score || 0}%
-                        </div>
-                    </div>
-                ` : ''}
-            </div>
-        `).join('');
-
-        container.innerHTML = filesHTML;
-    }
-
-    showUploadProgress(fileId, fileName) {
-        const progressHTML = `
-            <div class="upload-progress" id="progress-${fileId}">
-                <div class="progress-info">
-                    <span class="file-name">${fileName}</span>
-                    <span class="progress-status">업로드 중...</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 0%"></div>
-                </div>
-            </div>
-        `;
-
-        const progressContainer = document.querySelector('.upload-progress-container');
-        if (progressContainer) {
-            progressContainer.insertAdjacentHTML('beforeend', progressHTML);
-        }
-    }
-
-    hideUploadProgress(fileId) {
-        const progressEl = document.getElementById(`progress-${fileId}`);
-        if (progressEl) {
-            progressEl.remove();
-        }
-    }
-
-    handleDragOver(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.dataTransfer.dropEffect = 'copy';
-        
-        const dropZone = e.currentTarget;
-        dropZone.classList.add('drag-over');
-    }
-
-    handleFileDrop(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const dropZone = e.currentTarget;
-        dropZone.classList.remove('drag-over');
-        
-        const files = e.dataTransfer.files;
-        this.handleFileUpload(files);
-    }
-
-    async downloadFile(fileId) {
-        const file = this.researchFiles.find(f => f.id === fileId);
-        if (!file) return;
-
-        try {
-            // 다운로드 카운트 증가
-            await supabase.rpc('increment_download_count', {
-                file_id: fileId
-            });
-
-            // Supabase Storage에서 파일 다운로드 URL 생성
-            const { data: downloadData, error } = await supabase.storage
-                .from('documents')
-                .createSignedUrl(file.file_path, 3600); // 1시간 유효
-
-            if (error) throw error;
-
-            // 다운로드 실행
-            const link = document.createElement('a');
-            link.href = downloadData.signedUrl;
-            link.download = file.file_name;
-            link.click();
-
-            // 다운로드 카운트 UI 업데이트
-            this.updateDownloadCount(fileId);
-
-        } catch (error) {
-            console.error('파일 다운로드 오류:', error);
-            this.showError('파일 다운로드 중 오류가 발생했습니다.');
-        }
-    }
-
-    async viewAnalysis(fileId) {
-        const file = this.researchFiles.find(f => f.id === fileId);
-        if (!file || !file.ai_analysis || file.ai_analysis.length === 0) return;
-
-        const analysis = file.ai_analysis[0];
-        
-        const modalHTML = `
-            <div class="analysis-modal" id="analysisModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>AI 분석 결과 - ${file.file_name}</h3>
-                        <button class="modal-close" onclick="marketResearchManager.closeAnalysisModal()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="analysis-summary">
-                            <div class="confidence-indicator">
-                                <span class="confidence-label">분석 신뢰도</span>
-                                <div class="confidence-bar">
-                                    <div class="confidence-fill" style="width: ${analysis.confidence_score}%"></div>
-                                </div>
-                                <span class="confidence-value">${analysis.confidence_score}%</span>
-                            </div>
-
-                            <div class="key-insights">
-                                <h4>핵심 인사이트</h4>
-                                <ul>
-                                    ${analysis.key_insights?.map(insight => `<li>${insight}</li>`).join('') || '<li>분석 결과가 없습니다.</li>'}
-                                </ul>
-                            </div>
-
-                            <div class="analysis-details">
-                                <h4>상세 분석</h4>
-                                <div class="analysis-content">
-                                    ${this.formatAnalysisResult(analysis.analysis_result)}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" onclick="marketResearchManager.exportAnalysis('${fileId}')">
-                            <i class="fas fa-download"></i> 분석 결과 내보내기
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-        document.getElementById('analysisModal').style.display = 'flex';
-    }
-
-    closeAnalysisModal() {
-        const modal = document.getElementById('analysisModal');
-        if (modal) {
-            modal.remove();
-        }
-    }
-
-    async deleteFile(fileId) {
-        const file = this.researchFiles.find(f => f.id === fileId);
-        if (!file) return;
-
-        if (!confirm(`${file.file_name}을(를) 삭제하시겠습니까?`)) {
-            return;
+        if (file.size > 50 * 1024 * 1024) {
+            return { isValid: false, message: '파일 크기가 50MB를 초과합니다.' };
         }
 
-        try {
-            // Storage에서 파일 삭제
-            const { error: storageError } = await supabase.storage
-                .from('documents')
-                .remove([file.file_path]);
-
-            if (storageError) throw storageError;
-
-            // 데이터베이스에서 레코드 삭제
-            const { error: dbError } = await supabase
-                .from('market_research_files')
-                .delete()
-                .eq('id', fileId);
-
-            if (dbError) throw dbError;
-
-            // UI에서 제거
-            this.researchFiles = this.researchFiles.filter(f => f.id !== fileId);
-            this.renderResearchFiles();
+        // 파일 생성일 확인 (24개월 이내)
+        if (metadata.fileCreatedDate) {
+            const fileDate = new Date(metadata.fileCreatedDate);
+            const now = new Date();
+            const monthsDiff = (now - fileDate) / (1000 * 60 * 60 * 24 * 30);
             
-            this.showSuccess('파일이 삭제되었습니다.');
-
-        } catch (error) {
-            console.error('파일 삭제 오류:', error);
-            this.showError('파일 삭제 중 오류가 발생했습니다.');
-        }
-    }
-
-    setupRealtimeSubscription() {
-        if (!this.currentUser) return;
-
-        // 실시간 파일 상태 업데이트
-        const fileChannel = supabase
-            .channel(`user-files-${this.currentUser.id}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'market_research_files',
-                    filter: `user_id=eq.${this.currentUser.id}`
-                },
-                (payload) => {
-                    console.log('파일 상태 업데이트:', payload);
-                    this.handleFileUpdate(payload);
-                }
-            )
-            .subscribe();
-
-        // 실시간 AI 분석 완료 알림
-        const analysisChannel = supabase
-            .channel(`ai-analysis-${this.currentUser.id}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'ai_analysis'
-                },
-                (payload) => {
-                    console.log('AI 분석 완료:', payload.new);
-                    this.handleAnalysisComplete(payload.new);
-                }
-            )
-            .subscribe();
-    }
-
-    handleFileUpdate(payload) {
-        if (payload.eventType === 'UPDATE') {
-            const fileIndex = this.researchFiles.findIndex(f => f.id === payload.new.id);
-            if (fileIndex !== -1) {
-                this.researchFiles[fileIndex] = { ...this.researchFiles[fileIndex], ...payload.new };
-                this.renderResearchFiles();
+            if (monthsDiff > 24) {
+                return { isValid: false, message: '24개월이 경과된 파일은 업로드할 수 없습니다.' };
             }
         }
+
+        return { isValid: true };
     }
 
-    handleAnalysisComplete(analysis) {
-        const fileId = analysis.file_id;
-        const file = this.researchFiles.find(f => f.id === fileId);
+    async generateFileHash(file) {
+        const arrayBuffer = await file.arrayBuffer();
+        const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async checkDuplicateFile(fileHash) {
+        const { data } = await this.client
+            .from('market_research_uploads')
+            .select('id')
+            .eq('file_hash', fileHash)
+            .eq('is_active', true)
+            .limit(1);
         
-        if (file) {
-            this.showNotification(`${file.file_name}의 AI 분석이 완료되었습니다!`);
-            this.loadResearchFiles(); // 목록 새로고침
+        return data && data.length > 0;
+    }
+
+    async extractPdfPageCount(file) {
+        if (!window.pdfjsLib) return 0;
+        
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await window.pdfjsLib.getDocument(arrayBuffer).promise;
+            return pdf.numPages;
+        } catch (error) {
+            console.warn('PDF 페이지 수 추출 실패:', error);
+            return 0;
         }
     }
 
-    // 헬퍼 함수들
-    getFileIcon(fileType) {
-        const iconMap = {
-            'application/pdf': '<i class="fas fa-file-pdf"></i>',
-            'application/msword': '<i class="fas fa-file-word"></i>',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '<i class="fas fa-file-word"></i>',
-            'application/vnd.ms-excel': '<i class="fas fa-file-excel"></i>',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '<i class="fas fa-file-excel"></i>'
-        };
-        return iconMap[fileType] || '<i class="fas fa-file"></i>';
+    calculateUploadPoints(pageCount, fileCreatedDate) {
+        const basePoints = 3000;
+        
+        // 페이지 지수
+        let pageMultiplier = 1.0;
+        if (pageCount >= 40) pageMultiplier = 1.2;
+        else if (pageCount >= 30) pageMultiplier = 1.1;
+        else if (pageCount >= 20) pageMultiplier = 1.0;
+        else if (pageCount >= 10) pageMultiplier = 0.9;
+        else pageMultiplier = 0.6;
+
+        // 최신성 지수
+        const daysDiff = (new Date() - new Date(fileCreatedDate)) / (1000 * 60 * 60 * 24);
+        let freshnessMultiplier = 1.0;
+        if (daysDiff <= 180) freshnessMultiplier = 1.2;
+        else if (daysDiff <= 365) freshnessMultiplier = 1.0;
+        else if (daysDiff <= 730) freshnessMultiplier = 0.7;
+        else return 0;
+
+        return Math.round(basePoints * pageMultiplier * freshnessMultiplier);
     }
 
-    getUploadStatusLabel(status) {
-        const labels = {
-            'uploading': '업로드 중',
-            'completed': '업로드 완료',
-            'failed': '업로드 실패'
-        };
-        return labels[status] || '알 수 없음';
+    calculateDownloadPoints(pageCount, fileCreatedDate) {
+        const basePoints = 7000;
+        
+        // 업로드 포인트와 같은 로직이지만 기준점이 다름
+        let pageMultiplier = 1.0;
+        if (pageCount >= 40) pageMultiplier = 1.2;
+        else if (pageCount >= 30) pageMultiplier = 1.1;
+        else if (pageCount >= 20) pageMultiplier = 1.0;
+        else if (pageCount >= 10) pageMultiplier = 0.9;
+        else pageMultiplier = 0.6;
+
+        const daysDiff = (new Date() - new Date(fileCreatedDate)) / (1000 * 60 * 60 * 24);
+        let freshnessMultiplier = 1.0;
+        if (daysDiff <= 180) freshnessMultiplier = 1.2;
+        else if (daysDiff <= 365) freshnessMultiplier = 1.0;
+        else if (daysDiff <= 730) freshnessMultiplier = 0.7;
+        else return 0;
+
+        return Math.round(basePoints * pageMultiplier * freshnessMultiplier);
     }
 
-    getAnalysisStatusLabel(status) {
-        const labels = {
-            'pending': '분석 대기',
-            'processing': '분석 중',
-            'completed': '분석 완료',
-            'failed': '분석 실패'
-        };
-        return labels[status] || '미분석';
+    generateSearchText(metadata) {
+        return [
+            metadata.title,
+            metadata.description,
+            metadata.region1,
+            metadata.region2, 
+            metadata.productType,
+            metadata.supplyType,
+            ...(metadata.keywords || [])
+        ].filter(Boolean).join(' ');
     }
 
     formatFileSize(bytes) {
-        if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(1) + ' GB';
-        if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
-        if (bytes >= 1024) return (bytes / 1024).toFixed(1) + ' KB';
-        return bytes + ' bytes';
+        if (!bytes) return '0B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + sizes[i];
     }
 
-    formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('ko-KR', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+    getFileTypeFromUrl(url) {
+        const extension = url.split('.').pop().toLowerCase();
+        const typeMap = {
+            'pdf': 'PDF',
+            'ppt': 'PPT', 'pptx': 'PPT',
+            'doc': 'DOC', 'docx': 'DOC',
+            'xls': 'XLS', 'xlsx': 'XLS'
+        };
+        return typeMap[extension] || 'FILE';
+    }
+
+    generateThumbnail(fileType) {
+        const colors = {
+            'PDF': '#f87171', 'PPT': '#a78bfa', 'DOC': '#60a5fa',
+            'XLS': '#34d399', 'FILE': '#9ca3af'
+        };
+        const color = colors[fileType] || colors['FILE'];
+        return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='160'%3E%3Crect width='120' height='160' fill='${encodeURIComponent(color)}'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='white' font-size='12'%3E${fileType}%3C/text%3E%3C/svg%3E`;
+    }
+
+    async updateUserPoints(userId, points) {
+        await this.client.rpc('add_user_points', {
+            user_id: userId,
+            points_to_add: points
         });
     }
 
-    formatAnalysisResult(result) {
-        if (!result) return '분석 결과가 없습니다.';
+    async updateUserUploadCount(userId) {
+        await this.client
+            .from('users')
+            .update({ 
+                market_research_upload_count: this.client.sql`market_research_upload_count + 1` 
+            })
+            .eq('auth_user_id', userId);
+    }
+
+    // 실시간 구독
+    subscribeToChanges(callback) {
+        if (!this.client) return null;
+
+        const subscription = this.client
+            .channel('market_research_changes')
+            .on('postgres_changes',
+                { event: '*', schema: 'public', table: 'market_research_uploads' },
+                (payload) => {
+                    console.log('📡 시장조사서 실시간 업데이트:', payload);
+                    if (callback) callback(payload);
+                }
+            )
+            .subscribe();
+
+        return subscription;
+    }
+
+    unsubscribe(subscription) {
+        if (subscription) {
+            this.client.removeChannel(subscription);
+        }
+    }
+
+    // 로딩 상태 관리
+    getLoadingState() {
+        return {
+            isLoading: this.isLoading,
+            error: this.error,
+            hasData: this.documents.length > 0
+        };
+    }
+
+    clearError() {
+        this.error = null;
+    }
+
+    // 디버깅 및 관리자 도구들
+    async checkStorageHealth() {
+        console.log('🏥 Storage 헬스체크 시작...');
         
-        // JSON 형태의 분석 결과를 HTML로 변환
-        if (typeof result === 'object') {
-            return Object.entries(result)
-                .map(([key, value]) => `<div class="analysis-item"><strong>${key}:</strong> ${value}</div>`)
-                .join('');
+        const health = {
+            client: !!this.client,
+            storageDisabled: this.storageDisabled,
+            bucketName: this.bucketName,
+            error: this.error?.message || null
+        };
+
+        if (this.client) {
+            try {
+                // 1. 버킷 존재 확인
+                const { data: buckets, error: listError } = await this.client.storage.listBuckets();
+                health.canListBuckets = !listError;
+                health.bucketsFound = buckets?.length || 0;
+                
+                if (listError) {
+                    health.listBucketsError = listError.message;
+                } else {
+                    health.targetBucketExists = buckets?.some(b => b.name === this.bucketName) || false;
+                }
+
+                // 2. 업로드 테스트 (더미 파일로)
+                if (health.targetBucketExists) {
+                    const testBlob = new Blob(['test'], { type: 'text/plain' });
+                    const testPath = `test/health-check-${Date.now()}.txt`;
+                    
+                    const { error: uploadError } = await this.client.storage
+                        .from(this.bucketName)
+                        .upload(testPath, testBlob);
+                    
+                    health.canUpload = !uploadError;
+                    if (uploadError) {
+                        health.uploadError = uploadError.message;
+                    } else {
+                        // 테스트 파일 삭제
+                        await this.client.storage.from(this.bucketName).remove([testPath]);
+                        health.uploadTestSuccess = true;
+                    }
+                }
+            } catch (error) {
+                health.healthCheckError = error.message;
+            }
         }
+
+        console.log('📊 Storage 헬스체크 결과:', health);
+        return health;
+    }
+
+    async createBucketGuide() {
+        console.log('📖 Storage 버킷 생성 가이드');
+        console.log('');
+        console.log('1️⃣ Supabase 대시보드 (https://supabase.com/dashboard) 접속');
+        console.log('2️⃣ 프로젝트 선택 > Storage 메뉴 클릭');
+        console.log('3️⃣ "Create bucket" 버튼 클릭');
+        console.log('4️⃣ 버킷 설정:');
+        console.log('   - Name: market-research');
+        console.log('   - Public bucket: ✅ 체크');
+        console.log('   - File size limit: 50MB');
+        console.log('   - Allowed MIME types: (비워두거나 PDF, DOC, PPT 등 추가)');
+        console.log('5️⃣ "Create bucket" 클릭');
+        console.log('');
+        console.log('💡 또는 아래 명령어로 자동 생성 시도:');
+        console.log('   window.MarketResearchSupabase.forceCreateBucket()');
+    }
+
+    async forceCreateBucket() {
+        console.log('🔧 강제 버킷 생성 시도...');
         
-        return result;
-    }
+        if (!this.client) {
+            console.error('❌ Supabase 클라이언트가 없습니다.');
+            return false;
+        }
 
-    showLoading() {
-        const loadingEl = document.querySelector('.loading, .research-loading');
-        if (loadingEl) {
-            loadingEl.style.display = 'block';
+        try {
+            const { error } = await this.client.storage.createBucket(this.bucketName, {
+                public: true,
+                allowedMimeTypes: [
+                    'application/pdf',
+                    'application/vnd.ms-powerpoint',
+                    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                ],
+                fileSizeLimit: 50 * 1024 * 1024 // 50MB
+            });
+
+            if (error) {
+                console.error('❌ 버킷 생성 실패:', error.message);
+                return false;
+            } else {
+                console.log('✅ 버킷 생성 성공!');
+                this.storageDisabled = false;
+                return true;
+            }
+        } catch (error) {
+            console.error('❌ 버킷 생성 중 예외:', error.message);
+            return false;
         }
     }
 
-    hideLoading() {
-        const loadingEl = document.querySelector('.loading, .research-loading');
-        if (loadingEl) {
-            loadingEl.style.display = 'none';
-        }
-    }
+    async testFileUpload() {
+        console.log('🧪 파일 업로드 테스트 시작...');
+        
+        // 테스트용 PDF 파일 생성 (더미 데이터)
+        const testContent = '%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n>>\nendobj\nxref\n0 4\n0000000000 65535 f\n0000000009 00000 n\n0000000074 00000 n\n0000000120 00000 n\n%%EOF';
+        const testFile = new Blob([testContent], { type: 'application/pdf' });
+        testFile.name = 'test-upload.pdf';
 
-    showError(message) {
-        if (window.notificationService) {
-            window.notificationService.showToast(message, 'error');
-        } else {
-            alert(`오류: ${message}`);
-        }
-    }
+        const testMetadata = {
+            userId: 'test-user-id',
+            title: '테스트 업로드',
+            description: '업로드 테스트용 파일',
+            region1: '서울',
+            region2: '강남구',
+            productType: '아파트',
+            supplyType: '민간분양',
+            pageCount: 1,
+            fileCreatedDate: new Date().toISOString(),
+            keywords: ['테스트'],
+            tags: ['test']
+        };
 
-    showSuccess(message) {
-        if (window.notificationService) {
-            window.notificationService.showToast(message, 'success');
-        } else {
-            alert(`성공: ${message}`);
-        }
-    }
-
-    showNotification(message) {
-        if (window.notificationService) {
-            window.notificationService.showToast(message, 'info');
+        try {
+            const result = await this.uploadFile(testFile, testMetadata);
+            console.log('✅ 테스트 업로드 성공:', result);
+            return result;
+        } catch (error) {
+            console.error('❌ 테스트 업로드 실패:', error.message);
+            return null;
         }
     }
 }
 
-// 전역 인스턴스 생성
-window.marketResearchManager = new MarketResearchManager();
+// 전역 클래스 등록 (인스턴스가 아닌 클래스 자체를 등록)
+window.MarketResearchSupabase = MarketResearchSupabase;
 
-// 기존 market-research.js와의 호환성을 위한 전역 함수들
-window.downloadFile = (fileId) => window.marketResearchManager.downloadFile(fileId);
-window.viewAnalysis = (fileId) => window.marketResearchManager.viewAnalysis(fileId);
-window.deleteFile = (fileId) => window.marketResearchManager.deleteFile(fileId);
-window.shareFile = (fileId) => window.marketResearchManager.shareFile(fileId);
-window.filterFiles = (filter) => window.marketResearchManager.filterFiles(filter);
-window.sortFiles = (sort) => window.marketResearchManager.sortFiles(sort);
+// 전역 디버깅 함수들 추가 (인스턴스 생성 후 사용)
+window.createBucketGuide = () => {
+    if (window.marketResearchSupabase) {
+        return window.marketResearchSupabase.createBucketGuide();
+    } else {
+        console.error('MarketResearchSupabase 인스턴스가 생성되지 않았습니다.');
+    }
+};
+
+window.checkStorageHealth = () => {
+    if (window.marketResearchSupabase) {
+        return window.marketResearchSupabase.checkStorageHealth();
+    } else {
+        console.error('MarketResearchSupabase 인스턴스가 생성되지 않았습니다.');
+    }
+};
+
+window.testFileUpload = () => {
+    if (window.marketResearchSupabase) {
+        return window.marketResearchSupabase.testFileUpload();
+    } else {
+        console.error('MarketResearchSupabase 인스턴스가 생성되지 않았습니다.');
+    }
+};
+
+// 자동 초기화는 market-research.js에서 처리
+console.log('✅ MarketResearchSupabase 클래스 로드 완료');
+console.log('📝 사용 방법: market-research.js에서 자동으로 인스턴스가 생성됩니다.');

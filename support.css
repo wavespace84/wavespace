@@ -1625,3 +1625,147 @@ html {
         justify-content: center;
     }
 }
+
+/* 로딩 및 에러 상태 스타일 */
+.inquiry-loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray-500);
+}
+
+.inquiry-loading i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.inquiry-error {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--red-500, #ef4444);
+}
+
+.inquiry-error i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.inquiry-error p {
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+.inquiry-retry-btn {
+    padding: 12px 24px;
+    background-color: var(--primary-blue);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.inquiry-retry-btn:hover {
+    background-color: var(--deep-blue);
+    transform: translateY(-1px);
+}
+
+/* 제출/삭제 버튼 로딩 상태 */
+.btn-submit:disabled,
+.btn-delete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.btn-submit:disabled::after,
+.btn-delete:disabled::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* 성공/에러 메시지 스타일 */
+.message-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.message-content {
+    background-color: var(--white);
+    padding: 24px 32px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.message-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.message-icon.success {
+    color: #10b981;
+}
+
+.message-icon.error {
+    color: #ef4444;
+}
+
+.message-icon.warning {
+    color: #f59e0b;
+}
+
+.message-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gray-800);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.message-btn {
+    padding: 10px 24px;
+    background-color: var(--primary-blue);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.message-btn:hover {
+    background-color: var(--deep-blue);
+}

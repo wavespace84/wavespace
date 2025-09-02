@@ -15,7 +15,9 @@ class FileService {
     async init() {
         try {
             this.supabase = window.WaveSupabase.getClient();
-            await this.createBucketIfNotExists();
+            console.log('📁 FileService 초기화 완료 - Storage 버킷은 수동 생성 필요');
+            // 자동 버킷 생성을 비활성화 (400 에러 방지)
+            // await this.createBucketIfNotExists();
         } catch (error) {
             console.error('FileService 초기화 실패:', error);
         }
@@ -23,13 +25,23 @@ class FileService {
 
     /**
      * Storage 버킷 생성 (존재하지 않을 경우)
+     * 관리자만 수동으로 호출할 수 있습니다.
      */
     async createBucketIfNotExists() {
         try {
-            const { data: buckets } = await this.supabase.storage.listBuckets();
-            const bucketExists = buckets.some(bucket => bucket.name === this.bucketName);
+            // 버킷 목록 조회
+            const { data: buckets, error: listError } = await this.supabase.storage.listBuckets();
+            
+            if (listError) {
+                console.warn('Storage 버킷 목록 조회 실패:', listError);
+                console.log('💡 Supabase 대시보드에서 Storage를 활성화하고 "market-files" 버킷을 생성해주세요.');
+                return; // 에러가 있어도 서비스는 계속 작동
+            }
+            
+            const bucketExists = buckets && buckets.some(bucket => bucket.name === this.bucketName);
             
             if (!bucketExists) {
+                console.log('📦 Storage 버킷 생성 시도:', this.bucketName);
                 const { error } = await this.supabase.storage.createBucket(this.bucketName, {
                     public: false, // 인증된 사용자만 접근
                     fileSizeLimit: 50 * 1024 * 1024, // 50MB 제한
@@ -48,12 +60,36 @@ class FileService {
                     ]
                 });
                 
-                if (error) throw error;
-                console.log('✅ Storage 버킷 생성됨:', this.bucketName);
+                if (error) {
+                    console.warn('Storage 버킷 생성 실패:', error);
+                    console.log('💡 Supabase 대시보드에서 다음을 확인하세요:');
+                    console.log('   1. Storage가 활성화되어 있는지');
+                    console.log('   2. "market-files" 버킷을 수동으로 생성');
+                    console.log('   3. Storage RLS 정책 설정');
+                } else {
+                    console.log('✅ Storage 버킷 생성됨:', this.bucketName);
+                }
+            } else {
+                console.log('✅ Storage 버킷이 이미 존재함:', this.bucketName);
             }
         } catch (error) {
-            // RLS 정책으로 인한 버킷 생성 실패는 조용히 처리
-            console.debug('버킷 생성:', error.message);
+            // 버킷 생성 실패는 치명적이지 않으므로 경고만 표시
+            console.warn('Storage 버킷 확인/생성 중 오류:', error.message);
+            console.log('💡 파일 업로드 기능은 Storage 설정 후 사용 가능합니다.');
+        }
+    }
+
+    /**
+     * 관리자용: Storage 버킷 수동 생성
+     * 콘솔에서 fileService.createStorageBucket() 호출
+     */
+    async createStorageBucket() {
+        console.log('🔧 관리자 모드: Storage 버킷 생성 시도');
+        try {
+            await this.createBucketIfNotExists();
+            console.log('✅ Storage 버킷 생성 작업 완료');
+        } catch (error) {
+            console.error('❌ Storage 버킷 생성 실패:', error);
         }
     }
 

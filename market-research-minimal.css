@@ -243,6 +243,26 @@ body.modal-open {
     display: flex;
     flex-direction: column;
     border-left: 1px solid #e5e7eb;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* 커스텀 스크롤바 스타일 */
+.preview-info-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.preview-info-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.preview-info-panel::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.preview-info-panel::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
 }
 
 /* 문서 타입 배지 - 게시물 카드와 동일한 스타일 */

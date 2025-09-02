@@ -2,13 +2,14 @@
 // Ultra-Think Phase 2: 모든 서브에이전트 설계 통합
 
 // 전역 데이터 시스템 (반드시 첫 번째로 로드)
-import waveSpaceData from './core/WaveSpaceData.js';
+// WaveSpaceData는 script 태그로 별도 로드되므로 전역 객체로 접근
 
 // 기존 모듈들
 import { initSidebar } from './modules/sidebar.js';
 import { initHeader } from './modules/header.js';
 import { initPreload } from './modules/preload.js';
 import { initClock } from './modules/clock.js';
+import { HeaderLoader } from './modules/header-loader.js';
 
 // 새로운 코어 시스템
 import { eventSystem } from './core/eventSystem.js';
@@ -46,10 +47,47 @@ async function initializeWaveSpace() {
         accessibilityManager.init();
 
         // 2. 기존 모듈들 초기화
+        console.log('[WaveSpace] 모듈 초기화 시작');
         initPreload();
+        console.log('[WaveSpace] Preload 초기화 완료');
+        
+        // 사이드바 초기화 전 상태 확인
+        console.log('[WaveSpace] 사이드바 초기화 전 _sidebarInitialized:', window._sidebarInitialized);
+        console.log('[WaveSpace] 사이드바 요소 존재 여부:', {
+            sidebar: !!document.querySelector('.sidebar'),
+            navButtons: document.querySelectorAll('.nav-category-button').length,
+            mobileMenuBtn: !!document.querySelector('.mobile-menu-btn')
+        });
+        
         initSidebar();
-        initHeader();
+        console.log('[WaveSpace] Sidebar 초기화 완료');
+        
+        // 사이드바 초기화 후 이벤트 리스너 확인
+        const navButtons = document.querySelectorAll('.nav-category-button');
+        console.log('[WaveSpace] 사이드바 버튼 이벤트 리스너 확인:', {
+            buttonCount: navButtons.length,
+            buttonsWithListeners: document.querySelectorAll('.nav-category-button[data-listener-added="true"]').length
+        });
+        
+        // 동적 헤더 로드 시스템 체크
+        const headerContainer = document.getElementById('header-container');
+        if (headerContainer) {
+            // 새로운 동적 헤더 로드 시스템 사용
+            const headerLoader = new HeaderLoader();
+            await headerLoader.loadHeader();
+            console.log('[WaveSpace] 동적 헤더 로드 완료');
+            
+            // 동적 헤더 로드 후 initHeader 호출 (이벤트 리스너 설정)
+            initHeader();
+            console.log('[WaveSpace] 동적 헤더 이벤트 초기화 완료');
+        } else {
+            // 기존 정적 헤더 시스템 사용
+            initHeader();
+            console.log('[WaveSpace] 정적 헤더 초기화 완료');
+        }
+        
         initClock();
+        console.log('[WaveSpace] Clock 초기화 완료');
 
         // 3. 페이지별 모듈 동적 로드
         const currentPage = document.body.dataset.page;

@@ -12,18 +12,26 @@
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <link rel="stylesheet" href="common.css" />
+    <link rel="stylesheet" href="common.css?v=6" />
+    <link rel="stylesheet" href="styles.css?v=7" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
     <style>
-        .profile-container {
-            min-height: 100vh;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* 프로필 페이지 전용 스타일 - 헤더와 공존하도록 수정 */
+        body {
+            overflow: auto !important;
+            height: auto !important;
+            background: #F8FAFC !important;
+        }
+        
+        /* 헤더가 있는 구조에서 프로필 컨테이너 조정 */
+        .main-content .profile-container {
+            padding: 40px 20px !important;
+            overflow: auto !important;
         }
         
         .profile-card {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -32,87 +40,355 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
         
+        /* 프로필 헤더 */
         .profile-header {
-            text-align: center;
             margin-bottom: 40px;
         }
         
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0066FF 0%, #0099FF 100%);
+        .profile-header-main {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 48px;
-            margin: 0 auto 20px;
+            align-items: flex-start;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        /* 아바타 섹션 */
+        .profile-avatar-section {
             position: relative;
+            flex-shrink: 0;
         }
         
-        .profile-badge {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            width: 32px;
-            height: 32px;
-            background: #FFD700;
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            border: 4px solid white;
+            background: #E5F3FF;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            color: #333;
+            color: #0066FF;
+            font-weight: 700;
+            font-size: 54px;
+            position: relative;
+            border: 3px solid #0066FF;
         }
         
+        .photo-change-btn {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 36px;
+            height: 36px;
+            background: #0052CC;
+            border: 3px solid white;
+            border-radius: 50%;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .photo-change-btn:hover {
+            background: #0041A6;
+            transform: scale(1.1);
+        }
+        
+        /* 사용자 정보 */
+        .profile-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .profile-name-section h1 {
+            margin: 0 0 12px 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1F2937;
+            letter-spacing: -0.02em;
+        }
+        
+        .profile-badges-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        
+        .member-type-badge {
+            background: linear-gradient(135deg, #0052CC, #0041A6);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .premium-badge {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .representative-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            color: #92400E;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid #F59E0B;
+        }
+        
+        /* 프로필 통계 그리드 */
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.15s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .points-stat {
+            background: linear-gradient(135deg, #F0F9FF, #E0F2FE);
+            border-color: #0052CC;
+        }
+        
+        .rank-stat {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border-color: #F59E0B;
+        }
+        
+        .badges-stat {
+            background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
+            border-color: #10B981;
+        }
+        
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+        }
+        
+        .points-stat .stat-icon {
+            background: #0052CC;
+            color: white;
+        }
+        
+        .rank-stat .stat-icon {
+            background: #F59E0B;
+            color: white;
+        }
+        
+        .badges-stat .stat-icon {
+            background: #10B981;
+            color: white;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+        
+        /* 회원정보 섹션 */
         .profile-info {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
             margin-bottom: 40px;
         }
         
         .info-section {
-            background: #F9FAFB;
-            padding: 24px;
+            background: #F3F4F6;
+            padding: 28px;
             border-radius: 12px;
         }
         
         .info-section h3 {
-            margin: 0 0 16px 0;
-            font-size: 18px;
+            margin: 0 0 20px 0;
+            font-size: 20px;
             font-weight: 600;
             color: #1F2937;
-        }
-        
-        .info-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #E5E7EB;
         }
         
-        .info-item:last-child {
-            border-bottom: none;
+        .info-section h3 i {
+            margin-right: 8px;
+            color: #0052CC;
         }
         
-        .info-label {
+        .member-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .info-card {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            transition: all 0.15s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .info-card-icon {
+            width: 48px;
+            height: 48px;
+            background: #F0F9FF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .info-card-icon i {
+            font-size: 20px;
+            color: #0052CC;
+        }
+        
+        .info-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .info-card-label {
+            font-size: 13px;
+            color: #6B7280;
             font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .info-card-value {
+            font-size: 16px;
+            color: #1F2937;
+            font-weight: 600;
+            word-break: break-all;
+        }
+        
+        /* 실무자 인증 카드 스타일 */
+        .practitioner-card.verified {
+            background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
+            border-color: #10B981;
+        }
+        
+        .practitioner-card.verified .info-card-icon {
+            background: #10B981;
+        }
+        
+        .practitioner-card.verified .info-card-icon i {
+            color: white;
+        }
+        
+        .practitioner-card.pending {
+            background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+            border-color: #F59E0B;
+        }
+        
+        .practitioner-card.pending .info-card-icon {
+            background: #F59E0B;
+        }
+        
+        .practitioner-card.pending .info-card-icon i {
+            color: white;
+        }
+        
+        .practitioner-card.not-verified {
+            background: linear-gradient(135deg, #FEF2F2, #FEE2E2);
+            border-color: #EF4444;
+        }
+        
+        .practitioner-card.not-verified .info-card-icon {
+            background: #EF4444;
+        }
+        
+        .practitioner-card.not-verified .info-card-icon i {
+            color: white;
+        }
+        
+        /* 뱃지 그리드 */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 16px;
+        }
+        
+        .badge-item {
+            text-align: center;
+            padding: 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            transition: all 0.15s;
+        }
+        
+        .badge-item.owned {
+            border-color: #0052CC;
+            background: rgba(0, 82, 204, 0.08);
+        }
+        
+        .badge-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
             color: #6B7280;
         }
         
-        .info-value {
-            font-weight: 600;
-            color: #1F2937;
+        .badge-item.owned .badge-icon {
+            color: #0052CC;
         }
         
-        .points-value {
-            color: #0066FF;
-            font-size: 18px;
+        .badge-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
         }
         
         .back-button {
@@ -136,642 +412,290 @@
             transform: translateX(-2px);
         }
         
-        .badges-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 12px;
-        }
-        
-        .badge-item {
-            text-align: center;
-            padding: 16px 8px;
-            border: 2px solid #E5E7EB;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        
-        .badge-item.owned {
-            border-color: #0066FF;
-            background: rgba(0, 102, 255, 0.05);
-        }
-        
-        .badge-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        
-        .badge-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
-        }
-        
-        /* 실무자 인증 관련 스타일 */
-        .practitioner-status {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-        
-        .practitioner-status.completed {
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            border: 1px solid #10b981;
-        }
-        
-        .practitioner-status.pending {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border: 1px solid #f59e0b;
-        }
-        
-        .practitioner-status.rejected {
-            background: linear-gradient(135deg, #fecaca, #fca5a5);
-            border: 1px solid #ef4444;
-        }
-        
-        .practitioner-status.available {
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            border: 1px solid #3b82f6;
-        }
-        
-        .status-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .status-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .status-icon.completed {
-            background: #10b981;
-            color: white;
-        }
-        
-        .status-icon.pending {
-            background: #f59e0b;
-            color: white;
-        }
-        
-        .status-icon.rejected {
-            background: #ef4444;
-            color: white;
-        }
-        
-        .status-icon.available {
-            background: #3b82f6;
-            color: white;
-        }
-        
-        .status-text {
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .status-description {
-            font-size: 12px;
-            margin-top: 4px;
-            opacity: 0.8;
-        }
-        
-        .btn-practitioner {
-            background: linear-gradient(135deg, #0066FF 0%, #0099FF 100%);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn-practitioner:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
-        }
-        
-        .btn-practitioner:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .rejection-reason {
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: rgba(239, 68, 68, 0.1);
-            border-radius: 4px;
-            font-size: 12px;
-            color: #dc2626;
-        }
-        
-        /* 모달 관련 스타일 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.2s ease;
-        }
-        
-        .modal-container {
-            background: white;
-            border-radius: 16px;
-            max-width: 600px;
-            width: 90vw;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            animation: slideIn 0.3s ease;
-        }
-        
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px 24px 0;
-            border-bottom: 1px solid #e5e7eb;
-            margin-bottom: 24px;
-        }
-        
-        .modal-header h3 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 600;
-            color: #1f2937;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #6b7280;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-        
-        .modal-close:hover {
-            background: #f3f4f6;
-            color: #374151;
-        }
-        
-        .modal-content {
-            padding: 0 24px;
-        }
-        
-        .modal-footer {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            padding: 24px;
-            border-top: 1px solid #e5e7eb;
-            margin-top: 24px;
-        }
-        
-        .step-section {
-            margin-bottom: 32px;
-        }
-        
-        .step-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .step-number {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #0066FF, #0099FF);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        
-        .step-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1f2937;
-        }
-        
-        .upload-area {
-            border: 2px dashed #d1d5db;
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #fafafa;
-        }
-        
-        .upload-area:hover {
-            border-color: #0066FF;
-            background: #f0f9ff;
-        }
-        
-        .upload-placeholder i {
-            font-size: 48px;
-            color: #9ca3af;
-            margin-bottom: 16px;
-        }
-        
-        .upload-placeholder p {
-            margin: 8px 0;
-            color: #374151;
-        }
-        
-        .upload-hint {
-            font-size: 12px !important;
-            color: #6b7280 !important;
-        }
-        
-        .upload-status {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .upload-item {
-            flex: 1;
-            padding: 20px;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            text-align: center;
-            background: #fafafa;
-        }
-        
-        .upload-type {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: #1f2937;
-        }
-        
-        .upload-type i {
-            font-size: 20px;
-            color: #0066FF;
-        }
-        
-        .upload-count {
-            font-size: 24px;
-            font-weight: 700;
-            color: #0066FF;
-            margin-bottom: 12px;
-        }
-        
-        .btn-upload {
-            background: linear-gradient(135deg, #0066FF, #0099FF);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn-upload:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
-        }
-        
-        .upload-progress {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .progress-text {
-            text-align: center;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: #374151;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: #e5e7eb;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #0066FF, #0099FF);
-            transition: width 0.3s ease;
-        }
-        
-        .progress-status {
-            text-align: center;
-            font-size: 12px;
-            color: #6b7280;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #0066FF, #0099FF);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn-secondary:hover {
-            background: #e5e7eb;
-        }
-        
-        .btn-change {
-            background: #f59e0b;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: all 0.2s;
-        }
-        
-        .btn-change:hover {
-            background: #d97706;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideIn {
-            from { 
-                opacity: 0; 
-                transform: translateY(-20px) scale(0.95); 
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .profile-card {
+                max-width: 100%;
+                margin: 20px;
+                padding: 24px;
+                border-radius: 12px;
             }
-            to { 
-                opacity: 1; 
-                transform: translateY(0) scale(1); 
+            
+            .profile-header-main {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .profile-name-section h1 {
+                font-size: 28px;
+            }
+            
+            .profile-stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .profile-info {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .member-info-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .info-card {
+                padding: 16px;
+            }
+            
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+                font-size: 48px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .profile-card {
+                margin: 12px;
+                padding: 20px;
+            }
+            
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+            
+            .profile-name-section h1 {
+                font-size: 24px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
             }
         }
     </style>
 </head>
-<body>
-    <button class="back-button" onclick="goBack()">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    
-    <div class="profile-container">
-        <div class="profile-card">
-            <div class="profile-header">
-                <div class="profile-avatar" id="profileAvatar">
-                    <span id="avatarLetter">U</span>
-                    <div class="profile-badge">
-                        <i class="fas fa-crown"></i>
+<body data-page="profile">
+    <!-- 전체 컨테이너 -->
+    <div class="app-container">
+        <!-- 사이드바 -->
+        <aside class="sidebar">
+            <!-- 로고 영역 -->
+            <div class="sidebar-header">
+                <a href="index.html" class="logo-container">
+                    <span class="logo-text">WAVE space</span>
+                    <span class="beta-badge">BETA</span>
+                </a>
+            </div>
+
+            <!-- 슬로건 -->
+            <div class="sidebar-slogan">
+                <p>대한민국 No.1 분양실무자 대표 커뮤니티</p>
+            </div>
+
+            <!-- 네비게이션 (간단한 버전 - 프로필 페이지용) -->
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a href="index.html" class="nav-item">
+                            <i class="fas fa-home"></i>
+                            <span>홈으로 돌아가기</span>
+                        </a>
                     </div>
                 </div>
-                <h1 id="profileName">사용자</h1>
-                <p id="profileEmail">email@example.com</p>
+            </nav>
+        </aside>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <div class="main-container">
+            <!-- 헤더 -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+
+                <div class="header-right">
+                    <!-- 알림 버튼 -->
+                    <button class="header-icon-btn notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+
+                    <!-- 사용자 프로필 -->
+                    <div class="user-info" id="userInfoContainer">
+                        <!-- AuthService가 동적으로 사용자 정보를 여기에 표시 -->
+                    </div>
+                </div>
+            </header>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="main-content">
+                <button class="back-button" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                
+                <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-header-main">
+                    <!-- 아바타 및 사진 교체 -->
+                    <div class="profile-avatar-section">
+                        <div class="profile-avatar" id="profileAvatar">
+                            <span id="avatarLetter">U</span>
+                            <button class="photo-change-btn" onclick="changeProfilePhoto()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 사용자 정보 -->
+                    <div class="profile-user-info">
+                        <div class="profile-name-section">
+                            <h1 id="profileName">사용자</h1>
+                            <div class="profile-badges-row">
+                                <span class="member-type-badge" id="memberTypeBadge">일반</span>
+                                <span class="premium-badge" id="premiumBadge" style="display: none;">
+                                    <i class="fas fa-star"></i> Premium
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="representative-badge" id="representativeBadge">
+                            <i class="fas fa-medal"></i>
+                            <span>대표 뱃지</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 요약 통계 카드들 -->
+                <div class="profile-stats-grid">
+                    <div class="stat-card points-stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="pointsDisplay">0</div>
+                            <div class="stat-label">보유 포인트</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card rank-stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="rankDisplay">-</div>
+                            <div class="stat-label">전체 순위</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card badges-stat">
+                        <div class="stat-icon">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="badgeCountDisplay">0</div>
+                            <div class="stat-label">보유 뱃지</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="profile-info">
                 <div class="info-section">
-                    <h3>계정 정보</h3>
-                    <div class="info-item">
-                        <span class="info-label">사용자명</span>
-                        <span class="info-value" id="username">-</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">이메일</span>
-                        <span class="info-value" id="email">-</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">회원유형</span>
-                        <span class="info-value" id="memberType">-</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">회사</span>
-                        <span class="info-value" id="company">-</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">가입일</span>
-                        <span class="info-value" id="joinDate">-</span>
-                    </div>
-                </div>
-                
-                <!-- 실무자 인증 섹션 -->
-                <div class="info-section" id="practitionerSection" style="display: none;">
-                    <h3>실무자 인증</h3>
-                    <div id="practitionerStatus">
-                        <!-- 동적으로 상태가 표시됩니다 -->
-                    </div>
-                </div>
-                
-                <div class="info-section">
-                    <h3>활동 현황</h3>
-                    <div class="info-item">
-                        <span class="info-label">보유 포인트</span>
-                        <span class="info-value points-value" id="points">0P</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">레벨</span>
-                        <span class="info-value" id="level">1</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">역할</span>
-                        <span class="info-value" id="role">일반 회원</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">마지막 로그인</span>
-                        <span class="info-value" id="lastLogin">-</span>
+                    <h3><i class="fas fa-user-circle"></i>회원 정보</h3>
+                    <div class="member-info-grid">
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <div class="info-card-label">가입일</div>
+                                <div class="info-card-value" id="joinDate">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <div class="info-card-label">아이디</div>
+                                <div class="info-card-value" id="username">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <div class="info-card-label">이메일</div>
+                                <div class="info-card-value" id="email">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <div class="info-card-label">회원유형</div>
+                                <div class="info-card-value" id="memberType">-</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 실무자 인증 카드 (분양기획, 관계사만 표시) -->
+                        <div class="info-card practitioner-card" id="practitionerCard" style="display: none;">
+                            <div class="info-card-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <div class="info-card-label">실무자 인증</div>
+                                <div class="info-card-value" id="practitionerStatus">-</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div class="info-section">
-                <h3>보유 뱃지</h3>
+                <h3><i class="fas fa-medal"></i>보유 뱃지</h3>
                 <div class="badges-grid" id="badgesGrid">
                     <!-- 뱃지가 동적으로 로드됩니다 -->
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- 실무자 인증 메인 모달 -->
-    <div id="practitionerModal" class="modal-overlay" style="display: none;">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3>
-                    <i class="fas fa-user-tie"></i>
-                    실무자 인증 요청
-                </h3>
-                <button class="modal-close" onclick="closePractitionerModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="modal-content">
-                <!-- 1단계: 명함 등록 -->
-                <div class="step-section">
-                    <div class="step-header">
-                        <div class="step-number">1</div>
-                        <div class="step-title">명함 등록</div>
-                    </div>
-                    <div class="step-content">
-                        <div class="upload-area" id="businessCardUpload">
-                            <div class="upload-placeholder">
-                                <i class="fas fa-camera"></i>
-                                <p>명함 이미지를 업로드해주세요</p>
-                                <p class="upload-hint">JPG, PNG 형식만 지원 (최대 5MB)</p>
-                            </div>
-                            <input type="file" id="businessCardFile" accept="image/*" style="display: none;">
-                        </div>
-                        <div id="businessCardPreview" style="display: none;">
-                            <img id="businessCardImage" style="max-width: 100%; height: auto; border-radius: 8px;">
-                            <button class="btn-change" onclick="changeBusinessCard()">
-                                <i class="fas fa-edit"></i> 다시 선택
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 2단계: 자료 등록 -->
-                <div class="step-section">
-                    <div class="step-header">
-                        <div class="step-number">2</div>
-                        <div class="step-title">자료 등록 (3건 이상 필요)</div>
-                    </div>
-                    <div class="step-content">
-                        <!-- 안내 메시지 -->
-                        <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                                <i class="fas fa-info-circle" style="color: #0ea5e9; margin-right: 8px;"></i>
-                                <span style="font-weight: 600; color: #0c4a6e;">업로드 방법 안내</span>
-                            </div>
-                            <p style="margin: 0; color: #0c4a6e; font-size: 14px; line-height: 1.5;">
-                                아래 버튼을 클릭하면 해당 페이지로 이동합니다.<br>
-                                각 페이지에서 파일을 업로드한 후, 마이페이지로 돌아와 인증을 완료하세요.
-                            </p>
-                        </div>
-                        
-                        <div class="upload-status">
-                            <div class="upload-item">
-                                <div class="upload-type">
-                                    <i class="fas fa-chart-line"></i>
-                                    <span>시장조사서</span>
-                                </div>
-                                <div class="upload-count">
-                                    <span id="marketResearchCount">0</span>건
-                                </div>
-                                <button class="btn-upload" onclick="openMarketResearchModal()">
-                                    페이지로 이동
-                                </button>
-                            </div>
-                            
-                            <div class="upload-item">
-                                <div class="upload-type">
-                                    <i class="fas fa-file-alt"></i>
-                                    <span>제안서</span>
-                                </div>
-                                <div class="upload-count">
-                                    <span id="proposalCount">0</span>건
-                                </div>
-                                <button class="btn-upload" onclick="openProposalModal()">
-                                    페이지로 이동
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="upload-progress">
-                            <div class="progress-text">
-                                총 <span id="totalUploadCount">0</span>건 / 3건 이상
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-                            </div>
-                            <div class="progress-status" id="progressStatus">
-                                3건 이상 업로드해야 신청할 수 있습니다.
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
-            
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closePractitionerModal()">
-                    취소
-                </button>
-                <button class="btn-primary" id="submitPractitionerRequest" onclick="submitPractitionerRequest()" disabled>
-                    실무자 인증 요청
-                </button>
-            </div>
+            </main>
         </div>
     </div>
-
 
     <!-- Supabase 서비스 -->
     <script src="js/config/supabase.js"></script>
     <script src="js/services/authService.js"></script>
     <script src="js/modules/auth-guard.js"></script>
     <script src="js/modules/toast.js"></script>
+    <script type="module" src="js/main.js"></script>
     
     <script>
         function goBack() {
             window.history.back() || (window.location.href = 'index.html');
+        }
+        
+        function changeProfilePhoto() {
+            showToast('프로필 사진 변경 기능은 추후 업데이트 예정입니다.', 'info');
         }
         
         async function loadProfile() {
@@ -786,25 +710,33 @@
                 // 기본 정보 표시
                 document.getElementById('avatarLetter').textContent = (user.username || user.fullName || '사용자').charAt(0);
                 document.getElementById('profileName').textContent = user.username || user.fullName || '사용자';
-                document.getElementById('profileEmail').textContent = user.email || '';
                 document.getElementById('username').textContent = user.username || '-';
                 document.getElementById('email').textContent = user.email || '-';
-                document.getElementById('company').textContent = user.company || '-';
-                document.getElementById('points').textContent = `${(user.points || 0).toLocaleString()}P`;
-                document.getElementById('level').textContent = user.level || '1';
                 
-                // 역할 표시
-                let roleText = '일반 회원';
-                if (user.role === 'admin') roleText = '관리자';
-                else if (user.role === 'verified') roleText = '인증 회원';
-                document.getElementById('role').textContent = roleText;
+                // 회원유형 표시 (상단 배지와 하단 정보 모두)
+                const memberType = user.member_type || '일반';
+                document.getElementById('memberType').textContent = memberType;
+                document.getElementById('memberTypeBadge').textContent = memberType;
                 
-                // 회원유형 표시
-                document.getElementById('memberType').textContent = user.member_type || '일반';
+                // 포인트 표시 (상단 통계)
+                const points = user.points || 0;
+                document.getElementById('pointsDisplay').textContent = points.toLocaleString();
                 
-                // 실무자 인증 섹션 표시 (분양기획, 관계사만)
+                // 유료회원 스티커 표시 (Plus 멤버인 경우)
+                if (user.member_type === 'Plus' || user.is_premium) {
+                    document.getElementById('premiumBadge').style.display = 'inline-flex';
+                }
+                
+                // 뱃지 개수 표시
+                const badgeCount = user.badges ? user.badges.length : 0;
+                document.getElementById('badgeCountDisplay').textContent = badgeCount;
+                
+                // 전체 순위 표시 (임시 값)
+                document.getElementById('rankDisplay').textContent = user.rank || '-';
+                
+                // 실무자 인증 카드 표시 (분양기획, 관계사만)
                 if (user.member_type === '분양기획' || user.member_type === '관계사') {
-                    document.getElementById('practitionerSection').style.display = 'block';
+                    document.getElementById('practitionerCard').style.display = 'flex';
                     await loadPractitionerStatus(user);
                 }
                 
@@ -814,10 +746,13 @@
                     document.getElementById('joinDate').textContent = joinDate;
                 }
                 
-                // 마지막 로그인 표시
-                if (user.last_login) {
-                    const lastLogin = new Date(user.last_login).toLocaleString('ko-KR');
-                    document.getElementById('lastLogin').textContent = lastLogin;
+                // 대표 뱃지 표시
+                const representativeBadge = document.getElementById('representativeBadge');
+                if (user.badges && user.badges.length > 0) {
+                    const firstBadge = user.badges[0].badges;
+                    representativeBadge.innerHTML = `<i class="fas fa-medal"></i><span>${firstBadge.name}</span>`;
+                } else {
+                    representativeBadge.style.display = 'none';
                 }
                 
                 // 뱃지 표시
@@ -827,7 +762,7 @@
                         const badge = badgeData.badges;
                         return `
                             <div class="badge-item owned">
-                                <div class="badge-icon" style="color: ${badge.color};">
+                                <div class="badge-icon">
                                     <i class="fas fa-medal"></i>
                                 </div>
                                 <div class="badge-name">${badge.name}</div>
@@ -836,6 +771,7 @@
                     }).join('');
                 } else {
                     badgesGrid.innerHTML = '<p style="text-align: center; color: #6B7280;">아직 획득한 뱃지가 없습니다.</p>';
+                    representativeBadge.style.display = 'none';
                 }
                 
             } catch (error) {
@@ -847,22 +783,12 @@
         async function loadPractitionerStatus(user) {
             try {
                 const statusContainer = document.getElementById('practitionerStatus');
+                const practitionerCard = document.getElementById('practitionerCard');
                 
                 if (user.is_practitioner) {
                     // 실무자 인증 완료 상태
-                    statusContainer.innerHTML = `
-                        <div class="practitioner-status completed">
-                            <div class="status-info">
-                                <div class="status-icon completed">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div>
-                                    <div class="status-text">실무자 인증 완료</div>
-                                    <div class="status-description">시장조사서 및 제안서 다운로드 권한이 부여되었습니다.</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    practitionerCard.className = 'info-card practitioner-card verified';
+                    statusContainer.textContent = '인증 완료';
                 } else {
                     // Supabase에서 실무자 인증 요청 상태 조회
                     const { data: request, error } = await authService.supabase
@@ -880,252 +806,25 @@
                     if (request) {
                         if (request.status === 'pending') {
                             // 승인 대기 중
-                            statusContainer.innerHTML = `
-                                <div class="practitioner-status pending">
-                                    <div class="status-info">
-                                        <div class="status-icon pending">
-                                            <i class="fas fa-clock"></i>
-                                        </div>
-                                        <div>
-                                            <div class="status-text">실무자 인증 승인 대기중</div>
-                                            <div class="status-description">관리자 검토 후 승인 여부를 알려드립니다.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
+                            practitionerCard.className = 'info-card practitioner-card pending';
+                            statusContainer.textContent = '승인 대기중';
                         } else if (request.status === 'rejected') {
                             // 반려됨
-                            statusContainer.innerHTML = `
-                                <div class="practitioner-status rejected">
-                                    <div class="status-info">
-                                        <div class="status-icon rejected">
-                                            <i class="fas fa-times"></i>
-                                        </div>
-                                        <div>
-                                            <div class="status-text">실무자 인증 반려</div>
-                                            <div class="status-description">재신청이 가능합니다.</div>
-                                        </div>
-                                    </div>
-                                    <button class="btn-practitioner" onclick="openPractitionerModal()">
-                                        재신청하기
-                                    </button>
-                                </div>
-                                ${request.rejection_reason ? `
-                                <div class="rejection-reason">
-                                    <strong>반려 사유:</strong> ${request.rejection_reason}
-                                </div>
-                                ` : ''}
-                            `;
+                            practitionerCard.className = 'info-card practitioner-card not-verified';
+                            statusContainer.textContent = '반려됨';
                         }
                     } else {
                         // 아직 신청하지 않음
-                        statusContainer.innerHTML = `
-                            <div class="practitioner-status available">
-                                <div class="status-info">
-                                    <div class="status-icon available">
-                                        <i class="fas fa-user-tie"></i>
-                                    </div>
-                                    <div>
-                                        <div class="status-text">실무자 인증 신청 가능</div>
-                                        <div class="status-description">명함 등록 및 자료 업로드 후 신청하세요.</div>
-                                    </div>
-                                </div>
-                                <button class="btn-practitioner" onclick="openPractitionerModal()">
-                                    인증 신청하기
-                                </button>
-                            </div>
-                        `;
+                        practitionerCard.className = 'info-card practitioner-card not-verified';
+                        statusContainer.textContent = '미인증';
                     }
                 }
                 
             } catch (error) {
                 console.error('실무자 인증 상태 로드 실패:', error);
-                document.getElementById('practitionerStatus').innerHTML = `
-                    <div style="text-align: center; color: #ef4444;">
-                        실무자 인증 정보를 불러오는데 실패했습니다.
-                    </div>
-                `;
+                statusContainer.textContent = '오류';
             }
         }
-        
-        let businessCardFile = null;
-        
-        function openPractitionerModal() {
-            document.getElementById('practitionerModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // 스크롤 방지
-            
-            // 업로드 카운트 초기화
-            loadUploadCounts();
-            
-            // 명함 업로드 이벤트 리스너
-            document.getElementById('businessCardUpload').onclick = () => {
-                document.getElementById('businessCardFile').click();
-            };
-            
-            document.getElementById('businessCardFile').onchange = handleBusinessCardUpload;
-        }
-        
-        function closePractitionerModal() {
-            document.getElementById('practitionerModal').style.display = 'none';
-            document.body.style.overflow = ''; // 스크롤 복원
-            
-            // 초기화
-            businessCardFile = null;
-            document.getElementById('businessCardPreview').style.display = 'none';
-            document.getElementById('businessCardUpload').style.display = 'block';
-        }
-        
-        function handleBusinessCardUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // 파일 크기 검사 (5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('파일 크기는 5MB 이하만 가능합니다.');
-                return;
-            }
-            
-            // 이미지 파일 검사
-            if (!file.type.startsWith('image/')) {
-                alert('이미지 파일만 업로드 가능합니다.');
-                return;
-            }
-            
-            businessCardFile = file;
-            
-            // 미리보기 표시
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('businessCardImage').src = e.target.result;
-                document.getElementById('businessCardPreview').style.display = 'block';
-                document.getElementById('businessCardUpload').style.display = 'none';
-                
-                updateSubmitButton();
-            };
-            reader.readAsDataURL(file);
-        }
-        
-        function changeBusinessCard() {
-            document.getElementById('businessCardFile').click();
-        }
-        
-        async function loadUploadCounts() {
-            try {
-                const user = authService.getLocalUser();
-                if (!user.auth_user_id) return;
-                
-                // Supabase에서 업로드 카운트 조회
-                const { data, error } = await authService.supabase
-                    .from('market_research_uploads')
-                    .select('file_type')
-                    .eq('user_id', user.auth_user_id)
-                    .eq('is_active', true)
-                    .eq('is_verified', true);
-                
-                if (error) throw error;
-                
-                const marketResearchCount = data.filter(item => item.file_type === '시장조사서').length;
-                const proposalCount = data.filter(item => item.file_type === '제안서').length;
-                const totalCount = marketResearchCount + proposalCount;
-                
-                // UI 업데이트
-                document.getElementById('marketResearchCount').textContent = marketResearchCount;
-                document.getElementById('proposalCount').textContent = proposalCount;
-                document.getElementById('totalUploadCount').textContent = totalCount;
-                
-                // 프로그레스 바 업데이트
-                const progress = Math.min((totalCount / 3) * 100, 100);
-                document.getElementById('progressFill').style.width = `${progress}%`;
-                
-                // 상태 메시지 업데이트
-                const progressStatus = document.getElementById('progressStatus');
-                if (totalCount >= 3) {
-                    progressStatus.textContent = '업로드 조건을 만족했습니다!';
-                    progressStatus.style.color = '#10b981';
-                } else {
-                    const needed = 3 - totalCount;
-                    progressStatus.textContent = `${needed}건 더 업로드해야 합니다.`;
-                    progressStatus.style.color = '#6b7280';
-                }
-                
-                updateSubmitButton();
-                
-            } catch (error) {
-                console.error('업로드 카운트 로드 실패:', error);
-            }
-        }
-        
-        function updateSubmitButton() {
-            const submitButton = document.getElementById('submitPractitionerRequest');
-            const totalCount = parseInt(document.getElementById('totalUploadCount').textContent);
-            const hasBusinessCard = businessCardFile !== null;
-            
-            if (hasBusinessCard && totalCount >= 3) {
-                submitButton.disabled = false;
-            } else {
-                submitButton.disabled = true;
-            }
-        }
-        
-        // 페이지 이동 방식으로 변경된 함수들
-        function openMarketResearchModal() {
-            if (confirm('시장조사서 페이지로 이동하여 업로드하시겠습니까?\n\n실무자 인증을 위해 3건 이상 업로드가 필요합니다.')) {
-                window.location.href = 'market-research.html?from=practitioner';
-            }
-        }
-        
-        function openProposalModal() {
-            if (confirm('제안서 페이지로 이동하여 업로드하시겠습니까?\n\n실무자 인증을 위해 3건 이상 업로드가 필요합니다.')) {
-                window.location.href = 'proposal.html?from=practitioner';
-            }
-        }
-        
-        async function submitPractitionerRequest() {
-            try {
-                const submitButton = document.getElementById('submitPractitionerRequest');
-                submitButton.disabled = true;
-                submitButton.textContent = '요청 처리 중...';
-                
-                const user = authService.getLocalUser();
-                if (!user.auth_user_id) {
-                    throw new Error('사용자 정보를 찾을 수 없습니다.');
-                }
-                
-                // 명함 이미지 업로드 (실제로는 Supabase Storage 사용)
-                // 현재는 임시로 base64로 저장
-                const businessCardUrl = 'temporary-business-card-url';
-                
-                // 실무자 인증 요청 생성
-                const { data, error } = await authService.supabase
-                    .from('practitioner_requests')
-                    .insert([{
-                        user_id: user.auth_user_id,
-                        business_card_url: businessCardUrl,
-                        upload_count: parseInt(document.getElementById('totalUploadCount').textContent),
-                        status: 'pending'
-                    }]);
-                
-                if (error) throw error;
-                
-                alert('실무자 인증 요청이 성공적으로 제출되었습니다.\n관리자 검토 후 승인 여부를 알려드립니다.');
-                
-                closePractitionerModal();
-                
-                // 페이지 새로고침하여 상태 업데이트
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-                
-            } catch (error) {
-                console.error('실무자 인증 요청 실패:', error);
-                alert('실무자 인증 요청에 실패했습니다. 다시 시도해주세요.');
-                
-                const submitButton = document.getElementById('submitPractitionerRequest');
-                submitButton.disabled = false;
-                submitButton.textContent = '실무자 인증 요청';
-            }
-        }
-        
         
         // 페이지 로드 시 프로필 정보 로드
         window.addEventListener('load', () => {

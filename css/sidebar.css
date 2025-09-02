@@ -72,17 +72,25 @@
 /* Sidebar Navigation */
 .sidebar-nav {
     flex: 1 1 auto;
-    overflow-y: hidden; /* 기본값을 hidden으로 설정 */
+    overflow-y: scroll; /* 항상 스크롤바 공간 확보 */
     overflow-x: hidden;
     padding: var(--spacing-lg) 28px;
+    padding-right: 22px; /* 스크롤바 공간 확보 (28px - 6px) */
     position: relative;
     min-height: 0;
     -webkit-overflow-scrolling: touch;
+    /* 스크롤바 기본 숨김 처리 */
+    scrollbar-gutter: stable;
 }
 
-/* 내용이 넘칠 때만 스크롤 활성화 */
-.sidebar-nav.has-overflow {
-    overflow-y: auto;
+/* 내용이 넘칠 때만 스크롤바 표시 */
+.sidebar-nav:not(.has-overflow)::-webkit-scrollbar {
+    background: transparent;
+    width: 6px;
+}
+
+.sidebar-nav:not(.has-overflow)::-webkit-scrollbar-thumb {
+    background-color: transparent;
 }
 
 /* 스크롤바 스타일링 - has-overflow 클래스가 있을 때만 표시 */

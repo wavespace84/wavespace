@@ -259,6 +259,73 @@ export class MarketResearchPage {
         }
     }
 
+    // 📋 폼 유효성 검증 초기화
+    initializeFormValidation() {
+        // 실시간 유효성 검증 설정
+        const form = document.getElementById('market-research-form');
+        if (form) {
+            // HTML5 기본 유효성 검증 활성화
+            form.setAttribute('novalidate', false);
+            
+            // 필수 입력 필드들에 대한 검증 설정
+            const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+            requiredFields.forEach(field => {
+                // 입력 시 실시간 검증
+                field.addEventListener('blur', (e) => {
+                    this.validateField(e.target);
+                });
+                
+                field.addEventListener('input', (e) => {
+                    // 에러 상태인 경우에만 실시간 재검증
+                    if (e.target.classList.contains('invalid')) {
+                        this.validateField(e.target);
+                    }
+                });
+            });
+        }
+        
+        console.log('[MarketResearch] 폼 유효성 검증 초기화 완료');
+    }
+
+    // 📝 개별 필드 유효성 검증
+    validateField(field) {
+        const isValid = field.checkValidity();
+        
+        if (isValid) {
+            field.classList.remove('invalid');
+            field.classList.add('valid');
+            this.clearFieldError(field);
+        } else {
+            field.classList.remove('valid');
+            field.classList.add('invalid');
+            this.showFieldError(field, field.validationMessage);
+        }
+        
+        return isValid;
+    }
+
+    // 🚨 필드 에러 표시
+    showFieldError(field, message) {
+        // 기존 에러 메시지 제거
+        this.clearFieldError(field);
+        
+        // 새 에러 메시지 추가
+        const errorElement = document.createElement('div');
+        errorElement.className = 'field-error';
+        errorElement.textContent = message;
+        errorElement.setAttribute('role', 'alert');
+        
+        field.parentNode.insertBefore(errorElement, field.nextSibling);
+    }
+
+    // 🧹 필드 에러 제거
+    clearFieldError(field) {
+        const existingError = field.parentNode.querySelector('.field-error');
+        if (existingError) {
+            existingError.remove();
+        }
+    }
+
     // ♿ 접근성 설정
     setupAccessibility() {
         // ARIA 레이블 설정

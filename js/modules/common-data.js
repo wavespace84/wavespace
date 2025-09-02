@@ -564,29 +564,46 @@ window.WaveSpaceData.init = function () {
 
 // 전역 에러 핸들러 설정
 window.addEventListener('error', (event) => {
-    window.WaveSpaceData.errorHandler.log(
-        window.WaveSpaceData.errorHandler.levels.ERROR,
-        'JavaScript 런타임 에러',
-        {
+    if (window.WaveSpaceData?.errorHandler) {
+        window.WaveSpaceData.errorHandler.log(
+            window.WaveSpaceData.errorHandler.levels.ERROR,
+            'JavaScript 런타임 에러',
+            {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                stack: event.error?.stack,
+            }
+        );
+    } else {
+        console.error('[WAVE SPACE ERROR] JavaScript 런타임 에러', {
             message: event.message,
             filename: event.filename,
             lineno: event.lineno,
             colno: event.colno,
             stack: event.error?.stack,
-        }
-    );
+        });
+    }
 });
 
 // Promise 에러 핸들러 설정
 window.addEventListener('unhandledrejection', (event) => {
-    window.WaveSpaceData.errorHandler.log(
-        window.WaveSpaceData.errorHandler.levels.ERROR,
-        'Unhandled Promise Rejection',
-        {
+    if (window.WaveSpaceData?.errorHandler) {
+        window.WaveSpaceData.errorHandler.log(
+            window.WaveSpaceData.errorHandler.levels.ERROR,
+            'Unhandled Promise Rejection',
+            {
+                reason: event.reason,
+                promise: event.promise,
+            }
+        );
+    } else {
+        console.error('[WAVE SPACE ERROR] Unhandled Promise Rejection', {
             reason: event.reason,
             promise: event.promise,
-        }
-    );
+        });
+    }
 });
 
 // 페이지 로드 후 초기화

@@ -8,11 +8,31 @@
             content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://sishloxzcqapontycuyz.supabase.co wss://sishloxzcqapontycuyz.supabase.co;"
         />
         <title>WAVE space - 대한민국 No.1 분양실무자 대표 커뮤니티</title>
+        
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <!-- 환경 설정 로드 (개발: config.dev.js, 운영: config.prod.js) -->
+        <script src="config.dev.js"></script>
+        
+        <!-- XSS 보호 및 에러 핸들러 -->
+        <script src="js/utils/xssProtection.js"></script>
+        <script src="js/utils/errorHandler.js"></script>
+        
+        <!-- 공통 유틸리티 -->
+        <script src="js/utils/logger.js"></script>
+        <script src="js/utils/common.js"></script>
+        <script src="js/utils/formatters.js"></script>
+        
         <script src="preload.js"></script>
-        <link rel="stylesheet" href="common.css" />
+        <link rel="stylesheet" href="common.css?v=6" />
         <link rel="stylesheet" href="styles.css?v=7" />
+        <link rel="stylesheet" href="css/mypage-support-style.css" />
         <link rel="stylesheet" href="mobile-fix.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        
     </head>
     <body data-page="index">
         <!-- 전체 컨테이너 -->
@@ -243,36 +263,10 @@
 
             <!-- 메인 콘텐츠 영역 -->
             <div class="main-container">
-                <!-- 헤더 -->
-                <header class="main-header">
-                    <div class="header-left">
-                        <button class="mobile-menu-btn">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
-
-                    <div class="header-right">
-                        <!-- 검색 버튼 -->
-                        <button class="header-icon-btn">
-                            <i class="fas fa-search"></i>
-                        </button>
-
-                        <!-- 알림 버튼 -->
-                        <button class="header-icon-btn notification-btn">
-                            <i class="fas fa-bell"></i>
-                            <span class="notification-dot"></span>
-                        </button>
-
-                        <!-- 사용자 프로필 -->
-                        <div class="user-info" id="userInfoContainer">
-                            <!-- 로그인 상태에 따라 동적으로 변경됨 -->
-                            <div class="auth-buttons anonymous-only">
-                                <button class="btn-login">로그인</button>
-                                <button class="btn-signup">회원가입</button>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+                <!-- 헤더 (동적 로드) -->
+                <div id="header-container">
+                    <!-- HeaderLoader가 동적으로 헤더를 여기에 로드합니다 -->
+                </div>
 
                 <!-- 메인 콘텐츠 -->
                 <main class="main-content">
@@ -731,6 +725,9 @@
             </div>
         </div>
 
+        <!-- XSS 보호 유틸리티 (반드시 먼저 로드) -->
+        <script src="js/utils/xssProtection.js"></script>
+        
         <!-- Supabase CDN -->
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         
@@ -743,10 +740,16 @@
         <script src="js/services/fileService.js"></script>
         
         <!-- 레거시 스크립트 (폴백용) -->
-        <script src="script.js?v=20250120203000"></script>
-        <script src="js/services/commonAuthService.js"></script>
+        <script src="script.js?v=3"></script>
         <!-- ES6 모듈 시스템 (향상된 기능) -->
         <script type="module" src="js/main.js"></script>
+        
+        <!-- 디버깅용 초기화 추적 -->
+        <script>
+            console.log('[INDEX] === 사이드바 초기화 추적 시작 ===');
+            console.log('[INDEX] 현재 시간:', new Date().toISOString());
+            console.log('[INDEX] _sidebarInitialized 상태:', window._sidebarInitialized);
+        </script>
         
         <!-- 인증 버튼 이벤트 바인딩 -->
         <script>
@@ -804,297 +807,8 @@
         });
         </script>
 
-    <!-- 로그인 모달 -->
-    <div class="auth-modal" id="loginModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">로그인</h2>
-                <button class="modal-close" onclick="closeModal('loginModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="auth-form" id="modalLoginForm" onsubmit="handleModalLogin(event)">
-                    <div class="form-group">
-                        <label class="form-label" for="modalLoginEmail">이메일</label>
-                        <input type="email" id="modalLoginEmail" class="form-input" required placeholder="이메일을 입력하세요">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="modalLoginPassword">비밀번호</label>
-                        <input type="password" id="modalLoginPassword" class="form-input" required placeholder="비밀번호를 입력하세요">
-                    </div>
-                    
-                    <button type="submit" class="btn-auth-modal" id="modalLoginBtn">
-                        <span class="btn-text">로그인</span>
-                        <span class="loading">
-                            <i class="fas fa-spinner fa-spin"></i>
-                        </span>
-                    </button>
-                    
-                    <div id="modalLoginError" class="error-message"></div>
-                </form>
-                
-                <div class="modal-footer">
-                    <div class="forgot-password">
-                        <a href="#" onclick="resetModalPassword()">비밀번호를 잊으셨나요?</a>
-                    </div>
-                    <div class="switch-auth">
-                        아직 계정이 없으신가요? 
-                        <a href="signup.html">회원가입하기</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
-    <style>
-        /* 인증 모달 스타일 */
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .auth-modal.active {
-            display: flex;
-        }
-
-        .auth-modal .modal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            cursor: pointer;
-        }
-
-        .auth-modal .modal-content {
-            position: relative;
-            background: white;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        .auth-modal .modal-header {
-            padding: 24px 24px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--gray-200);
-            margin-bottom: 24px;
-        }
-
-        .auth-modal .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin: 0;
-        }
-
-        .auth-modal .modal-close {
-            background: none;
-            border: none;
-            font-size: 18px;
-            color: var(--gray-500);
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .auth-modal .modal-close:hover {
-            background: var(--gray-100);
-            color: var(--gray-700);
-        }
-
-        .auth-modal .modal-body {
-            padding: 0 24px 24px;
-        }
-
-        .auth-modal .auth-form {
-            margin-bottom: 20px;
-        }
-
-        .auth-modal .form-group {
-            margin-bottom: 16px;
-        }
-
-        .auth-modal .form-label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: var(--gray-700);
-            font-size: 14px;
-        }
-
-        .auth-modal .form-input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid var(--gray-300);
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.2s;
-            background: var(--white);
-        }
-
-        .auth-modal .form-input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .auth-modal .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .auth-modal .btn-auth-modal {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 16px;
-        }
-
-        .auth-modal .btn-auth-modal:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .auth-modal .btn-auth-modal:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .auth-modal .loading {
-            display: none;
-        }
-
-        .auth-modal .loading.show {
-            display: inline-block;
-        }
-
-        .auth-modal .error-message {
-            color: var(--red);
-            font-size: 12px;
-            margin-top: 8px;
-            text-align: center;
-        }
-
-        .auth-modal .modal-footer {
-            border-top: 1px solid var(--gray-200);
-            padding-top: 16px;
-            text-align: center;
-        }
-
-        .auth-modal .forgot-password {
-            margin-bottom: 12px;
-        }
-
-        .auth-modal .forgot-password a {
-            color: var(--gray-600);
-            font-size: 13px;
-            text-decoration: none;
-        }
-
-        .auth-modal .forgot-password a:hover {
-            color: var(--primary-blue);
-            text-decoration: underline;
-        }
-
-        .auth-modal .switch-auth {
-            color: var(--gray-600);
-            font-size: 14px;
-        }
-
-        .auth-modal .switch-auth a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .auth-modal .switch-auth a:hover {
-            text-decoration: underline;
-        }
-
-        .auth-modal .terms-checkbox {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .auth-modal .terms-checkbox input[type="checkbox"] {
-            margin-top: 2px;
-        }
-
-        .auth-modal .terms-text {
-            font-size: 13px;
-            color: var(--gray-600);
-            line-height: 1.4;
-        }
-
-        .auth-modal .terms-text a {
-            color: var(--primary-blue);
-            text-decoration: none;
-        }
-
-        .auth-modal .terms-text a:hover {
-            text-decoration: underline;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .auth-modal .modal-content {
-                max-width: 95%;
-                margin: 20px;
-            }
-            
-            .auth-modal .modal-header,
-            .auth-modal .modal-body {
-                padding-left: 16px;
-                padding-right: 16px;
-            }
-            
-            .auth-modal .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 
     <script>
         // 모달 제어 함수들
@@ -1122,7 +836,7 @@
 
         function switchToLogin() {
             closeModal('signupModal');
-            openModal('loginModal');
+            window.location.href = 'login.html';
         }
 
         // 모달 외부 클릭 시 닫기
@@ -1145,109 +859,31 @@
             }
         });
 
-        // 모달 로그인 처리
-        async function handleModalLogin(event) {
-            event.preventDefault();
-            
-            const submitBtn = document.getElementById('modalLoginBtn');
-            const btnText = submitBtn.querySelector('.btn-text');
-            const loading = submitBtn.querySelector('.loading');
-            const errorMessage = document.getElementById('modalLoginError');
-            
-            // 로딩 상태 시작
-            submitBtn.disabled = true;
-            btnText.style.display = 'none';
-            loading.classList.add('show');
-            errorMessage.textContent = '';
-            
-            try {
-                const email = document.getElementById('modalLoginEmail').value;
-                const password = document.getElementById('modalLoginPassword').value;
-                
-                if (window.authService && typeof window.authService.signIn === 'function') {
-                    const result = await authService.signIn(email, password);
-                    
-                    if (result.success) {
-                        closeModal('loginModal');
-                        // 페이지 새로고침으로 UI 업데이트
-                        window.location.reload();
-                    } else {
-                        throw new Error(result.error);
-                    }
-                } else {
-                    throw new Error('인증 서비스를 사용할 수 없습니다.');
-                }
-                
-            } catch (error) {
-                console.error('로그인 오류:', error);
-                
-                let errorText = '로그인에 실패했습니다.';
-                if (error.message.includes('Invalid login credentials')) {
-                    errorText = '이메일 또는 비밀번호가 올바르지 않습니다.';
-                } else if (error.message.includes('Email not confirmed')) {
-                    errorText = '이메일 인증이 필요합니다. 이메일을 확인해주세요.';
-                } else if (error.message.includes('Too many requests')) {
-                    errorText = '너무 많은 시도입니다. 잠시 후 다시 시도해주세요.';
-                }
-                
-                errorMessage.textContent = errorText;
-            } finally {
-                // 로딩 상태 종료
-                submitBtn.disabled = false;
-                btnText.style.display = 'inline';
-                loading.classList.remove('show');
-            }
-        }
 
-
-        // 모달 비밀번호 재설정
-        async function resetModalPassword() {
-            const email = document.getElementById('modalLoginEmail').value;
-            
-            if (!email) {
-                alert('이메일을 입력해주세요.');
-                return;
-            }
-            
-            try {
-                if (window.authService && typeof window.authService.resetPassword === 'function') {
-                    const result = await authService.resetPassword(email);
-                    if (result.success) {
-                        alert('비밀번호 재설정 링크를 이메일로 보내드렸습니다.');
-                    } else {
-                        alert('비밀번호 재설정 요청에 실패했습니다.');
-                    }
-                } else {
-                    alert('인증 서비스를 사용할 수 없습니다.');
-                }
-            } catch (error) {
-                console.error('비밀번호 재설정 오류:', error);
-                alert('비밀번호 재설정 요청에 실패했습니다.');
-            }
-        }
-
-        // 마이페이지 모달 제어 함수들
-        function openMypageModal() {
-            if (window.authService && typeof window.authService.openMypageModal === 'function') {
-                window.authService.openMypageModal();
+        // 마이페이지 사이드패널 제어 함수들
+        function openMypageSidepanel() {
+            if (window.authService && typeof window.authService.openMypageSidepanel === 'function') {
+                window.authService.openMypageSidepanel();
             } else {
-                // 폴백: 직접 모달 제어
-                const modal = document.getElementById('mypageModal');
-                if (modal) {
-                    modal.classList.add('show');
+                // 폴백: 직접 사이드패널 제어
+                const sidepanel = document.getElementById('mypageSidepanel');
+                if (sidepanel) {
+                    sidepanel.classList.add('show');
                     document.body.style.overflow = 'hidden';
+                    // 마이페이지 데이터 로드
+                    loadMypageData();
                 }
             }
         }
 
-        function closeMypageModal() {
-            if (window.authService && typeof window.authService.closeMypageModal === 'function') {
-                window.authService.closeMypageModal();
+        function closeMypageSidepanel() {
+            if (window.authService && typeof window.authService.closeMypageSidepanel === 'function') {
+                window.authService.closeMypageSidepanel();
             } else {
-                // 폴백: 직접 모달 제어
-                const modal = document.getElementById('mypageModal');
-                if (modal) {
-                    modal.classList.remove('show');
+                // 폴백: 직접 사이드패널 제어
+                const sidepanel = document.getElementById('mypageSidepanel');
+                if (sidepanel) {
+                    sidepanel.classList.remove('show');
                     document.body.style.overflow = '';
                 }
             }
@@ -1256,6 +892,42 @@
         function switchMypageTab(tabName) {
             if (window.authService && typeof window.authService.switchMypageTab === 'function') {
                 window.authService.switchMypageTab(tabName);
+            }
+        }
+
+        // 아바타 업로드 처리
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('avatar-preview');
+                    const placeholder = document.getElementById('avatar-placeholder');
+                    
+                    if (preview && placeholder) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        placeholder.style.display = 'none';
+                    }
+                    
+                    // 실제 프로젝트에서는 서버에 업로드하는 로직 추가 필요
+                    console.log('아바타 업로드됨:', file.name);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('이미지 파일만 업로드 가능합니다.');
+            }
+        }
+
+        // 회원 유형에 따른 실무자 인증 섹션 표시
+        function showPractitionerSection(memberType) {
+            const practitionerSection = document.getElementById('mypage-practitioner');
+            if (practitionerSection) {
+                if (memberType === '분양기획' || memberType === '관계사') {
+                    practitionerSection.style.display = 'block';
+                } else {
+                    practitionerSection.style.display = 'none';
+                }
             }
         }
 
@@ -1272,10 +944,111 @@
             }
         }
 
+        // 전역 함수로 등록
+        window.openMypageSidepanel = openMypageSidepanel;
+        window.closeMypageSidepanel = closeMypageSidepanel;
+        window.switchMypageTab = switchMypageTab;
+
+        // 마이페이지 데이터 로드 (개발 모드용 mock 데이터)
+        function loadMypageData() {
+            // authService가 있고 로그인된 사용자가 있으면 실제 데이터 사용
+            let userData;
+            
+            if (window.authService && window.authService.getCurrentUser()) {
+                const currentUser = window.authService.getCurrentUser();
+                const userProfile = window.authService.userProfile || {};
+                
+                userData = {
+                    userId: currentUser.id || 'unknown',
+                    username: userProfile.username || currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || '사용자',
+                    nickname: userProfile.nickname || currentUser.user_metadata?.nickname || currentUser.user_metadata?.username || '사용자',
+                    email: currentUser.email || '',
+                    memberType: userProfile.role || userProfile.member_type || '일반회원',
+                    joinDate: userProfile.created_at ? new Date(userProfile.created_at).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR'),
+                    lastLogin: new Date().toLocaleString('ko-KR'),
+                    points: userProfile.points || 0,
+                    rank: userProfile.rank || 1,
+                    badgeCount: userProfile.badges ? userProfile.badges.length : 0,
+                    level: userProfile.level || 1
+                };
+                
+                console.log('실제 로그인 사용자 데이터 사용:', userData);
+            } else {
+                // 폴백: 목 데이터 사용 (로그인되지 않은 경우)
+                userData = {
+                    userId: 'user123',
+                    username: '김실무',
+                    nickname: '분양전문가',
+                    email: 'user@example.com',
+                    memberType: '분양기획',
+                    joinDate: '2024-01-15',
+                    lastLogin: '2024-09-01 10:30',
+                    points: 12500,
+                    rank: 42,
+                    badgeCount: 3,
+                    level: 5
+                };
+                
+                console.log('목 데이터 사용 (로그인 안됨):', userData);
+            }
+
+            // UI 업데이트
+            if (document.getElementById('mypage-user-id')) {
+                document.getElementById('mypage-user-id').textContent = userData.userId;
+            }
+            if (document.getElementById('mypage-username')) {
+                document.getElementById('mypage-username').textContent = userData.username;
+            }
+            if (document.getElementById('mypage-nickname')) {
+                document.getElementById('mypage-nickname').textContent = userData.nickname;
+            }
+            if (document.getElementById('mypage-email')) {
+                document.getElementById('mypage-email').textContent = userData.email;
+            }
+            if (document.getElementById('mypage-member-type')) {
+                document.getElementById('mypage-member-type').textContent = userData.memberType;
+            }
+            if (document.getElementById('mypage-join-date')) {
+                document.getElementById('mypage-join-date').textContent = userData.joinDate;
+            }
+            if (document.getElementById('mypage-last-login')) {
+                document.getElementById('mypage-last-login').textContent = userData.lastLogin;
+            }
+            if (document.getElementById('mypage-points')) {
+                document.getElementById('mypage-points').textContent = userData.points.toLocaleString() + ' P';
+            }
+            if (document.getElementById('mypage-rank')) {
+                document.getElementById('mypage-rank').textContent = '#' + userData.rank;
+            }
+            if (document.getElementById('mypage-badge-count')) {
+                document.getElementById('mypage-badge-count').textContent = userData.badgeCount + '개';
+            }
+            if (document.getElementById('mypage-representative-badge')) {
+                const badge = userData.badges && userData.badges.length > 0 ? userData.badges[0] : null;
+                if (badge) {
+                    document.getElementById('mypage-representative-badge').innerHTML = '<i class="fas fa-medal"></i><span>' + badge.name + '</span>';
+                    document.getElementById('mypage-representative-badge').style.display = 'flex';
+                } else {
+                    document.getElementById('mypage-representative-badge').style.display = 'none';
+                }
+            }
+
+            // 실무자 인증 섹션 표시 여부 결정
+            showPractitionerSection(userData.memberType);
+
+            console.log('마이페이지 데이터 로드됨:', userData);
+        }
+
         // 마이페이지 모달 이벤트 리스너 설정
         document.addEventListener('DOMContentLoaded', function() {
-            // 탭 네비게이션 이벤트
-            const navItems = document.querySelectorAll('.mypage-nav-item');
+            // 아바타 업로드 이벤트 리스너
+            const avatarUploadInput = document.getElementById('mypage-avatar-upload');
+            if (avatarUploadInput) {
+                avatarUploadInput.addEventListener('change', handleAvatarUpload);
+            }
+
+            // 탭 네비게이션 이벤트 - 올바른 클래스명으로 수정
+            const navItems = document.querySelectorAll('.mypage-tab');
             navItems.forEach(item => {
                 item.addEventListener('click', function() {
                     const tabName = this.dataset.tab;
@@ -1283,119 +1056,177 @@
                 });
             });
 
-            // 모달 외부 클릭 시 닫기
-            const modalOverlay = document.getElementById('mypageModal');
-            if (modalOverlay) {
-                modalOverlay.addEventListener('click', function(e) {
-                    if (e.target === modalOverlay) {
-                        closeMypageModal();
+            // 사이드패널 외부 클릭 시 닫기
+            const sidepanelOverlay = document.getElementById('mypageSidepanel');
+            if (sidepanelOverlay) {
+                sidepanelOverlay.addEventListener('click', function(e) {
+                    if (e.target === sidepanelOverlay) {
+                        closeMypageSidepanel();
                     }
                 });
             }
 
-            // ESC 키로 모달 닫기
+            // ESC 키로 사이드패널 닫기
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    const modal = document.getElementById('mypageModal');
-                    if (modal && modal.classList.contains('show')) {
-                        closeMypageModal();
+                    const sidepanel = document.getElementById('mypageSidepanel');
+                    if (sidepanel && sidepanel.classList.contains('show')) {
+                        closeMypageSidepanel();
                     }
                 }
             });
         });
     </script>
 
-    <!-- 마이페이지 모달 -->
-    <div class="mypage-modal-overlay" id="mypageModal">
-        <div class="mypage-modal">
-            <div class="mypage-modal-header">
-                <h2>마이페이지</h2>
-                <button class="mypage-modal-close" onclick="closeMypageModal()">
+    <!-- 마이페이지 사이드패널 - 고객센터 스타일 적용 -->
+    <div class="mypage-sidepanel-overlay" id="mypageSidepanel">
+        <div class="mypage-sidepanel">
+            <div class="mypage-sidepanel-header">
+                <h2>
+                    <i class="fas fa-user-circle"></i>
+                    마이페이지
+                </h2>
+                <button class="mypage-close-btn" onclick="closeMypageSidepanel()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             
-            <div class="mypage-modal-nav">
-                <button class="mypage-nav-item active" data-tab="profile">내 정보</button>
-                <button class="mypage-nav-item" data-tab="activity">활동 내역</button>
-                <button class="mypage-nav-item" data-tab="points">포인트</button>
-                <button class="mypage-nav-item" data-tab="badges">뱃지</button>
-                <button class="mypage-nav-item" data-tab="purchases">구매 내역</button>
-                <button class="mypage-nav-item" data-tab="settings">설정</button>
+            <!-- 탭 네비게이션 - 고객센터 guide-tabs 스타일 -->
+            <div class="mypage-tabs">
+                <button class="mypage-tab active" data-tab="profile">내 정보</button>
+                <button class="mypage-tab" data-tab="activity">활동 내역</button>
+                <button class="mypage-tab" data-tab="points">포인트</button>
+                <button class="mypage-tab" data-tab="badges">뱃지</button>
+                <button class="mypage-tab" data-tab="purchases">구매 내역</button>
+                <button class="mypage-tab" data-tab="settings">설정</button>
             </div>
             
-            <div class="mypage-modal-content">
+            <div class="mypage-content">
                 <!-- 내 정보 탭 -->
                 <div class="mypage-tab-content active" id="profile-tab">
-                    <div class="mypage-profile-header">
-                        <div class="mypage-avatar-container">
-                            <div class="mypage-avatar">
-                                <i class="fas fa-user"></i>
+                    <!-- 프로필 섹션 -->
+                    <div class="mypage-profile-section">
+                        <div class="mypage-profile-card">
+                            <div class="mypage-profile-info">
+                                <div class="mypage-avatar-wrapper">
+                                    <div class="mypage-avatar" id="avatar-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <button class="mypage-avatar-edit" onclick="document.getElementById('mypage-avatar-upload').click()">
+                                        <i class="fas fa-camera"></i>
+                                    </button>
+                                    <input type="file" id="mypage-avatar-upload" accept="image/*" style="display: none;">
+                                </div>
+                                <div class="mypage-user-info">
+                                    <div class="mypage-username" id="mypage-username">사용자명</div>
+                                    <div class="mypage-representative-badge" id="mypage-representative-badge">
+                                        <i class="fas fa-medal"></i>
+                                        <span>대표 뱃지</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button class="mypage-avatar-edit">
-                                <i class="fas fa-camera"></i>
-                            </button>
                         </div>
-                        <div class="mypage-profile-info">
-                            <h3 id="mypage-username">사용자명</h3>
-                            <p id="mypage-email">user@example.com</p>
-                            <div class="mypage-level-badge" id="mypage-level">
-                                <i class="fas fa-star"></i>
-                                <span>Level 1</span>
+                    </div>
+                        
+                    <!-- 활동 현황 그리드 - 고객센터 quick-menu 스타일 -->
+                    <div class="mypage-stats-grid">
+                        <div class="mypage-stat-item">
+                            <div class="mypage-stat-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="mypage-stat-value" id="mypage-points">10000 P</div>
+                            <div class="mypage-stat-label">보유 포인트</div>
+                        </div>
+                        <div class="mypage-stat-item">
+                            <div class="mypage-stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="mypage-stat-value" id="mypage-ranking">#-</div>
+                            <div class="mypage-stat-label">전체 순위</div>
+                        </div>
+                        <div class="mypage-stat-item">
+                            <div class="mypage-stat-icon">
+                                <i class="fas fa-medal"></i>
+                            </div>
+                            <div class="mypage-stat-value" id="mypage-badge-count">0개</div>
+                            <div class="mypage-stat-label">보유 뱃지</div>
+                        </div>
+                    </div>
+
+                    <!-- 회원 정보 카드 -->
+                    <div class="mypage-section-card">
+                        <h4 class="mypage-section-title">회원 정보</h4>
+                        <div class="mypage-info-list">
+                            <div class="mypage-info-item">
+                                <span class="mypage-info-label">아이디</span>
+                                <span class="mypage-info-value" id="mypage-user-id">-</span>
+                            </div>
+                            <div class="mypage-info-item">
+                                <span class="mypage-info-label">닉네임</span>
+                                <span class="mypage-info-value" id="mypage-nickname">-</span>
+                            </div>
+                            <div class="mypage-info-item">
+                                <span class="mypage-info-label">이메일</span>
+                                <span class="mypage-info-value" id="mypage-email">user@example.com</span>
+                            </div>
+                            <div class="mypage-info-item">
+                                <span class="mypage-info-label">회원유형</span>
+                                <span class="mypage-info-value" id="mypage-member-type">-</span>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="mypage-practitioner-status" id="mypage-practitioner">
-                        <div class="mypage-status-card">
-                            <div class="mypage-status-icon pending">
-                                <i class="fas fa-clock"></i>
+                    <!-- 실무자 인증 카드 (분양기획, 관계사만 표시) -->
+                    <div class="mypage-practitioner-card" id="mypage-practitioner" style="display: none;">
+                        <div class="mypage-practitioner-header">
+                            <div class="mypage-practitioner-title">
+                                <i class="fas fa-certificate"></i>
+                                실무자 인증
                             </div>
-                            <div class="mypage-status-info">
-                                <h4>실무자 인증</h4>
-                                <p class="mypage-status-text">인증 대기중</p>
-                                <div class="mypage-progress-bar">
-                                    <div class="mypage-progress-fill" style="width: 33%"></div>
-                                </div>
-                                <p class="mypage-progress-text">3건 중 1건 업로드 완료</p>
-                            </div>
-                            <div class="mypage-status-actions">
-                                <button class="mypage-upload-btn" onclick="uploadMarketResearch()">
-                                    시장조사서 업로드
-                                </button>
-                                <button class="mypage-upload-btn" onclick="uploadProposal()">
-                                    제안서 업로드
-                                </button>
-                            </div>
+                            <span class="mypage-status-badge pending">인증 대기중</span>
                         </div>
+                        <div class="mypage-progress-info">
+                            <div class="mypage-progress-bar">
+                                <div class="mypage-progress-fill" style="width: 33%"></div>
+                            </div>
+                            <p class="mypage-progress-text">3건 중 1건 업로드 완료</p>
+                        </div>
+                        <button class="mypage-upload-btn" onclick="uploadDocuments()">
+                            <i class="fas fa-upload"></i>
+                            문서 업로드하기
+                        </button>
                     </div>
 
-                    <div class="mypage-info-cards">
-                        <div class="mypage-info-card">
-                            <div class="mypage-card-icon">
-                                <i class="fas fa-coins"></i>
+                    <!-- 활동 현황 카드 -->
+                    <div class="mypage-section-card">
+                        <h4 class="mypage-section-title">활동 현황</h4>
+                        <div class="mypage-info-cards">
+                            <div class="mypage-info-card">
+                                <div class="mypage-card-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="mypage-card-content">
+                                    <h4>보유 포인트</h4>
+                                    <p class="mypage-card-value" id="mypage-points">0 P</p>
+                                </div>
                             </div>
-                            <div class="mypage-card-content">
-                                <h4>보유 포인트</h4>
-                                <p class="mypage-card-value" id="mypage-points">0 P</p>
+                            <div class="mypage-info-card">
+                                <div class="mypage-card-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="mypage-card-content">
+                                    <h4>전체 순위</h4>
+                                    <p class="mypage-card-value" id="mypage-rank">#-</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mypage-info-card">
-                            <div class="mypage-card-icon">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                            <div class="mypage-card-content">
-                                <h4>전체 순위</h4>
-                                <p class="mypage-card-value" id="mypage-rank">#-</p>
-                            </div>
-                        </div>
-                        <div class="mypage-info-card">
-                            <div class="mypage-card-icon">
-                                <i class="fas fa-medal"></i>
-                            </div>
-                            <div class="mypage-card-content">
-                                <h4>보유 뱃지</h4>
-                                <p class="mypage-card-value" id="mypage-badge-count">0개</p>
+                            <div class="mypage-info-card">
+                                <div class="mypage-card-icon">
+                                    <i class="fas fa-medal"></i>
+                                </div>
+                                <div class="mypage-card-content">
+                                    <h4>보유 뱃지</h4>
+                                    <p class="mypage-card-value" id="mypage-badge-count">0개</p>
+                                </div>
                             </div>
                         </div>
                     </div>

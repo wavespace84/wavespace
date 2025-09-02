@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>업데이트 페이지 디버그</title>
+    
+    <!-- 환경 설정 -->
+    <script src="config.dev.js"></script>
+    
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Supabase 설정 -->
+    <script src="js/config/supabase.js"></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .data-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h1>업데이트 페이지 디버그 테스트</h1>
+    
+    <div id="log-container"></div>
+    
+    <h2>업데이트 데이터</h2>
+    <div id="data-container" class="data-container">
+        <p>로딩 중...</p>
+    </div>
+
+    <script>
+        // 로그 함수
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('log-container');
+            const logEntry = document.createElement('div');
+            logEntry.className = `status ${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(logEntry);
+            console.log(message);
+        }
+
+        // 테스트 시작
+        async function runTest() {
+            log('🚀 테스트 시작...');
+            
+            try {
+                // 1. 환경변수 확인
+                log(`환경변수 확인 - URL: ${window.SUPABASE_URL ? '✅' : '❌'}`, window.SUPABASE_URL ? 'success' : 'error');
+                log(`환경변수 확인 - KEY: ${window.SUPABASE_ANON_KEY ? '✅' : '❌'}`, window.SUPABASE_ANON_KEY ? 'success' : 'error');
+                
+                // 2. Supabase 라이브러리 확인
+                log(`Supabase 라이브러리: ${typeof window.supabase}`, typeof window.supabase === 'object' ? 'success' : 'error');
+                
+                // 3. WaveSupabase 초기화 대기
+                log('WaveSupabase 초기화 대기 중...');
+                let attempts = 0;
+                while (!window.WaveSupabase && attempts < 50) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                }
+                
+                if (window.WaveSupabase) {
+                    log('✅ WaveSupabase 찾음', 'success');
+                    
+                    // 클라이언트 가져오기
+                    const client = window.WaveSupabase.getClient();
+                    log('✅ Supabase 클라이언트 획득', 'success');
+                    
+                    // 4. 데이터 조회
+                    log('📊 updates 테이블 조회 시작...');
+                    const { data, error } = await client
+                        .from('updates')
+                        .select('*')
+                        .eq('is_active', true)
+                        .order('released_at', { ascending: false });
+                    
+                    if (error) {
+                        log(`❌ 쿼리 에러: ${error.message}`, 'error');
+                        log(`에러 상세: ${JSON.stringify(error)}`, 'error');
+                    } else {
+                        log(`✅ 데이터 조회 성공: ${data.length}개 항목`, 'success');
+                        
+                        // 데이터 표시
+                        const dataContainer = document.getElementById('data-container');
+                        if (data.length > 0) {
+                            dataContainer.innerHTML = `
+                                <h3>총 ${data.length}개의 업데이트</h3>
+                                <pre>${JSON.stringify(data, null, 2)}</pre>
+                            `;
+                            
+                            // 첫 번째 데이터 샘플 로그
+                            log(`첫 번째 업데이트: ${data[0].title}`, 'info');
+                        } else {
+                            dataContainer.innerHTML = '<p>데이터가 없습니다.</p>';
+                        }
+                    }
+                    
+                } else {
+                    log('❌ WaveSupabase를 찾을 수 없음', 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ 테스트 실패: ${error.message}`, 'error');
+                log(`에러 스택: ${error.stack}`, 'error');
+            }
+        }
+
+        // 페이지 로드 후 테스트 실행
+        window.addEventListener('load', () => {
+            setTimeout(runTest, 1000);
+        });
+    </script>
+</body>
+</html>
