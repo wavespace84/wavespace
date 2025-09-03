@@ -76,11 +76,6 @@ export class HeaderLoader {
                 </div>
 
                 <div class="header-right">
-                    <!-- 검색 버튼 -->
-                    <button class="header-icon-btn">
-                        <i class="fas fa-search"></i>
-                    </button>
-
                     <!-- 알림 버튼 -->
                     <button class="header-icon-btn notification-btn">
                         <i class="fas fa-bell"></i>

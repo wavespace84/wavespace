@@ -12,9 +12,9 @@ class FeedbackService {
 
     async initialize() {
         try {
-            // Supabase 클라이언트 대기
+            // Supabase 클라이언트 대기 (최대 3초)
             let attempts = 0;
-            const maxAttempts = 50;
+            const maxAttempts = 60; // 3초 (50ms * 60 = 3000ms)
             
             while (attempts < maxAttempts) {
                 if (window.WaveSupabase && typeof window.WaveSupabase.getClient === 'function') {
@@ -27,7 +27,7 @@ class FeedbackService {
                         // WaveSupabase.getClient() 호출 실패, 다시 시도
                     }
                 }
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 50));
                 attempts++;
             }
             throw new Error('Supabase 클라이언트 초기화 시간 초과');

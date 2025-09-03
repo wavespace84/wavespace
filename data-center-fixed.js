@@ -277,8 +277,8 @@ function initDataCenter() {
     // 지역 선택 설정
     setupRegionSelector();
 
-    // Mock 데이터 생성
-    generateMockData();
+    // Supabase 데이터 로드 (Mock 데이터 대신)
+    // generateMockData(); // 제거됨
 
     // 차트 초기화
     setTimeout(() => {

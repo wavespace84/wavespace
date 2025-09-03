@@ -1,11 +1,10 @@
 /**
- * 통합 데이터 매니저 - Mock 데이터와 실제 Supabase 데이터 일원화
- * 기존의 혼재된 데이터 소스 문제 해결
+ * 통합 데이터 매니저 - Supabase 전용 데이터 관리자
+ * 캐싱, 구독, 상태 관리 기능 포함
  */
 class DataManager {
     constructor() {
         this.isSupabaseReady = false;
-        this.fallbackData = new Map();
         this.cache = new Map();
         this.subscribers = new Map();
         this.retryAttempts = 3;
@@ -28,13 +27,12 @@ class DataManager {
                 // 연결 테스트
                 await this.testConnection();
             } else {
-                console.warn('⚠️ Supabase 클라이언트가 없습니다. Mock 데이터를 사용합니다.');
-                await this.loadMockData();
+                console.error('⚠️ Supabase 클라이언트가 없습니다. 초기화를 다시 시도하세요.');
+                this.isSupabaseReady = false;
             }
         } catch (error) {
             console.error('❌ Supabase 초기화 실패:', error);
             this.isSupabaseReady = false;
-            await this.loadMockData();
         }
     }
 
@@ -54,102 +52,10 @@ class DataManager {
         } catch (error) {
             console.error('❌ Supabase 연결 테스트 실패:', error);
             this.isSupabaseReady = false;
-            await this.loadMockData();
             return false;
         }
     }
 
-    /**
-     * Mock 데이터 로드
-     */
-    async loadMockData() {
-        console.log('🔄 Mock 데이터 로딩...');
-        
-        // 사용자 Mock 데이터
-        this.fallbackData.set('users', [
-            {
-                id: 1,
-                email: 'test@example.com',
-                nickname: '테스트유저',
-                points: 1000,
-                badges: ['신규회원', '첫글작성'],
-                created_at: new Date().toISOString()
-            }
-        ]);
-
-        // 공지사항 Mock 데이터
-        this.fallbackData.set('notices', [
-            {
-                id: 1,
-                title: 'WAVE space 베타 오픈',
-                content: '안녕하세요. WAVE space가 베타 오픈했습니다.',
-                created_at: new Date().toISOString(),
-                author: '관리자',
-                views: 150,
-                important: true
-            },
-            {
-                id: 2,
-                title: '커뮤니티 이용규칙 안내',
-                content: '건전한 커뮤니티 문화를 위한 이용규칙을 안내드립니다.',
-                created_at: new Date(Date.now() - 86400000).toISOString(),
-                author: '관리자',
-                views: 89,
-                important: false
-            }
-        ]);
-
-        // 이벤트 Mock 데이터
-        this.fallbackData.set('events', [
-            {
-                id: 1,
-                title: '신규가입 이벤트',
-                description: '신규가입시 1000포인트 지급',
-                start_date: new Date().toISOString(),
-                end_date: new Date(Date.now() + 30 * 86400000).toISOString(),
-                status: 'active',
-                reward_points: 1000
-            }
-        ]);
-
-        // 포인트샵 Mock 데이터
-        this.fallbackData.set('point_shop', [
-            {
-                id: 1,
-                name: '스타벅스 아메리카노',
-                price: 5000,
-                category: 'beverage',
-                stock: 50,
-                image: 'https://via.placeholder.com/200x200',
-                description: '스타벅스 아메리카노 기프티콘'
-            },
-            {
-                id: 2,
-                name: '치킨 기프티콘',
-                price: 20000,
-                category: 'food',
-                stock: 20,
-                image: 'https://via.placeholder.com/200x200',
-                description: '치킨 기프티콘 (브랜드 랜덤)'
-            }
-        ]);
-
-        // 시장조사서 Mock 데이터
-        this.fallbackData.set('market_research', [
-            {
-                id: 1,
-                title: '서울 강남구 아파트 시장 분석',
-                area: '강남구',
-                property_type: 'apartment',
-                created_at: new Date().toISOString(),
-                author_id: 1,
-                download_count: 25,
-                premium: false
-            }
-        ]);
-
-        console.log('✅ Mock 데이터 로드 완료');
-    }
 
     /**
      * 데이터 조회 (통합 인터페이스)
@@ -168,7 +74,7 @@ class DataManager {
             if (this.isSupabaseReady && this.supabase) {
                 result = await this.getSupabaseData(table, options);
             } else {
-                result = await this.getMockData(table, options);
+                throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
             }
 
             // 캐시에 저장 (5분)
@@ -179,13 +85,6 @@ class DataManager {
             
         } catch (error) {
             console.error(`데이터 조회 실패 (${table}):`, error);
-            
-            // Supabase 실패시 Mock 데이터로 폴백
-            if (this.isSupabaseReady) {
-                console.log('🔄 Mock 데이터로 폴백');
-                return await this.getMockData(table, options);
-            }
-            
             throw error;
         }
     }
@@ -211,36 +110,6 @@ class DataManager {
         return data || [];
     }
 
-    /**
-     * Mock 데이터 조회
-     */
-    async getMockData(table, options) {
-        let data = [...(this.fallbackData.get(table) || [])];
-        
-        // 필터 적용
-        if (options.filter) {
-            Object.entries(options.filter).forEach(([key, value]) => {
-                data = data.filter(item => item[key] === value);
-            });
-        }
-        
-        // 정렬 적용
-        if (options.orderBy) {
-            data.sort((a, b) => {
-                const aVal = a[options.orderBy.column];
-                const bVal = b[options.orderBy.column];
-                const result = aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
-                return options.orderBy.ascending ? result : -result;
-            });
-        }
-        
-        // 제한 적용
-        if (options.limit) {
-            data = data.slice(0, options.limit);
-        }
-        
-        return data;
-    }
 
     /**
      * 데이터 생성
@@ -260,15 +129,7 @@ class DataManager {
                 
                 return result[0];
             } else {
-                // Mock 데이터에 추가
-                const mockData = this.fallbackData.get(table) || [];
-                const newId = Math.max(...mockData.map(item => item.id || 0)) + 1;
-                const newItem = { id: newId, ...data, created_at: new Date().toISOString() };
-                
-                mockData.push(newItem);
-                this.fallbackData.set(table, mockData);
-                
-                return newItem;
+                throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
             }
         } catch (error) {
             console.error(`데이터 생성 실패 (${table}):`, error);
@@ -295,17 +156,7 @@ class DataManager {
                 
                 return data[0];
             } else {
-                // Mock 데이터 업데이트
-                const mockData = this.fallbackData.get(table) || [];
-                const itemIndex = mockData.findIndex(item => item.id === id);
-                
-                if (itemIndex !== -1) {
-                    mockData[itemIndex] = { ...mockData[itemIndex], ...updates };
-                    this.fallbackData.set(table, mockData);
-                    return mockData[itemIndex];
-                } else {
-                    throw new Error('Item not found');
-                }
+                throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
             }
         } catch (error) {
             console.error(`데이터 업데이트 실패 (${table}):`, error);
@@ -331,12 +182,7 @@ class DataManager {
                 
                 return true;
             } else {
-                // Mock 데이터에서 제거
-                const mockData = this.fallbackData.get(table) || [];
-                const filteredData = mockData.filter(item => item.id !== id);
-                this.fallbackData.set(table, filteredData);
-                
-                return true;
+                throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
             }
         } catch (error) {
             console.error(`데이터 삭제 실패 (${table}):`, error);
@@ -404,8 +250,7 @@ class DataManager {
         return {
             supabaseReady: this.isSupabaseReady,
             cacheSize: this.cache.size,
-            subscriberCount: this.subscribers.size,
-            mockDataTables: Array.from(this.fallbackData.keys())
+            subscriberCount: this.subscribers.size
         };
     }
 
@@ -416,7 +261,6 @@ class DataManager {
         const status = {
             timestamp: new Date().toISOString(),
             supabase: false,
-            mockData: this.fallbackData.size > 0,
             cache: this.cache.size,
             error: null
         };

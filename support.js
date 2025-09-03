@@ -844,10 +844,9 @@ function initMyInquiries() {
 
     // 탭 클릭 이벤트
     inquiryTabs.forEach((tab) => {
-        tab.addEventListener('click', async () => {
+        tab.addEventListener('click', () => {
             inquiryTabs.forEach((t) => t.classList.remove('active'));
             tab.classList.add('active');
-            // 데이터 재로드 전에 빠르게 UI 반영
             renderInquiries(tab.dataset.status);
         });
     });
@@ -865,21 +864,6 @@ function initMyInquiries() {
 let kakaoChatBtn;
 let userInquiryContent = ''; // 사용자가 작성한 문의내용 저장
 let hasCopied = false; // 복사하기 버튼 클릭 여부
-
-// Supabase 클라이언트
-let supabase;
-let currentUser;
-
-// Supabase 초기화
-function initSupabase() {
-    if (window.WaveSupabase) {
-        supabase = window.WaveSupabase.getClient();
-        currentUser = authService?.getCurrentUser();
-        console.log('Support.js Supabase 초기화 완료');
-        return true;
-    }
-    return false;
-}
 
 // 실시간문의 모달 기능
 function initLiveChatModal() {
@@ -1094,95 +1078,46 @@ let currentEditingId = null;
 let currentInquiryIndex = 0;
 let currentFilteredInquiries = [];
 
-// 로딩 상태 관리
-let isLoading = false;
+// localStorage 키
+const INQUIRIES_STORAGE_KEY = 'wavespace_my_inquiries';
 
-// 전역 사용자 정보 (authService에서 가져옴)
-function getGlobalUserInfo() {
-    const localUser = authService?.getLocalUser() || {};
-    const authUser = authService?.getCurrentUser();
-    
-    return {
-        userId: localUser.username || localUser.id || 'guest',
-        nickname: localUser.nickname || localUser.username || '사용자',
-        phoneLastDigits: localUser.phone ? localUser.phone.slice(-4) : '0000',
-        memberType: localUser.is_premium ? 'Plus 회원' : '일반 회원',
-        memberCategory: getMemberCategory(localUser.member_type),
-        isVerified: localUser.is_practitioner || false,
-        isManager: localUser.role === 'admin' || false,
-        authUserId: authUser?.id
-    };
-}
+// 전역 사용자 정보 (실제로는 서버에서 가져와야 함)
+const globalUserInfo = {
+    userId: 'user123',
+    nickname: '박승학',
+    phoneLastDigits: '1234',
+    memberType: 'Plus 회원',
+    memberCategory: 'planning', // 'planning', 'sales', 'consultant', 'business' 중 하나
+    isVerified: true, // 실무자 인증 완료 여부
+    isManager: false, // 매니저 여부
+};
 
-function getMemberCategory(memberType) {
-    const categoryMap = {
-        '분양기획': 'planning',
-        '분양영업': 'sales', 
-        '청약상담': 'consultant',
-        '관계사': 'business',
-        '일반': 'business'
-    };
-    return categoryMap[memberType] || 'business';
-}
+// 문의 데이터 로드
+function loadInquiries() {
+    const stored = localStorage.getItem(INQUIRIES_STORAGE_KEY);
+    myInquiriesData = stored ? JSON.parse(stored) : [];
 
-// 문의 데이터 로드 (Supabase에서)
-async function loadInquiries() {
-    if (!supabase || !currentUser) {
-        console.error('Supabase 또는 사용자 정보가 없습니다');
-        myInquiriesData = [];
-        return;
-    }
-    
-    try {
-        setLoadingState(true);
-        const userProfile = authService?.getLocalUser();
-        
-        if (!userProfile || !userProfile.id) {
-            console.error('사용자 프로필을 찾을 수 없습니다');
-            myInquiriesData = [];
-            return;
-        }
-        
-        const { data, error } = await supabase
-            .from('inquiries')
-            .select('*')
-            .eq('user_id', userProfile.id)
-            .order('created_at', { ascending: false });
-            
-        if (error) {
-            console.error('문의 데이터 로드 실패:', error);
-            if (window.showErrorMessage) {
-                showErrorMessage('문의 목록을 불러올 수 없습니다.');
-            }
-            myInquiriesData = [];
-            return;
-        }
-        
-        myInquiriesData = data || [];
-        console.log('문의 데이터 로드 성공:', myInquiriesData.length, '건');
-        
-    } catch (error) {
-        console.error('문의 데이터 로드 중 오류:', error);
-        myInquiriesData = [];
-    } finally {
-        setLoadingState(false);
+    // 테스트용 샘플 데이터 (답변 완료된 문의)
+    if (myInquiriesData.length === 0) {
+        myInquiriesData = [
+            {
+                id: 1,
+                category: '포인트/결제',
+                title: '포인트 충전이 안되요',
+                content: '카드로 포인트 충전을 시도했는데 계속 오류가 나요. 확인 부탁드립니다.',
+                status: 'completed',
+                createdAt: new Date(Date.now() - 86400000).toISOString(),
+                updatedAt: new Date(Date.now() - 43200000).toISOString(),
+                answer: '안녕하세요. 포인트 충전 관련 문의 주셔서 감사합니다.\n\n확인 결과, 일시적인 결제 시스템 오류가 있었습니다. 현재는 정상적으로 복구되었으니 다시 시도해 주시기 바랍니다.\n\n추가 문의사항이 있으시면 언제든지 문의해 주세요.\n감사합니다.',
+            },
+        ];
+        saveInquiries();
     }
 }
 
-// 로딩 상태 설정
-function setLoadingState(loading) {
-    isLoading = loading;
-    const inquiryList = document.getElementById('inquiryList');
-    if (!inquiryList) return;
-    
-    if (loading) {
-        inquiryList.innerHTML = `
-            <div style="text-align: center; padding: 60px 20px; color: var(--gray-500);">
-                <i class="fas fa-spinner fa-spin" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                <p style="font-size: 16px;">문의 목록을 불러오고 있습니다...</p>
-            </div>
-        `;
-    }
+// 문의 데이터 저장
+function saveInquiries() {
+    localStorage.setItem(INQUIRIES_STORAGE_KEY, JSON.stringify(myInquiriesData));
 }
 
 // 문의 모달 초기화
@@ -1242,38 +1177,14 @@ function initInquiryModal() {
         inquirySubmitForm.addEventListener('submit', handleInquirySubmit);
     }
 
-    // Supabase 초기화 및 데이터 로드
-    if (initSupabase()) {
-        loadInquiries().then(() => {
-            renderInquiries();
-        }).catch((error) => {
-            console.error('문의 데이터 로드 실패:', error);
-        });
-    } else {
-        console.error('Supabase 초기화 실패');
-        // 재시도 로직
-        setTimeout(async () => {
-            if (initSupabase()) {
-                await loadInquiries();
-                renderInquiries();
-            }
-        }, 1000);
-    }
+    // 데이터 로드 및 초기 렌더링
+    loadInquiries();
+    renderInquiries();
 }
 
 // 문의 모달 열기
 function openInquiryModal(inquiryId = null) {
     if (!inquiryModal) return;
-    
-    // 로그인 찍
-    if (!authService?.isLoggedIn()) {
-        if (window.showWarningMessage) {
-            showWarningMessage('로그인이 필요한 기능입니다.');
-        } else {
-            alert('로그인이 필요한 기능입니다.');
-        }
-        return;
-    }
 
     inquiryModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -1322,24 +1233,9 @@ function closeInquiryModal() {
     }
 }
 
-// 문의 제출 처리 (Supabase)
-async function handleInquirySubmit(e) {
+// 문의 제출 처리
+function handleInquirySubmit(e) {
     e.preventDefault();
-    
-    if (!supabase || !currentUser) {
-        if (window.showErrorMessage) {
-            showErrorMessage('로그인이 필요합니다.');
-        }
-        return;
-    }
-    
-    const userProfile = authService?.getLocalUser();
-    if (!userProfile || !userProfile.id) {
-        if (window.showErrorMessage) {
-            showErrorMessage('사용자 정보를 찾을 수 없습니다.');
-        }
-        return;
-    }
 
     const formData = new FormData(e.target);
     const inquiryData = {
@@ -1349,77 +1245,39 @@ async function handleInquirySubmit(e) {
     };
 
     const inquiryId = formData.get('inquiryId');
-    
-    try {
-        setLoadingState(true);
-        
-        if (inquiryId) {
-            // 수정
-            const { error } = await supabase
-                .from('inquiries')
-                .update({
-                    ...inquiryData,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', inquiryId)
-                .eq('user_id', userProfile.id);
-                
-            if (error) {
-                console.error('문의 수정 실패:', error);
-                if (window.showErrorMessage) {
-                    showErrorMessage('문의 수정에 실패했습니다.');
-                }
-                return;
-            }
-            
-            if (window.showSuccessMessage) {
-                showSuccessMessage('문의가 수정되었습니다.');
-            }
-        } else {
-            // 새 문의
-            const { error } = await supabase
-                .from('inquiries')
-                .insert([{
-                    user_id: userProfile.id,
-                    ...inquiryData,
-                    status: 'waiting'
-                }]);
-                
-            if (error) {
-                console.error('문의 등록 실패:', error);
-                if (window.showErrorMessage) {
-                    showErrorMessage('문의 등록에 실패했습니다.');
-                }
-                return;
-            }
-            
-            if (window.showSuccessMessage) {
-                showSuccessMessage('문의가 등록되었습니다.');
-            }
+
+    if (inquiryId) {
+        // 수정
+        const index = myInquiriesData.findIndex((i) => i.id === parseInt(inquiryId));
+        if (index !== -1) {
+            myInquiriesData[index] = {
+                ...myInquiriesData[index],
+                ...inquiryData,
+                updatedAt: new Date().toISOString(),
+            };
         }
-        
-        // 데이터 재로드 및 UI 업데이트
-        await loadInquiries();
-        renderInquiries();
-        closeInquiryModal();
-        
-    } catch (error) {
-        console.error('문의 처리 중 오류:', error);
-        if (window.showErrorMessage) {
-            showErrorMessage('처리 중 오류가 발생했습니다.');
-        }
-    } finally {
-        setLoadingState(false);
+    } else {
+        // 새 문의
+        const newInquiry = {
+            id: Date.now(),
+            ...inquiryData,
+            status: 'waiting',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        };
+        myInquiriesData.unshift(newInquiry);
     }
+
+    // 저장 및 UI 업데이트
+    saveInquiries();
+    renderInquiries();
+    closeInquiryModal();
 }
 
 // 문의 목록 렌더링
 function renderInquiries(status = 'all') {
     const inquiryList = document.getElementById('inquiryList');
     if (!inquiryList) return;
-    
-    // 로딩 중이면 추가 렌더링 방지
-    if (isLoading) return;
 
     // 필터링
     const filtered =
@@ -1442,7 +1300,7 @@ function renderInquiries(status = 'all') {
     // 문의 목록 렌더링
     inquiryList.innerHTML = filtered
         .map((inquiry) => {
-            const date = new Date(inquiry.created_at);
+            const date = new Date(inquiry.createdAt);
             const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
             return `
@@ -1487,7 +1345,7 @@ function openInquiryDetail(inquiryId) {
     const inquiry = currentFilteredInquiries[currentInquiryIndex];
     if (!inquiry || !detailModal) return;
 
-    const date = new Date(inquiry.created_at);
+    const date = new Date(inquiry.createdAt);
     const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
     // 상세 내용 채우기
@@ -1561,7 +1419,7 @@ function updateInquiryDetailModal() {
     const inquiry = currentFilteredInquiries[currentInquiryIndex];
     if (!inquiry) return;
     
-    const date = new Date(inquiry.created_at);
+    const date = new Date(inquiry.createdAt);
     const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     
     // 상세 내용 업데이트
@@ -1641,117 +1499,13 @@ function closeDetailModal() {
     document.body.style.overflow = '';
 }
 
-// 문의 삭제 (Supabase)
-async function deleteInquiry(inquiryId) {
-    if (!supabase || !currentUser) {
-        if (window.showErrorMessage) {
-            showErrorMessage('로그인이 필요합니다.');
-        }
-        return;
-    }
-    
-    const userProfile = authService?.getLocalUser();
-    if (!userProfile || !userProfile.id) {
-        if (window.showErrorMessage) {
-            showErrorMessage('사용자 정보를 찾을 수 없습니다.');
-        }
-        return;
-    }
-    
-    try {
-        setLoadingState(true);
-        
-        const { error } = await supabase
-            .from('inquiries')
-            .delete()
-            .eq('id', inquiryId)
-            .eq('user_id', userProfile.id);
-            
-        if (error) {
-            console.error('문의 삭제 실패:', error);
-            if (window.showErrorMessage) {
-                showErrorMessage('문의 삭제에 실패했습니다.');
-            }
-            return;
-        }
-        
-        if (window.showSuccessMessage) {
-            showSuccessMessage('문의가 삭제되었습니다.');
-        }
-        
-        // 데이터 재로드 및 UI 업데이트
-        await loadInquiries();
+// 문의 삭제
+function deleteInquiry(inquiryId) {
+    const index = myInquiriesData.findIndex((i) => i.id === inquiryId);
+    if (index !== -1) {
+        myInquiriesData.splice(index, 1);
+        saveInquiries();
         renderInquiries();
         closeDetailModal();
-        
-    } catch (error) {
-        console.error('문의 삭제 중 오류:', error);
-        if (window.showErrorMessage) {
-            showErrorMessage('삭제 중 오류가 발생했습니다.');
-        }
-    } finally {
-        setLoadingState(false);
     }
 }
-
-// 메시지 표시 함수들
-function showSuccessMessage(message) {
-    showMessage(message, 'success');
-}
-
-function showErrorMessage(message) {
-    showMessage(message, 'error');
-}
-
-function showWarningMessage(message) {
-    showMessage(message, 'warning');
-}
-
-function showMessage(message, type = 'info') {
-    // 기존 메시지 제거
-    const existingMessage = document.querySelector('.message-overlay');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-    
-    // 메시지 오버레이 생성
-    const overlay = document.createElement('div');
-    overlay.className = `message-overlay ${type}`;
-    
-    const messageBox = document.createElement('div');
-    messageBox.className = 'message-box';
-    messageBox.textContent = message;
-    
-    overlay.appendChild(messageBox);
-    document.body.appendChild(overlay);
-    
-    // 애니메이션을 위해 약간 지연
-    setTimeout(() => {
-        overlay.classList.add('show');
-    }, 10);
-    
-    // 3초 후 자동 제거
-    setTimeout(() => {
-        overlay.classList.remove('show');
-        setTimeout(() => {
-            if (overlay.parentNode) {
-                overlay.parentNode.removeChild(overlay);
-            }
-        }, 300);
-    }, 3000);
-    
-    // 클릭하면 즉시 제거
-    overlay.addEventListener('click', () => {
-        overlay.classList.remove('show');
-        setTimeout(() => {
-            if (overlay.parentNode) {
-                overlay.parentNode.removeChild(overlay);
-            }
-        }, 300);
-    });
-}
-
-// 전역에서 접근 가능하도록 window 객체에 추가
-window.showSuccessMessage = showSuccessMessage;
-window.showErrorMessage = showErrorMessage;
-window.showWarningMessage = showWarningMessage;

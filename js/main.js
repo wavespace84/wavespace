@@ -18,6 +18,9 @@ import { stateManager } from './core/stateManager.js';
 // 접근성 시스템
 import { accessibilityManager } from './components/accessibility.js';
 
+// 페이지 최적화 시스템
+import { initOptimizer } from './modules/page-optimizer.js';
+
 // 🚀 통합 초기화 시스템
 async function initializeWaveSpace() {
     try {
@@ -42,6 +45,10 @@ async function initializeWaveSpace() {
                 }
             };
         }
+
+        // 0. 페이지 최적화 시스템 최우선 초기화 (깜빡임 방지)
+        initOptimizer();
+        console.log('[WaveSpace] 페이지 최적화 시스템 초기화 완료');
 
         // 1. 접근성 시스템 우선 초기화 (WCAG 준수)
         accessibilityManager.init();
@@ -80,6 +87,15 @@ async function initializeWaveSpace() {
             // 동적 헤더 로드 후 initHeader 호출 (이벤트 리스너 설정)
             initHeader();
             console.log('[WaveSpace] 동적 헤더 이벤트 초기화 완료');
+            
+            // 동적 헤더 로드 후 AuthService 초기화 (사용자 상태에 따른 UI 설정)
+            if (window.authService) {
+                console.log('[WaveSpace] AuthService 초기화 시작 (HeaderLoader 후)');
+                await window.authService.checkAuthState();
+                console.log('[WaveSpace] AuthService 초기화 완료');
+            } else {
+                console.warn('[WaveSpace] AuthService가 아직 로드되지 않음');
+            }
         } else {
             // 기존 정적 헤더 시스템 사용
             initHeader();

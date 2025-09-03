@@ -19,86 +19,187 @@ let searchInput, categoryTabs, noticeList, pagination, writeNoticeBtn;
 // 카테고리 필터
 let selectedCategory = 'all';
 
-// 페이지 로드 시 초기화
+// 페이지 로드 시 초기화 - 성능 측정 포함
 document.addEventListener('DOMContentLoaded', async () => {
+    const pageStartTime = performance.now();
+    console.log('🚀 공지사항 페이지 초기화 시작...');
+    
     try {
-        // DOM 요소 초기화
+        // DOM 요소 초기화 시간 측정
+        const domStartTime = performance.now();
+        
         searchInput = document.getElementById('searchInput');
         categoryTabs = document.querySelectorAll('.checkbox-tab');
         noticeList = document.getElementById('noticeList');
         pagination = document.getElementById('paginationContainer');
         writeNoticeBtn = document.getElementById('writeNoticeBtn');
 
-        console.log('🔄 공지사항 페이지 초기화 중...');
+        const domTime = Math.round(performance.now() - domStartTime);
+        console.log(`📊 DOM 요소 초기화 완료 (${domTime}ms)`);
 
         // Supabase 서비스 대기
+        const servicesStartTime = performance.now();
         await waitForServices();
+        const servicesTime = Math.round(performance.now() - servicesStartTime);
+        console.log(`📊 서비스 초기화 완료 (${servicesTime}ms)`);
         
         // 사용자 권한 확인
+        const permissionStartTime = performance.now();
         await checkUserPermission();
+        const permissionTime = Math.round(performance.now() - permissionStartTime);
+        console.log(`📊 권한 확인 완료 (${permissionTime}ms)`);
         
-        // 플로팅 글쓰기 버튼 표시/숨김 처리
+        // UI 설정
+        const uiStartTime = performance.now();
         setupWriteButton();
-        
-        // 이벤트 리스너 설정
         setupEventListeners();
+        const uiTime = Math.round(performance.now() - uiStartTime);
+        console.log(`📊 UI 설정 완료 (${uiTime}ms)`);
         
-        // 초기 데이터 로드
+        // 데이터 로드
+        const dataStartTime = performance.now();
         await loadNoticesFromSupabase();
+        const dataTime = Math.round(performance.now() - dataStartTime);
+        console.log(`📊 데이터 로드 완료 (${dataTime}ms)`);
+        
+        // 전체 초기화 시간
+        const totalTime = Math.round(performance.now() - pageStartTime);
         
         console.log('✅ 공지사항 페이지 초기화 완료');
+        console.log(`📈 성능 요약:`);
+        console.log(`   - 전체 시간: ${totalTime}ms`);
+        console.log(`   - DOM 초기화: ${domTime}ms`);
+        console.log(`   - 서비스 초기화: ${servicesTime}ms`);
+        console.log(`   - 권한 확인: ${permissionTime}ms`);
+        console.log(`   - UI 설정: ${uiTime}ms`);
+        console.log(`   - 데이터 로드: ${dataTime}ms`);
+        
+        // 성능 데이터를 전역 변수로 저장 (디버깅용)
+        window.noticePagePerformance = {
+            total: totalTime,
+            dom: domTime,
+            services: servicesTime,
+            permission: permissionTime,
+            ui: uiTime,
+            data: dataTime,
+            timestamp: new Date().toISOString()
+        };
         
     } catch (error) {
-        console.error('공지사항 페이지 초기화 실패:', error);
+        const errorTime = Math.round(performance.now() - pageStartTime);
+        console.error(`❌ 공지사항 페이지 초기화 실패 (${errorTime}ms):`, error);
         showErrorMessage('페이지 로딩 중 오류가 발생했습니다.');
     }
 });
 
 /**
- * 서비스 대기 함수
+ * 서비스 대기 함수 - 병렬 처리로 최적화
  */
 async function waitForServices() {
-    let attempts = 0;
-    const maxAttempts = 100; // 10초로 증가
+    const startTime = performance.now();
+    console.log('⏳ 서비스 초기화 시작 (병렬 처리)...');
     
-    console.log('⏳ 서비스 초기화 대기 중...');
-    
-    // 먼저 WaveSupabase 초기화를 기다림
-    while (attempts < maxAttempts) {
-        if (window.WaveSupabase && window.WaveSupabase.getClient) {
-            console.log('✅ WaveSupabase 발견');
-            break;
+    // Supabase 초기화 대기 (필수)
+    const waitForSupabase = async () => {
+        const timeout = 3000; // 3초로 단축
+        const interval = 50;   // 50ms 간격으로 더 자주 체크
+        const maxAttempts = timeout / interval;
+        
+        for (let i = 0; i < maxAttempts; i++) {
+            if (window.WaveSupabase && window.WaveSupabase.getClient) {
+                console.log('✅ WaveSupabase 준비 완료');
+                return true;
+            }
+            await new Promise(resolve => setTimeout(resolve, interval));
         }
-        await new Promise(resolve => setTimeout(resolve, 100));
-        attempts++;
+        
+        console.warn('⚠️ Supabase 초기화 타임아웃');
+        return false;
+    };
+    
+    // Supabase가 준비될 때까지 기다림
+    const supabaseReady = await waitForSupabase();
+    if (!supabaseReady) {
+        console.warn('⚠️ Supabase 초기화 실패, 제한된 기능으로 동작');
     }
     
-    // 서비스 초기화
-    if (!window.noticeService) {
-        console.log('📦 NoticeService 생성 및 초기화...');
-        window.noticeService = new NoticeService();
-        await window.noticeService.init();
-    }
-    
-    if (!window.feedbackService) {
-        console.log('📦 FeedbackService 생성 및 초기화...');
-        window.feedbackService = new FeedbackService();
-        await window.feedbackService.init();
-    }
-    
-    // 모든 서비스가 준비될 때까지 대기
-    attempts = 0;
-    while (attempts < maxAttempts) {
-        if (window.noticeService && window.authService && window.feedbackService) {
-            console.log('✅ 모든 서비스 준비 완료');
-            return;
+    // 필수 서비스들을 병렬로 초기화
+    const initializeServices = async () => {
+        const promises = [];
+        
+        // NoticeService 초기화
+        if (!window.noticeService && supabaseReady) {
+            promises.push(
+                (async () => {
+                    try {
+                        console.log('📦 NoticeService 초기화 시작...');
+                        window.noticeService = new NoticeService();
+                        await window.noticeService.init();
+                        console.log('✅ NoticeService 초기화 완료');
+                        return 'noticeService';
+                    } catch (error) {
+                        console.error('❌ NoticeService 초기화 실패:', error);
+                        return null;
+                    }
+                })()
+            );
         }
-        await new Promise(resolve => setTimeout(resolve, 100));
-        attempts++;
-    }
+        
+        // FeedbackService 초기화
+        if (!window.feedbackService && supabaseReady) {
+            promises.push(
+                (async () => {
+                    try {
+                        console.log('📦 FeedbackService 초기화 시작...');
+                        window.feedbackService = new FeedbackService();
+                        await window.feedbackService.init();
+                        console.log('✅ FeedbackService 초기화 완료');
+                        return 'feedbackService';
+                    } catch (error) {
+                        console.error('❌ FeedbackService 초기화 실패:', error);
+                        return null;
+                    }
+                })()
+            );
+        }
+        
+        // AuthService는 이미 초기화되어 있을 가능성이 높으므로 별도 처리
+        const checkAuthService = () => {
+            if (window.authService) {
+                console.log('✅ AuthService 이미 준비됨');
+                return 'authService';
+            } else {
+                console.warn('⚠️ AuthService 준비되지 않음');
+                return null;
+            }
+        };
+        
+        // 모든 서비스 초기화를 병렬로 실행
+        const results = await Promise.allSettled(promises);
+        const authResult = checkAuthService();
+        
+        // 결과 정리
+        const successfulServices = results
+            .filter(result => result.status === 'fulfilled' && result.value)
+            .map(result => result.value);
+        
+        if (authResult) successfulServices.push(authResult);
+        
+        const endTime = performance.now();
+        const initTime = Math.round(endTime - startTime);
+        
+        console.log(`📊 서비스 초기화 완료: ${successfulServices.length}개 성공 (${initTime}ms)`);
+        console.log(`✅ 초기화된 서비스:`, successfulServices);
+        
+        // 최소한 NoticeService가 있어야 정상 동작
+        if (window.noticeService) {
+            console.log('✅ 필수 서비스 준비 완료 - 페이지 로드 진행');
+        } else {
+            console.warn('⚠️ NoticeService 초기화 실패 - 제한된 기능으로 동작');
+        }
+    };
     
-    // 부분적으로라도 진행
-    console.warn('⚠️ 일부 서비스가 초기화되지 않았지만 계속 진행');
+    await initializeServices();
 }
 
 /**
@@ -263,16 +364,51 @@ function setupFeedbackEventListeners() {
 }
 
 /**
- * Supabase에서 공지사항 데이터 로드
+ * Supabase에서 공지사항 데이터 로드 - 캐시 우선 사용
  */
 async function loadNoticesFromSupabase() {
+    const loadStartTime = performance.now();
+    
     try {
         showLoadingState();
         
+        // 1. 먼저 캐시된 데이터 확인
+        const cachedData = window.getCachedNoticeData && window.getCachedNoticeData();
+        
+        if (cachedData && cachedData.length > 0) {
+            console.log('📦 캐시된 공지사항 데이터 사용 중...');
+            
+            // 캐시 데이터를 원본 구조로 변환
+            allNotices = cachedData.map(notice => ({
+                id: notice.id,
+                category: notice.category,
+                title: notice.title,
+                content: notice.content,
+                team: notice.team,
+                viewCount: notice.view_count,
+                createdAt: notice.created_at ? new Date(notice.created_at).toLocaleDateString('ko-KR') : '-',
+                isPinned: notice.is_pinned,
+                isNew: notice.is_new || (Date.now() - new Date(notice.created_at).getTime() < 7 * 24 * 60 * 60 * 1000)
+            }));
+
+            filteredNotices = [...allNotices];
+            renderNotices();
+            renderPagination();
+            
+            const cacheTime = Math.round(performance.now() - loadStartTime);
+            console.log(`📊 캐시 데이터 로드 완료: ${allNotices.length}개 (${cacheTime}ms)`);
+            
+            // 백그라운드에서 최신 데이터 업데이트 시도
+            updateNoticesInBackground();
+            return;
+        }
+        
+        // 2. 캐시가 없으면 NoticeService 사용
         if (!window.noticeService) {
             throw new Error('NoticeService가 초기화되지 않았습니다.');
         }
 
+        console.log('🔄 Supabase에서 공지사항 데이터 로드 중...');
         const result = await window.noticeService.getNotices({
             limit: 100 // 모든 공지사항을 가져와서 클라이언트에서 필터링
         });
@@ -297,10 +433,52 @@ async function loadNoticesFromSupabase() {
         filteredNotices = [...allNotices];
         renderNotices();
         renderPagination();
+        
+        const loadTime = Math.round(performance.now() - loadStartTime);
+        console.log(`📊 실시간 데이터 로드 완료: ${allNotices.length}개 (${loadTime}ms)`);
 
     } catch (error) {
         console.error('공지사항 로드 실패:', error);
         showErrorMessage('공지사항을 불러오는데 실패했습니다.');
+    }
+}
+
+/**
+ * 백그라운드에서 최신 데이터 업데이트
+ */
+async function updateNoticesInBackground() {
+    try {
+        if (!window.noticeService) return;
+        
+        console.log('🔄 백그라운드 데이터 업데이트 시작...');
+        const result = await window.noticeService.getNotices({ limit: 100 });
+        
+        if (result.error) return;
+        
+        // 데이터 변경 여부 확인
+        const newNotices = result.data.map(notice => ({
+            id: notice.id,
+            category: notice.category,
+            title: notice.title,
+            content: notice.content,
+            team: notice.team,
+            viewCount: notice.view_count,
+            createdAt: notice.createdAt,
+            isPinned: notice.is_pinned,
+            isNew: notice.isNew
+        }));
+        
+        // 데이터가 다르면 업데이트
+        if (JSON.stringify(allNotices) !== JSON.stringify(newNotices)) {
+            console.log('📋 새로운 공지사항 데이터 감지, 업데이트 중...');
+            allNotices = newNotices;
+            filteredNotices = [...allNotices];
+            renderNotices();
+            renderPagination();
+        }
+        
+    } catch (error) {
+        console.log('백그라운드 업데이트 실패 (정상 동작):', error.message);
     }
 }
 

@@ -39,98 +39,69 @@ class PostService {
                 searchQuery = ''
             } = options;
 
-            // Supabase 연결 상태 확인
+            // Supabase 연결 상태 확인 후 실제 데이터베이스 조회
             if (!this.supabase) {
-                console.log('🔄 PostService 폴백 모드 - 목 데이터 반환');
-            } else {
-                console.log('📡 Supabase 연결됨 - 목 데이터 반환 (테이블 미존재로 인한 임시 처리)');
+                throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
             }
-            const mockPosts = [
-                {
-                    id: 'mock-1',
-                    title: '웨이브스페이스에 오신 것을 환영합니다!',
-                    content: '웨이브스페이스는 부동산 영업인들을 위한 전문 커뮤니티입니다. 다양한 정보를 공유하고 네트워킹을 활성화하세요.',
-                    author_id: 'mock-user-1',
-                    category_id: 'notice',
-                    view_count: 150,
-                    like_count: 25,
-                    comment_count: 8,
-                    created_at: new Date().toISOString(),
-                    is_pinned: true,
-                    categories: { name: '공지' },
-                    users: { username: '관리자' }
-                },
-                {
-                    id: 'mock-2',
-                    title: '첫 게시글 작성 이벤트 진행 중!',
-                    content: '지금 첫 게시글을 작성하시면 500 포인트를 드립니다!',
-                    author_id: 'mock-user-1',
-                    category_id: 'event',
-                    view_count: 89,
-                    like_count: 15,
-                    comment_count: 3,
-                    created_at: new Date().toISOString(),
-                    is_pinned: false,
-                    categories: { name: '이벤트' },
-                    users: { username: '이벤트팀' }
-                }
-            ];
 
-            // 페이지네이션 처리
+            console.log('📡 Supabase 연결됨 - 실제 데이터베이스에서 posts 조회');
+            
+            // 실제 데이터베이스 조회
+            let query = this.supabase
+                .from('posts')
+                .select(`
+                    id,
+                    title,
+                    content,
+                    author_id,
+                    category_id,
+                    view_count,
+                    like_count,
+                    comment_count,
+                    is_pinned,
+                    created_at,
+                    updated_at,
+                    users!author_id(username, email)
+                `)
+                .order('is_pinned', { ascending: false })
+                .order('created_at', { ascending: false });
+
+            // 페이지네이션 적용
             const startIndex = (page - 1) * limit;
-            const endIndex = startIndex + limit;
-            const paginatedPosts = mockPosts.slice(startIndex, endIndex);
+            const endIndex = startIndex + limit - 1;
+            query = query.range(startIndex, endIndex);
 
+            // 카테고리 필터
+            if (category_id) {
+                query = query.eq('category_id', category_id);
+            }
+
+            // 검색 필터
+            if (searchQuery) {
+                query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
+            }
+
+            const { data, error } = await query;
+            
+            if (error) {
+                console.error('Supabase 쿼리 오류:', error);
+                throw error;
+            }
+
+            console.log(`✅ 실제 DB에서 ${data.length}개 게시글 로드 완료`);
+            
             return {
-                posts: paginatedPosts,
-                total: mockPosts.length,
-                totalPages: Math.ceil(mockPosts.length / limit),
+                posts: data || [],
+                total: data ? data.length : 0,
+                totalPages: Math.ceil((data ? data.length : 0) / limit),
                 currentPage: page
             };
-            
-            // 실제 데이터베이스 조회 (테이블 생성 후 활성화)
-            // let query = this.supabase
-            //     .from('posts')
-            //     .select(`
-            //         *,
-            //         users:author_id(username, profile_image_url),
-            //         post_categories:category_id(name, slug),
-            //         user_badges!inner(
-            //             badges(name, badge_type, color)
-            //         )
-            //     `)
-            //     .eq('is_hidden', false)
-            //     .order('is_pinned', { ascending: false })
-            //     .order('created_at', { ascending: false })
-            //     .range((page - 1) * limit, page * limit - 1);
-
-            // // 카테고리 필터
-            // if (categorySlug) {
-            //     const { data: category } = await this.supabase
-            //         .from('post_categories')
-            //         .select('id')
-            //         .eq('slug', categorySlug)
-            //         .single();
-                
-            //     if (category) {
-            //         query = query.eq('category_id', category.id);
-            //     }
-            // }
-
-            // // 검색 필터
-            // if (searchQuery) {
-            //     query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
-            // }
-
-            // const { data, error } = await query;
-            
-            // if (error) throw error;
-            // return { success: true, data };
         } catch (error) {
             console.error('게시글 목록 조회 실패:', error);
-            return { success: false, error: error.message };
+            throw error;
         }
     }
+
 
     /**
      * 게시글 상세 조회
@@ -544,28 +515,18 @@ class PostService {
      */
     async getCategories() {
         try {
-            // 임시 목 데이터 반환 (테이블이 존재하지 않음)
-            const mockCategories = [
-                { id: 'general', name: '일반', slug: 'general', is_active: true, sort_order: 1 },
-                { id: 'info', name: '정보공유', slug: 'info', is_active: true, sort_order: 2 },
-                { id: 'qna', name: '질문답변', slug: 'qna', is_active: true, sort_order: 3 },
-                { id: 'tip', name: '노하우', slug: 'tip', is_active: true, sort_order: 4 },
-                { id: 'market', name: '시장분석', slug: 'market', is_active: true, sort_order: 5 }
-            ];
+            // 실제 데이터베이스 조회
+            const { data, error } = await this.supabase
+                .from('post_categories')
+                .select('*')
+                .eq('is_active', true)
+                .order('sort_order');
             
-            return mockCategories;
-            
-            // 실제 데이터베이스 조회 (테이블 생성 후 활성화)
-            // const { data, error } = await this.supabase
-            //     .from('post_categories')
-            //     .select('*')
-            //     .eq('is_active', true)
-            //     .order('sort_order');
-            // if (error) throw error;
-            // return data;
+            if (error) throw error;
+            return data || [];
         } catch (error) {
             console.error('카테고리 조회 실패:', error);
-            return [];
+            throw error;
         }
     }
 

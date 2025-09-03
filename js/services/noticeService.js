@@ -16,12 +16,12 @@ class NoticeService {
      */
     async init() {
         try {
-            // Supabase 클라이언트 대기 (최대 10초)
+            // Supabase 클라이언트 대기 (최대 3초)
             let attempts = 0;
-            const maxAttempts = 100; // 10초
+            const maxAttempts = 60; // 3초 (50ms * 60 = 3000ms)
             
             while ((!window.WaveSupabase || !window.WaveSupabase.getClient) && attempts < maxAttempts) {
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 50));
                 attempts++;
             }
             

@@ -149,13 +149,59 @@ class AuthService {
     }
 
     /**
+     * Supabase 클라이언트 준비 대기
+     */
+    async waitForSupabaseReady() {
+        let attempts = 0;
+        const maxAttempts = 50; // 5초 대기
+        
+        while (attempts < maxAttempts) {
+            try {
+                if (window.WaveSupabase && window.WaveSupabase.getClient) {
+                    this.supabase = window.WaveSupabase.getClient();
+                    if (this.supabase && this.supabase.auth) {
+                        return true;
+                    }
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            } catch (error) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
      * 현재 인증 상태 확인
      */
     async checkAuthState() {
         try {
             console.log('🔍 인증 상태 확인 시작');
             
+            // Supabase 클라이언트 확인
+            if (!this.supabase || !this.supabase.auth) {
+                console.warn('⚠️ Supabase 클라이언트가 초기화되지 않음, 초기화 대기 중...');
+                
+                // Supabase 초기화를 기다림
+                await this.waitForSupabaseReady();
+                
+                // 다시 한번 확인
+                if (!this.supabase || !this.supabase.auth) {
+                    console.error('❌ Supabase 클라이언트 초기화 실패');
+                    return null;
+                }
+            }
+            
             // getSession을 사용하여 세션 확인 (더 정확함)
+            if (!this.supabase?.auth?.getSession) {
+                console.warn('⚠️ Supabase auth.getSession 메서드가 없음');
+                return null;
+            }
+            
             const { data: { session }, error } = await this.supabase.auth.getSession();
             
             if (error) {
@@ -1098,27 +1144,20 @@ class AuthService {
             `;
 
             if (headerRight) {
-                // 기존 검색 버튼이 있는지 확인
-                const hasSearchButton = headerRight.querySelector('.fa-search');
-                console.log('[AuthService] 검색 버튼 체크:', { hasSearchButton: !!hasSearchButton, headerRightHTML: headerRight.innerHTML.substring(0, 200) });
-                
-                if (hasSearchButton) {
-                    // 검색 버튼이 있는 페이지 (events.html, notice.html 등)
-                    headerRight.innerHTML = `
-                        <button class="header-icon-btn">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        ${simpleIconsHTML}
-                    `;
-                } else {
-                    // 검색 버튼이 없는 페이지 (index.html, policy.html 등)
-                    headerRight.innerHTML = simpleIconsHTML;
-                }
+                // 검색 버튼 없이 간단한 아이콘들만 표시
+                headerRight.innerHTML = simpleIconsHTML;
             } else {
                 // fallback: userInfoContainer만 업데이트
                 userInfoElement.innerHTML = simpleIconsHTML;
             }
         }
+
+        // 알림 버튼 표시 (로그인된 사용자에게는 필요)
+        const notificationBtn = document.querySelector('.notification-btn');
+        if (notificationBtn) {
+            notificationBtn.style.display = 'block';
+        }
+
 
         // 로그인 관련 버튼 숨기기/표시
         document.querySelectorAll('.login-required').forEach(el => {
@@ -1142,6 +1181,13 @@ class AuthService {
                 </div>
             `;
         }
+
+        // 알림 버튼 숨기기 (로그인하지 않은 사용자에게는 불필요)
+        const notificationBtn = document.querySelector('.notification-btn');
+        if (notificationBtn) {
+            notificationBtn.style.display = 'none';
+        }
+
 
         // 로그인 필요 기능 숨기기
         document.querySelectorAll('.login-required').forEach(el => {
@@ -1750,6 +1796,30 @@ const authService = new AuthService();
 
 // 페이지 로드 시 초기화
 window.addEventListener('load', async () => {
+    // HeaderLoader 완료 대기 (동적 헤더 페이지의 경우)
+    const headerContainer = document.getElementById('header-container');
+    if (headerContainer) {
+        // 헤더가 로드될 때까지 대기
+        let headerLoaded = false;
+        let headerAttempts = 0;
+        const maxHeaderAttempts = 20; // 2초 대기
+        
+        while (!headerLoaded && headerAttempts < maxHeaderAttempts) {
+            const header = headerContainer.querySelector('header');
+            if (header) {
+                headerLoaded = true;
+                console.log('[AuthService] HeaderLoader 완료 확인됨');
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                headerAttempts++;
+            }
+        }
+        
+        if (!headerLoaded) {
+            console.warn('[AuthService] HeaderLoader 대기 시간 초과, 계속 진행');
+        }
+    }
+    
     // Supabase가 초기화될 때까지 대기
     let attempts = 0;
     const maxAttempts = 50; // 5초 대기

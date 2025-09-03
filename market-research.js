@@ -36,7 +36,7 @@ async function loadDocumentsFromSupabase() {
         }
     } catch (error) {
         console.error('❌ Supabase 문서 로드 실패:', error);
-        console.warn('💡 Mock 데이터로 대체하여 실행합니다.');
+        console.error('⚠️ 데이터를 로드할 수 없습니다. Supabase 연결을 확인하세요.');
     }
 }
 

@@ -1,0 +1,218 @@
+/* page-transitions.css - 페이지 전환 애니메이션 */
+
+/* 전환 변수 정의 */
+:root {
+    --page-transition-duration: 200ms;
+    --page-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+    --fade-transition: var(--page-transition-duration) var(--page-transition-easing);
+}
+
+/* 페이지 로딩 상태 */
+.page-loading {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity var(--fade-transition), 
+                transform var(--fade-transition);
+}
+
+/* 페이지 로드 완료 상태 */
+.page-loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 페이지 전환 중 상태 */
+.page-transitioning {
+    opacity: 0;
+    transition: opacity 150ms ease-out;
+}
+
+/* 콘텐츠 영역 전환 */
+.main-content {
+    transition: opacity var(--fade-transition);
+}
+
+.page-loading .main-content {
+    opacity: 0;
+}
+
+.page-loaded .main-content {
+    opacity: 1;
+}
+
+/* 사이드바 전환 최적화 */
+.sidebar {
+    transition: transform var(--transition-normal), 
+                width var(--transition-normal),
+                opacity var(--fade-transition);
+}
+
+/* 깜빡임 방지를 위한 초기 스타일 */
+.sidebar-container {
+    opacity: 0;
+    transition: opacity var(--fade-transition);
+}
+
+.page-loaded .sidebar-container {
+    opacity: 1;
+}
+
+/* 헤더 전환 */
+.main-header {
+    transition: opacity var(--fade-transition);
+}
+
+.page-loading .main-header {
+    opacity: 0;
+}
+
+.page-loaded .main-header {
+    opacity: 1;
+}
+
+/* 개별 카드/요소 애니메이션 */
+.glass-card {
+    transition: opacity var(--fade-transition),
+                transform var(--fade-transition);
+}
+
+.page-loading .glass-card {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.page-loaded .glass-card {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 순차적 애니메이션 */
+.page-loaded .glass-card:nth-child(1) { transition-delay: 0ms; }
+.page-loaded .glass-card:nth-child(2) { transition-delay: 50ms; }
+.page-loaded .glass-card:nth-child(3) { transition-delay: 100ms; }
+.page-loaded .glass-card:nth-child(4) { transition-delay: 150ms; }
+.page-loaded .glass-card:nth-child(5) { transition-delay: 200ms; }
+
+/* 네비게이션 링크 호버 효과 개선 */
+.nav-link {
+    transition: color var(--fade-transition),
+                background-color var(--fade-transition),
+                transform var(--fade-transition);
+}
+
+.nav-link:hover {
+    transform: translateX(4px);
+}
+
+/* 이미지 lazy loading 전환 */
+img[data-lazy] {
+    opacity: 0;
+    transition: opacity var(--fade-transition);
+}
+
+img.lazy-loaded {
+    opacity: 1;
+}
+
+/* 폼 요소 전환 */
+.form-group {
+    transition: opacity var(--fade-transition);
+}
+
+.page-loading .form-group {
+    opacity: 0;
+}
+
+.page-loaded .form-group {
+    opacity: 1;
+}
+
+/* 테이블 전환 */
+.table-container {
+    transition: opacity var(--fade-transition);
+}
+
+.page-loading .table-container {
+    opacity: 0;
+}
+
+.page-loaded .table-container {
+    opacity: 1;
+}
+
+/* 모달 및 오버레이 전환 */
+.modal-overlay {
+    transition: opacity var(--fade-transition),
+                backdrop-filter var(--fade-transition);
+}
+
+/* 버튼 상태 전환 */
+.btn {
+    transition: all var(--fade-transition);
+}
+
+/* 스켈레톤 로딩 효과 (선택사항) */
+.skeleton-loading {
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0.1) 25%, 
+        rgba(255,255,255,0.2) 50%, 
+        rgba(255,255,255,0.1) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* 미디어 쿼리 - 모션 선호도 고려 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .page-loading,
+    .page-loaded,
+    .page-transitioning {
+        transition: none !important;
+    }
+}
+
+/* 다크 모드에서 전환 최적화 */
+@media (prefers-color-scheme: dark) {
+    .skeleton-loading {
+        background: linear-gradient(90deg, 
+            rgba(255,255,255,0.05) 25%, 
+            rgba(255,255,255,0.1) 50%, 
+            rgba(255,255,255,0.05) 75%);
+    }
+}
+
+/* 성능 최적화 */
+.page-loading * {
+    pointer-events: none;
+}
+
+.page-loaded * {
+    pointer-events: auto;
+}
+
+/* GPU 가속 활용 */
+.page-loading,
+.page-loaded,
+.page-transitioning {
+    transform: translateZ(0);
+    will-change: opacity, transform;
+}
+
+.page-loaded {
+    will-change: auto;
+}

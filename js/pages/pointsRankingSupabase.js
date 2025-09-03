@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '../config/supabase.js';
-import { authService } from '../services/authService.js';
+// authService는 전역 변수로 사용됨
 
 class PointsRankingManager {
     constructor() {
@@ -19,8 +19,11 @@ class PointsRankingManager {
 
     async init() {
         try {
-            await authService.init();
-            this.currentUser = await authService.getCurrentUser();
+            // 전역 authService를 사용
+            if (window.authService) {
+                await window.authService.init();
+                this.currentUser = await window.authService.getCurrentUser();
+            }
             
             this.setupEventListeners();
             await this.loadRankings();
@@ -134,6 +137,9 @@ class PointsRankingManager {
             }));
 
             this.renderRankings();
+            
+            // 내 순위 정보 업데이트
+            this.updateMyRankingInfo();
 
         } catch (error) {
             console.error('랭킹 로딩 오류:', error);
@@ -165,8 +171,143 @@ class PointsRankingManager {
         }
     }
 
+    renderTop3() {
+        const top3 = this.rankings.slice(0, 3);
+        
+        // 1위 렌더링
+        const rank1Element = document.getElementById('rank-1');
+        if (rank1Element) {
+            if (top3[0]) {
+                const user = top3[0];
+                rank1Element.innerHTML = `
+                    <div class="rank-number">1</div>
+                    <div class="user-avatar-container">
+                        <div class="user-avatar">
+                            <span>${user.username ? user.username.charAt(0) : '?'}</span>
+                        </div>
+                        <div class="membership-type">${this.getMembershipType(user)}</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="nickname">${user.username || '익명'}</div>
+                        <div class="representative-badge-text">
+                            <span class="badge-name">${this.getRepresentativeBadge(user)}</span>
+                        </div>
+                        <div class="points-info">${this.formatNumber(user.points || 0)}P</div>
+                    </div>
+                    <div class="crown-decoration">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                `;
+                rank1Element.style.display = 'flex';
+            } else {
+                rank1Element.innerHTML = `
+                    <div class="rank-number">1</div>
+                    <div class="empty-rank">
+                        <div class="empty-message">아직 1위가 없습니다</div>
+                        <div class="empty-subtext">첫 번째 왕관의 주인이 되어보세요!</div>
+                    </div>
+                `;
+                rank1Element.style.display = 'flex';
+            }
+        }
+
+        // 2위 렌더링
+        const rank2Element = document.getElementById('rank-2');
+        if (rank2Element) {
+            if (top3[1]) {
+                const user = top3[1];
+                rank2Element.innerHTML = `
+                    <div class="rank-number">2</div>
+                    <div class="user-avatar-container">
+                        <div class="user-avatar">
+                            <span>${user.username ? user.username.charAt(0) : '?'}</span>
+                        </div>
+                        <div class="membership-type">${this.getMembershipType(user)}</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="nickname">${user.username || '익명'}</div>
+                        <div class="representative-badge-text">
+                            <span class="badge-name">${this.getRepresentativeBadge(user)}</span>
+                        </div>
+                        <div class="points-info">${this.formatNumber(user.points || 0)}P</div>
+                    </div>
+                `;
+                rank2Element.style.display = 'flex';
+            } else {
+                rank2Element.innerHTML = `
+                    <div class="rank-number">2</div>
+                    <div class="empty-rank">
+                        <div class="empty-message">2위 자리 비어있음</div>
+                        <div class="empty-subtext">은메달을 노려보세요!</div>
+                    </div>
+                `;
+                rank2Element.style.display = 'flex';
+            }
+        }
+
+        // 3위 렌더링
+        const rank3Element = document.getElementById('rank-3');
+        if (rank3Element) {
+            if (top3[2]) {
+                const user = top3[2];
+                rank3Element.innerHTML = `
+                    <div class="rank-number">3</div>
+                    <div class="user-avatar-container">
+                        <div class="user-avatar">
+                            <span>${user.username ? user.username.charAt(0) : '?'}</span>
+                        </div>
+                        <div class="membership-type">${this.getMembershipType(user)}</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="nickname">${user.username || '익명'}</div>
+                        <div class="representative-badge-text">
+                            <span class="badge-name">${this.getRepresentativeBadge(user)}</span>
+                        </div>
+                        <div class="points-info">${this.formatNumber(user.points || 0)}P</div>
+                    </div>
+                `;
+                rank3Element.style.display = 'flex';
+            } else {
+                rank3Element.innerHTML = `
+                    <div class="rank-number">3</div>
+                    <div class="empty-rank">
+                        <div class="empty-message">3위 자리 비어있음</div>
+                        <div class="empty-subtext">동메달의 기회!</div>
+                    </div>
+                `;
+                rank3Element.style.display = 'flex';
+            }
+        }
+    }
+
+    getMembershipType(user) {
+        // 사용자 정보에 따른 멤버십 타입 반환
+        if (user.member_type) return user.member_type;
+        if (user.total_posts > 100) return '분양기획';
+        if (user.total_posts > 50) return '분양영업';
+        return '일반회원';
+    }
+
+    getRepresentativeBadge(user) {
+        // 사용자의 대표 뱃지 반환
+        if (user.user_badges && user.user_badges.length > 0) {
+            const topBadge = user.user_badges
+                .sort((a, b) => this.getBadgeRarityScore(b.badges.rarity) - this.getBadgeRarityScore(a.badges.rarity))[0];
+            return `ㅣ${topBadge.badges.name}ㅣ`;
+        }
+        
+        // 기본 뱃지
+        if (user.rank === 1) return 'ㅣ우승자ㅣ';
+        if (user.rank === 2) return 'ㅣ준우승ㅣ';
+        if (user.rank === 3) return 'ㅣ동메달리스트ㅣ';
+        return 'ㅣ뉴비ㅣ';
+    }
+
     renderRankings() {
-        const container = document.querySelector('.ranking-list, .rankings-container');
+        // TOP 3 먼저 렌더링
+        this.renderTop3();
+        
+        const container = document.querySelector('.ranking-list, .rankings-container, #rankingTableBody');
         if (!container) return;
 
         if (this.rankings.length === 0) {
@@ -180,7 +321,10 @@ class PointsRankingManager {
             return;
         }
 
-        const rankingsHTML = this.rankings.map(user => `
+        // 4위부터 100위까지만 테이블에 표시
+        const tableRankings = this.rankings.slice(3);
+        
+        const rankingsHTML = tableRankings.map(user => `
             <div class="ranking-item ${this.currentUser?.id === user.id ? 'current-user' : ''}" 
                  data-user-id="${user.id}">
                 <div class="rank-position">
@@ -484,6 +628,52 @@ class PointsRankingManager {
         }
     }
 
+    // 내 순위 정보 업데이트
+    updateMyRankingInfo() {
+        const myRankDisplay = document.getElementById('myRankDisplay');
+        const myPointsDisplay = document.getElementById('myPointsDisplay');
+        const myChangeDisplay = document.getElementById('myChangeDisplay');
+
+        if (!myRankDisplay || !myPointsDisplay || !myChangeDisplay) return;
+
+        // 로그인 체크
+        if (!this.currentUser) {
+            myRankDisplay.textContent = '로그인 필요';
+            myPointsDisplay.textContent = '0P';
+            myChangeDisplay.innerHTML = `
+                <span class="change-icon">-</span>
+                <span class="change-value">0위</span>
+                <span class="change-desc">(전일대비)</span>
+            `;
+            return;
+        }
+
+        // 내 순위 찾기
+        const myRanking = this.rankings.find(user => user.id === this.currentUser.id);
+        
+        if (myRanking) {
+            // 순위가 있는 경우
+            myRankDisplay.textContent = `${myRanking.rank}위`;
+            myPointsDisplay.textContent = `${this.formatNumber(myRanking.points || 0)}P`;
+            
+            // 순위 변동 표시 (현재는 기본값)
+            myChangeDisplay.innerHTML = `
+                <span class="change-icon">-</span>
+                <span class="change-value">0위</span>
+                <span class="change-desc">(전일대비)</span>
+            `;
+        } else {
+            // 순위가 없는 경우 (101위 이하)
+            myRankDisplay.textContent = '순위 없음';
+            myPointsDisplay.textContent = `${this.formatNumber(this.currentUser.points || 0)}P`;
+            myChangeDisplay.innerHTML = `
+                <span class="change-icon">-</span>
+                <span class="change-value">0위</span>
+                <span class="change-desc">(전일대비)</span>
+            `;
+        }
+    }
+
     getRankClass(rank) {
         if (rank === 1) return 'gold';
         if (rank === 2) return 'silver';
@@ -603,3 +793,24 @@ window.filterByType = (type) => window.pointsRankingManager.filterByType(type);
 window.toggleFollow = (userId) => window.pointsRankingManager.toggleFollow(userId);
 window.viewProfile = (userId) => window.pointsRankingManager.viewProfile(userId);
 window.exportRankings = () => window.pointsRankingManager.exportRankings();
+
+// 포인트 랭킹 페이지에서만 자동 초기화
+if (window.location.pathname.includes('points-ranking.html')) {
+    // Supabase 초기화 완료를 기다린 후 초기화
+    const initPointsRanking = () => {
+        if (window.supabase) {
+            console.log('[PointsRanking] 포인트 랭킹 시스템 초기화 시작...');
+            window.pointsRankingManager.init();
+        } else {
+            // Supabase가 아직 준비되지 않았다면 잠시 후 재시도
+            setTimeout(initPointsRanking, 100);
+        }
+    };
+    
+    // DOM이 완전히 로드된 후 초기화
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPointsRanking);
+    } else {
+        initPointsRanking();
+    }
+}

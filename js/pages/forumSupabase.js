@@ -220,7 +220,7 @@ class ForumManager {
             <article class="post-item" data-post-id="${post.id}">
                 <div class="post-header">
                     <div class="post-category">
-                        <span class="category-badge">${post.categories?.name || '일반'}</span>
+                        <span class="category-badge">${this.getCategoryName(post.category_id)}</span>
                         ${post.is_pinned ? '<span class="pinned-badge">📌 고정</span>' : ''}
                     </div>
                     <div class="post-meta">
@@ -400,6 +400,17 @@ class ForumManager {
     }
 
     // 유틸리티 함수들
+    getCategoryName(categoryId) {
+        const categories = {
+            1: '일반',
+            2: '정보공유', 
+            3: '후기',
+            4: '질문답변',
+            5: '노하우'
+        };
+        return categories[categoryId] || '일반';
+    }
+
     formatDate(dateString) {
         const date = new Date(dateString);
         const now = new Date();
