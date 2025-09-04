@@ -3,22 +3,13 @@
  * 파일 업로드/다운로드 관련 기능을 처리하는 서비스
  */
 
-class FileService {
-    constructor() {
-        this.supabase = null;
-        this.bucketName = 'wave-files'; // Supabase Storage 버킷명
-    }
+import { BaseService } from '/js/core/BaseService.js';
+import { ApiResponse, AuthorizationHelper, ValidationHelper } from '/js/utils/serviceHelpers.js';
 
-    /**
-     * authService 안전한 참조
-     * @returns {Object|null} authService 또는 null
-     */
-    getAuthService() {
-        if (typeof window !== 'undefined' && window.authService) {
-            return window.authService;
-        }
-        console.warn('⚠️ authService를 찾을 수 없습니다.');
-        return null;
+class FileService extends BaseService {
+    constructor() {
+        super('FileService');
+        this.bucketName = 'wave-files'; // Supabase Storage 버킷명
     }
 
     /**
@@ -45,7 +36,9 @@ class FileService {
      */
     isAdmin() {
         const authService = this.getAuthService();
-        return authService ? this.isAdmin() : false;
+        if (!authService) return false;
+        
+        return authService.isAdmin();
     }
 
     /**
@@ -53,7 +46,7 @@ class FileService {
      */
     async init() {
         try {
-            this.supabase = window.WaveSupabase.getClient();
+            await this.waitForSupabase();
             console.log('📁 FileService 초기화 완료 - Storage 버킷은 수동 생성 필요');
             // 자동 버킷 생성을 비활성화 (400 에러 방지)
             // await this.createBucketIfNotExists();
@@ -136,7 +129,7 @@ class FileService {
      * 파일 업로드
      */
     async uploadFile(file, category, description = '') {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -187,27 +180,27 @@ class FileService {
             // 3. 업로드 포인트 지급
             const uploadPoints = this.getUploadPoints(category);
             if (uploadPoints > 0) {
-                await pointService.earnPoints(
-                    currentUser.id,
-                    uploadPoints,
-                    'upload',
-                    `파일 업로드: ${file.name}`,
-                    fileData.id
-                );
+                const authService = this.getAuthService();
+                if (authService && authService.addPointHistory) {
+                    await authService.addPointHistory(
+                        currentUser.id,
+                        uploadPoints,
+                        'earn',
+                        `파일 업로드: ${file.name}`,
+                        fileData.id
+                    );
+                }
             }
 
-            return { success: true, data: fileData };
-        } catch (error) {
-            console.error('파일 업로드 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(fileData);
+        }, '파일 업로드 실패');
     }
 
     /**
      * 파일 다운로드
      */
     async downloadFile(fileId) {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -226,23 +219,22 @@ class FileService {
 
             if (fileError) throw fileError;
 
-            // 2. 다운로드 권한 확인
-            if (!this.canDownload(fileInfo, currentUser)) {
+            // 2. 다운로드 권한 확인 (AuthorizationHelper 사용)
+            if (!AuthorizationHelper.canDownloadFile(fileInfo, currentUser)) {
                 throw new Error('다운로드 권한이 없습니다. 실무자 인증이 필요할 수 있습니다.');
             }
 
             // 3. 포인트 차감 (무료가 아닌 경우)
             if (fileInfo.points_cost > 0) {
-                const spendResult = await pointService.spendPoints(
-                    currentUser.id,
-                    fileInfo.points_cost,
-                    'download',
-                    `파일 다운로드: ${fileInfo.original_name}`,
-                    fileId
-                );
-
-                if (!spendResult.success) {
-                    throw new Error('포인트가 부족합니다.');
+                const authService = this.getAuthService();
+                if (authService && authService.addPointHistory) {
+                    await authService.addPointHistory(
+                        currentUser.id,
+                        -fileInfo.points_cost,
+                        'spend',
+                        `파일 다운로드: ${fileInfo.original_name}`,
+                        fileId
+                    );
                 }
             }
 
@@ -278,18 +270,15 @@ class FileService {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            return { success: true };
-        } catch (error) {
-            console.error('파일 다운로드 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(null, '파일 다운로드가 시작되었습니다.');
+        }, '파일 다운로드 실패');
     }
 
     /**
      * 파일 목록 조회
      */
     async getFiles(category, page = 1, limit = 20, searchQuery = '') {
-        try {
+        return await this.executeQuery(async () => {
             let query = this.supabase
                 .from('files')
                 .select(`
@@ -297,8 +286,10 @@ class FileService {
                     users:uploader_id(username, profile_image_url)
                 `)
                 .eq('category', category)
-                .order('created_at', { ascending: false })
-                .range((page - 1) * limit, page * limit - 1);
+                .order('created_at', { ascending: false });
+
+            // BaseService의 applyPagination 메서드 사용
+            query = this.applyPagination(query, page, limit);
 
             // 검색 필터
             if (searchQuery) {
@@ -307,9 +298,6 @@ class FileService {
 
             // 승인이 필요한 카테고리는 승인된 것만 표시 (업로더 본인 제외)
             const currentUser = this.getCurrentUser();
-            if (!currentUser) {
-                throw new Error('사용자 정보를 가져올 수 없습니다.');
-            }
             if (this.needsVerification(category) && currentUser) {
                 query = query.or(`is_verified.eq.true,uploader_id.eq.${currentUser.id}`);
             } else if (this.needsVerification(category)) {
@@ -319,18 +307,15 @@ class FileService {
             const { data, error } = await query;
             if (error) throw error;
             
-            return { success: true, data };
-        } catch (error) {
-            console.error('파일 목록 조회 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '파일 목록 조회 실패');
     }
 
     /**
      * 파일 삭제
      */
     async deleteFile(fileId) {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -341,12 +326,13 @@ class FileService {
             }
 
             // 파일 정보 조회
-            const { data: fileInfo } = await this.supabase
+            const { data: fileInfo, error: fileError } = await this.supabase
                 .from('files')
                 .select('*')
                 .eq('id', fileId)
                 .single();
 
+            if (fileError) throw fileError;
             if (!fileInfo) {
                 throw new Error('파일을 찾을 수 없습니다.');
             }
@@ -371,18 +357,15 @@ class FileService {
 
             if (dbError) throw dbError;
 
-            return { success: true };
-        } catch (error) {
-            console.error('파일 삭제 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(null, '파일이 삭제되었습니다.');
+        }, '파일 삭제 실패');
     }
 
     /**
      * 파일 승인/거부 (관리자 전용)
      */
     async moderateFile(fileId, approved) {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isAdmin()) {
                 throw new Error('관리자 권한이 필요합니다.');
             }
@@ -393,11 +376,8 @@ class FileService {
                 .eq('id', fileId);
 
             if (error) throw error;
-            return { success: true };
-        } catch (error) {
-            console.error('파일 승인/거부 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(null, approved ? '파일이 승인되었습니다.' : '파일이 거부되었습니다.');
+        }, '파일 승인/거부 실패');
     }
 
     /**
@@ -433,23 +413,8 @@ class FileService {
      * 다운로드 권한 확인
      */
     canDownload(fileInfo, user) {
-        // 본인이 업로드한 파일은 항상 다운로드 가능
-        if (fileInfo.uploader_id === user.id) {
-            return true;
-        }
-
-        // 관리자는 모든 파일 다운로드 가능
-        if (this.isAdmin()) {
-            return true;
-        }
-
-        // 승인이 필요한 카테고리
-        if (this.needsVerification(fileInfo.category)) {
-            return fileInfo.is_verified && this.getAuthService()?.isVerified() || false;
-        }
-
-        // 일반 카테고리는 모든 인증된 사용자 다운로드 가능
-        return true;
+        // AuthorizationHelper 사용
+        return AuthorizationHelper.canDownloadFile(fileInfo, user);
     }
 
     /**
@@ -584,7 +549,7 @@ class FileService {
      * 파일 업로드 진행률 표시
      */
     async uploadWithProgress(file, category, description, progressCallback) {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -630,27 +595,27 @@ class FileService {
             // 업로드 포인트 지급
             const uploadPoints = this.getUploadPoints(category);
             if (uploadPoints > 0) {
-                await pointService.earnPoints(
-                    currentUser.id,
-                    uploadPoints,
-                    'upload',
-                    `파일 업로드: ${file.name}`,
-                    fileData.id
-                );
+                const authService = this.getAuthService();
+                if (authService && authService.addPointHistory) {
+                    await authService.addPointHistory(
+                        currentUser.id,
+                        uploadPoints,
+                        'earn',
+                        `파일 업로드: ${file.name}`,
+                        fileData.id
+                    );
+                }
             }
 
-            return { success: true, data: fileData };
-        } catch (error) {
-            console.error('파일 업로드 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(fileData);
+        }, '파일 업로드 실패');
     }
 
     /**
      * 내가 업로드한 파일 목록
      */
     async getMyFiles(page = 1, limit = 20) {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -660,49 +625,49 @@ class FileService {
                 throw new Error('사용자 정보를 가져올 수 없습니다.');
             }
             
-            const { data, error } = await this.supabase
+            let query = this.supabase
                 .from('files')
                 .select('*')
                 .eq('uploader_id', currentUser.id)
-                .order('created_at', { ascending: false })
-                .range((page - 1) * limit, page * limit - 1);
+                .order('created_at', { ascending: false });
+            
+            // BaseService의 applyPagination 메서드 사용
+            query = this.applyPagination(query, page, limit);
 
+            const { data, error } = await query;
             if (error) throw error;
-            return { success: true, data };
-        } catch (error) {
-            console.error('내 파일 조회 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '내 파일 조회 실패');
     }
 
     /**
      * 다운로드 내역 조회
      */
     async getDownloadHistory(userId, page = 1, limit = 20) {
-        try {
-            const { data, error } = await this.supabase
+        return await this.executeQuery(async () => {
+            let query = this.supabase
                 .from('file_downloads')
                 .select(`
                     *,
                     files:file_id(original_name, category)
                 `)
                 .eq('user_id', userId)
-                .order('downloaded_at', { ascending: false })
-                .range((page - 1) * limit, page * limit - 1);
+                .order('downloaded_at', { ascending: false });
+            
+            // BaseService의 applyPagination 메서드 사용
+            query = this.applyPagination(query, page, limit);
 
+            const { data, error } = await query;
             if (error) throw error;
-            return { success: true, data };
-        } catch (error) {
-            console.error('다운로드 내역 조회 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '다운로드 내역 조회 실패');
     }
 
     /**
      * 미승인 파일 목록 (관리자용)
      */
     async getPendingFiles() {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isAdmin()) {
                 throw new Error('관리자 권한이 필요합니다.');
             }
@@ -718,11 +683,8 @@ class FileService {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            return { success: true, data };
-        } catch (error) {
-            console.error('미승인 파일 조회 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '미승인 파일 조회 실패');
     }
 }
 

@@ -3,6 +3,9 @@
  * Supabase를 사용한 인증 관리 서비스
  */
 
+import { BaseService } from '/js/core/BaseService.js';
+import { AuthorizationHelper } from '/js/utils/serviceHelpers.js';
+
 // 에러 핸들러 import (동적 로드)
 let ErrorHandler = null;
 (async () => {
@@ -66,9 +69,9 @@ async function loadProfileAndBadges(supabase, authUserId) {
     }
 }
 
-class AuthService {
+class AuthService extends BaseService {
     constructor() {
-        this.supabase = null;
+        super('AuthService');
         this.currentUser = null;
     }
 
@@ -77,23 +80,8 @@ class AuthService {
      */
     async init() {
         try {
-            // Supabase가 초기화될 때까지 대기 (최대 10초)
-            let attempts = 0;
-            const maxAttempts = 100; // 10초 대기
-            
-            while (attempts < maxAttempts) {
-                try {
-                    this.supabase = window.WaveSupabase.getClient();
-                    break;
-                } catch (error) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    attempts++;
-                }
-            }
-            
-            if (!this.supabase) {
-                throw new Error('Supabase 초기화 타임아웃 (10초)');
-            }
+            // BaseService의 waitForSupabase 메서드 사용
+            await this.waitForSupabase(100, 100); // 최대 10초 대기
             
             await this.checkAuthState();
             this.setupAuthListener();
@@ -167,32 +155,6 @@ class AuthService {
         console.log('✅ 폴백 인증 UI 설정 완료');
     }
 
-    /**
-     * Supabase 클라이언트 준비 대기
-     */
-    async waitForSupabaseReady() {
-        let attempts = 0;
-        const maxAttempts = 50; // 5초 대기
-        
-        while (attempts < maxAttempts) {
-            try {
-                if (window.WaveSupabase && window.WaveSupabase.getClient) {
-                    this.supabase = window.WaveSupabase.getClient();
-                    if (this.supabase && this.supabase.auth) {
-                        return true;
-                    }
-                }
-                
-                await new Promise(resolve => setTimeout(resolve, 100));
-                attempts++;
-            } catch (error) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-                attempts++;
-            }
-        }
-        
-        return false;
-    }
 
     /**
      * 현재 인증 상태 확인
@@ -205,8 +167,8 @@ class AuthService {
             if (!this.supabase || !this.supabase.auth) {
                 console.warn('⚠️ Supabase 클라이언트가 초기화되지 않음, 초기화 대기 중...');
                 
-                // Supabase 초기화를 기다림
-                await this.waitForSupabaseReady();
+                // BaseService의 waitForSupabase 메서드 사용
+                await this.waitForSupabase();
                 
                 // 다시 한번 확인
                 if (!this.supabase || !this.supabase.auth) {

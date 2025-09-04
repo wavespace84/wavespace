@@ -3,21 +3,12 @@
  * 게시판 관련 기능을 처리하는 서비스
  */
 
-class PostService {
-    constructor() {
-        this.supabase = null;
-    }
+import { BaseService } from '/js/core/BaseService.js';
+import { ApiResponse, AuthorizationHelper, ValidationHelper } from '/js/utils/serviceHelpers.js';
 
-    /**
-     * authService 안전한 참조
-     * @returns {Object|null} authService 또는 null
-     */
-    getAuthService() {
-        if (typeof window !== 'undefined' && window.authService) {
-            return window.authService;
-        }
-        console.warn('⚠️ authService를 찾을 수 없습니다.');
-        return null;
+class PostService extends BaseService {
+    constructor() {
+        super('PostService');
     }
 
     /**
@@ -43,7 +34,7 @@ class PostService {
      */
     async init() {
         try {
-            this.supabase = window.WaveSupabase.getClient();
+            await this.waitForSupabase();
             console.log('✅ PostService 초기화 완료');
         } catch (error) {
             console.error('❌ PostService 초기화 실패:', error);
@@ -58,18 +49,19 @@ class PostService {
      * 게시글 목록 조회
      */
     async getPosts(options = {}) {
-        try {
-            // 옵션 파싱
-            const {
-                page = 1,
-                limit = 20,
-                category_id = null,
-                sort_by = 'created_at',
-                sort_order = 'desc',
-                searchQuery = ''
-            } = options;
+        // 옵션 파싱
+        const {
+            page = 1,
+            limit = 20,
+            category_id = null,
+            sort_by = 'created_at',
+            sort_order = 'desc',
+            searchQuery = ''
+        } = options;
 
-            // Supabase 연결 상태 확인 후 실제 데이터베이스 조회
+        // BaseService의 executeQuery 메서드 사용
+        return await this.executeQuery(async () => {
+            // Supabase 연결 상태 확인
             if (!this.supabase) {
                 throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
             }
@@ -96,10 +88,8 @@ class PostService {
                 .order('is_pinned', { ascending: false })
                 .order('created_at', { ascending: false });
 
-            // 페이지네이션 적용
-            const startIndex = (page - 1) * limit;
-            const endIndex = startIndex + limit - 1;
-            query = query.range(startIndex, endIndex);
+            // BaseService의 applyPagination 메서드 사용
+            query = this.applyPagination(query, page, limit);
 
             // 카테고리 필터
             if (category_id) {
@@ -126,10 +116,7 @@ class PostService {
                 totalPages: Math.ceil((data ? data.length : 0) / limit),
                 currentPage: page
             };
-        } catch (error) {
-            console.error('게시글 목록 조회 실패:', error);
-            throw error;
-        }
+        }, '게시글 목록 조회 실패');
     }
 
 
@@ -137,7 +124,7 @@ class PostService {
      * 게시글 상세 조회
      */
     async getPost(postId) {
-        try {
+        return await this.executeQuery(async () => {
             // 조회수 증가
             await this.incrementViewCount(postId);
 
@@ -156,18 +143,15 @@ class PostService {
                 .single();
 
             if (error) throw error;
-            return { success: true, data };
-        } catch (error) {
-            console.error('게시글 조회 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '게시글 조회 실패');
     }
 
     /**
      * 게시글 작성
      */
     async createPost(postData) {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -175,6 +159,14 @@ class PostService {
             const currentUser = this.getCurrentUser();
             if (!currentUser) {
                 throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
+            
+            // 입력값 검증
+            if (!ValidationHelper.isValidTitle(postData.title)) {
+                throw new Error('제목은 1-200자 사이여야 합니다.');
+            }
+            if (!ValidationHelper.isValidContent(postData.content)) {
+                throw new Error('내용은 1-10000자 사이여야 합니다.');
             }
             
             const { data, error } = await this.supabase
@@ -203,21 +195,32 @@ class PostService {
                 );
             }
 
-            return { success: true, data };
-        } catch (error) {
-            console.error('게시글 작성 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '게시글 작성 실패');
     }
 
     /**
      * 게시글 수정
      */
     async updatePost(postId, postData) {
-        try {
+        return await this.executeQuery(async () => {
             const currentUser = this.getCurrentUser();
             if (!currentUser) {
                 throw new Error('로그인이 필요합니다.');
+            }
+
+            // 입력값 검증
+            if (!ValidationHelper.isValidTitle(postData.title)) {
+                throw new Error('제목은 1-200자 사이여야 합니다.');
+            }
+            if (!ValidationHelper.isValidContent(postData.content)) {
+                throw new Error('내용은 1-10000자 사이여야 합니다.');
+            }
+
+            // 권한 확인
+            const post = await this.getPost(postId);
+            if (!AuthorizationHelper.canEditPost(post.data, currentUser)) {
+                throw new Error('게시글을 수정할 권한이 없습니다.');
             }
 
             const { data, error } = await this.supabase
@@ -234,21 +237,24 @@ class PostService {
                 .single();
 
             if (error) throw error;
-            return { success: true, data };
-        } catch (error) {
-            console.error('게시글 수정 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '게시글 수정 실패');
     }
 
     /**
      * 게시글 삭제
      */
     async deletePost(postId) {
-        try {
+        return await this.executeQuery(async () => {
             const currentUser = this.getCurrentUser();
             if (!currentUser) {
                 throw new Error('로그인이 필요합니다.');
+            }
+
+            // 권한 확인
+            const post = await this.getPost(postId);
+            if (!AuthorizationHelper.canEditPost(post.data, currentUser)) {
+                throw new Error('게시글을 삭제할 권한이 없습니다.');
             }
 
             const { error } = await this.supabase
@@ -258,18 +264,15 @@ class PostService {
                 .eq('author_id', currentUser.id);
 
             if (error) throw error;
-            return { success: true };
-        } catch (error) {
-            console.error('게시글 삭제 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(null, '게시글이 삭제되었습니다.');
+        }, '게시글 삭제 실패');
     }
 
     /**
      * 댓글 목록 조회
      */
     async getComments(postId) {
-        try {
+        return await this.executeQuery(async () => {
             const { data, error } = await this.supabase
                 .from('comments')
                 .select(`
@@ -284,18 +287,15 @@ class PostService {
                 .order('created_at', { ascending: true });
 
             if (error) throw error;
-            return { success: true, data };
-        } catch (error) {
-            console.error('댓글 조회 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '댓글 조회 실패');
     }
 
     /**
      * 댓글 작성
      */
     async createComment(postId, content, parentId = null) {
-        try {
+        return await this.executeQuery(async () => {
             if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -303,6 +303,11 @@ class PostService {
             const currentUser = this.getCurrentUser();
             if (!currentUser) {
                 throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
+            
+            // 입력값 검증
+            if (!ValidationHelper.isValidContent(content)) {
+                throw new Error('댓글 내용은 1-1000자 사이여야 합니다.');
             }
             
             const { data, error } = await this.supabase
@@ -336,11 +341,8 @@ class PostService {
                 );
             }
 
-            return { success: true, data };
-        } catch (error) {
-            console.error('댓글 작성 실패:', error);
-            return { success: false, error: error.message };
-        }
+            return ApiResponse.success(data);
+        }, '댓글 작성 실패');
     }
 
     /**
@@ -718,25 +720,7 @@ const postService = new PostService();
 
 // 페이지 로드 시 초기화
 window.addEventListener('load', async () => {
-    // Supabase가 초기화될 때까지 대기
-    let attempts = 0;
-    const maxAttempts = 50; // 5초 대기
-    
-    while (attempts < maxAttempts) {
-        if (window.WaveSupabase && window.WaveSupabase.getClient) {
-            try {
-                window.WaveSupabase.getClient();
-                await postService.init();
-                break;
-            } catch (error) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-                attempts++;
-            }
-        } else {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            attempts++;
-        }
-    }
+    await postService.init();
 });
 
 // 전역 접근 가능하도록 설정
