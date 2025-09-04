@@ -102,7 +102,7 @@ class NoticeService {
 
             // 정렬 (고정글 우선, 그 다음 최신순)
             query = query.order('is_pinned', { ascending: false })
-                         .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false });
 
             // 페이지네이션
             const start = (page - 1) * limit;

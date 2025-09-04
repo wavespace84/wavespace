@@ -347,15 +347,15 @@ function createLatestUpdateCard(update) {
             <h4>주요 변경사항</h4>
             <ul class="change-list">
                 ${update.changes
-                    .map(
-                        (change) => `
+        .map(
+            (change) => `
                     <li class="change-item">
                         <span class="bullet">•</span>
                         <span>${change}</span>
                     </li>
                 `
-                    )
-                    .join('')}
+        )
+        .join('')}
             </ul>
         </div>
         

@@ -273,22 +273,22 @@ function analyzeBuildOutput(distDir) {
                 let threshold = 0;
 
                 switch (ext) {
-                    case 'js':
-                        threshold = QUALITY_THRESHOLDS.performance.jsFileSize;
-                        break;
-                    case 'css':
-                        threshold = QUALITY_THRESHOLDS.performance.cssFileSize;
-                        break;
-                    case 'html':
-                        threshold = QUALITY_THRESHOLDS.performance.htmlFileSize;
-                        break;
-                    case 'jpg':
-                    case 'jpeg':
-                    case 'png':
-                    case 'gif':
-                    case 'webp':
-                        threshold = QUALITY_THRESHOLDS.performance.imageSize;
-                        break;
+                case 'js':
+                    threshold = QUALITY_THRESHOLDS.performance.jsFileSize;
+                    break;
+                case 'css':
+                    threshold = QUALITY_THRESHOLDS.performance.cssFileSize;
+                    break;
+                case 'html':
+                    threshold = QUALITY_THRESHOLDS.performance.htmlFileSize;
+                    break;
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                case 'gif':
+                case 'webp':
+                    threshold = QUALITY_THRESHOLDS.performance.imageSize;
+                    break;
                 }
 
                 if (threshold && stat.size > threshold) {

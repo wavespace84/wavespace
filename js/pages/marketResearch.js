@@ -198,27 +198,84 @@ export class MarketResearchPage {
         this.announceToScreenReader(`${step}단계로 이동했습니다. ${this.getStepTitle(step)}`);
     }
 
+    // 📊 단계 표시기 업데이트
+    updateStepIndicator() {
+        try {
+            // 단계 표시기 찾기
+            const stepIndicators = document.querySelectorAll('.step-indicator .step') ||
+                                 document.querySelectorAll('.progress-step') ||
+                                 document.querySelectorAll('[data-step-indicator]');
+
+            // 단계 표시기가 없으면 콘솔에 상태만 로그
+            if (!stepIndicators || stepIndicators.length === 0) {
+                console.log(`📊 현재 단계: ${this.currentStep}/${this.totalSteps}`);
+                return;
+            }
+
+            // 모든 단계 표시기 업데이트
+            stepIndicators.forEach((indicator, index) => {
+                const stepNumber = index + 1;
+                
+                // 클래스 초기화
+                indicator.classList.remove('active', 'completed', 'current');
+                
+                if (stepNumber < this.currentStep) {
+                    // 완료된 단계
+                    indicator.classList.add('completed');
+                } else if (stepNumber === this.currentStep) {
+                    // 현재 단계
+                    indicator.classList.add('active', 'current');
+                }
+
+                // 접근성을 위한 aria 속성 업데이트
+                if (stepNumber === this.currentStep) {
+                    indicator.setAttribute('aria-current', 'step');
+                } else {
+                    indicator.removeAttribute('aria-current');
+                }
+            });
+
+            // 진행률 바 업데이트 (있는 경우)
+            const progressBar = document.querySelector('.progress-bar-fill') ||
+                               document.querySelector('[data-progress-bar]');
+            
+            if (progressBar) {
+                const progressPercent = (this.currentStep / this.totalSteps) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                progressBar.setAttribute('aria-valuenow', this.currentStep);
+                progressBar.setAttribute('aria-valuetext', `${this.currentStep}단계 / 총 ${this.totalSteps}단계`);
+            }
+
+            console.log(`📊 단계 표시기 업데이트: ${this.currentStep}/${this.totalSteps}`);
+
+        } catch (error) {
+            console.error('❌ updateStepIndicator 오류:', error);
+            // 오류 발생 시 기본 동작
+            console.log(`📊 현재 단계: ${this.currentStep}/${this.totalSteps} (표시기 업데이트 실패)`);
+        }
+    }
+
     // ✅ 현재 단계 유효성 검증
     validateCurrentStep() {
         switch (this.currentStep) {
-            case 1:
-                if (!this.formData.region) {
-                    this.showValidationError('지역을 선택해주세요.');
-                    return false;
-                }
-                break;
-            case 2:
-                if (!this.formData.productTypes || this.formData.productTypes.length === 0) {
-                    this.showValidationError('하나 이상의 상품 유형을 선택해주세요.');
-                    return false;
-                }
-                break;
-            case 3:
-                if (!this.formData.budget || parseInt(this.formData.budget) < 1000) {
-                    this.showValidationError('예산을 1,000만원 이상 입력해주세요.');
-                    return false;
-                }
-                break;
+        case 1:
+            if (!this.formData.region) {
+                this.showValidationError('지역을 선택해주세요.');
+                return false;
+            }
+            break;
+        case 2:
+            if (!this.formData.productTypes || this.formData.productTypes.length === 0) {
+                this.showValidationError('하나 이상의 상품 유형을 선택해주세요.');
+                return false;
+            }
+            break;
+        case 3:
+            if (!this.formData.budget || parseInt(this.formData.budget) < 1000) {
+                this.showValidationError('예산을 1,000만원 이상 입력해주세요.');
+                return false;
+            }
+            break;
         }
         return true;
     }

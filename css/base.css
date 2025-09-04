@@ -86,12 +86,14 @@
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
 
-    /* Border Radius */
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 8px;
-    --radius-xl: 12px;
-    --radius-full: 9999px;
+    /* Border Radius - 더 둥근 디자인으로 개선 */
+    --radius-xs: 4px;   /* 아주 작은 요소 */
+    --radius-sm: 6px;   /* 작은 요소 */
+    --radius-md: 8px;   /* 중간 요소 */
+    --radius-lg: 12px;  /* 큰 요소 (버튼 기본값) */
+    --radius-xl: 16px;  /* 아주 큰 요소 */
+    --radius-2xl: 20px; /* 특수 요소 */
+    --radius-full: 9999px; /* 완전 둥근 */
 }
 
 /* Reset */

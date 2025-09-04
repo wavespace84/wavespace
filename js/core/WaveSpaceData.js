@@ -3,7 +3,13 @@
 
 class WaveSpaceData {
     constructor() {
-        this.errorHandler = new ErrorHandler();
+        // preload.js에서 이미 ErrorHandler가 정의되었는지 확인
+        if (window.ErrorHandler) {
+            this.errorHandler = new window.ErrorHandler();
+        } else {
+            // 폴백: 로컬 ErrorHandler 사용
+            this.errorHandler = new ErrorHandler();
+        }
         this.security = new SecurityManager();
         this.config = {
             apiEndpoint: '/api',
@@ -15,25 +21,32 @@ class WaveSpaceData {
     }
 }
 
-// 에러 핸들러 클래스
-class ErrorHandler {
-    constructor() {
-        this.errors = [];
+// ErrorHandler 중복 방지 - IIFE로 안전하게 처리
+(function initializeErrorHandler() {
+    if (window.ErrorHandler) {
+        console.log('[WaveSpaceData] ErrorHandler 이미 존재함 (preload.js에서 정의됨)');
+        return;
     }
+    
+    // 에러 핸들러 클래스 - preload.js에 없는 경우에만 정의
+    class ErrorHandler {
+        constructor() {
+            this.errors = [];
+        }
 
-    log(level, message, details = {}) {
-        const error = {
-            level,
-            message,
-            details,
-            timestamp: new Date().toISOString(),
-            url: window.location.href
-        };
-        
-        this.errors.push(error);
-        
-        // 콘솔에도 출력
-        switch (level) {
+        log(level, message, details = {}) {
+            const error = {
+                level,
+                message,
+                details,
+                timestamp: new Date().toISOString(),
+                url: window.location.href
+            };
+            
+            this.errors.push(error);
+            
+            // 콘솔에도 출력
+            switch (level) {
             case 'error':
                 console.error(`[${level.toUpperCase()}] ${message}`, details);
                 break;
@@ -42,31 +55,36 @@ class ErrorHandler {
                 break;
             default:
                 console.log(`[${level.toUpperCase()}] ${message}`, details);
+            }
+            
+            // 에러가 10개 이상 쌓이면 오래된 것 제거
+            if (this.errors.length > 10) {
+                this.errors.shift();
+            }
         }
         
-        // 에러가 10개 이상 쌓이면 오래된 것 제거
-        if (this.errors.length > 10) {
-            this.errors.shift();
+        showUserError(message) {
+            // 사용자에게 친화적인 오류 메시지 표시
+            if (window.WaveSpaceData?.toast?.show) {
+                window.WaveSpaceData.toast.show(message, 'error');
+            } else {
+                alert(message);
+            }
+        }
+        
+        getErrors() {
+            return [...this.errors];
+        }
+        
+        clearErrors() {
+            this.errors = [];
         }
     }
     
-    showUserError(message) {
-        // 사용자에게 친화적인 오류 메시지 표시
-        if (window.WaveSpaceData?.toast?.show) {
-            window.WaveSpaceData.toast.show(message, 'error');
-        } else {
-            alert(message);
-        }
-    }
-    
-    getErrors() {
-        return [...this.errors];
-    }
-    
-    clearErrors() {
-        this.errors = [];
-    }
-}
+    // 전역에 설정 (이미 있으면 덮어쓰지 않음)
+    window.ErrorHandler = ErrorHandler;
+    console.log('[WaveSpaceData] ErrorHandler 클래스 정의 완료');
+})();
 
 // 보안 관리자 클래스
 class SecurityManager {

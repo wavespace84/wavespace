@@ -22,14 +22,14 @@
             
             // 콘솔에도 출력
             switch (level) {
-                case 'error':
-                    console.error(`[${level.toUpperCase()}] ${message}`, details);
-                    break;
-                case 'warn':
-                    console.warn(`[${level.toUpperCase()}] ${message}`, details);
-                    break;
-                default:
-                    console.log(`[${level.toUpperCase()}] ${message}`, details);
+            case 'error':
+                console.error(`[${level.toUpperCase()}] ${message}`, details);
+                break;
+            case 'warn':
+                console.warn(`[${level.toUpperCase()}] ${message}`, details);
+                break;
+            default:
+                console.log(`[${level.toUpperCase()}] ${message}`, details);
             }
             
             // 에러가 10개 이상 쌓이면 오래된 것 제거

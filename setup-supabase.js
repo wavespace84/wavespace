@@ -266,7 +266,7 @@ window.createBucketGuide = function() {
             
             // 새 창에서 열기 시도
             console.log('%c🚀 클릭하여 Storage 대시보드 열기', 
-                       'color: #0066FF; font-weight: bold; background: #f0f8ff; padding: 4px 8px; border-radius: 4px;');
+                'color: #0066FF; font-weight: bold; background: #f0f8ff; padding: 4px 8px; border-radius: 4px;');
                        
             // 자동으로 새 탭에서 열기 (팝업 차단 가능)
             try {

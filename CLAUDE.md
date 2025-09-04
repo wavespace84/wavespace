@@ -1,253 +1,279 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Project Overview
-
-WAVE SPACE is a comprehensive community platform for real estate sales professionals in Korea. It combines information sharing, career development, and gamification elements to create an engaging ecosystem for industry practitioners.
-
-## ⚠️ CRITICAL DEVELOPMENT RULE
-
-**DO NOT modify, remove, or refactor any existing functionality unless explicitly requested by the user.**
-
-This rule is **extremely important** and must be followed at all times during development.
-
-- No assumptions.
-- No optimizations.
-- No cleanups.
-- No deletions.
-
-Only implement changes that are **clearly and directly requested** by the user.  
-Any deviation from this rule may result in breaking expected behavior or violating business requirements.
-
-> 🔒 Treat all existing code as intentional and required unless the user says otherwise.
+이 문서는 이 저장소에서 Claude Code (claude.ai/code)가 개발을 진행할 때 반드시 따라야 하는 가이드입니다.  
+목적은 **사용자 요구사항에 정확히 맞는 결과물**을 안정적으로 제공하고, 불필요한 혼란이나 위험을 줄이는 것입니다.
 
 ---
 
-## 🧩 MULTI-REQUEST & COMPLEX TASK STRATEGY
-
-**When the user provides more than one request, the system must reason and execute step-by-step.**
-
-- Break down multiple requests into logical, sequential steps
-- Ensure each step is fully understood before execution
-- Maintain clarity and traceability throughout the process
-
-**For complex or layered tasks, sub-agents must be activated to analyze in parallel and converge on the optimal solution.**
-
-- Use distributed reasoning across specialized sub-agents
-- Integrate findings to produce the most effective and context-aware result
-- Prioritize precision, scalability, and user intent alignment
-
-> 🧠 Structured thinking and parallel analysis are required to handle multi-dimensional tasks with excellence.
+## 🎯 품질 약속
+- 이 프로젝트는 사용자에게 **매우 중요한 비즈니스 프로젝트**입니다  
+- 모든 코드는 **프로덕션 레벨의 품질**을 유지해야 합니다  
+- 각 기능은 **실제 사용자가 매일 사용**한다는 마음가짐으로 개발해야 합니다  
 
 ---
 
-## 🗣️ RESPONSE LANGUAGE RULE
-
-**All responses must be written in Korean.**
-
-- Do not use English (except for code or proper nouns)
-- All explanations, messages, and guidance must be in Korean
-- Do not switch languages unless explicitly requested by the user
-
-> 🇰🇷 The user communicates in Korean by default. All interactions must respect this preference.
+## 🚀 프로젝트 비전
+- 이 플랫폼은 **수천 명의 부동산 실무자들의 업무 효율을 개선**합니다  
+- 우리의 코드 한 줄이 **실무자들의 시간을 절약**합니다  
+- **품질은 타협할 수 없는 핵심 가치**입니다  
 
 ---
 
-## 🎭 PERSONA & CONTEXT ENGINEERING RULE
+## 프로젝트 개요
 
-**When requested by the user, assign a persona and generate output optimized for context engineering.**
-
-- Persona must reflect the user's intent and tone
-- Output should be context-aware, high-quality, and tailored to the scenario
-- Maintain consistency with the assigned persona throughout the task
-
-> 🧠 The system must produce top-tier results that align with the user's contextual goals and creative direction.
+**WAVE space**는 한국의 부동산 분양 실무자들을 위한 **동적 커뮤니티 플랫폼**입니다.  
+정보 공유, 경력 개발, 게이미피케이션 요소를 결합하여 업계 종사자들에게 매력적인 생태계를 제공합니다.  
 
 ---
 
-## 🎨 DESIGN CONSISTENCY RULE
+## ⚠️ 핵심 개발 규칙
 
-**All design work must strictly follow the existing design tone and style already implemented.**
+**사용자가 명확히 요청하지 않는 한 기존 기능을 수정·삭제하지 마시오.**
 
-- Do not introduce new design directions unless explicitly requested
-- Maintain visual, structural, and thematic consistency
-- Respect the original design language and user expectations
+- 추측 금지  
+- 최적화 금지  
+- 삭제 금지  
 
-> 🧩 Design integrity is critical. Consistency builds trust and coherence.
+단, 아래 범위의 리팩토링은 예외적으로 허용한다:  
+1. 코드 중복 제거  
+2. 공통 컴포넌트화 (예: 헤더, 사이드바, 푸터)  
+3. 유지보수상 반드시 필요한 최소한의 구조 정리  
 
----
-
-## 🛠️ ERROR HANDLING RULE
-
-**When correcting errors, think thoroughly before applying any fix.**
-
-- Analyze root causes carefully
-- Avoid quick patches or assumptions
-- Ensure the fix aligns with the broader system logic and user intent
-
-> 🧪 Every correction must be deliberate, thoughtful, and context-aware.
+> 🔒 이외의 구조 변경이나 리팩토링은 반드시 사용자의 명시적 요청이 있어야 한다.
 
 ---
 
-## 🧠 ULTRA-THINK MODE & SUB-AGENT STRATEGY
+## 🧩 다중 요청 & 복잡한 작업 전략
 
-**For complex tasks, activate Ultra-Think Mode and divide the task into manageable subtasks using sub-agents.**
+- 요청이 여러 개라면 논리적·순차적으로 나누어 단계별 처리  
+- 각 단계를 충분히 이해한 뒤 실행  
+- 명확성과 추적 가능성 유지  
 
-- Break down the problem into logical stages
-- Assign sub-agents to handle each stage with clarity and precision
-- Integrate results step-by-step to ensure coherence and completeness
+복잡하거나 다층적인 작업일 경우:  
+- 하위 에이전트(sub-agent)를 활성화해 병렬 분석  
+- 결과를 통합하여 최적의 솔루션 도출  
 
-> 🚀 Ultra-Think Mode ensures deep reasoning and structured execution for high-stakes or multi-layered tasks.
+---
 
-## 📄 SPEC vs IMPLEMENTATION PRIORITY RULE
+## 🗣️ 응답 언어 규칙
 
-**Even if the current implementation differs from the MD specification, DO NOT modify or delete the implemented functionality.**
+**모든 응답은 반드시 한국어로 작성해야 한다.**  
+- 코드나 고유명사를 제외하고 영어 사용 금지  
+- 모든 설명·메시지·가이드는 한국어로 제공  
 
-- The MD file is a large, high-level planning document and cannot be updated in real time
-- Treat the MD file as an initial blueprint, not a live source of truth
-- The actual implemented features take precedence over written specs
-- Never change or remove existing behavior just because it seems inconsistent with the MD file
+---
 
-> 🛡️ Protect implemented features. The MD file may lag behind development and should not override working code.
+## 🎭 페르소나 & 컨텍스트 규칙
 
-## Architecture
+**모든 작업에는 사용자 요청에 적합한 페르소나를 자동으로 적용해야 한다.**  
+- 사용자가 별도로 지정하지 않아도 시스템이 최적의 페르소나를 추론 후 적용  
+- 출력은 사용자 의도와 톤에 반드시 맞춰야 함  
 
-### Frontend Structure
-- **Static HTML Pages**: Individual HTML files for each major section (index.html, events.html, notice.html, etc.)
-- **CSS Organization**: 
-  - `common.css` - Shared styles across all pages
-  - Individual page CSS files (e.g., `events.css`, `notice.css`)
-  - Modular CSS in `/css` directory (base.css, components.css, layout.css, etc.)
-- **JavaScript Structure**:
-  - ES6 modules in `/js/modules/` (sidebar.js, header.js, preload.js)
-  - Main entry point: `js/main.js`
-  - Page-specific scripts (e.g., `events.js`, `notice.js`)
+---
 
-### Key Design Patterns
-- **Sidebar Navigation**: Collapsible categories with Font Awesome icons
-- **User Profile System**: Points, badges, and rankings
-- **Responsive Design**: Mobile-first approach with hamburger menu
-- **Glass Morphism Effects**: Modern UI with blur effects and gradients
+## 🎨 디자인 & 컴포넌트 규칙
 
-## Development Commands
+- 모든 디자인 작업은 기존 톤과 스타일을 철저히 준수  
+- 공통 UI(사이드바, 헤더 등)는 **하드코딩 폴백 코드생성 절대 금지**, 반드시 공용템플릿, 글로벌 컴포넌트로 제작해 모든 페이지에서 재사용  
+- 디자인 일관성 유지, 새로운 방향은 사용자 요청이 있어야만 도입  
+- 디자인 시 **important** 를 많이 사용하면 디자인이 깨지기 때문에 절대 남발하지 말 것
 
-Since this is a static site project without package.json:
-- **Run locally**: Use a local server (e.g., `python -m http.server` or VS Code Live Server)
-- **CSS changes**: Directly edit CSS files, version query strings on link tags for cache busting
-- **JS changes**: Update individual JS files, ensure module imports are correct
-- **Test pages**: Use test-*.html files for component testing (test-attendance.html, test-navigation.html, test-simple.html)
-- **Debug pages**: Use debug-*.html files for debugging specific features
+---
 
-## Design System Reference
+## 🛠️ 오류 처리 규칙
 
-The project follows a comprehensive design system documented in `docs/DESIGN_SYSTEM.md`:
+- 오류 수정 시 근본 원인을 철저히 파악  
+- 임시 패치나 추측형 수정 금지  
+- 전체 시스템 로직과 사용자 의도에 맞게 해결  
+- **수정 후 반드시 결과 코드를 다시 검토**하여 문제가 없는지 최종 점검해야 함  
+- **설레발 멘트 금지**: “완료했습니다”, “더 좋아졌습니다” 등은 절대 하지 말 것  
+- 결과는 코드와 TODO 보고로만 증명한다  
 
-### Core Design Tokens
-- **Primary Colors**: #0066FF (primary), #0099FF (bright), #00CCFF (sky)
-- **Spacing**: 8px grid system (space-1: 8px, space-2: 16px, etc.)
-- **Typography**: Pretendard font family with defined scale
-- **Border Radius**: XS (4px) to Full (9999px)
-- **Animations**: Standardized durations (200ms, 300ms, 500ms)
+---
 
-### Component Standards
-- **Buttons**: Primary (gradient), Secondary (outline), Text, Icon variants
-- **Cards**: Glass effect with 16px border radius, hover animations
-- **Forms**: 36px height inputs, 6px border radius, focus states
-- **Tables**: Compact data tables with hover states
+## 🧠 Ultra-Think 모드 & 서브 에이전트 전략
 
-## PRD and Business Context
+- 복잡한 작업 시 Ultra-Think Mode 활성화  
+- 문제를 세분화하고 하위 에이전트에게 배정  
+- 단계별로 통합하여 완전하고 일관된 결과 확보  
 
-The platform serves real estate sales professionals with:
-1. **Community Features**: Forums, Q&A, humor sections
-2. **Professional Resources**: Market research, proposals, educational materials
-3. **Career Services**: Job listings, headhunting system
-4. **Gamification**: Points system, badges (28 types), mini-games
-5. **AI Features**: Automated report generation
+---
 
-Revenue model includes Plus Membership (₩29,000/month), point purchases, and corporate partnerships.
+## 📄 명세 vs 구현 우선순위 규칙
 
-## Development Workflow
+- 문서 명세와 실제 구현이 다르더라도 **실제 구현 기능이 우선**  
+- 문서와 다르다는 이유로 기존 코드를 바꾸거나 삭제 금지  
 
-Follow the structured workflow in `docs/WORKFLOW.md`:
+---
 
-1. **Feature Implementation**:
-   - Check relevant PRD section in `docs/PRD/`
-   - Verify design system compliance
-   - Implement with clean code principles
-   - Test across breakpoints and color modes
+## 📂 개발 환경 및 원칙
 
-2. **UI Development**:
-   - Use only defined CSS variables for colors
-   - Apply typography classes (text-h1, text-body)
-   - Follow 8px spacing grid
-   - Ensure dark/light mode support
+1. **동적 웹페이지**  
+   - 본 프로젝트는 정적 사이트가 아님  
+   - 모든 데이터는 Supabase 백엔드와 연결된 동적 구조로 동작해야 함  
 
-3. **Quality Checklist**:
-   - PRD requirements met
-   - Design system compliance
-   - Responsive implementation
-   - Korean UI text
-   - Accessibility considerations
+2. **Mock 최소화**  
+   - mock 데이터 파일은 앞으로 최소화  
+   - 테스트조차도 Supabase 테이블에 테스트 데이터를 직접 넣어 실행  
 
-## File Organization
+3. **관리자 대시보드 염두**  
+   - 모든 기능은 관리자 대시보드에서 관리할 수 있도록 설계해야 함  
+   - 회원 승인, 권한 관리, 포인트 정책 변경 등을 관리자 UI로 제어 가능해야 함  
 
-```
-/
-├── index.html          # Main landing page
-├── *.html             # Individual page files
-├── common.css         # Shared styles
-├── *.css             # Page-specific styles
-├── script.js         # Legacy main script
-├── *.js              # Page-specific scripts
-├── css/              # Modular CSS system
-├── js/               # ES6 modules
-├── docs/             # Documentation
-│   ├── PRD/         # Product requirements
-│   ├── DESIGN_SYSTEM.md
-│   └── WORKFLOW.md
-├── jobkorea_css/    # Reference styles
-└── saramin_css/     # Reference styles
-```
+4. **회원 유형 (roles)**  
+   - 기본 회원유형: 분양기획, 분양영업, 청약상담, 관계사, 일반  
+   - 추가 규칙: 분양기획·관계사는 관리자 승인 시 실무자로 승급 가능  
 
-## Key Implementation Notes
+5. **코드 중복 금지**  
+   - 동일 로직을 여러 곳에 복붙하지 말 것  
+   - 반드시 함수, 모듈, 컴포넌트로 분리해 재사용  
 
-1. **Sidebar State**: Managed via localStorage for persistence
-2. **User Authentication**: Mock data in current implementation (see js/mockUsers.js)
-3. **Responsive Breakpoints**: Mobile (<640px), Tablet (640-1024px), Desktop (>1024px)
-4. **Animation Performance**: Use CSS transforms over position changes
-5. **Color Modes**: CSS variables support dark/light theme switching
-6. **Korean Language**: All UI text should be in Korean for production
-7. **Module System**: ES6 modules used throughout (main entry: js/main.js)
-8. **Page-specific Scripts**: Each HTML page may have corresponding JS file (e.g., events.html → events.js)
+6. **보안 규칙**  
+   - Supabase 키/비밀번호 같은 민감 정보는 절대 코드에 직접 하드코딩하지 말 것  
+   - `.env` 환경변수로 관리  
+   - 로그에 개인정보 노출 금지  
 
-## Common Development Tasks
+7. **성능/확장성 원칙**  
+   - 쿼리는 필요한 컬럼만 가져올 것 (`select("*")` 금지)  
+   - 대용량 대비 페이지네이션/무한스크롤 고려  
+   - 인덱스 필요 여부 확인  
 
-### Adding a New Page
-1. Create new HTML file (e.g., `newpage.html`)
-2. Create corresponding CSS file (e.g., `newpage.css`)
-3. Create corresponding JS file in root or js/ directory
-4. Include common.css and page-specific CSS
-5. Add data-page attribute to body tag for JS initialization
-6. Update sidebar navigation if needed
+8. **로그 & 디버깅 규칙**  
+   - 운영 배포 시 `console.log` 제거  
+   - 에러는 사용자에게 한국어로 안내  
+   - 주요 에러는 관리자 대시보드에서 확인 가능하도록 로그 테이블에 저장  
 
-### Working with Forms and Data
-- Mock user data available in `js/mockUsers.js`
-- Form data typically handled with localStorage for persistence
-- Use Font Awesome icons for UI elements (already included)
+9. **테스트 & QA 원칙**  
+   - 모든 테스트는 Supabase 데이터베이스에서 수행  
+   - 테스트 후 데이터 초기화  
+   - 핵심 기능(로그인, 글쓰기, 업로드, 다운로드)은 QA 체크리스트로 반복 검증  
 
-### Testing and Debugging
-- Use browser DevTools for debugging
-- Check localStorage for persistent data issues
-- Test responsive design at key breakpoints
-- Verify Korean text rendering properly
+10. **접근성 & 모바일 고려**  
+    - 모바일 퍼스트 디자인  
+    - aria-label 등 접근성 속성 준수  
+    - 버튼/글꼴 크기는 최소 가이드라인 지킬 것  
 
-## MCP Servers
+11. **버전 관리 규칙**  
+    - 모든 주요 변경에는 주석 + 날짜 기록  
+    - 큰 변경은 CHANGELOG.md에 기록  
+    - 파일 복제 금지, Git 버전 관리 활용  
 
-The project includes several MCP (Model Context Protocol) servers in `/mcp-servers/`:
-- Task management
-- File editing utilities
-- Image generation
-- Browser automation
+---
 
-These are development tools and not part of the main application.
+## 📊 데이터베이스 변경 관리
+
+1. **마이그레이션 파일 관리**  
+   - 모든 DB 스키마 변경은 `supabase/migrations/` 폴더에 타임스탬프와 함께 기록  
+   - 롤백 가능한 SQL 작성 (UP/DOWN 스크립트)  
+   - 변경 전 백업 필수  
+
+2. **RLS (Row Level Security) 정책**  
+   - 모든 테이블에 RLS 활성화  
+   - 정책 변경 시 영향도 분석 문서화  
+   - 테스트 계정으로 권한 검증 필수  
+
+---
+
+## 🎯 작업 우선순위 체계
+
+- **P0 (즉시)**: 서비스 중단, 보안 취약점  
+- **P1 (24시간)**: 핵심 기능 오류, 데이터 손실 위험  
+- **P2 (3일)**: 일반 버그, UX 개선  
+- **P3 (1주)**: 성능 최적화, 리팩토링  
+- **P4 (백로그)**: nice-to-have 기능  
+
+> 사용자가 우선순위를 명시하지 않으면 ClaudeCode는 영향도를 분석하여 제안해야 함.
+
+---
+
+## 📝 코드 리뷰 체크리스트
+
+- [ ] Supabase RLS 정책 확인  
+- [ ] 에러 처리 및 사용자 피드백 구현  
+- [ ] 로딩 상태 UI 구현  
+- [ ] 모바일 반응형 테스트  
+- [ ] 모든 UI 텍스트가 한국어인지 검토  
+- [ ] 성능 영향도 점검  
+- [ ] 관련 문서 업데이트 여부 확인  
+
+---
+
+## 📦 컴포넌트 계층 구조
+
+components/
+├── common/ # 전역 공통 (Header, Sidebar)
+├── features/ # 기능별 (Login, Profile)
+├── ui/ # 순수 UI (Button, Modal, Card)
+└── layouts/ # 페이지 레이아웃 (MainLayout, AuthLayout)
+
+- common: 모든 페이지에서 사용  
+- features: 특정 기능 단위  
+- ui: 상태 없는 순수 UI  
+- layouts: 페이지 구조 템플릿  
+
+---
+
+## 🔍 디버깅 & 로깅 전략
+
+1. **로그 레벨**
+   ```javascript
+   const LOG_LEVELS = {
+     ERROR: '🔴',    // 심각한 오류
+     WARNING: '🟡',  // 경고
+     INFO: '🔵',     // 정보
+     DEBUG: '🟢',    // 디버그
+     PERF: '⚡'      // 성능
+   };
+
+## 🔍 환경별 로깅
+
+- 개발: 모든 레벨 출력  
+- 스테이징: WARNING 이상  
+- 운영: ERROR만  
+
+**로그 수집**  
+- 중요 에러는 Supabase 로그 테이블에 자동 저장  
+
+---
+
+## 🎨 UI/UX 일관성 규칙
+
+- 사용자의 중요한 액션에는 피드백이 있어야 함  
+  1. **즉시 피드백 (100ms 이내)** → 버튼 클릭 시 시각적 변화  
+  2. **로딩 상태 (100ms ~ 1초)** → 스피너/스켈레톤 UI  
+  3. **완료 피드백** → 토스트 메시지:  
+     - 성공: 초록색  
+     - 실패: 빨간색  
+     - 경고: 노란색  
+
+---
+
+## ✅ 결과 보고 규칙
+
+1. 모든 작업이 끝나면 반드시 마지막에 `TODO` 형식으로 보고해야 한다.  
+2. 각 항목은 **완료/진행/미완료** 상태를 명확히 표시해야 한다.  
+3. 보고 예시:
+ 작업 결과 (TODO 보고)
+ [O] 사이드바 공통 컴포넌트화
+ [O] Supabase 로그인 세션 체크 코드 추가
+ [X] 관리자 대시보드 권한 UI 개선 (미완)
+
+---
+
+## 요약
+
+Claude Code는 다음을 반드시 지켜야 한다:  
+- 요청하지 않은 리팩토링/변경 금지  
+- 단, 중복 제거·공통화 같은 유지보수 필수 리팩토링은 허용  
+- 모든 작업은 한국어로 설명  
+- 페르소나는 항상 자동으로 최적 적용  
+- 동적 웹 + Supabase 기반 (mock 최소화)  
+- 공용템플릿 사용 (헤더·사이드바 등)  
+- 회원유형 및 권한 구조 반영  
+- 관리자 대시보드 관리 가능성 항상 고려  
+- 보안·성능·로그·QA·접근성·버전관리 원칙 준수  
+- 오류 수정 시 설레발 금지 + 최종 코드 검토 필수  
+- 결과는 반드시 TODO 보고
+
+> 이 문서는 **개발의 헌법**입니다.  
+> 절대 임의로 변경하거나 해석하지 말고, 철저히 준수해야 합니다.

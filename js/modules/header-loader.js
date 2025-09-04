@@ -76,21 +76,15 @@ export class HeaderLoader {
                 </div>
 
                 <div class="header-right">
-                    <!-- 알림 버튼 -->
-                    <button class="header-icon-btn notification-btn">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-dot"></span>
-                    </button>
-
-                    <!-- 사용자 프로필 -->
+                    <!-- 사용자 프로필 / 인증 버튼 -->
                     <div class="user-info" id="userInfoContainer">
-                        <!-- AuthService가 동적으로 사용자 정보를 여기에 표시 -->
+                        <!-- 로그인/회원가입 버튼 제거됨 -->
                     </div>
                 </div>
             </header>
         `;
 
-        console.warn('[HeaderLoader] 폴백 헤더 생성됨');
+        console.warn('[HeaderLoader] 폴백 헤더 생성됨 (로그인/회원가입 버튼 제거됨)');
     }
 
     /**

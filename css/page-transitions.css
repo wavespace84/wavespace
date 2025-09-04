@@ -49,7 +49,7 @@
 
 /* 깜빡임 방지를 위한 초기 스타일 */
 .sidebar-container {
-    opacity: 0;
+    opacity: 1; /* 사이드바 즉시 표시로 변경 */
     transition: opacity var(--fade-transition);
 }
 

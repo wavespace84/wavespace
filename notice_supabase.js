@@ -3,8 +3,8 @@
 
 // 전역 변수
 let currentPage = 1;
-let currentNoticeIndex = 0;
-let currentFilteredNotices = [];
+const currentNoticeIndex = 0;
+const currentFilteredNotices = [];
 const itemsPerPage = 10;
 let filteredNotices = [];
 let allNotices = [];
@@ -302,7 +302,7 @@ function renderPagination(totalPages, totalCount) {
     let paginationHTML = '';
     const maxButtons = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+    const endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
     if (endPage - startPage + 1 < maxButtons) {
         startPage = Math.max(1, endPage - maxButtons + 1);

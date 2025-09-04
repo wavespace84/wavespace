@@ -10,6 +10,45 @@ class FileService {
     }
 
     /**
+     * authService 안전한 참조
+     * @returns {Object|null} authService 또는 null
+     */
+    getAuthService() {
+        if (typeof window !== 'undefined' && window.authService) {
+            return window.authService;
+        }
+        console.warn('⚠️ authService를 찾을 수 없습니다.');
+        return null;
+    }
+
+    /**
+     * 로그인 상태 안전하게 확인
+     * @returns {boolean}
+     */
+    isUserLoggedIn() {
+        const authService = this.getAuthService();
+        return authService ? authService.isLoggedIn() : false;
+    }
+
+    /**
+     * 현재 사용자 안전하게 가져오기
+     * @returns {Object|null}
+     */
+    getCurrentUser() {
+        const authService = this.getAuthService();
+        return authService ? authService.getCurrentUser() : null;
+    }
+
+    /**
+     * 관리자 권한 안전하게 확인
+     * @returns {boolean}
+     */
+    isAdmin() {
+        const authService = this.getAuthService();
+        return authService ? this.isAdmin() : false;
+    }
+
+    /**
      * 초기화
      */
     async init() {
@@ -98,7 +137,7 @@ class FileService {
      */
     async uploadFile(file, category, description = '') {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
@@ -112,7 +151,10 @@ class FileService {
                 throw new Error('지원하지 않는 파일 형식입니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             const fileName = `${category}/${Date.now()}_${file.name}`;
 
             // 1. Supabase Storage에 파일 업로드
@@ -166,11 +208,14 @@ class FileService {
      */
     async downloadFile(fileId) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
 
             // 1. 파일 정보 조회
             const { data: fileInfo, error: fileError } = await this.supabase
@@ -261,7 +306,10 @@ class FileService {
             }
 
             // 승인이 필요한 카테고리는 승인된 것만 표시 (업로더 본인 제외)
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             if (this.needsVerification(category) && currentUser) {
                 query = query.or(`is_verified.eq.true,uploader_id.eq.${currentUser.id}`);
             } else if (this.needsVerification(category)) {
@@ -283,11 +331,14 @@ class FileService {
      */
     async deleteFile(fileId) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
 
             // 파일 정보 조회
             const { data: fileInfo } = await this.supabase
@@ -301,7 +352,7 @@ class FileService {
             }
 
             // 권한 확인 (본인 또는 관리자만)
-            if (fileInfo.uploader_id !== currentUser.id && !authService.isAdmin()) {
+            if (fileInfo.uploader_id !== currentUser.id && !this.isAdmin()) {
                 throw new Error('삭제 권한이 없습니다.');
             }
 
@@ -332,7 +383,7 @@ class FileService {
      */
     async moderateFile(fileId, approved) {
         try {
-            if (!authService.isAdmin()) {
+            if (!this.isAdmin()) {
                 throw new Error('관리자 권한이 필요합니다.');
             }
 
@@ -388,13 +439,13 @@ class FileService {
         }
 
         // 관리자는 모든 파일 다운로드 가능
-        if (authService.isAdmin()) {
+        if (this.isAdmin()) {
             return true;
         }
 
         // 승인이 필요한 카테고리
         if (this.needsVerification(fileInfo.category)) {
-            return fileInfo.is_verified && authService.isVerified();
+            return fileInfo.is_verified && this.getAuthService()?.isVerified() || false;
         }
 
         // 일반 카테고리는 모든 인증된 사용자 다운로드 가능
@@ -472,8 +523,11 @@ class FileService {
         const uploader = file.users || {};
         const fileIcon = this.getFileIcon(file.mime_type);
         const fileSize = this.formatFileSize(file.file_size);
-        const currentUser = authService.getCurrentUser();
-        const canDelete = currentUser && (file.uploader_id === currentUser.id || authService.isAdmin());
+        const currentUser = this.getCurrentUser();
+        if (!currentUser) {
+            throw new Error('사용자 정보를 가져올 수 없습니다.');
+        }
+        const canDelete = currentUser && (file.uploader_id === currentUser.id || this.isAdmin());
         
         let statusBadge = '';
         if (this.needsVerification(file.category)) {
@@ -508,18 +562,18 @@ class FileService {
                     </div>
                     <div class="file-actions">
                         ${this.canDownload(file, currentUser) ? 
-                            `<button onclick="fileService.downloadFile('${file.id}')" class="btn-download">
+        `<button onclick="fileService.downloadFile('${file.id}')" class="btn-download">
                                 <i class="fas fa-download"></i> 다운로드
                             </button>` : 
-                            `<button class="btn-download disabled" disabled>
+        `<button class="btn-download disabled" disabled>
                                 <i class="fas fa-lock"></i> 권한 없음
                             </button>`
-                        }
+}
                         ${canDelete ? 
-                            `<button onclick="fileService.deleteFile('${file.id}')" class="btn-delete">
+        `<button onclick="fileService.deleteFile('${file.id}')" class="btn-delete">
                                 <i class="fas fa-trash"></i>
                             </button>` : ''
-                        }
+}
                     </div>
                 </div>
             </div>
@@ -531,11 +585,14 @@ class FileService {
      */
     async uploadWithProgress(file, category, description, progressCallback) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             const fileName = `${category}/${Date.now()}_${file.name}`;
 
             // 청크 단위로 업로드하여 진행률 표시
@@ -594,11 +651,14 @@ class FileService {
      */
     async getMyFiles(page = 1, limit = 20) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             
             const { data, error } = await this.supabase
                 .from('files')
@@ -643,7 +703,7 @@ class FileService {
      */
     async getPendingFiles() {
         try {
-            if (!authService.isAdmin()) {
+            if (!this.isAdmin()) {
                 throw new Error('관리자 권한이 필요합니다.');
             }
 

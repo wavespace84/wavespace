@@ -9,6 +9,36 @@ class PostService {
     }
 
     /**
+     * authService 안전한 참조
+     * @returns {Object|null} authService 또는 null
+     */
+    getAuthService() {
+        if (typeof window !== 'undefined' && window.authService) {
+            return window.authService;
+        }
+        console.warn('⚠️ authService를 찾을 수 없습니다.');
+        return null;
+    }
+
+    /**
+     * 로그인 상태 안전하게 확인
+     * @returns {boolean}
+     */
+    isUserLoggedIn() {
+        const authService = this.getAuthService();
+        return authService ? authService.isLoggedIn() : false;
+    }
+
+    /**
+     * 현재 사용자 안전하게 가져오기
+     * @returns {Object|null}
+     */
+    getCurrentUser() {
+        const authService = this.getAuthService();
+        return authService ? authService.getCurrentUser() : null;
+    }
+
+    /**
      * 초기화
      */
     async init() {
@@ -138,11 +168,14 @@ class PostService {
      */
     async createPost(postData) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             
             const { data, error } = await this.supabase
                 .from('posts')
@@ -159,13 +192,16 @@ class PostService {
             if (error) throw error;
 
             // 포인트 지급 (글쓰기 보상)
-            await authService.addPointHistory(
-                currentUser.id,
-                50,
-                'earn',
-                '게시글 작성',
-                data.id
-            );
+            const authService = this.getAuthService();
+            if (authService) {
+                await authService.addPointHistory(
+                    currentUser.id,
+                    50,
+                    'earn',
+                    '게시글 작성',
+                    data.id
+                );
+            }
 
             return { success: true, data };
         } catch (error) {
@@ -179,7 +215,7 @@ class PostService {
      */
     async updatePost(postId, postData) {
         try {
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
             if (!currentUser) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -210,7 +246,7 @@ class PostService {
      */
     async deletePost(postId) {
         try {
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
             if (!currentUser) {
                 throw new Error('로그인이 필요합니다.');
             }
@@ -260,11 +296,14 @@ class PostService {
      */
     async createComment(postId, content, parentId = null) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             
             const { data, error } = await this.supabase
                 .from('comments')
@@ -286,13 +325,16 @@ class PostService {
             await this.incrementCommentCount(postId);
 
             // 포인트 지급 (댓글 작성 보상)
-            await authService.addPointHistory(
-                currentUser.id,
-                20,
-                'earn',
-                '댓글 작성',
-                data.id
-            );
+            const authService = this.getAuthService();
+            if (authService) {
+                await authService.addPointHistory(
+                    currentUser.id,
+                    20,
+                    'earn',
+                    '댓글 작성',
+                    data.id
+                );
+            }
 
             return { success: true, data };
         } catch (error) {
@@ -306,11 +348,14 @@ class PostService {
      */
     async toggleLike(targetType, targetId) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             
             // 기존 좋아요 확인
             const { data: existingLike } = await this.supabase
@@ -347,13 +392,16 @@ class PostService {
                     // 게시글 작성자에게 포인트 지급
                     const post = await this.getPost(targetId);
                     if (post.success) {
-                        await authService.addPointHistory(
-                            post.data.author_id,
-                            10,
-                            'earn',
-                            '게시글 추천받기',
-                            targetId
-                        );
+                        const authService = this.getAuthService();
+                        if (authService) {
+                            await authService.addPointHistory(
+                                post.data.author_id,
+                                10,
+                                'earn',
+                                '게시글 추천받기',
+                                targetId
+                            );
+                        }
                     }
                 }
                 
@@ -421,11 +469,14 @@ class PostService {
      */
     async reportContent(targetType, targetId, reason, description = '') {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             
             const { data, error } = await this.supabase
                 .from('reports')
@@ -450,9 +501,10 @@ class PostService {
      */
     async checkIfLiked(targetType, targetId) {
         try {
-            if (!authService.isLoggedIn()) return false;
+            if (!this.isUserLoggedIn()) return false;
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) return false;
             const { data } = await this.supabase
                 .from('likes')
                 .select('id')

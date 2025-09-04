@@ -70,35 +70,35 @@ export function sanitizeInput(input, type = 'text') {
     }
     
     // 기본 정제: 앞뒤 공백 제거
-    let sanitized = input.trim();
+    const sanitized = input.trim();
     
     // 타입별 추가 정제
     switch (type) {
-        case 'email':
-            // 이메일 형식 검증
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(sanitized) ? sanitized : '';
+    case 'email':
+        // 이메일 형식 검증
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(sanitized) ? sanitized : '';
             
-        case 'url':
-            // URL 형식 검증
-            try {
-                new URL(sanitized);
-                return sanitized;
-            } catch {
-                return '';
-            }
+    case 'url':
+        // URL 형식 검증
+        try {
+            new URL(sanitized);
+            return sanitized;
+        } catch {
+            return '';
+        }
             
-        case 'number':
-            // 숫자만 허용
-            return sanitized.replace(/[^0-9.-]/g, '');
+    case 'number':
+        // 숫자만 허용
+        return sanitized.replace(/[^0-9.-]/g, '');
             
-        case 'alphanumeric':
-            // 영문자와 숫자만 허용
-            return sanitized.replace(/[^a-zA-Z0-9]/g, '');
+    case 'alphanumeric':
+        // 영문자와 숫자만 허용
+        return sanitized.replace(/[^a-zA-Z0-9]/g, '');
             
-        default:
-            // 기본: HTML 특수문자 이스케이프
-            return escapeHtml(sanitized);
+    default:
+        // 기본: HTML 특수문자 이스케이프
+        return escapeHtml(sanitized);
     }
 }
 

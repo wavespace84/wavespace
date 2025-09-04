@@ -1,7 +1,7 @@
 // 공통 이벤트 처리 모듈
 // 페이지네이션과 필터 클릭 시 화면 움직임 방지
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     // 페이지네이션 링크 처리
     function handlePaginationLinks() {
         document.querySelectorAll('.pagination a, .pagination-underline a, .page-numbers a').forEach(link => {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 이미 처리된 탭은 건너뛰기
             if (tab.dataset.preventDefaultAdded) return;
             
-            tab.addEventListener('click', function(e) {
+            tab.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
             }, true);
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 이미 처리된 버튼은 건너뛰기
             if (btn.dataset.preventDefaultAdded) return;
             
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
             }, true);
             
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
     handleSortButtons();
 
     // DOM 변경 감지 (동적으로 추가되는 요소 처리)
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
             if (mutation.addedNodes.length > 0) {
                 handlePaginationLinks();
                 handleCheckboxTabs();
@@ -82,7 +82,7 @@ window.CommonEvents = {
     },
     preventFilterDefault: function() {
         document.querySelectorAll('.checkbox-tab').forEach(tab => {
-            tab.addEventListener('click', function(e) {
+            tab.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
             }, true);

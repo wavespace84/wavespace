@@ -27,256 +27,36 @@
         <script src="js/utils/common.js"></script>
         <script src="js/utils/formatters.js"></script>
         
-        <script src="preload.js"></script>
-        
-        <link rel="stylesheet" href="common.css" />
+        <!-- CSS 파일들 -->
+        <link rel="stylesheet" href="common.css?v=7" />
         <link rel="stylesheet" href="styles.css?v=7" />
-        <link rel="stylesheet" href="notice.css?v=3" />
-        <link rel="stylesheet" href="css/checkbox-interaction.css" />
-    <link rel="stylesheet" href="mobile-fix.css">
+        <link rel="stylesheet" href="notice.css?v=7" />
+        <link rel="stylesheet" href="css/checkbox-interaction.css?v=7" />
+        <link rel="stylesheet" href="css/mypage-support-style.css?v=7" />
+        <link rel="stylesheet" href="mobile-fix.css?v=7" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        
+        <!-- 기본 스크립트 -->
+        <script src="preload.js"></script>
     </head>
-    <body data-page="notice">
+    <body data-page="notice" class="page-loading">
         <!-- 전체 컨테이너 -->
         <div class="app-container">
-            <!-- 사이드바 (index.html과 동일) -->
-            <aside class="sidebar">
-                <!-- 로고 영역 -->
-                <div class="sidebar-header">
-                    <a href="index.html" class="logo-container">
-                        <span class="logo-text">WAVE space</span>
-                        <span class="beta-badge">BETA</span>
-                    </a>
-                </div>
-
-                <!-- 슬로건 -->
-                <div class="sidebar-slogan">
-                    <p>대한민국 No.1 분양실무자 대표 커뮤니티</p>
-                </div>
-
-                <!-- 네비게이션 -->
-                <nav class="sidebar-nav">
-                    <!-- 안내 섹션 -->
-                    <div class="nav-section">
-                        <div class="nav-category active">
-                            <div class="nav-category-wrapper">
-                                <button class="nav-category-button">
-                                    <i class="fas fa-book-open"></i>
-                                    <span>안내</span>
-                                    <i class="fas fa-chevron-down nav-arrow"></i>
-                                </button>
-                                <div class="nav-items">
-                                    <a href="notice.html" class="nav-item active">
-                                        <i class="fas fa-bullhorn"></i>
-                                        <span>공지사항</span>
-                                    </a>
-                                    <a href="updates.html" class="nav-item">
-                                        <i class="fas fa-info-circle"></i>
-                                        <span>업데이트</span>
-                                    </a>
-                                    <a href="support.html" class="nav-item">
-                                        <i class="fas fa-life-ring"></i>
-                                        <span>고객센터</span>
-                                    </a>
-                                    <a href="plus-membership.html" class="nav-item">
-                                        <i class="fas fa-rocket"></i>
-                                        <span>+Plus Membership</span>
-                                    </a>
-                                    <a href="events.html" class="nav-item">
-                                        <i class="fas fa-gift"></i>
-                                        <span>이벤트</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 커뮤니티 섹션 -->
-                    <div class="nav-section">
-                        <div class="nav-category">
-                            <div class="nav-category-wrapper">
-                                <button class="nav-category-button">
-                                    <i class="fas fa-users"></i>
-                                    <span>커뮤니티</span>
-                                    <i class="fas fa-chevron-down nav-arrow"></i>
-                                </button>
-                                <div class="nav-items">
-                                    <a href="hall-of-fame.html" class="nav-item hall-of-fame highlighted">
-                                        <i class="fas fa-trophy"></i>
-                                        <span>명예의전당</span>
-                                    </a>
-                                    <a href="attendance.html" class="nav-item">
-                                        <i class="fas fa-calendar-check"></i>
-                                        <span>출석체크</span>
-                                    </a>
-                                    <a href="forum.html" class="nav-item">
-                                        <i class="fas fa-comments"></i>
-                                        <span>자유게시판</span>
-                                    </a>
-                                    <a href="humor.html" class="nav-item">
-                                        <i class="fas fa-laugh"></i>
-                                        <span>유머재미</span>
-                                    </a>
-                                    <a href="qna.html" class="nav-item">
-                                        <i class="fas fa-question-circle"></i>
-                                        <span>질문답변</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 구인구직 섹션 -->
-                    <div class="nav-section">
-                        <div class="nav-category">
-                            <div class="nav-category-wrapper">
-                                <button class="nav-category-button">
-                                    <i class="fas fa-building"></i>
-                                    <span>구인구직</span>
-                                    <i class="fas fa-chevron-down nav-arrow"></i>
-                                </button>
-                                <div class="nav-items">
-                                    <a href="planning-recruitment.html" class="nav-item">
-                                        <i class="fas fa-project-diagram"></i>
-                                        <span>분양기획</span>
-                                    </a>
-                                    <a href="sales-recruit.html" class="nav-item highlighted">
-                                        <i class="fas fa-briefcase"></i>
-                                        <span>분양영업</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="ai-matching.html" class="nav-item">
-                                        <i class="fas fa-robot"></i>
-                                        <span>AI 매칭</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 분양자료 섹션 -->
-                    <div class="nav-section">
-                        <div class="nav-category">
-                            <div class="nav-category-wrapper">
-                                <button class="nav-category-button">
-                                    <i class="fas fa-folder-open"></i>
-                                    <span>분양자료</span>
-                                    <i class="fas fa-chevron-down nav-arrow"></i>
-                                </button>
-                                <div class="nav-items">
-                                    <a href="data-center.html" class="nav-item highlighted">
-                                        <i class="fas fa-database"></i>
-                                        <span>Data Center</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="market-research.html" class="nav-item">
-                                        <i class="fas fa-chart-line"></i>
-                                        <span>시장조사서</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="proposal.html" class="nav-item">
-                                        <i class="fas fa-file-alt"></i>
-                                        <span>제안서</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="education.html" class="nav-item">
-                                        <i class="fas fa-graduation-cap"></i>
-                                        <span>교육자료</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="policy.html" class="nav-item">
-                                        <i class="fas fa-gavel"></i>
-                                        <span>정책자료</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="other-docs.html" class="nav-item">
-                                        <i class="fas fa-archive"></i>
-                                        <span>기타자료</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="ai-report.html" class="nav-item">
-                                        <i class="fas fa-robot"></i>
-                                        <span>AI 보고서</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 포인트 섹션 -->
-                    <div class="nav-section">
-                        <div class="nav-category">
-                            <div class="nav-category-wrapper">
-                                <button class="nav-category-button">
-                                    <i class="fas fa-coins"></i>
-                                    <span>포인트</span>
-                                    <i class="fas fa-chevron-down nav-arrow"></i>
-                                </button>
-                                <div class="nav-items">
-                                    <a href="points-policy.html" class="nav-item highlighted">
-                                        <i class="fas fa-gem"></i>
-                                        <span>포인트정책</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="points-ranking.html" class="nav-item">
-                                        <i class="fas fa-chart-bar"></i>
-                                        <span>전체랭킹</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="points-charge.html" class="nav-item">
-                                        <i class="fas fa-credit-card"></i>
-                                        <span>충전하기</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                    <a href="points-shop.html" class="nav-item">
-                                        <i class="fas fa-store"></i>
-                                        <span>상점</span>
-                                        <span class="check-mark"></span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 미니게임 섹션 -->
-                    <div class="nav-section minigame-section">
-                        <div class="minigame-header">
-                            <i class="fas fa-gamepad"></i>
-                            <span>미니게임</span>
-                        </div>
-                        <div class="minigame-buttons">
-                            <a href="/game" class="minigame-btn">
-                                <i class="fas fa-gamepad"></i>
-                                <span>모든 게임</span>
-                            </a>
-                            <a href="/game?open=roulette" class="minigame-btn">
-                                <i class="fas fa-circle-notch"></i>
-                                <span>룰렛</span>
-                            </a>
-                            <a href="/game?open=blackjack" class="minigame-btn">
-                                <i class="fas fa-layer-group"></i>
-                                <span>블랙잭</span>
-                            </a>
-                        </div>
-                    </div>
-                </nav>
-            </aside>
+            <!-- 사이드바 (동적 로드) -->
+            <div id="sidebar-container">
+                <!-- SidebarLoader가 동적으로 사이드바를 여기에 로드합니다 -->
+            </div>
 
             <!-- 메인 컨테이너 -->
             <div class="main-container">
-                <!-- 헤더 (동적 로드) -->
-                <div id="header-container">
-                    <!-- HeaderLoader가 동적으로 헤더를 여기에 로드합니다 -->
-                </div>
 
                 <!-- 메인 콘텐츠 -->
                 <main class="main-content">
                     <div class="notice-container">
                         <!-- 헤더 -->
-                        <div class="notice-header">
-                            <h1 class="notice-title">공지사항</h1>
-                            <p class="notice-subtitle">새로운 소식과 업데이트를 확인하세요</p>
+                        <div class="page-header">
+                            <h1 class="page-title">공지사항</h1>
+                            <p class="page-subtitle">새로운 소식과 업데이트를 확인하세요</p>
                         </div>
 
                         <!-- 검색 및 카테고리 필터 -->
@@ -536,26 +316,16 @@
         <!-- Supabase CDN -->
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         
-        <!-- Supabase 설정 -->
-        <script src="js/config/supabase.js"></script>
+        <!-- Supabase 관련 스크립트 -->
+        <script src="js/config/supabase.js?v=7"></script>
+        <script src="js/services/authService.js?v=7"></script>
         
-        <!-- AuthService 로드 -->
-        <script src="js/services/authService.js"></script>
+        <!-- 기본 스크립트 -->
+        <script src="script.js?v=7"></script>
+        <script src="notice.js?v=7"></script>
         
-        <!-- NoticeService 로드 -->
-        <script src="js/services/noticeService.js?v=20250828-1658"></script>
-        
-        <!-- FeedbackService 로드 -->
-        <script src="js/services/feedbackService.js?v=20250828-1700"></script>
-        
-        <!-- 공지사항 페이지 스크립트 마지막 로드 -->
-        <script src="notice.js?v=20250828-1700"></script>
-        
-        <!-- 기본 스크립트 - 페이지 스크립트 다음에 로드 -->
-        <script src="script.js?v=3"></script>
-        
-        <!-- ES6 모듈 메인 스크립트 -->
-        <script type="module" src="js/main.js"></script>
+        <!-- 메인 모듈 -->
+        <script type="module" src="js/main.js?v=7"></script>
     
 </body>
 </html>

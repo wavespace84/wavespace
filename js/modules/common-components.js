@@ -230,14 +230,14 @@ export class Modal {
                     ${this.options.content}
                 </div>
                 ${
-                    this.options.footer
-                        ? `
+    this.options.footer
+        ? `
                     <div class="modal-footer">
                         ${this.options.footer}
                     </div>
                 `
-                        : ''
-                }
+        : ''
+}
             </div>
         `;
 
@@ -456,18 +456,18 @@ export class Dropdown {
 
         // 위치 조정 로직
         switch (this.options.position) {
-            case 'top':
-                this.dropdown.style.bottom = `${triggerRect.height + 5}px`;
-                break;
-            case 'bottom':
-                this.dropdown.style.top = `${triggerRect.height + 5}px`;
-                break;
-            case 'left':
-                this.dropdown.style.right = `${triggerRect.width + 5}px`;
-                break;
-            case 'right':
-                this.dropdown.style.left = `${triggerRect.width + 5}px`;
-                break;
+        case 'top':
+            this.dropdown.style.bottom = `${triggerRect.height + 5}px`;
+            break;
+        case 'bottom':
+            this.dropdown.style.top = `${triggerRect.height + 5}px`;
+            break;
+        case 'left':
+            this.dropdown.style.right = `${triggerRect.width + 5}px`;
+            break;
+        case 'right':
+            this.dropdown.style.left = `${triggerRect.width + 5}px`;
+            break;
         }
     }
 }

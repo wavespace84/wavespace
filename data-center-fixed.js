@@ -660,10 +660,10 @@ function renderNews() {
         <div class="news-card" onclick="openNewsLink(${JSON.stringify(news).replace(/"/g, '&quot;')})">
             <div class="news-card-image">
                 ${
-                    news.image
-                        ? `<img src="${news.image}" alt="${news.title}">`
-                        : '<div class="placeholder"><i class="fas fa-newspaper"></i></div>'
-                }
+    news.image
+        ? `<img src="${news.image}" alt="${news.title}">`
+        : '<div class="placeholder"><i class="fas fa-newspaper"></i></div>'
+}
             </div>
             <div class="news-card-content">
                 <h4 class="news-card-title">${news.title}</h4>
@@ -715,10 +715,10 @@ function updateRegionalNews() {
                 <div class="news-card" onclick="openNewsLink(${JSON.stringify(news).replace(/"/g, '&quot;')})">
                     <div class="news-card-image">
                         ${
-                            news.image
-                                ? `<img src="${news.image}" alt="${news.title}">`
-                                : '<div class="placeholder"><i class="fas fa-newspaper"></i></div>'
-                        }
+    news.image
+        ? `<img src="${news.image}" alt="${news.title}">`
+        : '<div class="placeholder"><i class="fas fa-newspaper"></i></div>'
+}
                     </div>
                     <div class="news-card-content">
                         <h4 class="news-card-title">${news.title}</h4>

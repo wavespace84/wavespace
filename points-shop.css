@@ -571,59 +571,7 @@ body .main-content .points-shop-container .points-shop-header .points-shop-subti
     transform: translateY(-1px);
 }
 
-/* 토스트 알림 스타일 */
-.toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1100;
-    background: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    padding: 0;
-    overflow: hidden;
-    transform: translateX(400px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.toast.show {
-    transform: translateX(0);
-}
-
-.toast.hide {
-    transform: translateX(400px);
-}
-
-.toast-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-}
-
-.toast-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-}
-
-.toast.success .toast-icon {
-    color: var(--success);
-}
-
-.toast.error .toast-icon {
-    color: var(--error);
-}
-
-.toast.warning .toast-icon {
-    color: var(--warning);
-}
-
-.toast-message {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--gray-900);
-    line-height: 1.4;
-}
+/* 토스트 알림은 common.css에서 통일 관리 */
 
 /* 장바구니 배지 스타일 */
 .cart-badge {
@@ -1301,28 +1249,7 @@ body .main-content .points-shop-container .points-shop-header .points-shop-subti
         flex: 2;
     }
     
-    .toast {
-        top: 10px;
-        right: 10px;
-        left: 10px;
-        transform: translateY(-100px);
-    }
-    
-    .toast.show {
-        transform: translateY(0);
-    }
-    
-    .toast.hide {
-        transform: translateY(-100px);
-    }
-    
-    .toast-content {
-        padding: 14px 16px;
-    }
-    
-    .toast-message {
-        font-size: 13px;
-    }
+    /* 토스트는 common.css에서 통일 관리 */
 }
 
 /* 모바일 모달 최적화 */

@@ -7,13 +7,19 @@ const STORAGE_KEYS = {
 };
 
 export function initSidebar() {
+    // SidebarLoader가 이미 로드되었는지 확인
+    if (window._sidebarLoaded || document.querySelector('.sidebar[data-loaded-by="SidebarLoader"]')) {
+        console.log('[SIDEBAR] SidebarLoader에 의해 이미 로드됨, initSidebar 실행 중단');
+        return;
+    }
+
     // 이미 초기화되었는지 확인
     if (window._sidebarInitialized) {
         console.log('[SIDEBAR] 이미 초기화됨, 건너뜀');
         return;
     }
 
-    console.log('[SIDEBAR] ES6 모듈 사이드바 초기화 시작');
+    console.log('[SIDEBAR] ES6 모듈 사이드바 초기화 시작 (폴백 모드)');
     console.log('[SIDEBAR] 현재 페이지:', window.location.pathname);
     
     const sidebar = document.querySelector('.sidebar');
@@ -70,7 +76,7 @@ export function initSidebar() {
         
         button.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log(`[SIDEBAR] 카테고리 버튼 클릭됨:`, button.querySelector('span').textContent);
+            console.log('[SIDEBAR] 카테고리 버튼 클릭됨:', button.querySelector('span').textContent);
             
             const category = button.closest('.nav-category');
             const wasActive = category.classList.contains('active');
@@ -119,8 +125,8 @@ export function initSidebar() {
             // 상태 저장
             saveSidebarState();
 
-            // 카테고리 토글 후 스크롤 체크
-            setTimeout(checkScrollNeeded, 300);
+            // 카테고리 토글 후 스크롤 체크 (CSS 트랜지션과 동기화)
+            setTimeout(checkScrollNeeded, 200);
         });
         
         // 이벤트 리스너 추가 완료 표시

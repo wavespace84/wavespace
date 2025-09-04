@@ -10,6 +10,7 @@ import { initHeader } from './modules/header.js';
 import { initPreload } from './modules/preload.js';
 import { initClock } from './modules/clock.js';
 import { HeaderLoader } from './modules/header-loader.js';
+import { SidebarLoader } from './modules/sidebar-loader.js';
 
 // 새로운 코어 시스템
 import { eventSystem } from './core/eventSystem.js';
@@ -21,28 +22,45 @@ import { accessibilityManager } from './components/accessibility.js';
 // 페이지 최적화 시스템
 import { initOptimizer } from './modules/page-optimizer.js';
 
+// 로그인 사이드패널 시스템
+import { initLoginSidepanel } from './modules/login-sidepanel.js';
+
 // 🚀 통합 초기화 시스템
 async function initializeWaveSpace() {
     try {
         console.log('[WaveSpace] 초기화 시작...');
 
-        // 0. WaveSpaceData가 초기화될 때까지 대기
-        let attempts = 0;
-        while (!window.WaveSpaceData && attempts < 50) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            attempts++;
-        }
+        // 0. WaveSpaceData 초기화 (이벤트 기반으로 개선)
+        const currentPage = document.body.dataset.page;
         
+        // WaveSpaceData가 없으면 즉시 폴백 객체 생성
         if (!window.WaveSpaceData) {
-            console.warn('[WaveSpace] WaveSpaceData 로드 실패, 폴백 객체 생성');
+            console.log('[WaveSpace] WaveSpaceData 폴백 객체 생성');
             window.WaveSpaceData = {
                 errorHandler: {
                     log: (level, message, details) => console.log(`[${level}] ${message}`, details),
-                    showUserError: (message) => alert(message)
+                    showUserError: (message) => {
+                        if (typeof window !== 'undefined' && window.console) {
+                            console.error('사용자 에러:', message);
+                        }
+                        // 개발 환경에서만 alert 표시
+                        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                            alert(message);
+                        }
+                    }
                 },
                 security: {
-                    sanitizeInput: (input) => input
-                }
+                    sanitizeInput: (input) => {
+                        if (typeof input !== 'string') return input;
+                        return input
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#x27;')
+                            .replace(/\//g, '&#x2F;');
+                    }
+                },
+                isReady: true
             };
         }
 
@@ -58,60 +76,77 @@ async function initializeWaveSpace() {
         initPreload();
         console.log('[WaveSpace] Preload 초기화 완료');
         
-        // 사이드바 초기화 전 상태 확인
-        console.log('[WaveSpace] 사이드바 초기화 전 _sidebarInitialized:', window._sidebarInitialized);
-        console.log('[WaveSpace] 사이드바 요소 존재 여부:', {
-            sidebar: !!document.querySelector('.sidebar'),
-            navButtons: document.querySelectorAll('.nav-category-button').length,
-            mobileMenuBtn: !!document.querySelector('.mobile-menu-btn')
-        });
+        // 동적 사이드바 로드 시스템 체크
+        const sidebarContainer = document.getElementById('sidebar-container');
+        if (sidebarContainer) {
+            // 새로운 동적 사이드바 로드 시스템 사용
+            const sidebarLoader = new SidebarLoader();
+            const sidebarSuccess = await sidebarLoader.loadSidebar();
+            
+            if (sidebarSuccess) {
+                console.log('[WaveSpace] 동적 사이드바 로드 완료');
+                // SidebarLoader가 이미 모든 기능을 처리하므로 initSidebar 불필요
+            } else {
+                // 동적 로드 실패 시에만 정적 시스템 폴백
+                initSidebar();
+                console.log('[WaveSpace] 동적 사이드바 로드 실패, 정적 사이드바로 폴백');
+            }
+        } else {
+            // sidebar-container가 없는 경우에만 정적 사이드바 시스템 사용
+            initSidebar();
+            console.log('[WaveSpace] 정적 사이드바 초기화 완료');
+        }
         
-        initSidebar();
-        console.log('[WaveSpace] Sidebar 초기화 완료');
-        
-        // 사이드바 초기화 후 이벤트 리스너 확인
-        const navButtons = document.querySelectorAll('.nav-category-button');
-        console.log('[WaveSpace] 사이드바 버튼 이벤트 리스너 확인:', {
-            buttonCount: navButtons.length,
-            buttonsWithListeners: document.querySelectorAll('.nav-category-button[data-listener-added="true"]').length
-        });
-        
-        // 동적 헤더 로드 시스템 체크
+        // 동적 헤더 로드 시스템 
         const headerContainer = document.getElementById('header-container');
         if (headerContainer) {
             // 새로운 동적 헤더 로드 시스템 사용
             const headerLoader = new HeaderLoader();
-            await headerLoader.loadHeader();
-            console.log('[WaveSpace] 동적 헤더 로드 완료');
+            const headerSuccess = await headerLoader.loadHeader();
             
-            // 동적 헤더 로드 후 initHeader 호출 (이벤트 리스너 설정)
-            initHeader();
-            console.log('[WaveSpace] 동적 헤더 이벤트 초기화 완료');
-            
-            // 동적 헤더 로드 후 AuthService 초기화 (사용자 상태에 따른 UI 설정)
-            if (window.authService) {
-                console.log('[WaveSpace] AuthService 초기화 시작 (HeaderLoader 후)');
-                await window.authService.checkAuthState();
-                console.log('[WaveSpace] AuthService 초기화 완료');
+            if (headerSuccess) {
+                console.log('[WaveSpace] 동적 헤더 로드 완료');
             } else {
-                console.warn('[WaveSpace] AuthService가 아직 로드되지 않음');
+                // 동적 로드 실패 시에만 정적 시스템 폴백
+                initHeader();
+                console.log('[WaveSpace] 동적 헤더 로드 실패, 정적 헤더로 폴백');
             }
         } else {
-            // 기존 정적 헤더 시스템 사용
+            // header-container가 없는 경우에만 정적 헤더 시스템 사용
             initHeader();
             console.log('[WaveSpace] 정적 헤더 초기화 완료');
+        }
+        
+        // AuthService 초기화
+        if (window.authService) {
+            console.log('[WaveSpace] AuthService 초기화 시작');
+            try {
+                await window.authService.checkAuthState();
+                console.log('[WaveSpace] AuthService 초기화 완료');
+            } catch (error) {
+                console.error('[WaveSpace] AuthService 초기화 실패:', error);
+                console.log('[WaveSpace] 폴백 UI 적용');
+                // AuthService 초기화 실패 시에도 기본 UI 확보
+                ensureBasicAuthUI();
+            }
+        } else {
+            console.warn('[WaveSpace] AuthService가 아직 로드되지 않음, 폴백 UI 적용');
+            ensureBasicAuthUI();
         }
         
         initClock();
         console.log('[WaveSpace] Clock 초기화 완료');
 
-        // 3. 페이지별 모듈 동적 로드
-        const currentPage = document.body.dataset.page;
+        // 3. 로그인 사이드패널 로드 (모든 페이지에서 필요)
+        await initLoginSidepanel();
+        console.log('[WaveSpace] 로그인 사이드패널 초기화 완료');
+
+        // 4. 페이지별 모듈 동적 로드
         if (currentPage) {
             await loadPageModule(currentPage);
         }
 
-        // 4. 전역 이벤트 설정
+        // 5. 전역 이벤트 설정
         setupGlobalEvents();
 
         // 5. 성능 모니터링 시작
@@ -133,6 +168,11 @@ async function initializeWaveSpace() {
 // 📋 페이지별 모듈 로드
 async function loadPageModule(pageName) {
     try {
+        // support 페이지의 경우 FAQ가 이미 렌더링되었음을 고려
+        if (pageName === 'support') {
+            console.log('[PageModule] Support 페이지: FAQ 이미 렌더링됨, 추가 기능만 초기화');
+        }
+        
         // 페이지 모듈 매핑
         const pageModules = {
             'market-research': () => import('./pages/marketResearch.js'),
@@ -140,6 +180,7 @@ async function loadPageModule(pageName) {
             'planning-recruitment': () => import('./pages/planningRecruitment.js'),
             forum: () => import('./pages/forum.js'),
             notice: () => import('./pages/notice.js'),
+            support: () => import('./pages/support.js'),
         };
 
         const moduleLoader = pageModules[pageName];
@@ -152,6 +193,11 @@ async function loadPageModule(pageName) {
         }
     } catch (error) {
         console.warn(`[PageModule] ${pageName} 모듈 로드 실패:`, error);
+        
+        // support 페이지에서 모듈 로드 실패 시에도 FAQ는 동작함을 로그
+        if (pageName === 'support') {
+            console.log('[PageModule] Support 페이지: 모듈 로드 실패했지만 FAQ는 이미 동작 중');
+        }
     }
 }
 
@@ -191,6 +237,23 @@ function setupGlobalEvents() {
             if (searchInput) searchInput.focus();
         }
     });
+}
+
+// 🔐 기본 인증 UI 확보 함수
+function ensureBasicAuthUI() {
+    const userInfoElement = document.querySelector('#userInfoContainer');
+    if (userInfoElement && !userInfoElement.querySelector('.auth-buttons')) {
+        // 로그인/회원가입 버튼 제거됨
+        userInfoElement.innerHTML = '';
+        
+        // 알림 버튼 숨기기
+        const notificationBtn = document.querySelector('.notification-btn');
+        if (notificationBtn) {
+            notificationBtn.style.display = 'none';
+        }
+        
+        console.log('[WaveSpace] 기본 인증 UI 확보 완료');
+    }
 }
 
 // 📊 성능 모니터링

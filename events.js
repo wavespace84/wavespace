@@ -494,11 +494,11 @@ function showEventDetail(eventId) {
                 
                 <div class="event-modal-footer">
                     ${event.status === 'ongoing' ? 
-                        '<button class="event-participate-btn">지금 참여하기</button>' : 
-                        event.status === 'upcoming' ? 
-                        '<button class="event-participate-btn" disabled>곧 시작됩니다</button>' :
-                        '<button class="event-participate-btn" disabled>종료된 이벤트</button>'
-                    }
+        '<button class="event-participate-btn">지금 참여하기</button>' : 
+        event.status === 'upcoming' ? 
+            '<button class="event-participate-btn" disabled>곧 시작됩니다</button>' :
+            '<button class="event-participate-btn" disabled>종료된 이벤트</button>'
+}
                 </div>
             </div>
         </div>
@@ -616,11 +616,11 @@ function updateEventModal() {
                 
                 <div class="event-modal-footer">
                     ${event.status === 'ongoing' ? 
-                        '<button class="event-participate-btn">지금 참여하기</button>' : 
-                        event.status === 'upcoming' ? 
-                        '<button class="event-participate-btn" disabled>곧 시작됩니다</button>' :
-                        '<button class="event-participate-btn" disabled>종료된 이벤트</button>'
-                    }
+        '<button class="event-participate-btn">지금 참여하기</button>' : 
+        event.status === 'upcoming' ? 
+            '<button class="event-participate-btn" disabled>곧 시작됩니다</button>' :
+            '<button class="event-participate-btn" disabled>종료된 이벤트</button>'
+}
                 </div>
             </div>
         `;

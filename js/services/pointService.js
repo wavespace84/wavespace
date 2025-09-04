@@ -9,6 +9,36 @@ class PointService {
     }
 
     /**
+     * authService 안전한 참조
+     * @returns {Object|null} authService 또는 null
+     */
+    getAuthService() {
+        if (typeof window !== 'undefined' && window.authService) {
+            return window.authService;
+        }
+        console.warn('⚠️ authService를 찾을 수 없습니다.');
+        return null;
+    }
+
+    /**
+     * 로그인 상태 안전하게 확인
+     * @returns {boolean}
+     */
+    isUserLoggedIn() {
+        const authService = this.getAuthService();
+        return authService ? authService.isLoggedIn() : false;
+    }
+
+    /**
+     * 현재 사용자 안전하게 가져오기
+     * @returns {Object|null}
+     */
+    getCurrentUser() {
+        const authService = this.getAuthService();
+        return authService ? authService.getCurrentUser() : null;
+    }
+
+    /**
      * 초기화
      */
     async init() {
@@ -364,11 +394,14 @@ class PointService {
      */
     async purchaseItem(itemId, cost) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             
             // 포인트 차감
             const result = await this.spendPoints(
@@ -397,11 +430,14 @@ class PointService {
      */
     async giftPoints(receiverUsername, amount, message = '') {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             
             // 받는 사람 조회
             const { data: receiver } = await this.supabase
@@ -452,11 +488,14 @@ class PointService {
      */
     async completeDailyMission(missionId, reward) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             const today = new Date().toISOString().split('T')[0];
 
             // 오늘 이미 완료했는지 확인
@@ -493,30 +532,33 @@ class PointService {
      */
     async useBooster(boosterType, duration = 3600) { // 기본 1시간
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                throw new Error('사용자 정보를 가져올 수 없습니다.');
+            }
             let cost = 0;
             let multiplier = 1.0;
 
             // 부스터 종류별 설정
             switch (boosterType) {
-                case 'double':
-                    cost = 500;
-                    multiplier = 2.0;
-                    break;
-                case 'triple':
-                    cost = 1000;
-                    multiplier = 3.0;
-                    break;
-                case 'mega':
-                    cost = 2000;
-                    multiplier = 5.0;
-                    break;
-                default:
-                    throw new Error('잘못된 부스터 타입입니다.');
+            case 'double':
+                cost = 500;
+                multiplier = 2.0;
+                break;
+            case 'triple':
+                cost = 1000;
+                multiplier = 3.0;
+                break;
+            case 'mega':
+                cost = 2000;
+                multiplier = 5.0;
+                break;
+            default:
+                throw new Error('잘못된 부스터 타입입니다.');
             }
 
             // 포인트 차감
@@ -739,13 +781,25 @@ class PointService {
     }
 }
 
-// 전역 포인트 서비스 인스턴스 생성
-const pointService = new PointService();
+// 전역 포인트 서비스 인스턴스 생성 (중복 방지 강화)
+let pointService;
+(function initializePointService() {
+    if (window.pointService) {
+        console.log('[PointService] 이미 존재함, 기존 인스턴스 사용');
+        pointService = window.pointService;
+        return;
+    }
+    
+    pointService = new PointService();
+    console.log('[PointService] 새 인스턴스 생성 완료');
+})();
 
 // 페이지 로드 시 초기화
 window.addEventListener('load', async () => {
     await pointService.init();
 });
 
-// 전역 접근 가능하도록 설정
-window.pointService = pointService;
+// 전역 접근 가능하도록 설정 (중복 방지)
+if (!window.pointService) {
+    window.pointService = pointService;
+}

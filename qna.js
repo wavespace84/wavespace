@@ -575,7 +575,7 @@ let currentPage = 1;
 let currentCategory = 'all';
 let filteredQuestions = [];
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('qna.js DOMContentLoaded 이벤트 발생');
     
     // 카테고리 탭 - checkbox-tab 스타일
@@ -689,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 검색 기능
     if (searchBtn && searchInput) {
         searchBtn.addEventListener('click', performSearch);
-        searchInput.addEventListener('keypress', function(e) {
+        searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 performSearch();
             }
@@ -850,7 +850,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 카테고리별 개수 업데이트
         updateCategoryCounts();
-    }
+    };
 
     // 정렬 변경
     if (sortSelect) {
@@ -865,13 +865,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const askBtnFloat = document.querySelector('.ask-btn-float');
     const askBtn = document.querySelector('.ask-btn');
     if (askBtnFloat) {
-        askBtnFloat.addEventListener('click', function() {
+        askBtnFloat.addEventListener('click', () => {
             console.log('질문하기 모달 열기...');
             openAskModal();
         });
     }
     if (askBtn) {
-        askBtn.addEventListener('click', function() {
+        askBtn.addEventListener('click', () => {
             console.log('질문하기 모달 열기...');
             openAskModal();
         });
@@ -1105,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     // 도움됨 버튼
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', (e) => {
         if (e.target.closest('.btn-helpful')) {
             const btn = e.target.closest('.btn-helpful');
             const countSpan = btn.querySelector('span');
@@ -1145,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         alert(`질문이 등록되었습니다!\n채택 보상: ${parseInt(points).toLocaleString()}P`);
         closeAskModal();
-    }
+    };
 
     // 투표 버튼 이벤트
     document.querySelectorAll('.vote-btn').forEach(btn => {
@@ -1153,7 +1153,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             const voteCount = this.querySelector('.vote-count');
             if (voteCount) {
-                let count = parseInt(voteCount.textContent);
+                const count = parseInt(voteCount.textContent);
                 
                 if (this.classList.contains('active')) {
                     this.classList.remove('active');
@@ -1387,24 +1387,24 @@ document.addEventListener('DOMContentLoaded', function() {
             let shouldShow = false;
             
             switch(category) {
-                case 'all':
-                    shouldShow = true;
-                    break;
-                case 'unadopted':
-                    shouldShow = status === 'unadopted';
-                    break;
-                case 'adopted':
-                    shouldShow = status === 'adopted';
-                    break;
-                case 'popular':
-                    shouldShow = isPopular;
-                    break;
-                case 'myquestions':
-                    // 로그인 기능이 구현되면 사용자의 질문만 필터링
-                    shouldShow = false;
-                    break;
-                default:
-                    shouldShow = true;
+            case 'all':
+                shouldShow = true;
+                break;
+            case 'unadopted':
+                shouldShow = status === 'unadopted';
+                break;
+            case 'adopted':
+                shouldShow = status === 'adopted';
+                break;
+            case 'popular':
+                shouldShow = isPopular;
+                break;
+            case 'myquestions':
+                // 로그인 기능이 구현되면 사용자의 질문만 필터링
+                shouldShow = false;
+                break;
+            default:
+                shouldShow = true;
             }
             
             console.log(`Q&A ${index + 1}: status=${status}, popular=${isPopular}, shouldShow=${shouldShow}`);
@@ -1551,7 +1551,7 @@ document.addEventListener('DOMContentLoaded', function() {
             : '';
 
         const newBadgeHTML = question.isNew
-            ? `<span class="new-badge">NEW</span>`
+            ? '<span class="new-badge">NEW</span>'
             : '';
 
         const tagsHTML = question.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
@@ -1758,7 +1758,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 답변하기 버튼
     document.querySelectorAll('.answer-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+        btn.addEventListener('click', (e) => {
             e.stopPropagation();
             console.log('답변하기 버튼 클릭');
             alert('답변하기 기능은 로그인 후 이용 가능합니다.');

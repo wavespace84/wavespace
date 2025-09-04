@@ -201,7 +201,7 @@ class UpdatesSupabase {
                     isLatest: index === 0 // 첫 번째가 최신
                 };
 
-                console.log(`✅ 변환 완료:`, {
+                console.log('✅ 변환 완료:', {
                     id: transformedItem.id,
                     title: transformedItem.title,
                     category: transformedItem.category,

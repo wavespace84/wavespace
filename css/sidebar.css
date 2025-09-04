@@ -122,11 +122,11 @@
     margin-bottom: var(--spacing-sm);
 }
 
-.nav-section:not(:last-child) {
+.nav-section:not(:last-of-type) {
     position: relative;
 }
 
-.nav-section:not(:last-child):not(.active):not(.next-active)::after {
+.nav-section:not(:last-of-type):not(.active):not(.next-active)::after {
     content: "";
     position: absolute;
     bottom: 0;
@@ -144,13 +144,15 @@
 .nav-category-wrapper {
     position: relative;
     border-radius: var(--radius-lg);
-    transition: var(--transition-fast);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: border, background-color, box-shadow;
 }
 
 .nav-category.active .nav-category-wrapper {
     border: 1px solid rgba(46, 140, 230, 0.5);
     background-color: rgba(235, 245, 253, 0.3);
     box-shadow: 0 2px 4px rgba(46, 140, 230, 0.1);
+    overflow: hidden; /* 내부 콘텐츠가 wrapper를 넘어가지 않도록 제어 */
 }
 
 .nav-category-button {
@@ -166,8 +168,9 @@
     font-weight: 600;
     color: var(--gray-600);
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    will-change: background-color, color;
 }
 
 .nav-category-button:hover {
@@ -178,6 +181,7 @@
 .nav-category.active .nav-category-button {
     background-color: rgba(235, 245, 253, 0.5);
     color: var(--primary-blue);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* 상단만 둥글게 유지 */
 }
 
 /* Icon Alignment */
@@ -190,7 +194,8 @@
 .nav-arrow {
     margin-left: auto;
     font-size: 12px;
-    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
 }
 
 .nav-category.active .nav-arrow {
@@ -199,14 +204,19 @@
 
 /* Navigation Items */
 .nav-items {
-    display: none;
-    padding-top: var(--spacing-sm);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
     padding-left: var(--spacing-xl);
-    padding-bottom: var(--spacing-md);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: max-height, opacity, padding;
 }
 
 .nav-category.active .nav-items {
-    display: block;
+    max-height: 500px; /* 충분한 높이 설정 */
+    opacity: 1;
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-lg); /* 하단 여백 증가로 테두리 보이도록 */
 }
 
 .nav-item {
@@ -221,7 +231,8 @@
     color: var(--gray-600);
     text-decoration: none;
     position: relative;
-    transition: var(--transition-fast);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: background-color, color, transform;
 }
 
 /* 명예의전당 특별 강조 스타일 */
@@ -387,22 +398,29 @@
     transform: scale(1.1);
 }
 
-/* Minigame Section */
+/* Minigame Section - 마지막 섹션으로 특별 처리 */
 .minigame-section {
-    margin-top: var(--spacing-lg);
-    padding: var(--spacing-lg);
-    background-color: var(--gray-50);
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: transparent;
     border-radius: var(--radius-lg);
+    position: relative;
+}
+
+/* 미니게임 섹션은 nav-section이 아니므로 별도 처리 */
+.nav-section:last-of-type:not(.active):not(.next-active) {
+    margin-bottom: 0;
 }
 
 .minigame-header {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-sm);
+    padding-left: var(--spacing-sm);
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--gray-700);
+    color: var(--gray-600);
 }
 
 .minigame-buttons {
@@ -415,12 +433,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: var(--spacing-sm);
-    background-color: var(--white);
+    gap: 4px;
+    padding: 8px;
+    background-color: var(--gray-50);
     border: 1px solid var(--gray-200);
-    border-radius: var(--radius-lg);
-    font-size: var(--font-size-xs);
+    border-radius: var(--radius-md);
+    font-size: 11px;
     font-weight: 500;
     color: var(--gray-600);
     text-decoration: none;
@@ -434,7 +452,7 @@
 }
 
 .minigame-btn i {
-    font-size: 18px;
+    font-size: 16px;
     color: var(--purple);
     transition: var(--transition-fast);
 }

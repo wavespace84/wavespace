@@ -119,13 +119,30 @@ class AuthService {
     showFallbackAuthUI(errorMessage) {
         console.log('🔄 폴백 인증 UI 활성화');
         
-        // 헤더 사용자 정보 영역에 기본 UI 표시
-        this.updateUIForAnonymousUser();
+        // 헤더 사용자 정보 영역에 로그인/회원가입 버튼 표시
+        const userInfoElement = document.querySelector('#userInfoContainer');
+        if (userInfoElement) {
+            userInfoElement.innerHTML = `
+                <div class="auth-buttons anonymous-only">
+                    <button class="btn btn-outline" onclick="window.location.href='login.html'">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>로그인</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="window.location.href='signup.html'">
+                        <i class="fas fa-user-plus"></i>
+                        <span>회원가입</span>
+                    </button>
+                </div>
+            `;
+            console.log('✅ 폴백 UI: 로그인/회원가입 버튼 표시 완료');
+        }
         
-        // 기존 인증 관련 요소들 숨기기
-        const authElements = document.querySelectorAll('.auth-section, .user-profile, .auth-buttons');
-        authElements.forEach(el => {
-            if (el) el.style.display = 'none';
+        // 로그인 필요 요소들 숨기기
+        document.querySelectorAll('.login-required').forEach(el => {
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('.anonymous-only').forEach(el => {
+            el.style.display = 'flex';  // 폴백 UI에서 flex로 표시
         });
         
         // 에러 메시지 표시 (개발 환경에서만)
@@ -146,6 +163,8 @@ class AuthService {
                 sidebar.insertBefore(errorDiv, sidebar.firstChild);
             }
         }
+        
+        console.log('✅ 폴백 인증 UI 설정 완료');
     }
 
     /**
@@ -1102,66 +1121,38 @@ class AuthService {
         if (userInfoElement) {
             // 닉네임을 우선적으로 표시, 없으면 username, 그것도 없으면 fullName
             const displayName = user.nickname || user.username || user.fullName || '사용자';
-            const firstLetter = displayName.charAt(0);
             
-            // 실무자 인증 여부
-            const isVerified = this.userProfile?.is_verified || user.isVerified || false;
-            
-            // 대표 배지 (슈퍼리치, VIP 등)
-            const representativeBadge = this.getRepresentativeBadge(user);
-            
-            // 프로필 이미지
-            const profileImage = user.profileImage || this.userProfile?.profile_image_url;
-            
-            // 헤더 구조에 따라 적응적으로 업데이트
-            const headerRight = document.querySelector('.header-right');
-            
-            // 심플 아이콘 HTML 템플릿
-            const simpleIconsHTML = `
-                <div class="header-simple-icons">
-                    <!-- 알림 아이콘 -->
+            // 로그인된 사용자 UI 업데이트 (userInfoContainer 내부만 변경)
+            userInfoElement.innerHTML = `
+                <div class="user-logged-in login-required">
+                    <!-- 알림 버튼 -->
                     <button class="header-icon-btn notification-btn">
                         <i class="fas fa-bell"></i>
-                        <span class="notification-dot"></span>
+                        <span class="notification-dot" style="display: none;"></span>
                     </button>
                     
-                    <!-- 사용자 아이콘 -->
-                    <button class="header-icon-btn user-btn" onclick="authService.openMypageSidepanel()">
-                        <i class="fas fa-user-circle"></i>
+                    <!-- 마이페이지 버튼 -->
+                    <button class="header-icon-btn user-btn" onclick="authService.openMypageSidepanel()" title="마이페이지">
+                        <i class="fa-solid fa-user"></i>
                     </button>
                     
                     <!-- 포인트 표시 -->
                     <div class="header-points-display">
-                        <i class="fas fa-coins"></i>
+                        <i class="fa-solid fa-coins"></i>
                         <span>${(user.points || 0).toLocaleString()}P</span>
                     </div>
                     
-                    <!-- 로그아웃 아이콘 -->
-                    <button class="header-icon-btn logout-btn" onclick="authService.signOut()">
-                        <i class="fas fa-sign-out-alt"></i>
+                    <!-- 로그아웃 버튼 -->
+                    <button class="header-icon-btn logout-btn" onclick="authService.signOut()" title="로그아웃">
+                        <i class="fa-solid fa-sign-out-alt"></i>
                     </button>
                 </div>
             `;
-
-            if (headerRight) {
-                // 검색 버튼 없이 간단한 아이콘들만 표시
-                headerRight.innerHTML = simpleIconsHTML;
-            } else {
-                // fallback: userInfoContainer만 업데이트
-                userInfoElement.innerHTML = simpleIconsHTML;
-            }
         }
-
-        // 알림 버튼 표시 (로그인된 사용자에게는 필요)
-        const notificationBtn = document.querySelector('.notification-btn');
-        if (notificationBtn) {
-            notificationBtn.style.display = 'block';
-        }
-
 
         // 로그인 관련 버튼 숨기기/표시
         document.querySelectorAll('.login-required').forEach(el => {
-            el.style.display = 'block';
+            el.style.display = 'flex';  // 로그인 시 flex로 표시
         });
         document.querySelectorAll('.anonymous-only').forEach(el => {
             el.style.display = 'none';
@@ -1174,27 +1165,32 @@ class AuthService {
     updateUIForAnonymousUser() {
         const userInfoElement = document.querySelector('#userInfoContainer');
         if (userInfoElement) {
-            userInfoElement.innerHTML = `
-                <div class="auth-buttons anonymous-only">
-                    <button onclick="window.location.href='login.html'" class="btn-login">로그인</button>
-                    <button onclick="window.location.href='signup.html'" class="btn-signup">회원가입</button>
-                </div>
-            `;
+            // 기존 로그인 버튼이 있는지 확인
+            const existingButtons = userInfoElement.querySelector('.auth-buttons');
+            
+            if (!existingButtons) {
+                // 로그인/회원가입 버튼이 없다면 추가
+                userInfoElement.innerHTML = `
+                    <div class="auth-buttons anonymous-only">
+                        <button class="btn btn-outline" onclick="window.location.href='login.html'">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>로그인</span>
+                        </button>
+                        <button class="btn btn-primary" onclick="window.location.href='signup.html'">
+                            <i class="fas fa-user-plus"></i>
+                            <span>회원가입</span>
+                        </button>
+                    </div>
+                `;
+            }
         }
-
-        // 알림 버튼 숨기기 (로그인하지 않은 사용자에게는 불필요)
-        const notificationBtn = document.querySelector('.notification-btn');
-        if (notificationBtn) {
-            notificationBtn.style.display = 'none';
-        }
-
 
         // 로그인 필요 기능 숨기기
         document.querySelectorAll('.login-required').forEach(el => {
             el.style.display = 'none';
         });
         document.querySelectorAll('.anonymous-only').forEach(el => {
-            el.style.display = 'block';
+            el.style.display = 'flex';  // 익명 사용자 시 flex로 표시
         });
     }
 
@@ -1206,8 +1202,8 @@ class AuthService {
         
         return badges.slice(0, 3).map(badgeData => {
             const badge = badgeData.badges;
-            let badgeClass = `badge ${badge.badge_type}`;
-            let style = badge.badge_type === 'premium' ? `background: ${badge.color};` : `color: ${badge.color};`;
+            const badgeClass = `badge ${badge.badge_type}`;
+            const style = badge.badge_type === 'premium' ? `background: ${badge.color};` : `color: ${badge.color};`;
             
             return `<span class="${badgeClass}" style="${style}">ㅣ${badge.name}ㅣ</span>`;
         }).join('');
@@ -1271,15 +1267,271 @@ class AuthService {
     }
 
     /**
-     * 로그인 페이지로 이동
+     * 로그인 사이드패널 열기
      */
     showLogin() {
-        console.log('🔄 로그인 페이지로 이동 중...');
+        console.log('🔄 로그인 사이드패널 열기');
         try {
-            window.location.href = 'login.html';
+            this.openLoginSidepanel();
         } catch (error) {
-            console.error('로그인 페이지 이동 실패:', error);
-            alert('로그인 페이지를 열 수 없습니다.');
+            console.error('로그인 사이드패널 열기 실패:', error);
+            // 폴백: 기존 로그인 페이지로 이동
+            window.location.href = 'login.html';
+        }
+    }
+
+    /**
+     * 로그인 사이드패널 열기
+     */
+    openLoginSidepanel() {
+        const sidepanel = document.getElementById('loginSidepanel');
+        if (sidepanel) {
+            sidepanel.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // 로그인 폼 초기화
+            this.initLoginForm();
+            
+            console.log('✅ 로그인 사이드패널 열림');
+        } else {
+            console.error('❌ 로그인 사이드패널을 찾을 수 없음');
+            throw new Error('로그인 사이드패널을 찾을 수 없습니다.');
+        }
+    }
+
+    /**
+     * 로그인 사이드패널 닫기
+     */
+    closeLoginSidepanel() {
+        const sidepanel = document.getElementById('loginSidepanel');
+        if (sidepanel) {
+            sidepanel.classList.remove('show');
+            document.body.style.overflow = '';
+            
+            // 폼 초기화
+            const form = document.getElementById('loginForm');
+            if (form) {
+                form.reset();
+                this.hideLoginError();
+            }
+            
+            console.log('✅ 로그인 사이드패널 닫힘');
+        }
+    }
+
+    /**
+     * 로그인 폼 초기화 및 이벤트 설정
+     */
+    initLoginForm() {
+        const form = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('login-error-message');
+        
+        if (!form) {
+            console.error('❌ 로그인 폼을 찾을 수 없음');
+            return;
+        }
+        
+        // 기존 이벤트 리스너 제거 후 새로 추가
+        const newForm = form.cloneNode(true);
+        form.parentNode.replaceChild(newForm, form);
+        
+        // 폼 제출 이벤트
+        newForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await this.handleLoginSubmit(e);
+        });
+        
+        // Enter 키 처리
+        const inputs = newForm.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    newForm.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+        
+        // 에러 메시지 숨기기
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+        
+        // 첫 번째 입력 필드에 포커스
+        const firstInput = newForm.querySelector('.form-input');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 300); // 애니메이션 후 포커스
+        }
+    }
+
+    /**
+     * 로그인 폼 제출 처리
+     */
+    async handleLoginSubmit(event) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const formData = new FormData(form);
+        const username = formData.get('username')?.trim();
+        const password = formData.get('password');
+        
+        if (!username || !password) {
+            this.showLoginError('아이디와 비밀번호를 모두 입력해주세요.');
+            return;
+        }
+        
+        // 로딩 상태 표시
+        this.setLoginLoading(true);
+        this.hideLoginError();
+        
+        try {
+            // 로그인 시도
+            const result = await this.signIn(username, password);
+            
+            if (result.success) {
+                // 로그인 성공
+                console.log('✅ 로그인 성공');
+                
+                // 사이드패널 닫기
+                this.closeLoginSidepanel();
+                
+                // 마이페이지 데이터 새로고침
+                if (typeof loadMypageData === 'function') {
+                    loadMypageData();
+                }
+                
+                // 성공 메시지 표시 (선택적)
+                this.showToast('로그인되었습니다.', 'success');
+                
+            } else {
+                // 로그인 실패
+                this.showLoginError(result.error || '로그인에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('❌ 로그인 처리 중 오류:', error);
+            this.showLoginError('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        } finally {
+            // 로딩 상태 해제
+            this.setLoginLoading(false);
+        }
+    }
+
+    /**
+     * 로그인 에러 메시지 표시
+     */
+    showLoginError(message) {
+        const errorElement = document.getElementById('login-error-message');
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+    }
+
+    /**
+     * 로그인 에러 메시지 숨기기
+     */
+    hideLoginError() {
+        const errorElement = document.getElementById('login-error-message');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+    }
+
+    /**
+     * 로그인 버튼 로딩 상태 설정
+     */
+    setLoginLoading(loading) {
+        const button = document.querySelector('#loginForm .btn-login');
+        if (button) {
+            if (loading) {
+                button.classList.add('loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+    }
+
+    /**
+     * 소셜 로그인
+     */
+    async socialLogin(provider) {
+        console.log(`🔄 ${provider} 소셜 로그인 시도`);
+        
+        try {
+            this.setLoginLoading(true);
+            
+            let supabaseProvider;
+            switch (provider) {
+            case 'google':
+                supabaseProvider = 'google';
+                break;
+            case 'kakao':
+                // 카카오는 향후 구현
+                throw new Error('카카오 로그인은 준비 중입니다.');
+            case 'naver':
+                // 네이버는 향후 구현
+                throw new Error('네이버 로그인은 준비 중입니다.');
+            default:
+                throw new Error('지원하지 않는 소셜 로그인입니다.');
+            }
+            
+            const { data, error } = await this.supabase.auth.signInWithOAuth({
+                provider: supabaseProvider,
+                options: {
+                    redirectTo: `${window.location.origin}/index.html`
+                }
+            });
+            
+            if (error) {
+                console.error(`❌ ${provider} 로그인 실패:`, error);
+                this.showLoginError(`${provider} 로그인에 실패했습니다.`);
+                return;
+            }
+            
+            console.log(`✅ ${provider} 로그인 성공`);
+            
+        } catch (error) {
+            console.error(`❌ ${provider} 소셜 로그인 오류:`, error);
+            this.showLoginError(error.message);
+        } finally {
+            this.setLoginLoading(false);
+        }
+    }
+
+    /**
+     * 비밀번호 재설정
+     */
+    async showPasswordReset() {
+        const email = prompt('비밀번호를 재설정할 이메일 주소를 입력하세요:');
+        
+        if (!email) {
+            return;
+        }
+        
+        // 이메일 형식 검증
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('올바른 이메일 주소를 입력해주세요.');
+            return;
+        }
+        
+        try {
+            const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password.html`
+            });
+            
+            if (error) {
+                console.error('❌ 비밀번호 재설정 실패:', error);
+                alert('비밀번호 재설정에 실패했습니다. 다시 시도해주세요.');
+                return;
+            }
+            
+            alert(`${email}로 비밀번호 재설정 링크를 발송했습니다. 이메일을 확인해주세요.`);
+            
+        } catch (error) {
+            console.error('❌ 비밀번호 재설정 오류:', error);
+            alert('비밀번호 재설정 중 오류가 발생했습니다.');
         }
     }
 
@@ -1545,7 +1797,7 @@ class AuthService {
      */
     checkPasswordStrength(password) {
         let score = 0;
-        let feedback = [];
+        const feedback = [];
 
         // 길이 체크
         if (password.length >= 8) score++;
@@ -1675,21 +1927,21 @@ class AuthService {
      */
     async loadTabData(tabName) {
         switch (tabName) {
-            case 'activity':
-                await this.loadActivityData();
-                break;
-            case 'points':
-                await this.loadPointsData();
-                break;
-            case 'badges':
-                await this.loadBadgesData();
-                break;
-            case 'purchases':
-                await this.loadPurchasesData();
-                break;
-            case 'settings':
-                this.loadSettingsData();
-                break;
+        case 'activity':
+            await this.loadActivityData();
+            break;
+        case 'points':
+            await this.loadPointsData();
+            break;
+        case 'badges':
+            await this.loadBadgesData();
+            break;
+        case 'purchases':
+            await this.loadPurchasesData();
+            break;
+        case 'settings':
+            this.loadSettingsData();
+            break;
         }
     }
 

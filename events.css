@@ -6,7 +6,7 @@
 }
 
 /* 헤더 */
-.events-header {
+.page-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -17,17 +17,7 @@
     flex: 1;
 }
 
-.events-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--gray-900);
-    margin-bottom: 6px;
-}
-
-.events-subtitle {
-    font-size: 14px;
-    color: var(--gray-600);
-}
+/* page-title, page-subtitle 스타일은 common.css에서 공통 관리 */
 
 /* 필터 탭 */
 /* 이벤트 탭 - checkbox-interaction.css 사용 */
@@ -737,7 +727,7 @@
         padding: 24px 20px 60px;
     }
 
-    .events-header {
+    .page-header {
         flex-direction: column;
         text-align: center;
         gap: 20px;

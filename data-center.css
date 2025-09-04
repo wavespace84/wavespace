@@ -8,12 +8,12 @@
 }
 
 /* Header Section */
-.data-center-header {
+.page-header {
     margin-bottom: 32px;
     text-align: left;
 }
 
-.data-center-title {
+.page-title {
     font-size: 24px !important;
     font-weight: 600 !important;
     color: #1f2937 !important;
@@ -23,7 +23,7 @@
     text-align: left !important;
 }
 
-.data-center-subtitle {
+.page-subtitle {
     font-size: 14px !important;
     color: #6b7280 !important;
     display: block !important;

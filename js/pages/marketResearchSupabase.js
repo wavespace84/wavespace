@@ -249,17 +249,17 @@ class MarketResearchSupabase {
 
             // 정렬
             switch (sortBy) {
-                case 'latest':
-                    query = query.order('created_at', { ascending: false });
-                    break;
-                case 'filesize':
-                    query = query.order('file_size', { ascending: false });
-                    break;
-                case 'popular':
-                    query = query.order('download_count', { ascending: false });
-                    break;
-                default:
-                    query = query.order('created_at', { ascending: false });
+            case 'latest':
+                query = query.order('created_at', { ascending: false });
+                break;
+            case 'filesize':
+                query = query.order('file_size', { ascending: false });
+                break;
+            case 'popular':
+                query = query.order('download_count', { ascending: false });
+                break;
+            default:
+                query = query.order('created_at', { ascending: false });
             }
 
             // 페이지네이션
@@ -411,13 +411,24 @@ class MarketResearchSupabase {
                         }
                     }
                     
-                    // 파일명 생성 (UUID + 원본 확장자)
+                    // 파일명 및 경로 생성 (날짜 기반 폴더 구조)
                     const fileExtension = file.name.split('.').pop().toLowerCase();
-                    const fileName = `${crypto.randomUUID()}.${fileExtension}`;
-                    filePath = `uploads/${fileName}`;
+                    const safeUUID = this.generateSafeUUID();
+                    const currentDate = new Date();
+                    const year = currentDate.getFullYear();
+                    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                    
+                    const fileName = `${safeUUID}.${fileExtension}`;
+                    filePath = `market-research/${year}/${month}/${fileName}`;
 
                     console.log(`📁 업로드 경로: ${filePath}`);
                     console.log(`📏 파일 크기: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+                    console.log(`🪣 사용할 버킷: ${this.bucketName}`);
+                    console.log('🔐 사용자 인증 상태:', {
+                        hasUser: !!user,
+                        userId: user?.id,
+                        userEmail: user?.email
+                    });
 
                     // Storage에 파일 업로드
                     const { data: uploadData, error: uploadError } = await this.client.storage
@@ -429,22 +440,34 @@ class MarketResearchSupabase {
 
                     if (uploadError) {
                         console.error('❌ Storage 업로드 실패:', uploadError.message);
+                        console.error('📄 업로드 시도한 파일:', {
+                            name: file.name,
+                            size: file.size,
+                            type: file.type,
+                            path: filePath
+                        });
                         
-                        // 구체적인 오류 분석
-                        if (uploadError.message.includes('RLS')) {
+                        // 구체적인 오류 분석 및 해결 방안 제시
+                        let errorMsg = 'Storage 파일 업로드에 실패했습니다.';
+                        if (uploadError.message.includes('RLS') || uploadError.message.includes('policy')) {
+                            errorMsg = 'Storage 접근 권한이 없습니다. 관리자에게 문의하세요.';
                             console.log('🔐 RLS 정책 문제입니다.');
-                            console.log('💡 Supabase 대시보드에서 Storage 정책을 확인하세요.');
+                            console.log('💡 Supabase 대시보드 → Storage → Policies에서 정책을 확인하세요.');
                         } else if (uploadError.message.includes('permission')) {
+                            errorMsg = 'Storage 업로드 권한이 없습니다.';
                             console.log('🔐 권한 문제입니다.');
                         } else if (uploadError.message.includes('size')) {
+                            errorMsg = '파일 크기가 너무 큽니다. (최대 50MB)';
                             console.log('📏 파일 크기 문제입니다.');
+                        } else if (uploadError.message.includes('duplicate') || uploadError.message.includes('exists')) {
+                            errorMsg = '동일한 파일명이 이미 존재합니다.';
+                            console.log('📁 파일명 중복 문제입니다.');
                         } else {
-                            console.log('❓ 예상치 못한 Storage 오류입니다.');
+                            console.log('❓ 예상치 못한 Storage 오류:', uploadError);
                         }
                         
-                        console.log('💡 메타데이터만 저장하고 계속 진행합니다.');
-                        fileUrl = null;
-                        filePath = null;
+                        // Storage 업로드 실패 시 전체 프로세스 중단
+                        throw new Error(errorMsg);
                     } else {
                         console.log('✅ Storage 업로드 성공:', uploadData.path);
                         
@@ -468,9 +491,12 @@ class MarketResearchSupabase {
                     filePath = null;
                 }
             } else {
-                console.warn('⚠️ Storage 기능 비활성화됨');
-                console.log('💡 메타데이터만 데이터베이스에 저장합니다.');
-                console.log('🔧 Storage 복원: checkStorageHealth() 실행 후 문제 해결');
+                console.warn('⚠️ Storage 기능이 비활성화되어 있습니다.');
+                console.log('🔧 Storage 상태 확인 필요:');
+                console.log('  1. Supabase 대시보드 → Storage → Policies 확인');
+                console.log('  2. 버킷 권한 설정 확인');
+                console.log('  3. 인증 상태 확인');
+                console.log('💡 파일 없이 메타데이터만 저장됩니다.');
                 fileUrl = null;
                 filePath = null;
             }
@@ -613,32 +639,56 @@ class MarketResearchSupabase {
      * 데이터 변환 (기존 sampleDocuments 형식에 맞게)
      */
     transformDocuments(supabaseData) {
-        return supabaseData.map(item => ({
-            id: item.id,
-            title: item.title,
-            type: item.product_type,
-            region: item.region1,
-            district: item.region2,
-            location: item.full_location,
-            date: new Date(item.created_at).toLocaleDateString('ko-KR').replace(/\./g, '.'),
-            createDate: `자료생성일: ${new Date(item.file_created_date).toLocaleDateString('ko-KR').replace(/\./g, '.')}`,
-            fileSize: this.formatFileSize(item.file_size),
-            fileType: this.getFileTypeFromUrl(item.file_url),
-            pages: item.page_count,
-            points: item.download_points,
-            supplyType: item.supply_type,
-            isPremium: false,
-            keywords: item.keywords || [],
-            thumbnail: item.thumbnail_url || this.generateThumbnail(item.file_type),
-            description: item.description,
-            pdfPath: item.file_url,
-            downloadCount: item.download_count,
-            uploader: item.users?.full_name || item.users?.username,
-            isVerified: item.is_verified
-        }));
+        return supabaseData.map(item => {
+            // 안전한 날짜 처리
+            const createdDate = item.created_at ? new Date(item.created_at) : new Date();
+            const fileCreatedDate = item.file_created_date ? new Date(item.file_created_date) : createdDate;
+            
+            return {
+                id: item.id,
+                title: item.title || '제목 없음',
+                type: item.product_type || '기타',
+                region: item.region1 || '',
+                district: item.region2 || '',
+                location: item.full_location || '',
+                date: createdDate.toLocaleDateString('ko-KR').replace(/\./g, '.'),
+                createDate: `자료생성일: ${fileCreatedDate.toLocaleDateString('ko-KR').replace(/\./g, '.')}`,
+                fileSize: this.formatFileSize(item.file_size || 0),
+                fileType: this.getFileTypeFromUrl(item.file_url || ''),
+                pages: item.page_count || 0,
+                points: item.download_points || 0,
+                supplyType: item.supply_type || '',
+                isPremium: false,
+                keywords: item.keywords || [],
+                thumbnail: item.thumbnail_url || this.generateThumbnail(item.file_type),
+                description: item.description || '',
+                pdfPath: item.file_url || '',
+                downloadCount: item.download_count || 0,
+                uploader: item.users?.full_name || item.users?.username || '익명',
+                isVerified: item.is_verified || false
+            };
+        });
     }
 
     // 유틸리티 메서드들
+    generateSafeUUID() {
+        // 브라우저 호환성을 위한 안전한 UUID 생성
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+            try {
+                return crypto.randomUUID();
+            } catch (e) {
+                console.warn('crypto.randomUUID() 실패, 대체 방법 사용');
+            }
+        }
+        
+        // 대체 UUID 생성 방법
+        return 'xxxx-xxxx-4xxx-yxxx-xxxx'.replace(/[xy]/g, (c) => {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        }) + '-' + Date.now().toString(16);
+    }
+
     validateFile(file, metadata) {
         const allowedTypes = [
             'application/pdf',

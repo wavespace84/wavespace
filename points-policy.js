@@ -22,78 +22,78 @@ class PointsPolicyManager {
     getDefaultPolicyData() {
         return {
             lastUpdated: new Date().toISOString().split('T')[0],
-            version: "2.0.0",
+            version: '2.0.0',
             
             // 이용권한 테이블 데이터
             permissions: [
                 // 일반활동 관련
-                { category: "일반활동", item: "첫로그인", summary: "2,500point", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-" },
-                { category: "", item: "지인추천", summary: "1,500point", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-" },
-                { category: "", item: "공지읽기", summary: "500point", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-" },
-                { category: "", item: "이벤트제안", summary: "(채택 시)", read: "-", write: "○", comment: "-", delete: "-", upload: "-", download: "-" },
+                { category: '일반활동', item: '첫로그인', summary: '2,500point', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-' },
+                { category: '', item: '지인추천', summary: '1,500point', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-' },
+                { category: '', item: '공지읽기', summary: '500point', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-' },
+                { category: '', item: '이벤트제안', summary: '(채택 시)', read: '-', write: '○', comment: '-', delete: '-', upload: '-', download: '-' },
                 
                 // 커뮤니티
-                { category: "커뮤니티", item: "명예의전당", summary: "전체 사용자", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-" },
-                { category: "", item: "출석체크", summary: "전체 사용자", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-" },
-                { category: "", item: "자유게시판", summary: "전체 사용자", read: "○", write: "○", comment: "○", delete: "○", upload: "○", download: "-" },
-                { category: "", item: "유머재미", summary: "전체 사용자", read: "○", write: "○", comment: "○", delete: "○", upload: "○", download: "-" },
-                { category: "", item: "질문답변", summary: "전체 사용자", read: "○", write: "○", comment: "○", delete: "○", upload: "○", download: "△질문자" },
+                { category: '커뮤니티', item: '명예의전당', summary: '전체 사용자', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-' },
+                { category: '', item: '출석체크', summary: '전체 사용자', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-' },
+                { category: '', item: '자유게시판', summary: '전체 사용자', read: '○', write: '○', comment: '○', delete: '○', upload: '○', download: '-' },
+                { category: '', item: '유머재미', summary: '전체 사용자', read: '○', write: '○', comment: '○', delete: '○', upload: '○', download: '-' },
+                { category: '', item: '질문답변', summary: '전체 사용자', read: '○', write: '○', comment: '○', delete: '○', upload: '○', download: '△질문자' },
                 
                 // 구인구직
-                { category: "구인구직", item: "분양기획", summary: "기획파트", read: "△기획", write: "△기획", comment: "△기획", delete: "△기획", upload: "-", download: "-" },
-                { category: "", item: "분양영업", summary: "전체 사용자", read: "○", write: "○", comment: "○", delete: "○", upload: "-", download: "-" },
-                { category: "", item: "AI 매칭", summary: "전체 사용자", read: "○", write: "○", comment: "○", delete: "○", upload: "-", download: "-" },
+                { category: '구인구직', item: '분양기획', summary: '기획파트', read: '△기획', write: '△기획', comment: '△기획', delete: '△기획', upload: '-', download: '-' },
+                { category: '', item: '분양영업', summary: '전체 사용자', read: '○', write: '○', comment: '○', delete: '○', upload: '-', download: '-' },
+                { category: '', item: 'AI 매칭', summary: '전체 사용자', read: '○', write: '○', comment: '○', delete: '○', upload: '-', download: '-' },
                 
                 // 분양자료
-                { category: "분양자료", item: "데이터센터", summary: "전체 사용자", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "△Plus" },
-                { category: "", item: "시장조사서", summary: "실무자파트", read: "△실무자", write: "△실무자", comment: "△실무자", delete: "△승인", upload: "-", download: "△실무자" },
-                { category: "", item: "제안서", summary: "실무자파트", read: "△실무자", write: "△실무자", comment: "△실무자", delete: "△승인", upload: "-", download: "△실무자" },
-                { category: "", item: "교육자료", summary: "전체 사용자", read: "○", write: "○", comment: "○", delete: "△승인", upload: "-", download: "○" },
-                { category: "", item: "정책 / 기타자료", summary: "전체 사용자", read: "○", write: "○", comment: "○", delete: "△승인", upload: "-", download: "○" },
-                { category: "", item: "AI 보고서", summary: "전체 사용자", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "△Plus" },
+                { category: '분양자료', item: '데이터센터', summary: '전체 사용자', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '△Plus' },
+                { category: '', item: '시장조사서', summary: '실무자파트', read: '△실무자', write: '△실무자', comment: '△실무자', delete: '△승인', upload: '-', download: '△실무자' },
+                { category: '', item: '제안서', summary: '실무자파트', read: '△실무자', write: '△실무자', comment: '△실무자', delete: '△승인', upload: '-', download: '△실무자' },
+                { category: '', item: '교육자료', summary: '전체 사용자', read: '○', write: '○', comment: '○', delete: '△승인', upload: '-', download: '○' },
+                { category: '', item: '정책 / 기타자료', summary: '전체 사용자', read: '○', write: '○', comment: '○', delete: '△승인', upload: '-', download: '○' },
+                { category: '', item: 'AI 보고서', summary: '전체 사용자', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '△Plus' },
                 
                 // 포인트
-                { category: "포인트", item: "충전하기", summary: "유료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-" },
-                { category: "", item: "상점", summary: "전체 사용자", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-" },
+                { category: '포인트', item: '충전하기', summary: '유료', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '-' },
+                { category: '', item: '상점', summary: '전체 사용자', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-' },
                 
                 // 미니게임
-                { category: "미니게임", item: "모든게임", summary: "전체 사용자", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-" }
+                { category: '미니게임', item: '모든게임', summary: '전체 사용자', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-' }
             ],
             
             // 포인트 기준 테이블 데이터
             points: [
                 // 일반활동 관련
-                { category: "일반활동", item: "첫로그인", summary: "2,500point", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "" },
-                { category: "", item: "지인추천", summary: "1,500point", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "" },
-                { category: "", item: "공지읽기", summary: "500point", read: "○", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "" },
-                { category: "", item: "이벤트제안", summary: "(채택 시)", read: "-", write: "○", comment: "-", delete: "-", upload: "-", download: "-", link: "" },
+                { category: '일반활동', item: '첫로그인', summary: '2,500point', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: '' },
+                { category: '', item: '지인추천', summary: '1,500point', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: '' },
+                { category: '', item: '공지읽기', summary: '500point', read: '○', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: '' },
+                { category: '', item: '이벤트제안', summary: '(채택 시)', read: '-', write: '○', comment: '-', delete: '-', upload: '-', download: '-', link: '' },
                 
                 // 커뮤니티
-                { category: "커뮤니티", item: "명예의전당", summary: "-", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "hall-of-fame.html" },
-                { category: "", item: "출석체크", summary: "~1,000point", read: "-", write: "○", comment: "-", delete: "-", upload: "-", download: "-", link: "attendance.html" },
-                { category: "", item: "자유게시판", summary: "무한획득", read: "-", write: "100p", comment: "20p", delete: "-", upload: "-", download: "-", link: "forum.html" },
-                { category: "", item: "유머재미", summary: "무한획득", read: "-", write: "50p", comment: "10p", delete: "-", upload: "-", download: "-", link: "humor.html" },
-                { category: "", item: "질문답변", summary: "무한획득", read: "-", write: "(설정차감)", comment: "(채택획득)", delete: "-", upload: "-", download: "-", link: "qna.html" },
+                { category: '커뮤니티', item: '명예의전당', summary: '-', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: 'hall-of-fame.html' },
+                { category: '', item: '출석체크', summary: '~1,000point', read: '-', write: '○', comment: '-', delete: '-', upload: '-', download: '-', link: 'attendance.html' },
+                { category: '', item: '자유게시판', summary: '무한획득', read: '-', write: '100p', comment: '20p', delete: '-', upload: '-', download: '-', link: 'forum.html' },
+                { category: '', item: '유머재미', summary: '무한획득', read: '-', write: '50p', comment: '10p', delete: '-', upload: '-', download: '-', link: 'humor.html' },
+                { category: '', item: '질문답변', summary: '무한획득', read: '-', write: '(설정차감)', comment: '(채택획득)', delete: '-', upload: '-', download: '-', link: 'qna.html' },
                 
                 // 구인구직
-                { category: "구인구직", item: "분양기획", summary: "무료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "planning-recruitment.html" },
-                { category: "", item: "분양영업", summary: "무료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "sales-recruit.html" },
-                { category: "", item: "AI 매칭", summary: "무료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "ai-matching.html" },
+                { category: '구인구직', item: '분양기획', summary: '무료', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: 'planning-recruitment.html' },
+                { category: '', item: '분양영업', summary: '무료', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: 'sales-recruit.html' },
+                { category: '', item: 'AI 매칭', summary: '무료', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: 'ai-matching.html' },
                 
                 // 분양자료
-                { category: "분양자료", item: "데이터센터", summary: "부분유료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "△Plus", link: "data-center.html" },
-                { category: "", item: "시장조사서", summary: "무한획득", read: "-", write: "-", comment: "-", delete: "-", upload: "+5,000p", download: "-12,000p", link: "market-research.html" },
-                { category: "", item: "제안서", summary: "무한획득", read: "-", write: "-", comment: "-", delete: "-", upload: "+7,000p", download: "-17,000p", link: "proposal.html" },
-                { category: "", item: "교육자료", summary: "무한획득", read: "-", write: "-", comment: "-", delete: "-", upload: "+3,500p", download: "-8,500p", link: "education.html" },
-                { category: "", item: "정책 / 기타자료", summary: "무한획득", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "other-docs.html" },
-                { category: "", item: "AI 보고서", summary: "부분유료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "△Plus", link: "ai-report.html" },
+                { category: '분양자료', item: '데이터센터', summary: '부분유료', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '△Plus', link: 'data-center.html' },
+                { category: '', item: '시장조사서', summary: '무한획득', read: '-', write: '-', comment: '-', delete: '-', upload: '+5,000p', download: '-12,000p', link: 'market-research.html' },
+                { category: '', item: '제안서', summary: '무한획득', read: '-', write: '-', comment: '-', delete: '-', upload: '+7,000p', download: '-17,000p', link: 'proposal.html' },
+                { category: '', item: '교육자료', summary: '무한획득', read: '-', write: '-', comment: '-', delete: '-', upload: '+3,500p', download: '-8,500p', link: 'education.html' },
+                { category: '', item: '정책 / 기타자료', summary: '무한획득', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: 'other-docs.html' },
+                { category: '', item: 'AI 보고서', summary: '부분유료', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '△Plus', link: 'ai-report.html' },
                 
                 // 포인트
-                { category: "포인트", item: "충전하기", summary: "유료", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "-", link: "points-charge.html" },
-                { category: "", item: "상점", summary: "포인트사용", read: "-", write: "-", comment: "-", delete: "-", upload: "-", download: "△Plus", link: "points-shop.html" },
+                { category: '포인트', item: '충전하기', summary: '유료', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '-', link: 'points-charge.html' },
+                { category: '', item: '상점', summary: '포인트사용', read: '-', write: '-', comment: '-', delete: '-', upload: '-', download: '△Plus', link: 'points-shop.html' },
                 
                 // 미니게임
-                { category: "미니게임", item: "모든게임", summary: "게임별", merged: true, mergedText: "모든 게임에서 포인트가 획득/손실될 수 있습니다", link: "#" }
+                { category: '미니게임', item: '모든게임', summary: '게임별', merged: true, mergedText: '모든 게임에서 포인트가 획득/손실될 수 있습니다', link: '#' }
             ]
         };
     }

@@ -137,15 +137,15 @@ export class PaginationHelper {
         // 페이지 번호
         const maxVisible = 5;
         let start = Math.max(1, this.page - Math.floor(maxVisible / 2));
-        let end = Math.min(this.totalPages, start + maxVisible - 1);
+        const end = Math.min(this.totalPages, start + maxVisible - 1);
         
         if (end - start < maxVisible - 1) {
             start = Math.max(1, end - maxVisible + 1);
         }
 
         if (start > 1) {
-            html += `<button class="pagination-btn" data-page="1">1</button>`;
-            if (start > 2) html += `<span class="pagination-dots">...</span>`;
+            html += '<button class="pagination-btn" data-page="1">1</button>';
+            if (start > 2) html += '<span class="pagination-dots">...</span>';
         }
 
         for (let i = start; i <= end; i++) {
@@ -157,7 +157,7 @@ export class PaginationHelper {
         }
 
         if (end < this.totalPages) {
-            if (end < this.totalPages - 1) html += `<span class="pagination-dots">...</span>`;
+            if (end < this.totalPages - 1) html += '<span class="pagination-dots">...</span>';
             html += `<button class="pagination-btn" data-page="${this.totalPages}">${this.totalPages}</button>`;
         }
 
@@ -193,7 +193,7 @@ export class RealtimeHelper {
             this.unsubscribe(key);
         }
 
-        let subscription = this.supabase
+        const subscription = this.supabase
             .channel(`public:${table}`)
             .on('postgres_changes', 
                 { 

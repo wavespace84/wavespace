@@ -314,7 +314,7 @@ class WaveSpaceBundler {
         await this.loadPageResources(pageName);
         
         console.log('✨ 번들링 완료 - 성능 최적화 성공');
-        console.log(`📈 로딩 시간 약 70% 단축 예상`);
+        console.log('📈 로딩 시간 약 70% 단축 예상');
     }
 
     /**

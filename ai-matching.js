@@ -303,15 +303,15 @@ function createFeaturedTalentCard(talent) {
 
     const highlights = talent.highlights
         ? talent.highlights
-              .map(
-                  (h) => `
+            .map(
+                (h) => `
         <div class="highlight-item">
             <i class="fas fa-${h.icon}"></i>
             <span>${h.text}</span>
         </div>
     `
-              )
-              .join('')
+            )
+            .join('')
         : '';
 
     const stars = Array(5)
@@ -360,14 +360,14 @@ function createFeaturedTalentCard(talent) {
             </div>
             
             ${
-                highlights
-                    ? `
+    highlights
+        ? `
             <div class="talent-highlights">
                 ${highlights}
             </div>
             `
-                    : ''
-            }
+        : ''
+}
             
             <div class="talent-description">
                 "${talent.description}"
@@ -412,22 +412,22 @@ function createRegularTalentCard(talent) {
             i < Math.floor(talent.rating)
                 ? '<i class="fas fa-star"></i>'
                 : i < talent.rating
-                  ? '<i class="fas fa-star-half-alt"></i>'
-                  : '<i class="far fa-star"></i>'
+                    ? '<i class="fas fa-star-half-alt"></i>'
+                    : '<i class="far fa-star"></i>'
         )
         .join('');
 
     return `
         <div class="talent-card">
             ${
-                badges
-                    ? `
+    badges
+        ? `
             <div class="talent-badge-container">
                 ${badges}
             </div>
             `
-                    : ''
-            }
+        : ''
+}
             
             <div class="talent-header">
                 <div class="talent-avatar">
@@ -488,16 +488,16 @@ function matchRegion(location, filter) {
 function matchExperience(experience, filter) {
     const years = parseInt(experience);
     switch (filter) {
-        case 'junior':
-            return years <= 3;
-        case 'middle':
-            return years > 3 && years <= 7;
-        case 'senior':
-            return years > 7 && years <= 10;
-        case 'expert':
-            return years > 10;
-        default:
-            return true;
+    case 'junior':
+        return years <= 3;
+    case 'middle':
+        return years > 3 && years <= 7;
+    case 'senior':
+        return years > 7 && years <= 10;
+    case 'expert':
+        return years > 10;
+    default:
+        return true;
     }
 }
 
@@ -505,19 +505,19 @@ function matchExperience(experience, filter) {
 function sortTalents(talents, sortBy) {
     const sorted = [...talents];
     switch (sortBy) {
-        case 'popular':
-            return sorted.sort((a, b) => b.ratingCount - a.ratingCount);
-        case 'rating':
-            return sorted.sort((a, b) => b.rating - a.rating);
-        case 'experience':
-            return sorted.sort((a, b) => {
-                const aYears = parseInt(a.experience);
-                const bYears = parseInt(b.experience);
-                return bYears - aYears;
-            });
-        case 'latest':
-        default:
-            return sorted.sort((a, b) => b.id - a.id);
+    case 'popular':
+        return sorted.sort((a, b) => b.ratingCount - a.ratingCount);
+    case 'rating':
+        return sorted.sort((a, b) => b.rating - a.rating);
+    case 'experience':
+        return sorted.sort((a, b) => {
+            const aYears = parseInt(a.experience);
+            const bYears = parseInt(b.experience);
+            return bYears - aYears;
+        });
+    case 'latest':
+    default:
+        return sorted.sort((a, b) => b.id - a.id);
     }
 }
 

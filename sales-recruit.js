@@ -233,10 +233,10 @@ function shuffleArray(array) {
 const pinnedJobs = shuffleArray([...jobListings]);
 
 // 북마크 상태 관리
-let bookmarkedJobs = JSON.parse(localStorage.getItem('bookmarkedJobs') || '[]');
+const bookmarkedJobs = JSON.parse(localStorage.getItem('bookmarkedJobs') || '[]');
 
 // 필터 상태
-let currentFilters = {
+const currentFilters = {
     selectedRegions: [],  // 선택된 지역 (광역시도 + 시군구)
     currentRegion: 'all',  // 현재 선택된 광역시도
     experience: 'all',
@@ -1123,12 +1123,12 @@ function sortJobs(jobs) {
         
         // 선택된 정렬 방식에 따라 정렬
         switch (currentSort) {
-            case 'latest':
-                return b.postedDate - a.postedDate; // 최신순
-            case 'views':
-                return b.views - a.views; // 조회순 (높은 순)
-            default:
-                return b.postedDate - a.postedDate;
+        case 'latest':
+            return b.postedDate - a.postedDate; // 최신순
+        case 'views':
+            return b.views - a.views; // 조회순 (높은 순)
+        default:
+            return b.postedDate - a.postedDate;
         }
     });
 }
@@ -1361,7 +1361,7 @@ function renderPinnedBanner() {
         }
         
         // 스티커(뱃지) 생성 - 상단 배너는 모두 프리미엄
-        let badges = [];
+        const badges = [];
         badges.push('<span class="pinned-badge premium">프리미엄</span>');
         if (job.isUrgent) badges.push('<span class="pinned-badge urgent">긴급</span>');
         if (job.isNew) badges.push('<span class="pinned-badge new">NEW</span>');

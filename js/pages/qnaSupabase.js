@@ -235,9 +235,9 @@ class QnaManager {
                 <div class="qna-header">
                     <div class="question-status">
                         ${question.comment_count > 0 ? 
-                            '<span class="status-badge answered">답변완료</span>' : 
-                            '<span class="status-badge unanswered">답변대기</span>'
-                        }
+        '<span class="status-badge answered">답변완료</span>' : 
+        '<span class="status-badge unanswered">답변대기</span>'
+}
                         ${question.is_pinned ? '<span class="pinned-badge">📌</span>' : ''}
                     </div>
                     <div class="question-meta">
@@ -414,8 +414,8 @@ class QnaManager {
                 limit: this.questionsPerPage,
                 category_id: this.qnaCategoryId,
                 sort_by: sortBy === 'latest' ? 'created_at' : 
-                         sortBy === 'popular' ? 'like_count' :
-                         sortBy === 'views' ? 'view_count' : 'created_at',
+                    sortBy === 'popular' ? 'like_count' :
+                        sortBy === 'views' ? 'view_count' : 'created_at',
                 sort_order: 'desc'
             };
 

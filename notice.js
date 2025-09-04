@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const totalTime = Math.round(performance.now() - pageStartTime);
         
         console.log('✅ 공지사항 페이지 초기화 완료');
-        console.log(`📈 성능 요약:`);
+        console.log('📈 성능 요약:');
         console.log(`   - 전체 시간: ${totalTime}ms`);
         console.log(`   - DOM 초기화: ${domTime}ms`);
         console.log(`   - 서비스 초기화: ${servicesTime}ms`);
@@ -189,7 +189,7 @@ async function waitForServices() {
         const initTime = Math.round(endTime - startTime);
         
         console.log(`📊 서비스 초기화 완료: ${successfulServices.length}개 성공 (${initTime}ms)`);
-        console.log(`✅ 초기화된 서비스:`, successfulServices);
+        console.log('✅ 초기화된 서비스:', successfulServices);
         
         // 최소한 NoticeService가 있어야 정상 동작
         if (window.noticeService) {
@@ -893,7 +893,7 @@ function escapeHtml(text) {
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
-        "'": '&#039;'
+        '\'': '&#039;'
     };
     return text.replace(/[&<>"']/g, (m) => map[m]);
 }

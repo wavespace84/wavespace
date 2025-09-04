@@ -674,7 +674,7 @@ function setupEventListeners() {
     if (modalBackdrop) modalBackdrop.onclick = hidePurchaseModal;
     
     // ESC 키로 모달 닫기
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             hidePurchaseModal();
         }
@@ -682,7 +682,7 @@ function setupEventListeners() {
 }
 
 // DOM이 로드되면 초기화
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     // 페이지가 상점 페이지인지 확인
     if (document.querySelector('.points-shop-container')) {
         initPointsShop();
@@ -874,7 +874,7 @@ function purchaseSelectedItems() {
     }
     
     // 구매 처리
-    let purchasedItems = [];
+    const purchasedItems = [];
     userInfo.selectedItems.forEach((quantity, itemId) => {
         const item = shopItems.find(i => i.id === itemId);
         if (item) {

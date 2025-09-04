@@ -155,7 +155,9 @@
 
 .user-info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
 }
 
 .user-name {
@@ -187,6 +189,79 @@
     color: var(--gray-600);
 }
 
+/* Auth Buttons - 로그인/회원가입 버튼 스타일 */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* 기본 버튼 스타일 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: 10px 20px;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    transition: var(--transition-fast);
+    text-decoration: none;
+    white-space: nowrap;
+    min-height: 40px;
+    border: 2px solid transparent;
+}
+
+/* 윤곽선 버튼 - 로그인 */
+.btn-outline {
+    color: var(--gray-700);
+    background-color: transparent;
+    border-color: var(--gray-300);
+}
+
+.btn-outline:hover {
+    background-color: var(--gray-100);
+    border-color: var(--gray-400);
+    color: var(--gray-800);
+}
+
+.btn-outline:active {
+    background-color: var(--gray-200);
+}
+
+/* 채워진 버튼 - 회원가입 */
+.btn-primary {
+    color: var(--white);
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background-color: var(--deep-blue);
+    border-color: var(--deep-blue);
+    box-shadow: 0 4px 12px rgba(46, 140, 230, 0.3);
+}
+
+.btn-primary:active {
+    background-color: var(--deep-blue);
+    transform: scale(0.98);
+}
+
+/* 버튼 아이콘 스타일 */
+.btn i {
+    font-size: 16px;
+}
+
+/* 익명 사용자용 표시/숨김 제어 */
+.anonymous-only {
+    display: flex;
+}
+
+.logged-in .anonymous-only {
+    display: none;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .header-left {
@@ -201,5 +276,24 @@
         padding-left: 0;
         margin-left: 0;
         border-left: none;
+    }
+    
+    /* 모바일에서 버튼 스타일 조정 */
+    .auth-buttons {
+        gap: var(--spacing-xs);
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        font-size: var(--font-size-sm);
+        min-height: 36px;
+    }
+    
+    .btn span {
+        display: none;
+    }
+    
+    .btn i {
+        font-size: 18px;
     }
 }

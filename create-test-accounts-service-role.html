@@ -292,18 +292,18 @@
                 await new Promise(resolve => setTimeout(resolve, 300));
             }
             
-            addLog(`\n===== 완료 =====`, 'info');
+            addLog('\n===== 완료 =====', 'info');
             addLog(`총 ${total}개 중 ${successCount}개 계정 생성 성공`, successCount === total ? 'success' : 'error');
             
             if (successCount > 0) {
-                addLog(`\n생성된 계정으로 로그인하려면:`, 'info');
+                addLog('\n생성된 계정으로 로그인하려면:', 'info');
                 addLog(`이메일: test1@g.com ~ test${successCount}@g.com`, 'info');
-                addLog(`비밀번호: 1234`, 'info');
+                addLog('비밀번호: 1234', 'info');
             }
             
             btn.disabled = false;
             btn.textContent = '완료';
-        }
+        };
     </script>
 </body>
 </html>

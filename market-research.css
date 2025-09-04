@@ -2905,61 +2905,7 @@ body
     }
 }
 
-/* 토스트 메시지 스타일 */
-.toast-message {
-    position: fixed;
-    bottom: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 16px 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    z-index: 100000; /* 모달 오버레이(99999)보다 높게 설정 */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 300px;
-    max-width: 500px;
-}
-
-.toast-message.show {
-    bottom: 30px;
-}
-
-.toast-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 15px;
-    color: #374151;
-}
-
-.toast-success {
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    border: 1px solid #86efac;
-}
-
-.toast-success .toast-content {
-    color: #14532d;
-}
-
-.toast-success i {
-    color: #16a34a;
-    font-size: 20px;
-}
-
-.toast-error {
-    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-    border: 1px solid #fecaca;
-}
-
-.toast-error .toast-content {
-    color: #7f1d1d;
-}
-
-.toast-error i {
-    color: #dc2626;
-    font-size: 20px;
-}
+/* 토스트 메시지는 common.css에서 통일 관리 */
 
 /* 신고 모달 스타일 */
 .report-modal {
@@ -3116,4 +3062,106 @@ body
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     background: white;
+}
+
+/* ============================================
+   상태별 메시지 스타일 (개선된 버전)
+   ============================================ */
+
+/* 공통 상태 메시지 스타일 */
+.loading-state,
+.error-state,
+.no-connection,
+.no-data,
+.no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+    color: #6b7280;
+    grid-column: 1 / -1; /* 그리드 전체 너비 사용 */
+    min-height: 300px;
+}
+
+/* 아이콘 스타일 */
+.loading-state i {
+    font-size: 48px;
+    color: #0066ff;
+    margin-bottom: 16px;
+}
+
+.error-state i {
+    font-size: 48px;
+    color: #dc2626;
+    margin-bottom: 16px;
+}
+
+.no-connection i {
+    font-size: 48px;
+    color: #f59e0b;
+    margin-bottom: 16px;
+}
+
+.no-data i {
+    font-size: 48px;
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+
+.no-results i {
+    font-size: 48px;
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+
+/* 텍스트 스타일 */
+.loading-state p,
+.error-state p,
+.no-connection p,
+.no-data p,
+.no-results p {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #374151;
+}
+
+.loading-state span,
+.error-state span,
+.no-connection span,
+.no-data span,
+.no-results span {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+/* 새로고침 버튼 스타일 */
+.retry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #0066ff 0%, #0099ff 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.retry-btn:hover {
+    background: linear-gradient(135deg, #0052cc 0%, #0088ee 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+
+.retry-btn i {
+    font-size: 14px;
 }

@@ -11,13 +11,43 @@ class NotificationService {
     }
 
     /**
+     * authService 안전한 참조
+     * @returns {Object|null} authService 또는 null
+     */
+    getAuthService() {
+        if (typeof window !== 'undefined' && window.authService) {
+            return window.authService;
+        }
+        console.warn('⚠️ authService를 찾을 수 없습니다.');
+        return null;
+    }
+
+    /**
+     * 로그인 상태 안전하게 확인
+     * @returns {boolean}
+     */
+    isUserLoggedIn() {
+        const authService = this.getAuthService();
+        return authService ? authService.isLoggedIn() : false;
+    }
+
+    /**
+     * 현재 사용자 안전하게 가져오기
+     * @returns {Object|null}
+     */
+    getCurrentUser() {
+        const authService = this.getAuthService();
+        return authService ? authService.getCurrentUser() : null;
+    }
+
+    /**
      * 초기화
      */
     async init() {
         try {
             this.supabase = window.WaveSupabase.getClient();
             
-            if (authService.isLoggedIn()) {
+            if (this.isUserLoggedIn()) {
                 await this.loadUnreadCount();
                 await this.setupRealtimeSubscription();
             }
@@ -31,7 +61,11 @@ class NotificationService {
      */
     async setupRealtimeSubscription() {
         try {
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                console.warn('⚠️ 사용자 정보를 가져올 수 없습니다.');
+                return;
+            }
             if (!currentUser) return;
 
             // 기존 구독 해제
@@ -106,11 +140,15 @@ class NotificationService {
      */
     async getNotifications(page = 1, limit = 20, unreadOnly = false) {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                console.warn('⚠️ 사용자 정보를 가져올 수 없습니다.');
+                return;
+            }
             
             let query = this.supabase
                 .from('notifications')
@@ -160,11 +198,15 @@ class NotificationService {
      */
     async markAllAsRead() {
         try {
-            if (!authService.isLoggedIn()) {
+            if (!this.isUserLoggedIn()) {
                 throw new Error('로그인이 필요합니다.');
             }
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                console.warn('⚠️ 사용자 정보를 가져올 수 없습니다.');
+                return;
+            }
             
             const { error } = await this.supabase
                 .from('notifications')
@@ -189,9 +231,13 @@ class NotificationService {
      */
     async loadUnreadCount() {
         try {
-            if (!authService.isLoggedIn()) return;
+            if (!this.isUserLoggedIn()) return;
 
-            const currentUser = authService.getCurrentUser();
+            const currentUser = this.getCurrentUser();
+            if (!currentUser) {
+                console.warn('⚠️ 사용자 정보를 가져올 수 없습니다.');
+                return;
+            }
             
             const { count, error } = await this.supabase
                 .from('notifications')
@@ -228,102 +274,38 @@ class NotificationService {
     }
 
     /**
-     * Toast 알림 표시
+     * Toast 알림 표시 - 통일된 토스트 시스템 사용
      */
     showNotificationToast(notification) {
-        const toast = document.createElement('div');
-        toast.className = 'notification-toast';
-        toast.innerHTML = `
-            <div class="toast-content">
-                <div class="toast-icon">
-                    <i class="${this.getNotificationIcon(notification.type)}"></i>
-                </div>
-                <div class="toast-text">
-                    <div class="toast-title">${notification.title}</div>
-                    <div class="toast-message">${notification.message}</div>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="toast-close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <style>
-                .notification-toast {
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: white;
-                    border-radius: 12px;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                    border-left: 4px solid #0066FF;
-                    z-index: 9999;
-                    animation: slideIn 0.3s ease;
-                    max-width: 400px;
-                }
-                
-                .toast-content {
-                    padding: 16px;
-                    display: flex;
-                    align-items: flex-start;
-                    gap: 12px;
-                }
-                
-                .toast-icon {
-                    color: #0066FF;
-                    font-size: 20px;
-                    margin-top: 2px;
-                }
-                
-                .toast-text {
-                    flex: 1;
-                }
-                
-                .toast-title {
-                    font-weight: 600;
-                    color: #111827;
-                    margin-bottom: 4px;
-                }
-                
-                .toast-message {
-                    color: #6B7280;
-                    font-size: 14px;
-                }
-                
-                .toast-close {
-                    background: none;
-                    border: none;
-                    color: #9CA3AF;
-                    cursor: pointer;
-                    padding: 4px;
-                    border-radius: 4px;
-                }
-                
-                .toast-close:hover {
-                    background: #F3F4F6;
-                    color: #111827;
-                }
-                
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-            </style>
-        `;
+        // 알림 타입에 따라 토스트 타입 결정
+        let toastType = 'info';
+        switch(notification.type) {
+            case 'success':
+                toastType = 'success';
+                break;
+            case 'error':
+            case 'failed':
+                toastType = 'error';
+                break;
+            case 'warning':
+                toastType = 'warning';
+                break;
+            default:
+                toastType = 'info';
+                break;
+        }
         
-        document.body.appendChild(toast);
+        // 통일된 토스트 메시지 함수 사용
+        const message = notification.title ? 
+            `${notification.title}: ${notification.message}` : 
+            notification.message;
         
-        // 5초 후 자동 제거
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-        }, 5000);
+        if (typeof window.showToastMessage === 'function') {
+            window.showToastMessage(message, toastType, 5000);
+        } else {
+            // fallback - 기본 alert
+            alert(message);
+        }
     }
 
     /**

@@ -221,9 +221,9 @@ function renderStarterPackage() {
             </div>
             <div class="starter-remaining">
                 ${isAvailable 
-                    ? `<i class="fas fa-check-circle"></i> 구매 가능 (${remainingPurchases}회 남음)` 
-                    : `<div class="starter-used-badge">사용완료</div>`
-                }
+        ? `<i class="fas fa-check-circle"></i> 구매 가능 (${remainingPurchases}회 남음)` 
+        : '<div class="starter-used-badge">사용완료</div>'
+}
             </div>
         </div>
     `;
@@ -323,13 +323,13 @@ function selectStarterPackage() {
     
     updatePaymentSummary();
         
-        // 결제 수단 선택 섹션으로 스크롤 (제거됨)
-        // setTimeout(() => {
-        //     const paymentSection = document.querySelector('.payment-section');
-        //     if (paymentSection) {
-        //         paymentSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        //     }
-        // }, 300);
+    // 결제 수단 선택 섹션으로 스크롤 (제거됨)
+    // setTimeout(() => {
+    //     const paymentSection = document.querySelector('.payment-section');
+    //     if (paymentSection) {
+    //         paymentSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    //     }
+    // }, 300);
 }
 
 // 스타터 패키지 수량 증가
@@ -685,9 +685,9 @@ function setupEventListeners() {
     const customCashInput = document.getElementById('customCash');
     
     if (customPointsInput && customCashInput) {
-        customPointsInput.addEventListener('input', function(e) {
+        customPointsInput.addEventListener('input', (e) => {
             // 숫자가 아닌 문자 제거 (콤마 포함)
-            let value = e.target.value.replace(/[^\d]/g, '');
+            const value = e.target.value.replace(/[^\d]/g, '');
             
             // 빈 값 처리
             if (!value) {
@@ -1064,9 +1064,9 @@ function showTermsDetail(type) {
     let title, content;
     
     switch (type) {
-        case 'payment':
-            title = '결제 이용약관';
-            content = `
+    case 'payment':
+        title = '결제 이용약관';
+        content = `
                 <h4>제1조 (목적)</h4>
                 <p>본 약관은 WAVE SPACE에서 제공하는 포인트 충전 서비스 이용에 관한 사항을 규정함을 목적으로 합니다.</p>
                 
@@ -1078,11 +1078,11 @@ function showTermsDetail(type) {
                 <h4>제3조 (서비스 이용제한)</h4>
                 <p>부정한 방법으로 포인트를 획득하거나 악용하는 경우 서비스 이용이 제한될 수 있습니다.</p>
             `;
-            break;
+        break;
             
-        case 'privacy':
-            title = '개인정보 제3자 제공 동의';
-            content = `
+    case 'privacy':
+        title = '개인정보 제3자 제공 동의';
+        content = `
                 <h4>제공받는 자</h4>
                 <p>토스페이먼츠(주)</p>
                 
@@ -1097,11 +1097,11 @@ function showTermsDetail(type) {
                 
                 <p>위 개인정보 제3자 제공에 대한 동의를 거부할 권리가 있으나, 동의 거부 시 결제 서비스 이용이 불가능합니다.</p>
             `;
-            break;
+        break;
             
-        case 'marketing':
-            title = '마케팅 정보 수신 동의';
-            content = `
+    case 'marketing':
+        title = '마케팅 정보 수신 동의';
+        content = `
                 <h4>수집·이용목적</h4>
                 <p>이벤트, 할인혜택, 신규 서비스 소식 등 마케팅 정보 제공</p>
                 
@@ -1113,7 +1113,7 @@ function showTermsDetail(type) {
                 
                 <p>마케팅 정보 수신에 동의하지 않아도 서비스 이용에는 제한이 없으며, 언제든지 수신 거부할 수 있습니다.</p>
             `;
-            break;
+        break;
     }
     
     // 간단한 모달 창으로 표시
@@ -1190,7 +1190,7 @@ window.toggleFaq = toggleFaq;
 window.showTermsDetail = showTermsDetail;
 
 // DOM 로드 시 초기화
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.points-charge-container')) {
         initPointsCharge();
     }

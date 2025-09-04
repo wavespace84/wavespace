@@ -186,12 +186,12 @@ function updateCategoryRankings(category, animate = false) {
             index === 0
                 ? 'gold'
                 : index === 1
-                  ? 'silver'
-                  : index === 2
-                    ? 'bronze'
-                    : index < 5
-                      ? 'blue'
-                      : 'gray';
+                    ? 'silver'
+                    : index === 2
+                        ? 'bronze'
+                        : index < 5
+                            ? 'blue'
+                            : 'gray';
         const reward = rewards[index + 1] || 0; // 4, 5등은 포인트 없음
 
         const userBadge = getUserBadge(category, index);
@@ -204,10 +204,10 @@ function updateCategoryRankings(category, animate = false) {
             index === 0
                 ? '<i class="fas fa-crown"></i>'
                 : index === 1
-                  ? '<i class="fas fa-medal"></i>'
-                  : index === 2
-                    ? '<i class="fas fa-award"></i>'
-                    : `<span style="font-weight: 700; font-size: 16px;">${index + 1}</span>`; // 4, 5등은 숫자 표시
+                    ? '<i class="fas fa-medal"></i>'
+                    : index === 2
+                        ? '<i class="fas fa-award"></i>'
+                        : `<span style="font-weight: 700; font-size: 16px;">${index + 1}</span>`; // 4, 5등은 숫자 표시
 
         const rankingItem = document.createElement('div');
         rankingItem.className = `ranking-item-new ${rankClass}`;
@@ -390,14 +390,14 @@ function getUserBadge(category, index) {
 // 변동 아이콘 생성
 function getChangeIcon(changeType) {
     switch (changeType) {
-        case 'up':
-            return '<i class="fas fa-arrow-up"></i>';
-        case 'down':
-            return '<i class="fas fa-arrow-down"></i>';
-        case 'same':
-            return '<i class="fas fa-minus"></i>';
-        default:
-            return '';
+    case 'up':
+        return '<i class="fas fa-arrow-up"></i>';
+    case 'down':
+        return '<i class="fas fa-arrow-down"></i>';
+    case 'same':
+        return '<i class="fas fa-minus"></i>';
+    default:
+        return '';
     }
 }
 

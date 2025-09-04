@@ -198,9 +198,9 @@ class PageTemplate {
             return `
                 <li class="breadcrumb-item ${isLast ? 'active' : ''}">
                     ${isLast ? 
-                        `<span>${item.text}</span>` : 
-                        `<a href="${item.href}">${item.text}</a>`
-                    }
+        `<span>${item.text}</span>` : 
+        `<a href="${item.href}">${item.text}</a>`
+}
                 </li>
             `;
         }).join('');

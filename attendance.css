@@ -8,7 +8,7 @@
 }
 
 /* 헤더 */
-.attendance-header {
+.page-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -19,17 +19,7 @@
     flex: 1;
 }
 
-.attendance-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--gray-900);
-    margin-bottom: 6px;
-}
-
-.attendance-subtitle {
-    font-size: 14px;
-    color: var(--gray-600);
-}
+/* page-title, page-subtitle 스타일은 common.css에서 공통 관리 */
 
 /* 출석 현황 카드 */
 .attendance-status-card {
@@ -1222,10 +1212,6 @@
 }
 
 @media (max-width: 768px) {
-    .attendance-title {
-        font-size: 24px;
-    }
-
     .status-content {
         flex-direction: column;
         gap: 20px;
@@ -1269,13 +1255,7 @@
         padding: 24px 20px;
     }
 
-    .attendance-title {
-        font-size: 20px;
-    }
-
-    .attendance-subtitle {
-        font-size: 14px;
-    }
+    /* page-title, page-subtitle 모바일 스타일은 common.css에서 관리 */
 
     .streak-info {
         grid-template-columns: 1fr;

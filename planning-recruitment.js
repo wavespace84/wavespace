@@ -868,16 +868,16 @@ function showJobDetail(jobId) {
                             <strong>${job.employment}</strong>
                         </div>
                         ${
-                            contactInfo
-                                ? `
+    contactInfo
+        ? `
                         <div class="popup-info-item contact">
                             <i class="fas fa-phone"></i>
                             <span>연락처</span>
                             <strong>${contactInfo}</strong>
                         </div>
                         `
-                                : ''
-                        }
+        : ''
+}
                     </div>
                     
                     <div class="popup-description">
@@ -902,15 +902,15 @@ function showJobDetail(jobId) {
                         지원하기
                     </button>
                     ${
-                        contactInfo.includes('010-')
-                            ? `
+    contactInfo.includes('010-')
+        ? `
                     <button class="btn-contact-large" onclick="contactEmployer('${contactInfo}')">
                         <i class="fas fa-phone"></i>
                         전화상담
                     </button>
                     `
-                            : ''
-                    }
+        : ''
+}
                 </div>
             </div>
         </div>
@@ -1288,12 +1288,12 @@ function sortJobs(jobs) {
 
         // 선택된 정렬 방식에 따라 정렬
         switch (currentSort) {
-            case 'latest':
-                return b.postedDate - a.postedDate; // 최신순
-            case 'views':
-                return b.views - a.views; // 조회순 (높은 순)
-            default:
-                return b.postedDate - a.postedDate;
+        case 'latest':
+            return b.postedDate - a.postedDate; // 최신순
+        case 'views':
+            return b.views - a.views; // 조회순 (높은 순)
+        default:
+            return b.postedDate - a.postedDate;
         }
     });
 }

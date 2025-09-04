@@ -49,18 +49,18 @@ class AdminService {
             // 필터 적용
             if (filter && filter !== 'all') {
                 switch (filter) {
-                    case 'plus':
-                        query = query.eq('is_plus_member', true);
-                        break;
-                    case 'banned':
-                        query = query.eq('status', 'banned');
-                        break;
-                    case 'active':
-                        query = query.eq('status', 'active');
-                        break;
-                    case 'inactive':
-                        query = query.eq('status', 'inactive');
-                        break;
+                case 'plus':
+                    query = query.eq('is_plus_member', true);
+                    break;
+                case 'banned':
+                    query = query.eq('status', 'banned');
+                    break;
+                case 'active':
+                    query = query.eq('status', 'active');
+                    break;
+                case 'inactive':
+                    query = query.eq('status', 'inactive');
+                    break;
                 }
             }
 
@@ -208,15 +208,15 @@ class AdminService {
             // 필터 적용
             if (filter && filter !== 'all') {
                 switch (filter) {
-                    case 'hidden':
-                        query = query.eq('is_hidden', true);
-                        break;
-                    case 'published':
-                        query = query.eq('is_hidden', false);
-                        break;
-                    case 'reported':
-                        query = query.gt('report_count', 0);
-                        break;
+                case 'hidden':
+                    query = query.eq('is_hidden', true);
+                    break;
+                case 'published':
+                    query = query.eq('is_hidden', false);
+                    break;
+                case 'reported':
+                    query = query.gt('report_count', 0);
+                    break;
                 }
             }
 
@@ -432,40 +432,40 @@ class AdminService {
                 .eq('status', 'active');
 
             switch (type) {
-                case 'points':
-                    query = query.order('points', { ascending: false });
-                    break;
-                case 'posts':
-                    query = query.select(`
+            case 'points':
+                query = query.order('points', { ascending: false });
+                break;
+            case 'posts':
+                query = query.select(`
                         id, username, avatar_url,
                         posts!posts_author_id_fkey(id)
                     `).order('posts.count', { ascending: false });
-                    break;
-                case 'likes':
-                    // 좋아요를 많이 받은 사용자
-                    const { data } = await supabase
-                        .from('posts')
-                        .select(`
+                break;
+            case 'likes':
+                // 좋아요를 많이 받은 사용자
+                const { data } = await supabase
+                    .from('posts')
+                    .select(`
                             author_id,
                             like_count,
                             users!posts_author_id_fkey(username, avatar_url)
                         `);
                     
-                    const userLikes = {};
-                    data?.forEach(post => {
-                        const authorId = post.author_id;
-                        if (!userLikes[authorId]) {
-                            userLikes[authorId] = {
-                                ...post.users,
-                                totalLikes: 0
-                            };
-                        }
-                        userLikes[authorId].totalLikes += post.like_count || 0;
-                    });
+                const userLikes = {};
+                data?.forEach(post => {
+                    const authorId = post.author_id;
+                    if (!userLikes[authorId]) {
+                        userLikes[authorId] = {
+                            ...post.users,
+                            totalLikes: 0
+                        };
+                    }
+                    userLikes[authorId].totalLikes += post.like_count || 0;
+                });
 
-                    return Object.values(userLikes)
-                        .sort((a, b) => b.totalLikes - a.totalLikes)
-                        .slice(0, limit);
+                return Object.values(userLikes)
+                    .sort((a, b) => b.totalLikes - a.totalLikes)
+                    .slice(0, limit);
             }
 
             query = query.limit(limit);
@@ -567,7 +567,7 @@ class AdminService {
             if (error) throw error;
 
             this.clearCache();
-            await this.logActivity('badge_revoke', `뱃지 회수`, userId);
+            await this.logActivity('badge_revoke', '뱃지 회수', userId);
             
             return true;
         } catch (error) {

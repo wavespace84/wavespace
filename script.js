@@ -212,19 +212,18 @@ function initLegacySidebar() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[SCRIPT.JS] 레거시 스크립트 로드됨 - js/main.js 사용 권장');
 
-    // ES6 모듈이 이미 사이드바를 초기화했는지 확인
-    // 주석 처리: ES6 모듈 시스템만 사용하도록 통일
-    /*
-    if (!window._sidebarInitialized) {
+    // 사이드바가 있다면 레거시 사이드바 초기화
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar && !window._sidebarInitialized) {
         console.log('[SCRIPT.JS] 레거시 사이드바 초기화 시작');
         initLegacySidebar();
         window._sidebarInitialized = true;
         console.log('[SCRIPT.JS] 레거시 사이드바 초기화 완료');
+    } else if (!sidebar) {
+        console.log('[SCRIPT.JS] 사이드바 요소가 없어서 초기화하지 않음');
     } else {
         console.log('[SCRIPT.JS] 사이드바가 이미 초기화됨, 건너뜀');
     }
-    */
-    console.log('[SCRIPT.JS] 레거시 사이드바 초기화 비활성화됨 - ES6 모듈 사용');
 
     // 숫자 카운터 애니메이션
     function animateCounter(element, target, duration = 2000) {

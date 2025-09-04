@@ -6,12 +6,12 @@
 // Firebase 설정 - WAVE SPACE SMS 인증 프로젝트 (실제 설정 완료!)
 // Firebase Console: https://console.firebase.google.com/project/wavespace-sms
 const firebaseConfig = {
-    apiKey: "AIzaSyDOk9ZqEtI38tog7YyFos2PVgITODSFvIw",
-    authDomain: "wavespace-sms.firebaseapp.com", 
-    projectId: "wavespace-sms",
-    storageBucket: "wavespace-sms.firebasestorage.app",
-    messagingSenderId: "646514379865",
-    appId: "1:646514379865:web:a33dfd79e85343f8323548"
+    apiKey: 'AIzaSyDOk9ZqEtI38tog7YyFos2PVgITODSFvIw',
+    authDomain: 'wavespace-sms.firebaseapp.com', 
+    projectId: 'wavespace-sms',
+    storageBucket: 'wavespace-sms.firebasestorage.app',
+    messagingSenderId: '646514379865',
+    appId: '1:646514379865:web:a33dfd79e85343f8323548'
     // measurementId는 SMS 인증에 불필요하므로 제외
 };
 
@@ -33,7 +33,7 @@ class FirebaseService {
             console.log('Firebase 설정 확인:', firebaseConfig.apiKey.substring(0, 10) + '...');
             
             // Firebase 설정 확인
-            if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE") {
+            if (firebaseConfig.apiKey === 'YOUR_API_KEY_HERE') {
                 console.warn('⚠️ Firebase 설정이 완료되지 않았습니다. Mock 모드로 동작합니다.');
                 console.log('Firebase Console에서 프로젝트를 생성하고 js/config/firebase.js 파일의 설정을 업데이트하세요.');
                 return false;
@@ -440,7 +440,7 @@ class FirebaseService {
                 return {
                     success: true,
                     confirmationResult: mockConfirmationResult,
-                    message: `[개발 모드] 테스트 인증번호: 123456`
+                    message: '[개발 모드] 테스트 인증번호: 123456'
                 };
             }
             
@@ -483,7 +483,7 @@ class FirebaseService {
                 return {
                     success: true,
                     confirmationResult: mockConfirmationResult,
-                    message: `[테스트 모드] 인증번호: 123456`
+                    message: '[테스트 모드] 인증번호: 123456'
                 };
             }
 

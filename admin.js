@@ -126,27 +126,27 @@ class AdminDashboard {
 
     async loadTabData(tabName) {
         switch (tabName) {
-            case 'overview':
-                await this.loadOverview();
-                break;
-            case 'analytics':
-                await this.loadAnalytics();
-                break;
-            case 'users':
-                await this.loadUsers();
-                break;
-            case 'posts':
-                await this.loadPosts();
-                break;
-            case 'notices':
-                await this.loadNotices();
-                break;
-            case 'settings':
-                await this.loadSettings();
-                break;
-            case 'logs':
-                await this.loadLogs();
-                break;
+        case 'overview':
+            await this.loadOverview();
+            break;
+        case 'analytics':
+            await this.loadAnalytics();
+            break;
+        case 'users':
+            await this.loadUsers();
+            break;
+        case 'posts':
+            await this.loadPosts();
+            break;
+        case 'notices':
+            await this.loadNotices();
+            break;
+        case 'settings':
+            await this.loadSettings();
+            break;
+        case 'logs':
+            await this.loadLogs();
+            break;
         }
     }
 

@@ -199,7 +199,7 @@ class DataManager {
             return null;
         }
 
-        let channel = this.supabase.channel(`realtime:${table}`)
+        const channel = this.supabase.channel(`realtime:${table}`)
             .on('postgres_changes', {
                 event: '*',
                 schema: 'public',

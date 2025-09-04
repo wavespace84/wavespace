@@ -1,3 +1,276 @@
+/* 마이페이지 및 로그인 사이드패널 - 고객센터 디자인 스타일 적용 */
+
+/* ===== 로그인 사이드패널 스타일 ===== */
+.login-sidepanel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 9999;
+    overflow-y: auto;
+}
+
+.login-sidepanel-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.login-sidepanel {
+    background-color: var(--white);
+    width: 520px;
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-sidepanel-overlay.show .login-sidepanel {
+    transform: translateX(0);
+}
+
+.login-sidepanel-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.login-sidepanel-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.login-sidepanel-header h2 i {
+    color: var(--primary-blue);
+}
+
+.login-close-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 20px;
+}
+
+.login-close-btn:hover {
+    background-color: var(--gray-100);
+    color: var(--gray-800);
+}
+
+.login-content {
+    padding: 32px;
+    flex: 1;
+}
+
+.login-card {
+    background-color: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 로그인 폼 스타일 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--gray-700);
+    font-size: 14px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    background: var(--white);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 로그인 버튼 스타일 제거됨 */
+
+.error-message {
+    color: var(--red);
+    font-size: 12px;
+    margin-top: 8px;
+    text-align: center;
+    padding: 8px 12px;
+    background: #fee;
+    border: 1px solid #fcc;
+    border-radius: 4px;
+}
+
+.forgot-password {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.forgot-password a {
+    color: var(--gray-600);
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    color: var(--primary-blue);
+    text-decoration: underline;
+}
+
+/* 소셜 로그인 스타일 */
+.social-login-section {
+    margin-bottom: 24px;
+}
+
+.divider {
+    position: relative;
+    text-align: center;
+    margin: 24px 0;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gray-200);
+}
+
+.divider span {
+    position: relative;
+    background: var(--white);
+    padding: 0 16px;
+    color: var(--gray-500);
+    font-size: 13px;
+}
+
+.social-login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    background: var(--white);
+    color: var(--gray-700);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-social:hover {
+    border-color: var(--gray-400);
+    background: var(--gray-50);
+}
+
+.btn-social i {
+    font-size: 18px;
+}
+
+.btn-google:hover {
+    border-color: #db4437;
+    color: #db4437;
+}
+
+.btn-kakao:hover {
+    border-color: #fee500;
+    background: #fee500;
+    color: #000;
+}
+
+.btn-naver:hover {
+    border-color: #03c75a;
+    color: #03c75a;
+}
+
+.login-footer {
+    text-align: center;
+    color: var(--gray-600);
+    font-size: 14px;
+}
+
+.login-link {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* 모바일 대응 */
+@media (max-width: 640px) {
+    .login-sidepanel {
+        width: 100vw;
+        height: 100vh;
+    }
+    
+    .login-content {
+        padding: 24px 20px;
+    }
+    
+    .login-card {
+        padding: 24px 20px;
+    }
+    
+    .login-sidepanel-header {
+        padding: 20px;
+    }
+}
+
 /* 마이페이지 - 고객센터 디자인 스타일 적용 */
 
 /* ===== 사이드패널 기본 구조 ===== */

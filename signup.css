@@ -16,9 +16,9 @@
 
 /* reCAPTCHA 컨테이너 스타일 */
 #recaptcha-container {
-    border-radius: 8px;
+    border-radius: var(--radius-md); /* 8px 둥근 모서리 */
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 /* reCAPTCHA가 로드되기 전 플레이스홀더 */
@@ -28,8 +28,8 @@
     width: 304px;
     height: 78px;
     background: var(--gray-100);
-    border: 2px solid var(--gray-300);
-    border-radius: 8px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md); /* 8px 둥근 모서리 */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,26 +67,26 @@
     color: var(--gray-600);
 }
 
-/* 회원가입 카드 - 고객센터 스타일 적용 */
+/* 회원가입 카드 - 둥근 테두리 디자인 적용 */
 .signup-card {
     background: var(--white);
     border: 1px solid var(--gray-200);
-    border-radius: 12px;
+    border-radius: var(--radius-xl); /* 16px 둥근 모서리 */
     padding: 32px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-lg);
     margin-bottom: 24px;
 }
 
-/* 폼 섹션 - 고객센터 카드 스타일 */
+/* 폼 섹션 - 둥근 테두리 디자인 적용 */
 .form-section {
     background: var(--white);
     border: 1px solid var(--gray-200);
-    border-radius: 12px;
+    border-radius: var(--radius-lg); /* 12px 둥근 모서리 */
     padding: 24px;
     margin-bottom: 24px;
     position: relative;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-md);
 }
 
 .form-section::before {
@@ -97,7 +97,7 @@
     right: 0;
     height: 3px;
     background: var(--primary-gradient);
-    border-radius: 12px 12px 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -152,12 +152,12 @@
     color: #ef4444;
 }
 
-/* 입력 필드 - 고객센터 스타일 */
+/* 입력 필드 - 둥근 테두리 디자인 */
 .form-input {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid var(--gray-200);
-    border-radius: 8px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md); /* 8px 둥근 모서리 */
     font-size: 14px;
     transition: all 0.2s ease;
     background: var(--white);
@@ -203,15 +203,16 @@
 .check-btn {
     padding: 12px 20px;
     background: var(--white);
-    border: 2px solid var(--primary-blue);
+    border: 1px solid var(--primary-blue);
     color: var(--primary-blue);
-    border-radius: 8px;
+    border-radius: var(--radius-lg); /* 12px 둥근 모서리 */
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-    min-width: 80px;
+    min-width: 90px;
+    box-shadow: var(--shadow-sm);
 }
 
 .check-btn:hover {
@@ -375,11 +376,12 @@
 .terms-all {
     padding: 16px;
     background: var(--gray-50);
-    border: 2px solid var(--gray-200);
-    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg); /* 12px 둥근 모서리 */
     margin-bottom: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
 }
 
 .terms-all:hover {
@@ -416,8 +418,8 @@
 .terms-checkbox {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--gray-400);
-    border-radius: 4px;
+    border: 1px solid var(--gray-400);
+    border-radius: var(--radius-sm); /* 6px 둥근 모서리 */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -467,7 +469,7 @@
     background: var(--primary-gradient);
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius-lg); /* 12px 둥근 모서리 */
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -528,7 +530,7 @@
     background: #fef2f2;
     color: #dc2626;
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-md); /* 8px 둥근 모서리 */
     font-size: 14px;
     margin: 16px 0;
     border: 1px solid #fecaca;
@@ -544,7 +546,7 @@
     background: #f0fdf4;
     color: #16a34a;
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-md); /* 8px 둥근 모서리 */
     font-size: 14px;
     margin: 16px 0;
     border: 1px solid #bbf7d0;

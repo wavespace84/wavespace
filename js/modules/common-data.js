@@ -352,8 +352,8 @@ window.WaveSpaceData.errorHandler = {
                 level === 'error' || level === 'critical'
                     ? 'error'
                     : level === 'warn'
-                      ? 'warn'
-                      : 'log';
+                        ? 'warn'
+                        : 'log';
             console[consoleMethod](`[WAVE SPACE ${level.toUpperCase()}]`, message, context);
         }
 

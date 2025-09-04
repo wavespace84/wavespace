@@ -21,7 +21,16 @@ async function initMarketResearchSupabase() {
 // Supabase에서 문서 목록 로드
 async function loadDocumentsFromSupabase() {
     try {
-        if (!marketResearchSupabase) return;
+        if (!marketResearchSupabase) {
+            console.warn('⚠️ MarketResearchSupabase 인스턴스가 없습니다.');
+            return false;
+        }
+        
+        // 로딩 상태 표시
+        renderDocuments([], true);
+        updateResultCount(0);
+        
+        console.log('🔄 Supabase에서 문서 로드 중...');
         
         // fetchDocuments 메서드 호출 (getDocuments는 이제 fetchDocuments를 호출함)
         const documents = await marketResearchSupabase.fetchDocuments({
@@ -30,13 +39,28 @@ async function loadDocumentsFromSupabase() {
         });
         
         if (documents && documents.length > 0) {
-            // Supabase 데이터를 우선하여 설정 (기존 Mock 데이터와 병합하지 않음)
+            // Supabase 데이터를 설정
             currentDocuments = documents;
+            renderDocuments(currentDocuments);
+            updateResultCount(currentDocuments.length);
             console.log(`📄 Supabase에서 ${documents.length}개 문서 로드 완료`);
+            return true;
+        } else {
+            // 데이터가 없는 경우
+            currentDocuments = [];
+            renderDocuments(currentDocuments);
+            updateResultCount(0);
+            console.log('📄 Supabase에 저장된 문서가 없습니다.');
+            return true;
         }
     } catch (error) {
         console.error('❌ Supabase 문서 로드 실패:', error);
         console.error('⚠️ 데이터를 로드할 수 없습니다. Supabase 연결을 확인하세요.');
+        
+        // 에러 상태 표시
+        renderDocuments([], false, error);
+        updateResultCount(0);
+        return false;
     }
 }
 
@@ -122,7 +146,7 @@ const productTypes = [
 // 업로드된 파일을 관리하는 변수
 let uploadedFile = null;
 
-// Mock 데이터 제거 완료 - 이제 Supabase 데이터만 사용
+// Supabase 데이터만 사용
 
 // 전역 상태 관리
 let currentFilters = {
@@ -555,18 +579,69 @@ let currentPage = 1;
 const itemsPerPage = 14; // 한 페이지에 14개 문서 표시
 
 // 문서 렌더링
-function renderDocuments(documents) {
+function renderDocuments(documents, isLoading = false, error = null) {
     const grid = document.getElementById('documentGrid');
     if (!grid) return;
 
-    if (documents.length === 0) {
+    // 로딩 상태 표시
+    if (isLoading) {
         grid.innerHTML = `
-            <div class="no-results">
-                <i class="fas fa-search"></i>
-                <p>검색 결과가 없습니다</p>
-                <span>다른 검색 조건으로 시도해보세요</span>
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>시장조사서를 불러오는 중입니다...</p>
+                <span>잠시만 기다려주세요</span>
             </div>
         `;
+        updatePagination(0, 0);
+        return;
+    }
+
+    // 에러 상태 표시
+    if (error) {
+        grid.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>데이터를 불러올 수 없습니다</p>
+                <span>${error.message || '네트워크 연결을 확인해주세요'}</span>
+                <button onclick="window.location.reload()" class="retry-btn">
+                    <i class="fas fa-redo"></i> 새로고침
+                </button>
+            </div>
+        `;
+        updatePagination(0, 0);
+        return;
+    }
+
+    // 빈 데이터 상태 구분
+    if (documents.length === 0) {
+        // Supabase 초기화 확인
+        if (!window.marketResearchSupabase) {
+            grid.innerHTML = `
+                <div class="no-connection">
+                    <i class="fas fa-database"></i>
+                    <p>데이터베이스에 연결할 수 없습니다</p>
+                    <span>관리자에게 문의하세요</span>
+                </div>
+            `;
+        } else if (isInitialized && currentDocuments.length === 0) {
+            // 실제로 데이터가 없는 경우
+            grid.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-file-alt"></i>
+                    <p>아직 등록된 시장조사서가 없습니다</p>
+                    <span>첫 번째 자료를 업로드해보세요!</span>
+                </div>
+            `;
+        } else {
+            // 필터 결과가 없는 경우
+            grid.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>검색 결과가 없습니다</p>
+                    <span>다른 검색 조건으로 시도해보세요</span>
+                </div>
+            `;
+        }
         updatePagination(0, 0);
         return;
     }
@@ -936,10 +1011,10 @@ function showDocumentPreview(doc) {
     previewBody.innerHTML = `
         <div class="preview-thumbnail">
             ${
-                doc.thumbnail
-                    ? `<img src="${doc.thumbnail}" alt="${doc.title}">`
-                    : `<div class="file-icon ${doc.fileType.toLowerCase()}">${doc.fileType}</div>`
-            }
+    doc.thumbnail
+        ? `<img src="${doc.thumbnail}" alt="${doc.title}">`
+        : `<div class="file-icon ${doc.fileType.toLowerCase()}">${doc.fileType}</div>`
+}
         </div>
         <div class="preview-details">
             <div class="detail-group">
@@ -1206,7 +1281,7 @@ async function renderActualPDF(pdfPath, canvas) {
         const labelElement = canvas.parentElement.querySelector('.page-label');
         if (labelElement) {
             if (pageNum === 5) {
-                labelElement.textContent = `- 5page -`;
+                labelElement.textContent = '- 5page -';
             } else {
                 labelElement.textContent = `- ${pageNum}page -`;
             }
@@ -1905,36 +1980,23 @@ function sortDocuments(documents, sortBy) {
     const sorted = [...documents];
 
     switch (sortBy) {
-        case 'latest':
-            sorted.sort(
-                (a, b) =>
-                    new Date(b.date.replace(/\./g, '-')) - new Date(a.date.replace(/\./g, '-'))
-            );
-            break;
-        case 'filesize':
-            // 파일 크기를 숫자로 변환하여 정렬 (큰 파일이 먼저)
-            sorted.sort((a, b) => {
-                const aSize = parseFloat(a.fileSize) || 0;
-                const bSize = parseFloat(b.fileSize) || 0;
-                return bSize - aSize;
-            });
-            break;
+    case 'latest':
+        sorted.sort(
+            (a, b) =>
+                new Date(b.date.replace(/\./g, '-')) - new Date(a.date.replace(/\./g, '-'))
+        );
+        break;
+    case 'filesize':
+        // 파일 크기를 숫자로 변환하여 정렬 (큰 파일이 먼저)
+        sorted.sort((a, b) => {
+            const aSize = parseFloat(a.fileSize) || 0;
+            const bSize = parseFloat(b.fileSize) || 0;
+            return bSize - aSize;
+        });
+        break;
     }
 
     return sorted;
-}
-
-// 유틸리티 함수
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
 }
 
 // ===========================================
@@ -2494,8 +2556,13 @@ const uploadSystem = {
                 
                 console.log('👤 사용자 ID:', userId);
 
+                // description 필드 가져오기
+                const descriptionInput = document.getElementById('uploadDescription');
+                const description = descriptionInput ? descriptionInput.value.trim() : '';
+                
                 const metadata = {
                     title: title,
+                    description: description || `${region1} ${region2} 지역의 ${productType} 시장조사서입니다.`,
                     region1: region1,
                     region2: region2,
                     productType: productType,
@@ -2508,6 +2575,16 @@ const uploadSystem = {
                 };
                 
                 console.log('📋 메타데이터 준비 완료:', metadata);
+                console.log('📄 파일 객체 확인:', {
+                    hasFile: !!this.formData.file,
+                    fileName: this.formData.file?.name,
+                    fileSize: this.formData.file?.size,
+                    fileType: this.formData.file?.type
+                });
+                
+                if (!this.formData.file) {
+                    throw new Error('파일이 선택되지 않았습니다.');
+                }
                 
                 const result = await window.marketResearchSupabase.uploadFile(this.formData.file, metadata);
                 
@@ -2520,15 +2597,31 @@ const uploadSystem = {
                     return;
                 }
             } else {
-                // Supabase 업로드 실패 시 오류 메시지만 표시
-                console.error('❌ Supabase 업로드 실패');
-                alert('업로드에 실패했습니다. 다시 시도해주세요.');
+                // Supabase 업로드 실패 시 상세 오류 메시지
+                console.error('❌ Supabase 업로드 실패 - 조건 확인:');
+                console.error('  - marketResearchSupabase 존재:', !!window.marketResearchSupabase);
+                console.error('  - client 연결:', !!(window.marketResearchSupabase?.client));
+                console.error('  - 파일 존재:', !!this.formData.file);
+                console.error('  - 파일 정보:', this.formData.file);
+                alert('업로드에 실패했습니다.\n- Supabase 연결을 확인하세요\n- 파일이 선택되었는지 확인하세요\n- 브라우저 콘솔에서 상세 오류를 확인하세요');
                 return;
             }
             
         } catch (error) {
             console.error('❌ 업로드 실패:', error);
-            alert(`업로드 중 오류가 발생했습니다: ${error.message}`);
+            console.error('📊 에러 발생 시 상태:', {
+                hasFile: !!this.formData.file,
+                hasSupabase: !!window.marketResearchSupabase,
+                errorMessage: error.message,
+                errorStack: error.stack
+            });
+            
+            let userMessage = `업로드 중 오류가 발생했습니다: ${error.message}`;
+            if (error.message.includes('Storage')) {
+                userMessage += '\n\n📝 해결 방법:\n1. 파일 크기 확인 (50MB 이하)\n2. 파일 형식 확인 (PDF, PPT, DOC, XLS)\n3. 네트워크 연결 확인';
+            }
+            
+            alert(userMessage);
         } finally {
             // 버튼 상태 복원
             const submitBtn = document.getElementById('uploadBtn');
@@ -2819,29 +2912,29 @@ function updateFileUI() {
     if (!uploadedFile) return;
     
     const fileData = uploadedFile;
-        const fileDiv = document.createElement('div');
-        fileDiv.className = 'simple-file-info show';
-        fileDiv.style.marginBottom = '12px';
+    const fileDiv = document.createElement('div');
+    fileDiv.className = 'simple-file-info show';
+    fileDiv.style.marginBottom = '12px';
         
-        // 파일 아이콘 결정
-        let iconClass = 'fas fa-file';
-        let iconColor = '#6b7280';
+    // 파일 아이콘 결정
+    let iconClass = 'fas fa-file';
+    let iconColor = '#6b7280';
         
-        if (fileData.file.type === 'application/pdf' || fileData.file.name.endsWith('.pdf')) {
-            iconClass = 'fas fa-file-pdf';
-            iconColor = '#dc2626';
-        } else if (fileData.file.name.match(/\.(ppt|pptx)$/i)) {
-            iconClass = 'fas fa-file-powerpoint';
-            iconColor = '#dc6612';
-        } else if (fileData.file.name.match(/\.(doc|docx)$/i)) {
-            iconClass = 'fas fa-file-word';
-            iconColor = '#2563eb';
-        } else if (fileData.file.name.match(/\.(xls|xlsx)$/i)) {
-            iconClass = 'fas fa-file-excel';
-            iconColor = '#16a34a';
-        }
+    if (fileData.file.type === 'application/pdf' || fileData.file.name.endsWith('.pdf')) {
+        iconClass = 'fas fa-file-pdf';
+        iconColor = '#dc2626';
+    } else if (fileData.file.name.match(/\.(ppt|pptx)$/i)) {
+        iconClass = 'fas fa-file-powerpoint';
+        iconColor = '#dc6612';
+    } else if (fileData.file.name.match(/\.(doc|docx)$/i)) {
+        iconClass = 'fas fa-file-word';
+        iconColor = '#2563eb';
+    } else if (fileData.file.name.match(/\.(xls|xlsx)$/i)) {
+        iconClass = 'fas fa-file-excel';
+        iconColor = '#16a34a';
+    }
         
-        fileDiv.innerHTML = `
+    fileDiv.innerHTML = `
             <div class="simple-file-icon">
                 <i class="${iconClass}" style="color: ${iconColor};"></i>
             </div>
@@ -2876,37 +2969,37 @@ function updateFileUI() {
             </button>
         `;
         
-        container.appendChild(fileDiv);
+    container.appendChild(fileDiv);
         
-        // 파일 제거 버튼 이벤트 추가
-        const removeBtn = fileDiv.querySelector('#dynamicFileRemove');
-        if (removeBtn) {
-            removeBtn.addEventListener('click', () => {
-                removeUploadedFile();
-            });
-        }
-        
-        // 날짜 선택 이벤트 추가
-        const yearSelect = fileDiv.querySelector('.file-year');
-        const monthSelect = fileDiv.querySelector('.file-month');
-        const daySelect = fileDiv.querySelector('.file-day');
-        
-        [yearSelect, monthSelect, daySelect].forEach(select => {
-            select.addEventListener('change', () => {
-                if (uploadedFile) {
-                    uploadedFile.year = yearSelect.value;
-                    uploadedFile.month = monthSelect.value;
-                    uploadedFile.day = daySelect.value;
-                    calculatePoints();
-                    checkAllFieldsAndDuplicate();
-                }
-            });
+    // 파일 제거 버튼 이벤트 추가
+    const removeBtn = fileDiv.querySelector('#dynamicFileRemove');
+    if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+            removeUploadedFile();
         });
+    }
         
-        // 기존 값 복원
-        if (fileData.year) yearSelect.value = fileData.year;
-        if (fileData.month) monthSelect.value = fileData.month;
-        if (fileData.day) daySelect.value = fileData.day;
+    // 날짜 선택 이벤트 추가
+    const yearSelect = fileDiv.querySelector('.file-year');
+    const monthSelect = fileDiv.querySelector('.file-month');
+    const daySelect = fileDiv.querySelector('.file-day');
+        
+    [yearSelect, monthSelect, daySelect].forEach(select => {
+        select.addEventListener('change', () => {
+            if (uploadedFile) {
+                uploadedFile.year = yearSelect.value;
+                uploadedFile.month = monthSelect.value;
+                uploadedFile.day = daySelect.value;
+                calculatePoints();
+                checkAllFieldsAndDuplicate();
+            }
+        });
+    });
+        
+    // 기존 값 복원
+    if (fileData.year) yearSelect.value = fileData.year;
+    if (fileData.month) monthSelect.value = fileData.month;
+    if (fileData.day) daySelect.value = fileData.day;
 }
 
 
@@ -3426,51 +3519,51 @@ function calculatePoints() {
     }
 
     const fileData = uploadedFile;
-        const pageCount = fileData.pages || 0; // 페이지 수
-        const basePoints = 3000; // 기본 포인트 3000P
-        let filePoints = 0;
+    const pageCount = fileData.pages || 0; // 페이지 수
+    const basePoints = 3000; // 기본 포인트 3000P
+    let filePoints = 0;
 
-        // 페이지 지수
-        let pageMultiplier = 0;
-        if (pageCount >= 40) {
-            pageMultiplier = 1.2; // 120%
-        } else if (pageCount >= 30) {
-            pageMultiplier = 1.1; // 110%
-        } else if (pageCount >= 20) {
-            pageMultiplier = 1.0; // 100%
-        } else if (pageCount >= 10) {
-            pageMultiplier = 0.9; // 90%
+    // 페이지 지수
+    let pageMultiplier = 0;
+    if (pageCount >= 40) {
+        pageMultiplier = 1.2; // 120%
+    } else if (pageCount >= 30) {
+        pageMultiplier = 1.1; // 110%
+    } else if (pageCount >= 20) {
+        pageMultiplier = 1.0; // 100%
+    } else if (pageCount >= 10) {
+        pageMultiplier = 0.9; // 90%
+    } else {
+        pageMultiplier = 0.6; // 60%
+    }
+
+    // 최신성 지수 (연/월/일 선택 기준)
+    let freshnessMultiplier = 0;
+    let daysDiff = null;
+    let hasOverTwoYears = false;
+
+    if (fileData.year && fileData.month && fileData.day) {
+        const selectedDate = new Date(fileData.year, fileData.month - 1, fileData.day);
+        const today = new Date();
+        daysDiff = Math.floor((today - selectedDate) / (1000 * 60 * 60 * 24));
+
+        if (daysDiff <= 180) {
+            // 6개월 이내
+            freshnessMultiplier = 1.2; // 120%
+        } else if (daysDiff <= 365) {
+            // 1년 이내
+            freshnessMultiplier = 1.0; // 100%
+        } else if (daysDiff <= 730) {
+            // 2년 이내
+            freshnessMultiplier = 0.7; // 70%
         } else {
-            pageMultiplier = 0.6; // 60%
+            freshnessMultiplier = 0; // 2년 초과는 0P
+            hasOverTwoYears = true;
         }
+    }
 
-        // 최신성 지수 (연/월/일 선택 기준)
-        let freshnessMultiplier = 0;
-        let daysDiff = null;
-        let hasOverTwoYears = false;
-
-        if (fileData.year && fileData.month && fileData.day) {
-            const selectedDate = new Date(fileData.year, fileData.month - 1, fileData.day);
-            const today = new Date();
-            daysDiff = Math.floor((today - selectedDate) / (1000 * 60 * 60 * 24));
-
-            if (daysDiff <= 180) {
-                // 6개월 이내
-                freshnessMultiplier = 1.2; // 120%
-            } else if (daysDiff <= 365) {
-                // 1년 이내
-                freshnessMultiplier = 1.0; // 100%
-            } else if (daysDiff <= 730) {
-                // 2년 이내
-                freshnessMultiplier = 0.7; // 70%
-            } else {
-                freshnessMultiplier = 0; // 2년 초과는 0P
-                hasOverTwoYears = true;
-            }
-        }
-
-        // 파일 포인트 계산 (기본 3000P × 최신성 지수 × 페이지 지수)
-        filePoints = basePoints * pageMultiplier * freshnessMultiplier;
+    // 파일 포인트 계산 (기본 3000P × 최신성 지수 × 페이지 지수)
+    filePoints = basePoints * pageMultiplier * freshnessMultiplier;
         
     // 최종 포인트를 10단위로 반올림
     console.log('반올림 전 포인트:', filePoints);
@@ -3813,10 +3906,10 @@ function showToastMessage(message, type = 'success') {
     toast.innerHTML = `
         <div class="toast-content">
             ${
-                type === 'success'
-                    ? '<i class="fas fa-check-circle"></i>'
-                    : '<i class="fas fa-exclamation-circle"></i>'
-            }
+    type === 'success'
+        ? '<i class="fas fa-check-circle"></i>'
+        : '<i class="fas fa-exclamation-circle"></i>'
+}
             <span>${message}</span>
         </div>
     `;
@@ -4386,7 +4479,7 @@ async function submitUpload() {
         
         // 포인트 획득 처리
         const uploadButton = document.querySelector('.upload-btn') || uploadSubmitBtn;
-        earnPoints(uploadPoints, `문서가 성공적으로 업로드되었습니다!`, uploadButton);
+        earnPoints(uploadPoints, '문서가 성공적으로 업로드되었습니다!', uploadButton);
         
         // 성공 메시지
         const storageType = useSupabase ? 'Supabase' : '로컬';
@@ -4471,9 +4564,9 @@ function showMinimalPreview(doc) {
     if (titleEl) {
         // 제목에서 지역과 상품 정보 추출
         const parts = doc.title.split(' ');
-        let location = doc.location || '';
-        let product = productType.name;
-        let supplyType = doc.supplyType || '민간분양';
+        const location = doc.location || '';
+        const product = productType.name;
+        const supplyType = doc.supplyType || '민간분양';
         
         titleEl.innerHTML = `
             <span class="title-line1">${location} • ${product}</span>
@@ -4878,7 +4971,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===========================================
 
 // 장바구니 데이터 관리
-let cartItems = JSON.parse(localStorage.getItem('marketResearchCart')) || [];
+const cartItems = JSON.parse(localStorage.getItem('marketResearchCart')) || [];
 
 // 장바구니에 담기
 async function addToCart(docId) {
@@ -4992,16 +5085,15 @@ function submitReport() {
     closeReportModal();
 }
 
-// 현재 사용자 ID 가져오기 (Mock 함수)
+// 현재 사용자 ID 가져오기
 function getCurrentUserId() {
-    // 실제 구현에서는 인증 시스템에서 사용자 ID를 가져옴
     return localStorage.getItem('currentUserId') || null;
 }
 
 // 신고 이벤트 리스너 초기화
 function initializeReportEventListeners() {
     // 신고 버튼 클릭 이벤트
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', (e) => {
         if (e.target.closest('.btn-report')) {
             e.preventDefault();
             e.stopPropagation();
@@ -5037,7 +5129,7 @@ function initializeReportEventListeners() {
     
     // 모달 배경 클릭으로 닫기
     if (modal) {
-        modal.addEventListener('click', function(e) {
+        modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 closeReportModal();
             }
@@ -5045,7 +5137,7 @@ function initializeReportEventListeners() {
     }
     
     // ESC 키로 모달 닫기
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             const modal = document.getElementById('reportModal');
             if (modal && modal.style.display === 'flex') {
@@ -5275,29 +5367,41 @@ async function initializeSupabaseData() {
             }
         }
         
-        // 문서 로드 시도
+        // 문서 로드 시도 (loadDocumentsFromSupabase 사용)
         if (window.marketResearchSupabase) {
-            console.log('📋 시장조사서 문서 로드 중...');
-            console.log('  - fetchDocuments 옵션: { limit: 50, sortBy: "latest" }');
-            const documents = await window.marketResearchSupabase.fetchDocuments({
-                limit: 50,
-                sortBy: 'latest'
-            });
+            console.log('📋 시장조사서 문서 로드 시작...');
+            
+            // marketResearchSupabase 전역 변수에 할당 (loadDocumentsFromSupabase에서 사용)
+            marketResearchSupabase = window.marketResearchSupabase;
+            
+            // loadDocumentsFromSupabase 함수 호출 (로딩 상태와 에러 처리 포함)
+            const loadResult = await loadDocumentsFromSupabase();
+            const documents = currentDocuments; // loadDocumentsFromSupabase에서 currentDocuments를 설정함
             
             console.log(`📊 문서 로드 결과: ${documents.length}개`);
-            if (documents.length > 0) {
-                console.log(`  - 첫 번째 문서:`, {
+            if (loadResult && documents.length > 0) {
+                console.log('  - 첫 번째 문서:', {
                     id: documents[0].id,
                     title: documents[0].title,
                     type: documents[0].type
                 });
+                // 첫 번째 문서 미리보기 (자동 표시) - 안전하게 처리
+                try {
+                    showPreview(documents[0].id, {
+                        id: documents[0].id,
+                        title: documents[0].title,
+                        type: documents[0].type
+                    });
+                } catch (previewError) {
+                    console.warn('⚠️ 첫 번째 문서 미리보기 실패:', previewError);
+                }
+                
+                console.log('✅ 문서 로드 및 렌더링 완료');
+            } else {
+                console.log('ℹ️ 로드된 문서가 없거나 로드 실패');
             }
-            currentDocuments = documents;
             
-            // UI 업데이트
-            renderDocuments(currentDocuments);
-            updateResultCount(currentDocuments.length);
-            
+            // loadDocumentsFromSupabase에서 이미 UI 업데이트를 했으므로 중복 호출 불필요
             // 초기화 완료 플래그 설정
             isInitialized = true;
             console.log('🎯 Supabase 데이터 초기화 완료');
@@ -5422,10 +5526,7 @@ function matchesFilters(doc) {
     return true;
 }
 
-// 기존 함수 수정: filterDocuments
-function filterDocuments() {
-    return getFilteredDocuments();
-}
+// filterDocuments 함수는 이미 위에 정의되어 있음 (중복 제거)
 
 // 문서 다운로드 함수 (Supabase 연동)
 async function downloadDocument(docId) {
@@ -5463,30 +5564,9 @@ async function downloadDocument(docId) {
     }
 }
 
-// 현재 사용자 ID 가져오기 (임시 구현)
-function getCurrentUserId() {
-    // 실제로는 인증 시스템에서 가져와야 함
-    // 임시로 localStorage에서 가져오거나 하드코딩
-    return localStorage.getItem('currentUserId') || null;
-}
+// getCurrentUserId 함수는 이미 위에 정의되어 있음 (중복 제거)
 
-// 문서 목록 새로고침
-async function refreshDocuments() {
-    try {
-        if (window.MarketResearchSupabase) {
-            const documents = await window.MarketResearchSupabase.fetchDocuments({
-                limit: 50,
-                sortBy: 'latest'
-            });
-            
-            currentDocuments = documents;
-            renderDocuments(filterDocuments());
-            updateResultCount(filterDocuments().length);
-        }
-    } catch (error) {
-        console.error('❌ 문서 새로고침 실패:', error);
-    }
-}
+// refreshDocuments 함수는 이미 위에 정의되어 있음 (중복 제거)
 
 // 검색 및 필터 이벤트 리스너에서 사용할 함수
 function applyFiltersAndSearch() {
@@ -5701,6 +5781,90 @@ window.debugMarketResearch = {
         return results;
     }
 };
+
+// 📄 문서 미리보기 함수
+function showPreview(documentId, documentData = null) {
+    try {
+        console.log(`🔍 문서 미리보기 시작: ${documentId}`, documentData);
+        
+        // 문서 데이터가 없으면 현재 로드된 문서에서 찾기
+        if (!documentData && currentDocuments.length > 0) {
+            documentData = currentDocuments.find(doc => doc.id === documentId);
+        }
+        
+        if (!documentData) {
+            console.warn('⚠️ 미리보기할 문서 데이터를 찾을 수 없음:', documentId);
+            return;
+        }
+        
+        // 미리보기 모달 찾기 또는 생성
+        const previewModal = document.getElementById('previewModal');
+        if (!previewModal) {
+            // 미리보기 모달이 없으면 간단한 알림으로 대체
+            console.log(`📋 문서 정보: ${documentData.title} (${documentData.type})`);
+            
+            // 기존 PDF 미리보기 영역이 있으면 해당 영역에 정보 표시
+            const previewContainer = document.getElementById('pdf-preview-container') || 
+                                   document.querySelector('.pdf-preview-container') ||
+                                   document.querySelector('#previewContainer');
+                                   
+            if (previewContainer) {
+                previewContainer.innerHTML = `
+                    <div class="document-preview-info">
+                        <h3>📄 ${documentData.title}</h3>
+                        <p><strong>유형:</strong> ${documentData.type}</p>
+                        <p><strong>ID:</strong> ${documentData.id}</p>
+                        <p class="text-info">문서 미리보기 기능이 곧 제공됩니다.</p>
+                    </div>
+                `;
+                console.log('✅ 문서 정보를 미리보기 영역에 표시함');
+            } else {
+                console.log('ℹ️ 미리보기 컨테이너를 찾을 수 없어 콘솔 로그로 대체');
+            }
+            return;
+        }
+        
+        // 미리보기 모달이 있으면 표시
+        const modalTitle = previewModal.querySelector('.modal-title') || previewModal.querySelector('h2');
+        const modalBody = previewModal.querySelector('.modal-body') || previewModal.querySelector('.preview-content');
+        
+        if (modalTitle) {
+            modalTitle.textContent = documentData.title;
+        }
+        
+        if (modalBody) {
+            modalBody.innerHTML = `
+                <div class="document-preview">
+                    <div class="document-info">
+                        <p><strong>문서 유형:</strong> ${documentData.type}</p>
+                        <p><strong>문서 ID:</strong> ${documentData.id}</p>
+                    </div>
+                    <div class="preview-placeholder">
+                        <i class="fas fa-file-pdf fa-3x text-primary"></i>
+                        <p>PDF 미리보기 기능이 곧 제공됩니다.</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 모달 표시
+        if (previewModal.classList) {
+            previewModal.classList.add('active');
+        } else {
+            previewModal.style.display = 'block';
+        }
+        
+        console.log('✅ 문서 미리보기 모달 표시 완료');
+        
+    } catch (error) {
+        console.error('❌ showPreview 함수 오류:', error);
+        // 오류 발생 시 간단한 알림
+        console.log(`📄 문서: ${documentId} (미리보기 오류 발생)`);
+    }
+}
+
+// 전역에서 사용 가능하도록 window 객체에 추가
+window.showPreview = showPreview;
 
 // 페이지 로드 시 디버깅 도구 안내
 setTimeout(() => {

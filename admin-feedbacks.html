@@ -13,8 +13,8 @@
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <script src="preload.js"></script>
         
-        <link rel="stylesheet" href="common.css" />
-        <link rel="stylesheet" href="admin.css?v=20250828-1710" />
+        <link rel="stylesheet" href="common.css?v=7" />
+        <link rel="stylesheet" href="admin.css?v=7" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
         
         <style>
@@ -251,16 +251,16 @@
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         
         <!-- 기본 스크립트 -->
-        <script src="script.js?v=3"></script>
+        <script src="script.js?v=7"></script>
         
         <!-- Supabase 설정 -->
-        <script src="js/config/supabase.js"></script>
+        <script src="js/config/supabase.js?v=7"></script>
         
         <!-- AuthService 로드 -->
-        <script src="js/services/authService.js"></script>
+        <script src="js/services/authService.js?v=7"></script>
         
         <!-- FeedbackService 로드 -->
-        <script src="js/services/feedbackService.js?v=20250828-1700"></script>
+        <script src="js/services/feedbackService.js?v=7"></script>
         
         <!-- 관리자 피드백 페이지 스크립트 -->
         <script>
@@ -460,7 +460,7 @@
                     '<': '&lt;',
                     '>': '&gt;',
                     '"': '&quot;',
-                    "'": '&#039;'
+                    '\'': '&#039;'
                 };
                 return text.replace(/[&<>"']/g, (m) => map[m]);
             }
