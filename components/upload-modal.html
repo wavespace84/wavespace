@@ -1,0 +1,142 @@
+<!-- UploadModal 컴포넌트 템플릿 -->
+<div class="wave-upload-modal" id="wave-upload-modal">
+    <!-- 모달 백드롭 -->
+    <div class="modal-backdrop" id="upload-modal-backdrop"></div>
+    
+    <!-- 모달 컨테이너 -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- 모달 헤더 -->
+            <div class="modal-header">
+                <h4 class="modal-title" id="upload-modal-title">파일 업로드</h4>
+                <button type="button" class="modal-close" id="upload-modal-close" aria-label="닫기">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- 모달 본문 -->
+            <div class="modal-body">
+                <!-- 업로드 폼 -->
+                <form id="upload-form" enctype="multipart/form-data">
+                    <!-- 파일 선택 영역 -->
+                    <div class="upload-file-section">
+                        <label class="upload-file-label">파일 선택 *</label>
+                        
+                        <!-- 드래그앤드롭 영역 -->
+                        <div class="upload-dropzone" id="upload-dropzone">
+                            <div class="dropzone-content">
+                                <div class="dropzone-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="dropzone-text">
+                                    <p class="dropzone-main">파일을 여기에 드래그하거나 클릭하여 선택하세요</p>
+                                    <p class="dropzone-sub" id="upload-file-types">지원 형식: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX</p>
+                                    <p class="dropzone-size" id="upload-file-size">최대 파일 크기: 50MB</p>
+                                </div>
+                            </div>
+                            <input type="file" id="upload-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" multiple style="display: none;" />
+                        </div>
+                        
+                        <!-- 선택된 파일 목록 -->
+                        <div class="upload-file-list" id="upload-file-list" style="display: none;">
+                            <!-- 동적으로 파일 항목이 추가됩니다 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 제목 입력 -->
+                    <div class="upload-field">
+                        <label for="upload-title" class="upload-label">제목 *</label>
+                        <input type="text" id="upload-title" name="title" class="upload-input" placeholder="자료의 제목을 입력하세요" maxlength="100" required />
+                        <div class="upload-field-help">명확하고 검색하기 쉬운 제목을 입력하세요</div>
+                    </div>
+                    
+                    <!-- 설명 입력 -->
+                    <div class="upload-field">
+                        <label for="upload-description" class="upload-label">설명</label>
+                        <textarea id="upload-description" name="description" class="upload-textarea" placeholder="자료에 대한 간단한 설명을 입력하세요" maxlength="500"></textarea>
+                        <div class="upload-field-counter">
+                            <span id="description-counter">0</span>/500자
+                        </div>
+                    </div>
+                    
+                    <!-- 카테고리 선택 -->
+                    <div class="upload-field">
+                        <label for="upload-category" class="upload-label">카테고리 *</label>
+                        <select id="upload-category" name="category" class="upload-select" required>
+                            <option value="">카테고리를 선택하세요</option>
+                            <!-- 동적으로 카테고리 옵션이 추가됩니다 -->
+                        </select>
+                    </div>
+                    
+                    <!-- 태그 입력 -->
+                    <div class="upload-field">
+                        <label for="upload-tags" class="upload-label">태그</label>
+                        <input type="text" id="upload-tags" name="tags" class="upload-input" placeholder="쉼표로 구분하여 입력 (예: 분양, 마케팅, 전략)" />
+                        <div class="upload-field-help">검색에 도움이 되는 키워드를 입력하세요</div>
+                        <div class="upload-tag-list" id="upload-tag-list">
+                            <!-- 동적으로 태그가 추가됩니다 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 공개 설정 -->
+                    <div class="upload-field">
+                        <label class="upload-label">공개 설정</label>
+                        <div class="upload-radio-group">
+                            <label class="upload-radio">
+                                <input type="radio" name="visibility" value="public" checked />
+                                <span class="radio-mark"></span>
+                                <span class="radio-text">전체 공개</span>
+                                <small>모든 회원이 다운로드할 수 있습니다</small>
+                            </label>
+                            <label class="upload-radio">
+                                <input type="radio" name="visibility" value="members" />
+                                <span class="radio-mark"></span>
+                                <span class="radio-text">회원 전용</span>
+                                <small>로그인한 회원만 다운로드할 수 있습니다</small>
+                            </label>
+                            <label class="upload-radio">
+                                <input type="radio" name="visibility" value="premium" />
+                                <span class="radio-mark"></span>
+                                <span class="radio-text">실무자 전용</span>
+                                <small>인증된 실무자만 다운로드할 수 있습니다</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 포인트 설정 -->
+                    <div class="upload-field">
+                        <label for="upload-points" class="upload-label">다운로드 포인트</label>
+                        <div class="upload-points-group">
+                            <input type="number" id="upload-points" name="points" class="upload-input" min="0" max="1000" value="0" />
+                            <span class="points-unit">포인트</span>
+                        </div>
+                        <div class="upload-field-help">0포인트로 설정하면 무료로 다운로드할 수 있습니다</div>
+                    </div>
+                </form>
+                
+                <!-- 업로드 진행률 -->
+                <div class="upload-progress" id="upload-progress" style="display: none;">
+                    <div class="progress-header">
+                        <span class="progress-label">업로드 중...</span>
+                        <span class="progress-percent" id="upload-progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="upload-progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-details" id="upload-progress-details">
+                        파일을 서버에 업로드하고 있습니다...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 모달 푸터 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="upload-cancel-btn">취소</button>
+                <button type="button" class="btn btn-primary" id="upload-submit-btn">
+                    <i class="fas fa-upload"></i>
+                    <span>업로드</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

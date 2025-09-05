@@ -1,0 +1,135 @@
+<!-- Pagination 컴포넌트 템플릿 -->
+<div class="wave-pagination" id="wave-pagination">
+    <div class="pagination-container">
+        <!-- 페이지 정보 -->
+        <div class="pagination-info" id="pagination-info">
+            <span class="current-range" id="pagination-current-range">1-10</span>
+            <span class="total-separator">of</span>
+            <span class="total-count" id="pagination-total-count">100</span>
+            <span class="items-label" id="pagination-items-label">items</span>
+        </div>
+        
+        <!-- 페이지 사이즈 선택 (옵션) -->
+        <div class="pagination-size" id="pagination-size" style="display: none;">
+            <label for="pagination-size-select" class="size-label">보기:</label>
+            <select id="pagination-size-select" class="size-select">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        
+        <!-- 페이지네이션 네비게이션 -->
+        <nav class="pagination-nav" role="navigation" aria-label="페이지 네비게이션">
+            <div class="pagination-controls">
+                <!-- 첫 페이지 버튼 -->
+                <button 
+                    type="button" 
+                    class="pagination-btn first-page" 
+                    id="pagination-first" 
+                    title="첫 페이지"
+                    aria-label="첫 페이지로 이동"
+                >
+                    <i class="fas fa-angle-double-left"></i>
+                </button>
+                
+                <!-- 이전 페이지 버튼 -->
+                <button 
+                    type="button" 
+                    class="pagination-btn prev-page" 
+                    id="pagination-prev" 
+                    title="이전 페이지"
+                    aria-label="이전 페이지로 이동"
+                >
+                    <i class="fas fa-angle-left"></i>
+                </button>
+                
+                <!-- 페이지 번호들 -->
+                <div class="pagination-pages" id="pagination-pages">
+                    <!-- 동적으로 페이지 번호가 추가됩니다 -->
+                </div>
+                
+                <!-- 다음 페이지 버튼 -->
+                <button 
+                    type="button" 
+                    class="pagination-btn next-page" 
+                    id="pagination-next" 
+                    title="다음 페이지"
+                    aria-label="다음 페이지로 이동"
+                >
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                
+                <!-- 마지막 페이지 버튼 -->
+                <button 
+                    type="button" 
+                    class="pagination-btn last-page" 
+                    id="pagination-last" 
+                    title="마지막 페이지"
+                    aria-label="마지막 페이지로 이동"
+                >
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- 페이지 입력 (옵션) -->
+        <div class="pagination-jump" id="pagination-jump" style="display: none;">
+            <label for="pagination-jump-input" class="jump-label">이동:</label>
+            <input 
+                type="number" 
+                id="pagination-jump-input" 
+                class="jump-input" 
+                min="1" 
+                placeholder="페이지" 
+                aria-label="페이지 번호 입력"
+            >
+            <button 
+                type="button" 
+                class="jump-btn" 
+                id="pagination-jump-btn"
+                title="해당 페이지로 이동"
+            >
+                이동
+            </button>
+        </div>
+    </div>
+    
+    <!-- 모바일 심플 페이지네이션 -->
+    <div class="pagination-mobile" id="pagination-mobile" style="display: none;">
+        <button 
+            type="button" 
+            class="mobile-btn prev" 
+            id="pagination-mobile-prev"
+            title="이전 페이지"
+        >
+            <i class="fas fa-chevron-left"></i>
+            <span>이전</span>
+        </button>
+        
+        <div class="mobile-info">
+            <span class="mobile-current" id="pagination-mobile-current">1</span>
+            <span class="mobile-separator">/</span>
+            <span class="mobile-total" id="pagination-mobile-total">10</span>
+        </div>
+        
+        <button 
+            type="button" 
+            class="mobile-btn next" 
+            id="pagination-mobile-next"
+            title="다음 페이지"
+        >
+            <span>다음</span>
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    
+    <!-- 로딩 상태 -->
+    <div class="pagination-loading" id="pagination-loading" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <span class="loading-text">로딩 중...</span>
+    </div>
+</div>

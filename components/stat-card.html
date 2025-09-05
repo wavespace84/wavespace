@@ -1,0 +1,67 @@
+<!-- StatCard 컴포넌트 템플릿 -->
+<div class="wave-stat-card" id="wave-stat-card">
+    <!-- 카드 헤더 (옵션) -->
+    <div class="stat-card-header" id="stat-card-header" style="display: none;">
+        <h4 class="stat-card-title" id="stat-card-title">통계 제목</h4>
+        <div class="stat-card-actions" id="stat-card-actions">
+            <!-- 동적으로 액션 버튼이 추가됩니다 -->
+        </div>
+    </div>
+
+    <!-- 메인 통계 -->
+    <div class="stat-card-main">
+        <!-- 아이콘 (옵션) -->
+        <div class="stat-icon" id="stat-icon" style="display: none;">
+            <i class="fas fa-chart-line"></i>
+        </div>
+
+        <!-- 통계 내용 -->
+        <div class="stat-content">
+            <!-- 메인 수치 -->
+            <div class="stat-value" id="stat-value">
+                <span class="stat-number" id="stat-number">0</span>
+                <span class="stat-unit" id="stat-unit"></span>
+            </div>
+
+            <!-- 라벨 -->
+            <div class="stat-label" id="stat-label">통계 라벨</div>
+
+            <!-- 변화량 표시 (옵션) -->
+            <div class="stat-change" id="stat-change" style="display: none;">
+                <i class="stat-change-icon fas fa-arrow-up"></i>
+                <span class="stat-change-value" id="stat-change-value">0%</span>
+                <span class="stat-change-period" id="stat-change-period">전월 대비</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 보조 통계 (옵션) -->
+    <div class="stat-card-secondary" id="stat-card-secondary" style="display: none;">
+        <div class="secondary-stats" id="secondary-stats">
+            <!-- 동적으로 보조 통계가 추가됩니다 -->
+        </div>
+    </div>
+
+    <!-- 미니 차트 (옵션) -->
+    <div class="stat-card-chart" id="stat-card-chart" style="display: none;">
+        <canvas id="stat-chart-canvas" width="100" height="40"></canvas>
+    </div>
+
+    <!-- 진행률 바 (옵션) -->
+    <div class="stat-progress" id="stat-progress" style="display: none;">
+        <div class="progress-info">
+            <span class="progress-label" id="progress-label">진행률</span>
+            <span class="progress-percentage" id="progress-percentage">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- 푸터 (옵션) -->
+    <div class="stat-card-footer" id="stat-card-footer" style="display: none;">
+        <div class="footer-content" id="footer-content">
+            <span class="footer-text" id="footer-text">마지막 업데이트: 방금 전</span>
+        </div>
+    </div>
+</div>

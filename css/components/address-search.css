@@ -1,0 +1,506 @@
+/**
+ * AddressSearch 컴포넌트 CSS
+ * 주소 검색 통합 스타일
+ */
+
+.wave-address-search {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.address-search-container {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.address-search-container:focus-within {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+/* 검색 입력 영역 */
+.address-search-input-group {
+    margin-bottom: 20px;
+}
+
+.address-search-label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.address-input-wrapper {
+    position: relative;
+    display: flex;
+    gap: 8px;
+}
+
+.address-search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.address-search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.address-search-input::placeholder {
+    color: #6c757d;
+}
+
+.address-search-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.address-search-btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.address-search-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.address-search-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.address-search-help {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+/* 검색 결과 영역 */
+.address-search-results {
+    border-top: 1px solid #dee2e6;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.results-header h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+    margin: 0;
+}
+
+.results-count {
+    font-size: 0.9rem;
+    color: #6c757d;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.results-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #fff;
+}
+
+/* 결과 아이템 */
+.result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid #f1f3f4;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-item:hover {
+    background: #f8f9fa;
+}
+
+.result-item.selected {
+    background: #e3f2fd;
+    border-left: 4px solid #007bff;
+}
+
+.result-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.result-icon i {
+    color: #007bff;
+    font-size: 0.9rem;
+}
+
+.result-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.result-main-address {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #212529;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    word-break: break-all;
+}
+
+.result-sub-address {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.3;
+    word-break: break-all;
+}
+
+.result-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.result-meta-item {
+    font-size: 0.8rem;
+    color: #868e96;
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* 선택된 주소 영역 */
+.address-search-selected {
+    border-top: 1px solid #dee2e6;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.selected-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.selected-header h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+    margin: 0;
+}
+
+.selected-clear-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: transparent;
+    color: #6c757d;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.selected-clear-btn:hover {
+    color: #495057;
+    border-color: #adb5bd;
+    background: #f8f9fa;
+}
+
+.selected-address-info {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.selected-main-address {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #212529;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    word-break: break-all;
+}
+
+.selected-detail-address {
+    margin-bottom: 12px;
+}
+
+.selected-detail-address label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 6px;
+}
+
+.selected-detail-address input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.selected-detail-address input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.selected-address-data {
+    display: none;
+}
+
+/* 로딩 상태 */
+.address-search-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.loading-spinner i {
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+/* 에러 상태 */
+.address-search-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.error-icon i {
+    font-size: 2rem;
+    color: #dc3545;
+    opacity: 0.7;
+}
+
+.error-message {
+    font-size: 1rem;
+    color: #6c757d;
+    line-height: 1.5;
+}
+
+.error-retry-btn {
+    padding: 8px 16px;
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.error-retry-btn:hover {
+    background: #c82333;
+}
+
+/* 크기 변형 */
+.wave-address-search.compact .address-search-container {
+    padding: 16px;
+}
+
+.wave-address-search.compact .address-search-input,
+.wave-address-search.compact .address-search-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+    .wave-address-search {
+        max-width: none;
+    }
+    
+    .address-search-container {
+        padding: 16px;
+        border-radius: 8px;
+        margin: 0 8px;
+    }
+    
+    .address-input-wrapper {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .address-search-btn {
+        justify-content: center;
+        padding: 12px;
+    }
+    
+    .results-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .result-item {
+        padding: 12px;
+    }
+    
+    .result-main-address {
+        font-size: 0.95rem;
+    }
+    
+    .result-sub-address {
+        font-size: 0.85rem;
+    }
+    
+    .selected-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .address-search-container {
+        padding: 12px;
+        margin: 0 4px;
+    }
+    
+    .address-search-input,
+    .address-search-btn {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+    }
+    
+    .result-item {
+        padding: 10px;
+    }
+    
+    .result-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* 포커스 및 접근성 */
+.result-item:focus {
+    outline: 2px solid #007bff;
+    outline-offset: -2px;
+}
+
+/* 스크롤바 스타일 (Webkit) */
+.results-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.results-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.results-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.results-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .address-search-container {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .address-search-input {
+        background: #1a202c;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .address-search-input::placeholder {
+        color: #a0aec0;
+    }
+    
+    .results-list {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .result-item:hover {
+        background: #3c4757;
+    }
+    
+    .selected-address-info {
+        background: #3c4757;
+        border-color: #4a5568;
+    }
+    
+    .selected-main-address {
+        background: #1a202c;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+}

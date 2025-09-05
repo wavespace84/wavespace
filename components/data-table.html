@@ -1,0 +1,146 @@
+<!-- DataTable 컴포넌트 템플릿 -->
+<div class="wave-data-table" id="wave-data-table">
+    <!-- 테이블 헤더 (옵션) -->
+    <div class="table-header" id="table-header" style="display: none;">
+        <div class="table-header-content">
+            <div class="table-title">
+                <h3 id="table-title-text">데이터 테이블</h3>
+                <span class="table-subtitle" id="table-subtitle-text">총 <span id="table-total-count">0</span>개 항목</span>
+            </div>
+            <div class="table-actions" id="table-actions">
+                <!-- 동적으로 액션 버튼이 추가됩니다 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 테이블 필터/검색 영역 (옵션) -->
+    <div class="table-filters" id="table-filters" style="display: none;">
+        <div class="filters-left">
+            <!-- 검색 입력 -->
+            <div class="filter-search" id="table-search-container" style="display: none;">
+                <div class="search-input-group">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        id="table-search-input" 
+                        class="search-input" 
+                        placeholder="검색어를 입력하세요"
+                    >
+                    <button type="button" class="search-clear" id="table-search-clear" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 필터 선택 -->
+            <div class="filter-selects" id="table-filter-selects">
+                <!-- 동적으로 필터가 추가됩니다 -->
+            </div>
+        </div>
+
+        <div class="filters-right">
+            <!-- 정렬 선택 -->
+            <div class="sort-select" id="table-sort-container" style="display: none;">
+                <select id="table-sort-select" class="sort-select-input">
+                    <option value="">정렬 방식</option>
+                    <!-- 동적으로 정렬 옵션이 추가됩니다 -->
+                </select>
+            </div>
+
+            <!-- 컬럼 표시 설정 -->
+            <div class="column-toggle" id="table-column-toggle" style="display: none;">
+                <button type="button" class="column-toggle-btn" id="table-column-toggle-btn" title="컬럼 설정">
+                    <i class="fas fa-columns"></i>
+                </button>
+                <div class="column-dropdown" id="table-column-dropdown">
+                    <div class="dropdown-content">
+                        <!-- 동적으로 컬럼 체크박스가 추가됩니다 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 내보내기 버튼 -->
+            <div class="export-actions" id="table-export-actions" style="display: none;">
+                <button type="button" class="export-btn" id="table-export-btn" title="내보내기">
+                    <i class="fas fa-download"></i>
+                    <span>내보내기</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 테이블 컨테이너 -->
+    <div class="table-container" id="table-container">
+        <div class="table-wrapper">
+            <table class="data-table" id="data-table">
+                <thead id="table-thead">
+                    <!-- 동적으로 헤더가 추가됩니다 -->
+                </thead>
+                <tbody id="table-tbody">
+                    <!-- 동적으로 데이터 행이 추가됩니다 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 로딩 오버레이 -->
+        <div class="table-loading" id="table-loading" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <span class="loading-text">데이터를 불러오는 중...</span>
+            </div>
+        </div>
+
+        <!-- 빈 상태 -->
+        <div class="table-empty" id="table-empty" style="display: none;">
+            <div class="empty-content">
+                <i class="fas fa-inbox empty-icon"></i>
+                <h4 class="empty-title">데이터가 없습니다</h4>
+                <p class="empty-description">표시할 데이터가 없습니다.</p>
+                <button type="button" class="empty-action" id="table-empty-action" style="display: none;">
+                    <i class="fas fa-plus"></i>
+                    <span>데이터 추가</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 테이블 푸터 -->
+    <div class="table-footer" id="table-footer">
+        <!-- 선택된 항목 정보 -->
+        <div class="selected-info" id="table-selected-info" style="display: none;">
+            <span class="selected-count" id="table-selected-count">0</span>개 항목 선택됨
+            <div class="selected-actions" id="table-selected-actions">
+                <!-- 동적으로 선택 액션이 추가됩니다 -->
+            </div>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div class="table-pagination" id="table-pagination">
+            <!-- 페이지네이션 컴포넌트가 삽입됩니다 -->
+        </div>
+    </div>
+
+    <!-- 컬럼 설정 모달 (옵션) -->
+    <div class="table-modal" id="table-column-modal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>컬럼 표시 설정</h4>
+                <button type="button" class="modal-close" id="table-column-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="column-list" id="table-column-list">
+                    <!-- 동적으로 컬럼 체크박스가 추가됩니다 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="table-column-modal-cancel">취소</button>
+                <button type="button" class="btn btn-primary" id="table-column-modal-apply">적용</button>
+            </div>
+        </div>
+    </div>
+</div>

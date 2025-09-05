@@ -1,0 +1,83 @@
+<!-- NameCard 컴포넌트 템플릿 -->
+<div class="wave-name-card" id="wave-name-card">
+    <!-- 아바타 -->
+    <div class="name-card-avatar" id="name-card-avatar">
+        <img src="" alt="" id="avatar-image" style="display: none;">
+        <div class="avatar-fallback" id="avatar-fallback">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="avatar-status" id="avatar-status" style="display: none;">
+            <span class="status-dot"></span>
+        </div>
+    </div>
+
+    <!-- 사용자 정보 -->
+    <div class="name-card-info">
+        <!-- 이름/닉네임 -->
+        <div class="user-name" id="user-name">사용자명</div>
+        
+        <!-- 사용자 ID (옵션) -->
+        <div class="user-id" id="user-id" style="display: none;">@username</div>
+        
+        <!-- 역할/직책 (옵션) -->
+        <div class="user-role" id="user-role" style="display: none;">실무자</div>
+        
+        <!-- 회사/소속 (옵션) -->
+        <div class="user-company" id="user-company" style="display: none;">회사명</div>
+        
+        <!-- 추가 정보 (옵션) -->
+        <div class="user-meta" id="user-meta" style="display: none;">
+            <span class="meta-item" id="user-location">서울, 한국</span>
+            <span class="meta-separator">•</span>
+            <span class="meta-item" id="user-joined">2024년 1월 가입</span>
+        </div>
+    </div>
+
+    <!-- 뱃지 영역 -->
+    <div class="name-card-badges" id="name-card-badges">
+        <!-- 대표 뱃지 -->
+        <div class="primary-badge" id="primary-badge" style="display: none;">
+            <span class="badge-text">실무자</span>
+        </div>
+        
+        <!-- 보조 뱃지들 -->
+        <div class="secondary-badges" id="secondary-badges" style="display: none;">
+            <!-- 동적으로 뱃지가 추가됩니다 -->
+        </div>
+    </div>
+
+    <!-- 액션 버튼 (옵션) -->
+    <div class="name-card-actions" id="name-card-actions" style="display: none;">
+        <button type="button" class="action-btn primary" id="action-primary">
+            <i class="fas fa-plus"></i>
+            <span>팔로우</span>
+        </button>
+        <button type="button" class="action-btn secondary" id="action-secondary">
+            <i class="fas fa-envelope"></i>
+        </button>
+        <button type="button" class="action-btn menu" id="action-menu">
+            <i class="fas fa-ellipsis-h"></i>
+        </button>
+    </div>
+
+    <!-- 통계 정보 (옵션) -->
+    <div class="name-card-stats" id="name-card-stats" style="display: none;">
+        <div class="stat-item" id="stat-posts">
+            <span class="stat-value">0</span>
+            <span class="stat-label">게시물</span>
+        </div>
+        <div class="stat-item" id="stat-followers">
+            <span class="stat-value">0</span>
+            <span class="stat-label">팔로워</span>
+        </div>
+        <div class="stat-item" id="stat-points">
+            <span class="stat-value">0</span>
+            <span class="stat-label">포인트</span>
+        </div>
+    </div>
+
+    <!-- 추가 콘텐츠 (옵션) -->
+    <div class="name-card-content" id="name-card-content" style="display: none;">
+        <div class="content-text" id="content-text">자기소개나 추가 정보가 여기에 표시됩니다.</div>
+    </div>
+</div>

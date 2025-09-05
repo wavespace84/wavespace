@@ -1,0 +1,595 @@
+/**
+ * StickySlideCard 컴포넌트 CSS
+ * 상단 고정 슬라이드 카드 통합 스타일
+ */
+
+.wave-sticky-slide-card {
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+    margin-bottom: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 슬라이드 카드 컨테이너 */
+.slide-card-container {
+    position: relative;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.slide-card-container:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 슬라이드 카드 */
+.slide-card {
+    position: relative;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* 카드 헤더 */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.card-badge i {
+    font-size: 0.75rem;
+    animation: sparkle 2s infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+.card-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    color: #6c757d;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-close:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+/* 카드 콘텐츠 */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 제목 영역 */
+.card-title-section {
+    margin-bottom: 8px;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.card-title a {
+    color: #212529;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.card-title a:hover {
+    color: #007bff;
+}
+
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: #6c757d;
+    flex-wrap: wrap;
+}
+
+.card-author {
+    font-weight: 500;
+    color: #495057;
+}
+
+.card-views {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 설명 영역 */
+.card-description {
+    margin: 8px 0;
+}
+
+.card-description p {
+    font-size: 0.9rem;
+    color: #495057;
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 태그 영역 */
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0;
+}
+
+.card-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: #f8f9fa;
+    color: #495057;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid #dee2e6;
+}
+
+/* 통계 정보 */
+.card-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 0;
+    border-top: 1px solid #f1f3f4;
+    margin-top: 8px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.stat-item i {
+    font-size: 0.8rem;
+}
+
+/* 액션 버튼들 */
+.card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f3f4;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    flex: 1;
+    justify-content: center;
+}
+
+.action-btn.primary {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.action-btn.primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.action-btn.secondary {
+    background: #fff;
+    color: #6c757d;
+    border-color: #dee2e6;
+}
+
+.action-btn.secondary:hover {
+    background: #f8f9fa;
+    color: #495057;
+    border-color: #adb5bd;
+}
+
+/* 슬라이드 인디케이터 */
+.slide-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f3f4;
+}
+
+.slide-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #dee2e6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slide-indicator.active {
+    background: #007bff;
+    transform: scale(1.2);
+}
+
+/* 슬라이드 네비게이션 */
+.slide-navigation {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    pointer-events: none;
+    padding: 0 -10px;
+}
+
+.slide-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #495057;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    pointer-events: auto;
+    backdrop-filter: blur(4px);
+    margin: 0 -6px;
+}
+
+.slide-nav:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: #007bff;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.slide-nav:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.slide-nav.prev {
+    left: -6px;
+}
+
+.slide-nav.next {
+    right: -6px;
+}
+
+/* 자동 슬라이드 제어 */
+.slide-controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+}
+
+.control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #495057;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: #007bff;
+    transform: scale(1.05);
+}
+
+/* 최소화된 상태 */
+.minimized-card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.minimize-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    color: #495057;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.minimize-btn:hover {
+    background: #f8f9fa;
+}
+
+.minimize-btn i {
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+/* 상태별 스타일 */
+.wave-sticky-slide-card.minimized .slide-card-container {
+    display: none;
+}
+
+.wave-sticky-slide-card.minimized .minimized-card {
+    display: block;
+}
+
+.wave-sticky-slide-card.sliding .slide-card {
+    pointer-events: none;
+}
+
+/* 슬라이드 애니메이션 */
+.slide-card.sliding-left {
+    animation: slideLeft 0.5s ease-in-out;
+}
+
+.slide-card.sliding-right {
+    animation: slideRight 0.5s ease-in-out;
+}
+
+@keyframes slideLeft {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-20px); opacity: 0.7; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideRight {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(20px); opacity: 0.7; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+/* 자동 슬라이드 진행 바 (옵션) */
+.slide-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: #007bff;
+    transition: width 0.1s linear;
+    border-radius: 0 1px 0 0;
+}
+
+/* 카드 타입별 스타일 */
+.wave-sticky-slide-card.job-card .card-badge {
+    background: linear-gradient(135deg, #20bf6b, #26de81);
+}
+
+.wave-sticky-slide-card.notice-card .card-badge {
+    background: linear-gradient(135deg, #3742fa, #5352ed);
+}
+
+.wave-sticky-slide-card.event-card .card-badge {
+    background: linear-gradient(135deg, #fd79a8, #e84393);
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+    .wave-sticky-slide-card {
+        top: 10px;
+        margin-bottom: 16px;
+    }
+    
+    .slide-card {
+        padding: 16px;
+    }
+    
+    .card-title {
+        font-size: 1rem;
+    }
+    
+    .card-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        justify-content: center;
+    }
+    
+    .slide-navigation {
+        padding: 0 -8px;
+    }
+    
+    .slide-nav {
+        width: 28px;
+        height: 28px;
+        margin: 0 -4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .slide-card {
+        padding: 12px;
+    }
+    
+    .card-header {
+        margin-bottom: 12px;
+    }
+    
+    .card-badge {
+        padding: 3px 10px;
+        font-size: 0.75rem;
+    }
+    
+    .card-title {
+        font-size: 0.95rem;
+    }
+    
+    .card-meta {
+        font-size: 0.8rem;
+    }
+    
+    .card-description p {
+        font-size: 0.85rem;
+        -webkit-line-clamp: 1;
+    }
+    
+    .card-stats {
+        gap: 12px;
+    }
+    
+    .stat-item {
+        font-size: 0.8rem;
+    }
+}
+
+/* 접근성 */
+.slide-card:focus-within {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.card-title a:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .slide-card-container {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .card-title a {
+        color: #f7fafc;
+    }
+    
+    .card-title a:hover {
+        color: #63b3ed;
+    }
+    
+    .card-meta,
+    .stat-item {
+        color: #a0aec0;
+    }
+    
+    .card-author {
+        color: #cbd5e0;
+    }
+    
+    .card-description p {
+        color: #cbd5e0;
+    }
+    
+    .card-tag {
+        background: #4a5568;
+        color: #e2e8f0;
+        border-color: #718096;
+    }
+    
+    .card-stats {
+        border-color: #4a5568;
+    }
+    
+    .card-actions {
+        border-color: #4a5568;
+    }
+    
+    .action-btn.secondary {
+        background: #2d3748;
+        color: #a0aec0;
+        border-color: #4a5568;
+    }
+    
+    .action-btn.secondary:hover {
+        background: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .slide-indicators,
+    .card-actions {
+        border-color: #4a5568;
+    }
+    
+    .slide-indicator {
+        background: #4a5568;
+    }
+    
+    .minimized-card {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .minimize-btn {
+        color: #cbd5e0;
+    }
+    
+    .minimize-btn:hover {
+        background: #4a5568;
+    }
+}

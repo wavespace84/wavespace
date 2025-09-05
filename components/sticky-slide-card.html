@@ -1,0 +1,103 @@
+<!-- StickySlideCard 컴포넌트 템플릿 -->
+<div class="wave-sticky-slide-card" id="wave-sticky-slide-card">
+    <div class="slide-card-container" id="slide-card-container">
+        <div class="slide-card" id="slide-card">
+            <!-- 카드 헤더 -->
+            <div class="card-header">
+                <div class="card-badge" id="slide-card-badge">
+                    <i class="fas fa-star"></i>
+                    <span id="slide-card-badge-text">상단고정</span>
+                </div>
+                <button type="button" class="card-close" id="slide-card-close" title="닫기">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- 카드 콘텐츠 -->
+            <div class="card-content">
+                <!-- 제목 영역 -->
+                <div class="card-title-section">
+                    <h4 class="card-title" id="slide-card-title">
+                        <a href="#" id="slide-card-link">카드 제목이 여기에 표시됩니다</a>
+                    </h4>
+                    <div class="card-meta">
+                        <span class="card-author" id="slide-card-author">작성자</span>
+                        <span class="card-date" id="slide-card-date">2024.03.15</span>
+                        <span class="card-views" id="slide-card-views">
+                            <i class="fas fa-eye"></i>
+                            <span id="slide-card-view-count">123</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- 설명 영역 (옵션) -->
+                <div class="card-description" id="slide-card-description" style="display: none;">
+                    <p id="slide-card-description-text">카드에 대한 간단한 설명이 여기에 표시됩니다.</p>
+                </div>
+                
+                <!-- 태그 영역 (옵션) -->
+                <div class="card-tags" id="slide-card-tags" style="display: none;">
+                    <!-- 동적으로 태그가 추가됩니다 -->
+                </div>
+                
+                <!-- 통계 정보 (옵션) -->
+                <div class="card-stats" id="slide-card-stats" style="display: none;">
+                    <div class="stat-item">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span id="slide-card-likes">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-comment"></i>
+                        <span id="slide-card-comments">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-download"></i>
+                        <span id="slide-card-downloads">0</span>
+                    </div>
+                </div>
+                
+                <!-- 액션 버튼들 (옵션) -->
+                <div class="card-actions" id="slide-card-actions" style="display: none;">
+                    <button type="button" class="action-btn primary" id="slide-card-primary-action">
+                        <i class="fas fa-arrow-right"></i>
+                        <span>자세히 보기</span>
+                    </button>
+                    <button type="button" class="action-btn secondary" id="slide-card-secondary-action">
+                        <i class="fas fa-bookmark"></i>
+                        <span>북마크</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 슬라이드 인디케이터 (여러 카드가 있을 경우) -->
+            <div class="slide-indicators" id="slide-indicators" style="display: none;">
+                <!-- 동적으로 인디케이터가 추가됩니다 -->
+            </div>
+        </div>
+        
+        <!-- 슬라이드 네비게이션 -->
+        <div class="slide-navigation" id="slide-navigation" style="display: none;">
+            <button type="button" class="slide-nav prev" id="slide-prev" title="이전">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button type="button" class="slide-nav next" id="slide-next" title="다음">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <!-- 자동 슬라이드 제어 -->
+        <div class="slide-controls" id="slide-controls" style="display: none;">
+            <button type="button" class="control-btn play-pause" id="slide-play-pause" title="자동 슬라이드 일시정지">
+                <i class="fas fa-pause"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 최소화된 상태 -->
+    <div class="minimized-card" id="minimized-card" style="display: none;">
+        <button type="button" class="minimize-btn" id="minimize-restore" title="카드 복원">
+            <i class="fas fa-chevron-up"></i>
+            <span class="minimize-text" id="minimize-text">고정 게시물</span>
+        </button>
+    </div>
+</div>

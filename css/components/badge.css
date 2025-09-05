@@ -1,0 +1,574 @@
+/**
+ * Badge 컴포넌트 CSS
+ * 상태/라벨 표시용 뱃지
+ */
+
+.wave-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    border-radius: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+/* 기본 스타일 */
+.wave-badge {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* 색상 변형 */
+.wave-badge.primary {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.wave-badge.secondary {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.wave-badge.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.wave-badge.warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.wave-badge.error,
+.wave-badge.danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.wave-badge.info {
+    background: #e0f2fe;
+    color: #0e7490;
+}
+
+.wave-badge.purple {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.wave-badge.pink {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+.wave-badge.indigo {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+.wave-badge.teal {
+    background: #ccfbf1;
+    color: #0d9488;
+}
+
+.wave-badge.orange {
+    background: #fed7aa;
+    color: #ea580c;
+}
+
+.wave-badge.cyan {
+    background: #cffafe;
+    color: #0891b2;
+}
+
+.wave-badge.lime {
+    background: #ecfccb;
+    color: #65a30d;
+}
+
+.wave-badge.amber {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+/* 솔리드 변형 */
+.wave-badge.solid {
+    color: #fff;
+}
+
+.wave-badge.primary.solid {
+    background: #2563eb;
+}
+
+.wave-badge.secondary.solid {
+    background: #64748b;
+}
+
+.wave-badge.success.solid {
+    background: #16a34a;
+}
+
+.wave-badge.warning.solid {
+    background: #d97706;
+}
+
+.wave-badge.error.solid,
+.wave-badge.danger.solid {
+    background: #dc2626;
+}
+
+.wave-badge.info.solid {
+    background: #0891b2;
+}
+
+.wave-badge.purple.solid {
+    background: #7c3aed;
+}
+
+.wave-badge.pink.solid {
+    background: #db2777;
+}
+
+.wave-badge.indigo.solid {
+    background: #4338ca;
+}
+
+.wave-badge.teal.solid {
+    background: #0d9488;
+}
+
+.wave-badge.orange.solid {
+    background: #ea580c;
+}
+
+.wave-badge.cyan.solid {
+    background: #0891b2;
+}
+
+.wave-badge.lime.solid {
+    background: #65a30d;
+}
+
+.wave-badge.amber.solid {
+    background: #d97706;
+}
+
+/* 아웃라인 변형 */
+.wave-badge.outline {
+    background: transparent;
+    border: 1px solid;
+}
+
+.wave-badge.outline {
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.wave-badge.primary.outline {
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.wave-badge.secondary.outline {
+    border-color: #64748b;
+    color: #64748b;
+}
+
+.wave-badge.success.outline {
+    border-color: #16a34a;
+    color: #16a34a;
+}
+
+.wave-badge.warning.outline {
+    border-color: #d97706;
+    color: #d97706;
+}
+
+.wave-badge.error.outline,
+.wave-badge.danger.outline {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.wave-badge.info.outline {
+    border-color: #0891b2;
+    color: #0891b2;
+}
+
+.wave-badge.purple.outline {
+    border-color: #7c3aed;
+    color: #7c3aed;
+}
+
+.wave-badge.pink.outline {
+    border-color: #db2777;
+    color: #db2777;
+}
+
+.wave-badge.indigo.outline {
+    border-color: #4338ca;
+    color: #4338ca;
+}
+
+.wave-badge.teal.outline {
+    border-color: #0d9488;
+    color: #0d9488;
+}
+
+.wave-badge.orange.outline {
+    border-color: #ea580c;
+    color: #ea580c;
+}
+
+.wave-badge.cyan.outline {
+    border-color: #0891b2;
+    color: #0891b2;
+}
+
+.wave-badge.lime.outline {
+    border-color: #65a30d;
+    color: #65a30d;
+}
+
+.wave-badge.amber.outline {
+    border-color: #d97706;
+    color: #d97706;
+}
+
+/* 크기 변형 */
+.wave-badge.small {
+    padding: 2px 6px;
+    font-size: 0.6875rem;
+}
+
+.wave-badge.large {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+
+.wave-badge.extra-large {
+    padding: 8px 16px;
+    font-size: 1rem;
+}
+
+/* 모양 변형 */
+.wave-badge.rounded {
+    border-radius: 9999px;
+}
+
+.wave-badge.square {
+    border-radius: 0;
+}
+
+/* 도트 뱃지 (아이콘만) */
+.wave-badge.dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border-radius: 50%;
+    min-width: 8px;
+}
+
+.wave-badge.dot.small {
+    width: 6px;
+    height: 6px;
+    min-width: 6px;
+}
+
+.wave-badge.dot.large {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+}
+
+.wave-badge.dot .badge-text,
+.wave-badge.dot .badge-icon,
+.wave-badge.dot .badge-count {
+    display: none;
+}
+
+/* 숫자 뱃지 */
+.wave-badge.numeric {
+    min-width: 20px;
+    height: 20px;
+    padding: 0;
+    border-radius: 10px;
+    justify-content: center;
+}
+
+.wave-badge.numeric.small {
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    font-size: 0.625rem;
+}
+
+.wave-badge.numeric.large {
+    min-width: 24px;
+    height: 24px;
+    border-radius: 12px;
+}
+
+.wave-badge.numeric .badge-icon {
+    display: none;
+}
+
+/* 닫기 버튼이 있는 뱃지 */
+.wave-badge.closable {
+    padding-right: 4px;
+}
+
+.badge-close {
+    background: none;
+    border: none;
+    color: currentColor;
+    cursor: pointer;
+    padding: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.625rem;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    margin-left: 2px;
+}
+
+.badge-close:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.wave-badge.solid .badge-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 아이콘 */
+.badge-icon {
+    font-size: 0.625rem;
+    line-height: 1;
+}
+
+.wave-badge.small .badge-icon {
+    font-size: 0.5625rem;
+}
+
+.wave-badge.large .badge-icon {
+    font-size: 0.75rem;
+}
+
+/* 카운트 */
+.badge-count {
+    font-weight: 600;
+    margin-left: 2px;
+}
+
+/* 인터랙티브 뱃지 */
+.wave-badge.interactive {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wave-badge.interactive:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wave-badge.interactive:active {
+    transform: translateY(0);
+}
+
+/* 펄스 애니메이션 */
+.wave-badge.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* 글로우 효과 */
+.wave-badge.glow {
+    box-shadow: 0 0 8px currentColor;
+    opacity: 0.9;
+}
+
+/* 그라데이션 */
+.wave-badge.gradient.primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #fff;
+}
+
+.wave-badge.gradient.success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+}
+
+.wave-badge.gradient.warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+}
+
+.wave-badge.gradient.error,
+.wave-badge.gradient.danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+}
+
+.wave-badge.gradient.purple {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: #fff;
+}
+
+.wave-badge.gradient.pink {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    color: #fff;
+}
+
+/* 상태별 아이콘 프리셋 */
+.wave-badge.online::before {
+    content: "●";
+    color: #10b981;
+    margin-right: 4px;
+}
+
+.wave-badge.offline::before {
+    content: "●";
+    color: #ef4444;
+    margin-right: 4px;
+}
+
+.wave-badge.away::before {
+    content: "●";
+    color: #f59e0b;
+    margin-right: 4px;
+}
+
+.wave-badge.busy::before {
+    content: "●";
+    color: #ef4444;
+    margin-right: 4px;
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .wave-badge {
+        background: #374151;
+        color: #d1d5db;
+    }
+    
+    .wave-badge.primary {
+        background: #1e3a8a;
+        color: #93c5fd;
+    }
+    
+    .wave-badge.secondary {
+        background: #475569;
+        color: #cbd5e1;
+    }
+    
+    .wave-badge.success {
+        background: #065f46;
+        color: #6ee7b7;
+    }
+    
+    .wave-badge.warning {
+        background: #92400e;
+        color: #fbbf24;
+    }
+    
+    .wave-badge.error,
+    .wave-badge.danger {
+        background: #991b1b;
+        color: #fca5a5;
+    }
+    
+    .wave-badge.info {
+        background: #0e7490;
+        color: #67e8f9;
+    }
+    
+    .wave-badge.purple {
+        background: #5b21b6;
+        color: #c4b5fd;
+    }
+    
+    .wave-badge.pink {
+        background: #be185d;
+        color: #f9a8d4;
+    }
+    
+    .wave-badge.indigo {
+        background: #3730a3;
+        color: #a5b4fc;
+    }
+    
+    .wave-badge.teal {
+        background: #0f766e;
+        color: #5eead4;
+    }
+    
+    .wave-badge.orange {
+        background: #c2410c;
+        color: #fdba74;
+    }
+    
+    .wave-badge.cyan {
+        background: #0e7490;
+        color: #67e8f9;
+    }
+    
+    .wave-badge.lime {
+        background: #4d7c0f;
+        color: #bef264;
+    }
+    
+    .wave-badge.amber {
+        background: #b45309;
+        color: #fbbf24;
+    }
+    
+    .badge-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* 반응형 대응 */
+@media (max-width: 640px) {
+    .wave-badge {
+        font-size: 0.6875rem;
+        padding: 3px 6px;
+    }
+    
+    .wave-badge.small {
+        font-size: 0.625rem;
+        padding: 2px 4px;
+    }
+    
+    .wave-badge.large {
+        font-size: 0.8125rem;
+        padding: 5px 10px;
+    }
+}
+
+/* 접근성 */
+.wave-badge.interactive:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.badge-close:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}

@@ -1,0 +1,143 @@
+<!-- FormInput 컴포넌트 템플릿 -->
+<div class="wave-form-input" id="wave-form-input">
+    <!-- 라벨 (옵션) -->
+    <label class="input-label" id="input-label" style="display: none;">
+        <span class="label-text" id="input-label-text">라벨</span>
+        <span class="label-required" id="input-label-required" style="display: none;">*</span>
+        <span class="label-optional" id="input-label-optional" style="display: none;">(선택)</span>
+    </label>
+
+    <!-- 입력 컨테이너 -->
+    <div class="input-container" id="input-container">
+        <!-- 기본 텍스트 입력 -->
+        <input 
+            type="text" 
+            class="form-input" 
+            id="form-input" 
+            placeholder="입력하세요"
+        >
+
+        <!-- 텍스트영역 -->
+        <textarea 
+            class="form-textarea" 
+            id="form-textarea" 
+            placeholder="내용을 입력하세요"
+            style="display: none;"
+        ></textarea>
+
+        <!-- 선택 박스 -->
+        <select 
+            class="form-select" 
+            id="form-select" 
+            style="display: none;"
+        >
+            <option value="">선택하세요</option>
+            <!-- 동적으로 옵션이 추가됩니다 -->
+        </select>
+
+        <!-- 체크박스/라디오 그룹 -->
+        <div class="input-group" id="input-group" style="display: none;">
+            <!-- 동적으로 체크박스/라디오 버튼이 추가됩니다 -->
+        </div>
+
+        <!-- 파일 입력 -->
+        <div class="file-input-wrapper" id="file-input-wrapper" style="display: none;">
+            <input 
+                type="file" 
+                class="form-file-input" 
+                id="form-file-input"
+                style="display: none;"
+            >
+            <div class="file-input-display" id="file-input-display">
+                <div class="file-input-content">
+                    <i class="fas fa-cloud-upload-alt file-icon"></i>
+                    <span class="file-text">파일을 선택하거나 드래그하세요</span>
+                    <button type="button" class="file-browse-btn">파일 선택</button>
+                </div>
+            </div>
+            <div class="file-list" id="file-list" style="display: none;">
+                <!-- 선택된 파일 목록이 표시됩니다 -->
+            </div>
+        </div>
+
+        <!-- 입력 아이콘 (왼쪽) -->
+        <div class="input-icon-left" id="input-icon-left" style="display: none;">
+            <i class="fas fa-user"></i>
+        </div>
+
+        <!-- 입력 아이콘 (오른쪽) -->
+        <div class="input-icon-right" id="input-icon-right" style="display: none;">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <!-- 클리어 버튼 -->
+        <button type="button" class="input-clear" id="input-clear" style="display: none;">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- 비밀번호 표시/숨김 토글 -->
+        <button type="button" class="password-toggle" id="password-toggle" style="display: none;">
+            <i class="fas fa-eye"></i>
+        </button>
+
+        <!-- 로딩 스피너 -->
+        <div class="input-loading" id="input-loading" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    </div>
+
+    <!-- 도움말 텍스트 (옵션) -->
+    <div class="input-help" id="input-help" style="display: none;">
+        <span class="help-text" id="input-help-text">도움말 텍스트</span>
+    </div>
+
+    <!-- 에러 메시지 (옵션) -->
+    <div class="input-error" id="input-error" style="display: none;">
+        <i class="fas fa-exclamation-triangle error-icon"></i>
+        <span class="error-text" id="input-error-text">에러 메시지</span>
+    </div>
+
+    <!-- 성공 메시지 (옵션) -->
+    <div class="input-success" id="input-success" style="display: none;">
+        <i class="fas fa-check-circle success-icon"></i>
+        <span class="success-text" id="input-success-text">성공 메시지</span>
+    </div>
+
+    <!-- 카운터 (옵션) -->
+    <div class="input-counter" id="input-counter" style="display: none;">
+        <span class="counter-text" id="input-counter-text">0 / 100</span>
+    </div>
+
+    <!-- 태그 입력용 태그 리스트 -->
+    <div class="tag-list" id="tag-list" style="display: none;">
+        <!-- 동적으로 태그가 추가됩니다 -->
+    </div>
+
+    <!-- 자동완성 드롭다운 -->
+    <div class="autocomplete-dropdown" id="autocomplete-dropdown" style="display: none;">
+        <div class="autocomplete-list" id="autocomplete-list">
+            <!-- 동적으로 자동완성 아이템이 추가됩니다 -->
+        </div>
+    </div>
+
+    <!-- 날짜/시간 선택기 커스텀 UI (옵션) -->
+    <div class="datetime-picker" id="datetime-picker" style="display: none;">
+        <div class="datetime-header">
+            <button type="button" class="datetime-prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="datetime-title">2025년 9월</span>
+            <button type="button" class="datetime-next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="datetime-calendar">
+            <!-- 동적으로 달력이 생성됩니다 -->
+        </div>
+        <div class="datetime-time" id="datetime-time" style="display: none;">
+            <input type="range" class="time-slider" id="hour-slider" min="0" max="23" value="12">
+            <span class="time-display" id="time-display">12:00</span>
+            <input type="range" class="time-slider" id="minute-slider" min="0" max="59" value="0">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,190 @@
+<!-- DownloadModal 컴포넌트 템플릿 -->
+<div class="wave-download-modal" id="wave-download-modal">
+    <!-- 모달 백드롭 -->
+    <div class="modal-backdrop" id="download-modal-backdrop"></div>
+    
+    <!-- 모달 컨테이너 -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- 모달 헤더 -->
+            <div class="modal-header">
+                <h4 class="modal-title" id="download-modal-title">파일 다운로드</h4>
+                <button type="button" class="modal-close" id="download-modal-close" aria-label="닫기">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- 모달 본문 -->
+            <div class="modal-body">
+                <!-- 파일 정보 -->
+                <div class="download-file-info" id="download-file-info">
+                    <div class="file-preview">
+                        <div class="file-icon-large">
+                            <i class="fas fa-file" id="download-file-icon"></i>
+                        </div>
+                        <div class="file-details">
+                            <h5 class="file-title" id="download-file-title">파일명.pdf</h5>
+                            <div class="file-meta">
+                                <span class="file-size" id="download-file-size">2.5 MB</span>
+                                <span class="file-type" id="download-file-type">PDF 문서</span>
+                                <span class="file-date" id="download-file-date">2024.03.15</span>
+                            </div>
+                            <div class="file-description" id="download-file-description">
+                                파일에 대한 상세 설명이 여기에 표시됩니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 포인트 정보 -->
+                <div class="download-point-info" id="download-point-info">
+                    <div class="point-section">
+                        <div class="point-header">
+                            <div class="point-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="point-details">
+                                <h6 class="point-title">다운로드 비용</h6>
+                                <div class="point-amount">
+                                    <span class="required-points" id="download-required-points">50</span>
+                                    <span class="point-unit">포인트</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="point-balance">
+                            <div class="balance-info">
+                                <span class="balance-label">보유 포인트</span>
+                                <span class="balance-amount">
+                                    <span id="download-user-points">150</span>
+                                    <span class="point-unit">포인트</span>
+                                </span>
+                            </div>
+                            <div class="balance-after">
+                                <span class="after-label">다운로드 후</span>
+                                <span class="after-amount">
+                                    <span id="download-remaining-points">100</span>
+                                    <span class="point-unit">포인트</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 무료 다운로드 안내 -->
+                <div class="download-free-info" id="download-free-info" style="display: none;">
+                    <div class="free-section">
+                        <div class="free-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="free-text">
+                            <h6>무료 다운로드</h6>
+                            <p>이 파일은 무료로 다운로드할 수 있습니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 권한 부족 안내 -->
+                <div class="download-permission-info" id="download-permission-info" style="display: none;">
+                    <div class="permission-section">
+                        <div class="permission-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="permission-text">
+                            <h6>다운로드 권한 없음</h6>
+                            <p id="download-permission-message">이 파일을 다운로드하려면 실무자 인증이 필요합니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 포인트 부족 안내 -->
+                <div class="download-insufficient-info" id="download-insufficient-info" style="display: none;">
+                    <div class="insufficient-section">
+                        <div class="insufficient-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="insufficient-text">
+                            <h6>포인트 부족</h6>
+                            <p>다운로드에 필요한 포인트가 부족합니다.</p>
+                            <div class="charge-suggestion">
+                                <span>필요한 포인트: </span>
+                                <span class="needed-points" id="download-needed-points">50</span>
+                                <span class="point-unit">포인트</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 업로더 정보 -->
+                <div class="download-uploader-info" id="download-uploader-info">
+                    <div class="uploader-section">
+                        <div class="uploader-header">
+                            <div class="uploader-avatar">
+                                <img src="" alt="업로더" id="download-uploader-avatar" />
+                                <div class="uploader-avatar-fallback">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <div class="uploader-details">
+                                <div class="uploader-name" id="download-uploader-name">업로더명</div>
+                                <div class="uploader-badge" id="download-uploader-badge">실무자</div>
+                            </div>
+                        </div>
+                        <div class="uploader-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">업로드</span>
+                                <span class="stat-value" id="download-uploader-uploads">25</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">다운로드</span>
+                                <span class="stat-value" id="download-uploader-downloads">150</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">평점</span>
+                                <span class="stat-value" id="download-uploader-rating">4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 다운로드 진행률 -->
+                <div class="download-progress" id="download-progress" style="display: none;">
+                    <div class="progress-header">
+                        <span class="progress-label">다운로드 중...</span>
+                        <span class="progress-percent" id="download-progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="download-progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-details" id="download-progress-details">
+                        파일을 다운로드하고 있습니다...
+                    </div>
+                </div>
+                
+                <!-- 이용약관 동의 -->
+                <div class="download-agreement" id="download-agreement">
+                    <label class="agreement-checkbox">
+                        <input type="checkbox" id="download-terms-agree" />
+                        <span class="checkmark"></span>
+                        <span class="agreement-text">
+                            <a href="/policy.html" target="_blank">다운로드 이용약관</a>에 동의합니다
+                        </span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- 모달 푸터 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="download-cancel-btn">취소</button>
+                <button type="button" class="btn btn-primary" id="download-confirm-btn" disabled>
+                    <i class="fas fa-download"></i>
+                    <span id="download-btn-text">다운로드</span>
+                </button>
+                <button type="button" class="btn btn-warning" id="download-charge-btn" style="display: none;">
+                    <i class="fas fa-credit-card"></i>
+                    <span>포인트 충전</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

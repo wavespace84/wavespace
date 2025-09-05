@@ -1,0 +1,147 @@
+<!-- Card 컴포넌트 템플릿 -->
+<div class="wave-card" id="wave-card">
+    <!-- 카드 이미지/썸네일 (옵션) -->
+    <div class="card-image" id="card-image" style="display: none;">
+        <img src="" alt="" id="card-image-img" />
+        <div class="card-image-overlay" id="card-image-overlay" style="display: none;">
+            <div class="overlay-content" id="card-overlay-content">
+                <!-- 동적으로 오버레이 콘텐츠가 추가됩니다 -->
+            </div>
+        </div>
+        <div class="card-badge" id="card-badge" style="display: none;">
+            <span id="card-badge-text">New</span>
+        </div>
+    </div>
+    
+    <!-- 카드 헤더 (옵션) -->
+    <div class="card-header" id="card-header" style="display: none;">
+        <div class="card-header-content">
+            <div class="card-avatar" id="card-avatar" style="display: none;">
+                <img src="" alt="" id="card-avatar-img" />
+                <div class="avatar-fallback" id="card-avatar-fallback">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <div class="card-header-info">
+                <h6 class="card-subtitle" id="card-subtitle">카드 부제목</h6>
+                <div class="card-meta" id="card-meta">
+                    <span class="card-date" id="card-date">2024.03.15</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-actions" id="card-header-actions" style="display: none;">
+            <button type="button" class="card-action-btn" id="card-menu-btn" title="더보기">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 카드 본문 -->
+    <div class="card-body">
+        <!-- 카드 제목 -->
+        <h5 class="card-title" id="card-title">
+            <a href="#" id="card-title-link">카드 제목</a>
+        </h5>
+        
+        <!-- 카드 설명 -->
+        <div class="card-description" id="card-description">
+            <p id="card-description-text">카드에 대한 설명이 여기에 표시됩니다.</p>
+        </div>
+        
+        <!-- 카드 태그 (옵션) -->
+        <div class="card-tags" id="card-tags" style="display: none;">
+            <!-- 동적으로 태그가 추가됩니다 -->
+        </div>
+        
+        <!-- 카드 통계 (옵션) -->
+        <div class="card-stats" id="card-stats" style="display: none;">
+            <div class="stat-group">
+                <div class="stat-item" id="card-views-stat" style="display: none;">
+                    <i class="fas fa-eye"></i>
+                    <span id="card-views-count">0</span>
+                </div>
+                <div class="stat-item" id="card-likes-stat" style="display: none;">
+                    <i class="fas fa-heart"></i>
+                    <span id="card-likes-count">0</span>
+                </div>
+                <div class="stat-item" id="card-comments-stat" style="display: none;">
+                    <i class="fas fa-comment"></i>
+                    <span id="card-comments-count">0</span>
+                </div>
+                <div class="stat-item" id="card-downloads-stat" style="display: none;">
+                    <i class="fas fa-download"></i>
+                    <span id="card-downloads-count">0</span>
+                </div>
+                <div class="stat-item" id="card-shares-stat" style="display: none;">
+                    <i class="fas fa-share"></i>
+                    <span id="card-shares-count">0</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 진행률 표시 (옵션) -->
+        <div class="card-progress" id="card-progress" style="display: none;">
+            <div class="progress-info">
+                <span class="progress-label" id="card-progress-label">진행률</span>
+                <span class="progress-value" id="card-progress-value">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="card-progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <!-- 가격 정보 (옵션) -->
+        <div class="card-price" id="card-price" style="display: none;">
+            <div class="price-current" id="card-current-price">
+                <span class="price-amount" id="card-price-amount">0</span>
+                <span class="price-currency" id="card-price-currency">원</span>
+            </div>
+            <div class="price-original" id="card-original-price" style="display: none;">
+                <span class="price-amount" id="card-original-amount">0</span>
+                <span class="price-currency">원</span>
+            </div>
+            <div class="price-discount" id="card-discount" style="display: none;">
+                <span id="card-discount-rate">0</span>% 할인
+            </div>
+        </div>
+        
+        <!-- 사용자 정보 (옵션) -->
+        <div class="card-user" id="card-user" style="display: none;">
+            <div class="user-avatar">
+                <img src="" alt="" id="card-user-avatar" />
+                <div class="user-avatar-fallback">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-name" id="card-user-name">사용자명</div>
+                <div class="user-role" id="card-user-role">역할</div>
+            </div>
+            <div class="user-badge" id="card-user-badge" style="display: none;">
+                <span id="card-user-badge-text">실무자</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 카드 푸터 (옵션) -->
+    <div class="card-footer" id="card-footer" style="display: none;">
+        <div class="card-footer-actions">
+            <button type="button" class="footer-action primary" id="card-primary-action">
+                <i class="fas fa-arrow-right"></i>
+                <span>자세히 보기</span>
+            </button>
+            <button type="button" class="footer-action secondary" id="card-secondary-action">
+                <i class="fas fa-bookmark"></i>
+                <span>북마크</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 카드 액션 메뉴 드롭다운 (옵션) -->
+    <div class="card-dropdown" id="card-dropdown" style="display: none;">
+        <div class="dropdown-backdrop" id="card-dropdown-backdrop"></div>
+        <div class="dropdown-menu" id="card-dropdown-menu">
+            <!-- 동적으로 메뉴 아이템이 추가됩니다 -->
+        </div>
+    </div>
+</div>

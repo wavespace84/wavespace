@@ -1,0 +1,88 @@
+<!-- AddressSearch 컴포넌트 템플릿 -->
+<div class="wave-address-search" id="wave-address-search">
+    <!-- 주소 검색 컨테이너 -->
+    <div class="address-search-container">
+        <!-- 검색 입력 영역 -->
+        <div class="address-search-input-group">
+            <label for="address-search-input" class="address-search-label" id="address-search-label">
+                주소 검색
+            </label>
+            <div class="address-input-wrapper">
+                <input 
+                    type="text" 
+                    id="address-search-input" 
+                    class="address-search-input"
+                    placeholder="도로명 주소나 지번 주소를 입력하세요"
+                    autocomplete="off"
+                />
+                <button type="button" class="address-search-btn" id="address-search-btn">
+                    <i class="fas fa-search"></i>
+                    <span>검색</span>
+                </button>
+            </div>
+            <div class="address-search-help" id="address-search-help" style="display: none;">
+                예시: 서울특별시 강남구 테헤란로 152 또는 강남구 역삼동 737
+            </div>
+        </div>
+
+        <!-- 검색 결과 영역 -->
+        <div class="address-search-results" id="address-search-results" style="display: none;">
+            <div class="results-header">
+                <h4>검색 결과</h4>
+                <span class="results-count" id="results-count">0건</span>
+            </div>
+            <div class="results-list" id="results-list">
+                <!-- 검색 결과가 동적으로 여기에 추가됩니다 -->
+            </div>
+        </div>
+
+        <!-- 선택된 주소 표시 영역 -->
+        <div class="address-search-selected" id="address-search-selected" style="display: none;">
+            <div class="selected-header">
+                <h4>선택된 주소</h4>
+                <button type="button" class="selected-clear-btn" id="selected-clear-btn">
+                    <i class="fas fa-times"></i>
+                    <span>다시 선택</span>
+                </button>
+            </div>
+            <div class="selected-address-info">
+                <div class="selected-main-address" id="selected-main-address">
+                    선택된 주소가 여기에 표시됩니다
+                </div>
+                <div class="selected-detail-address">
+                    <label for="detail-address-input">상세주소 (선택)</label>
+                    <input 
+                        type="text" 
+                        id="detail-address-input" 
+                        placeholder="동, 호수 등 상세주소를 입력하세요"
+                        maxlength="100"
+                    />
+                </div>
+                <div class="selected-address-data" id="selected-address-data">
+                    <!-- 숨겨진 주소 데이터가 저장됩니다 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 로딩 상태 -->
+        <div class="address-search-loading" id="address-search-loading" style="display: none;">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <span>주소를 검색하는 중...</span>
+        </div>
+
+        <!-- 에러 상태 -->
+        <div class="address-search-error" id="address-search-error" style="display: none;">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="error-message" id="error-message">
+                주소 검색 중 오류가 발생했습니다.
+            </div>
+            <button type="button" class="error-retry-btn" id="error-retry-btn">
+                다시 시도
+            </button>
+        </div>
+    </div>
+</div>

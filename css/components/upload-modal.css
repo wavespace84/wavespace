@@ -1,0 +1,637 @@
+/**
+ * UploadModal 컴포넌트 CSS
+ * 파일 업로드 모달 통합 스타일
+ */
+
+.wave-upload-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.wave-upload-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 백드롭 */
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+/* 모달 컨테이너 */
+.modal-dialog {
+    position: relative;
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.95) translateY(-20px);
+    transition: transform 0.3s ease;
+    z-index: 1051;
+}
+
+.wave-upload-modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 모달 헤더 */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px 0;
+    border-bottom: 1px solid #dee2e6;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    color: #495057;
+    background: #f8f9fa;
+}
+
+/* 모달 본문 */
+.modal-body {
+    flex: 1;
+    padding: 24px 28px;
+    overflow-y: auto;
+}
+
+/* 업로드 필드 공통 */
+.upload-field {
+    margin-bottom: 24px;
+}
+
+.upload-label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.upload-input,
+.upload-textarea,
+.upload-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.upload-input:focus,
+.upload-textarea:focus,
+.upload-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.upload-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.upload-field-help {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 6px;
+}
+
+.upload-field-counter {
+    font-size: 0.85rem;
+    color: #6c757d;
+    text-align: right;
+    margin-top: 6px;
+}
+
+/* 파일 업로드 섹션 */
+.upload-file-section {
+    margin-bottom: 32px;
+}
+
+.upload-file-label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 12px;
+}
+
+/* 드래그앤드롭 영역 */
+.upload-dropzone {
+    border: 2px dashed #ced4da;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-dropzone:hover {
+    border-color: #007bff;
+    background: #e3f2fd;
+}
+
+.upload-dropzone.dragover {
+    border-color: #007bff;
+    background: #e3f2fd;
+    transform: scale(1.02);
+}
+
+.dropzone-content {
+    pointer-events: none;
+}
+
+.dropzone-icon {
+    margin-bottom: 16px;
+}
+
+.dropzone-icon i {
+    font-size: 3rem;
+    color: #6c757d;
+    opacity: 0.7;
+}
+
+.dropzone-main {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+    margin: 0 0 8px 0;
+}
+
+.dropzone-sub,
+.dropzone-size {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 4px 0;
+}
+
+/* 파일 목록 */
+.upload-file-list {
+    margin-top: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e3f2fd;
+    border-radius: 6px;
+}
+
+.file-icon i {
+    color: #007bff;
+    font-size: 1.1rem;
+}
+
+.file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #212529;
+    margin-bottom: 4px;
+    word-break: break-all;
+}
+
+.file-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.file-remove {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.file-remove:hover {
+    background: #f8d7da;
+}
+
+/* 태그 입력 */
+.upload-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.upload-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: #e3f2fd;
+    color: #0d47a1;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.tag-remove {
+    background: none;
+    border: none;
+    color: #0d47a1;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.8rem;
+}
+
+.tag-remove:hover {
+    color: #dc3545;
+}
+
+/* 라디오 그룹 */
+.upload-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.upload-radio {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.upload-radio:hover {
+    border-color: #007bff;
+    background: #f8f9fa;
+}
+
+.upload-radio input[type="radio"] {
+    display: none;
+}
+
+.radio-mark {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ced4da;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.upload-radio input[type="radio"]:checked + .radio-mark {
+    border-color: #007bff;
+    background: #007bff;
+}
+
+.upload-radio input[type="radio"]:checked + .radio-mark::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.radio-text {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 4px;
+}
+
+.upload-radio small {
+    color: #6c757d;
+    font-size: 0.85rem;
+    line-height: 1.3;
+}
+
+/* 포인트 입력 그룹 */
+.upload-points-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.upload-points-group .upload-input {
+    width: 120px;
+    margin: 0;
+}
+
+.points-unit {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* 업로드 진행률 */
+.upload-progress {
+    margin-top: 24px;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.progress-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.progress-percent {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-details {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* 모달 푸터 */
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 20px 28px;
+    border-top: 1px solid #dee2e6;
+    background: #f8f9fa;
+    flex-shrink: 0;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    border-color: #545b62;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+    .modal-dialog {
+        width: 95%;
+        max-width: none;
+        max-height: 95vh;
+        margin: 8px;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .modal-title {
+        font-size: 1.25rem;
+    }
+    
+    .upload-dropzone {
+        padding: 32px 16px;
+    }
+    
+    .dropzone-icon i {
+        font-size: 2.5rem;
+    }
+    
+    .upload-radio-group {
+        gap: 8px;
+    }
+    
+    .upload-radio {
+        padding: 10px;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-dialog {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    .upload-dropzone {
+        padding: 24px 12px;
+    }
+    
+    .dropzone-main {
+        font-size: 1rem;
+    }
+    
+    .file-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* 애니메이션 */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.wave-upload-modal.show .modal-dialog {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .modal-dialog {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .modal-header {
+        border-color: #4a5568;
+    }
+    
+    .modal-title {
+        color: #f7fafc;
+    }
+    
+    .upload-input,
+    .upload-textarea,
+    .upload-select {
+        background: #1a202c;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .upload-dropzone {
+        background: #3c4757;
+        border-color: #4a5568;
+    }
+    
+    .upload-dropzone:hover {
+        background: #4a5568;
+    }
+    
+    .upload-file-list {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .modal-footer {
+        background: #3c4757;
+        border-color: #4a5568;
+    }
+}

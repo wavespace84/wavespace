@@ -1,0 +1,57 @@
+<!-- TabNavigation 컴포넌트 템플릿 -->
+<div class="wave-tab-navigation" id="wave-tab-navigation">
+    <div class="tab-container" id="tab-container">
+        <!-- 탭 헤더 -->
+        <div class="tab-header" role="tablist">
+            <div class="tab-list" id="tab-list">
+                <!-- 동적으로 탭이 추가됩니다 -->
+            </div>
+            
+            <!-- 탭 스크롤 버튼 (필요한 경우) -->
+            <div class="tab-scroll-controls" id="tab-scroll-controls" style="display: none;">
+                <button type="button" class="tab-scroll-btn left" id="tab-scroll-left" title="왼쪽으로 스크롤">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button type="button" class="tab-scroll-btn right" id="tab-scroll-right" title="오른쪽으로 스크롤">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- 탭 메뉴 버튼 (모바일) -->
+            <div class="tab-menu-toggle" id="tab-menu-toggle" style="display: none;">
+                <button type="button" class="menu-toggle-btn" id="menu-toggle-btn" title="탭 메뉴">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 탭 콘텐츠 영역 -->
+        <div class="tab-content" id="tab-content">
+            <!-- 동적으로 콘텐츠가 추가됩니다 -->
+        </div>
+        
+        <!-- 로딩 상태 -->
+        <div class="tab-loading" id="tab-loading" style="display: none;">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <div class="loading-text">콘텐츠를 불러오고 있습니다...</div>
+        </div>
+    </div>
+    
+    <!-- 모바일 탭 드롭다운 -->
+    <div class="tab-dropdown" id="tab-dropdown" style="display: none;">
+        <div class="dropdown-backdrop" id="dropdown-backdrop"></div>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <div class="dropdown-header">
+                <h6>탭 선택</h6>
+                <button type="button" class="dropdown-close" id="dropdown-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="dropdown-items" id="dropdown-items">
+                <!-- 동적으로 드롭다운 아이템이 추가됩니다 -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,546 @@
+/**
+ * NameCard 컴포넌트 CSS
+ * 사용자 프로필 카드 (아바타, 아이디, 대표뱃지)
+ */
+
+.wave-name-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: all 0.2s ease;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.wave-name-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: #d1d5db;
+}
+
+/* 아바타 영역 */
+.name-card-avatar {
+    position: relative;
+    flex-shrink: 0;
+}
+
+#avatar-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #f3f4f6;
+    transition: border-color 0.2s ease;
+}
+
+.avatar-fallback {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-size: 1.25rem;
+    border: 2px solid #e5e7eb;
+}
+
+.avatar-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+}
+
+.avatar-status.offline .status-dot {
+    background: #ef4444;
+}
+
+.avatar-status.away .status-dot {
+    background: #f59e0b;
+}
+
+.avatar-status.busy .status-dot {
+    background: #ef4444;
+    animation: pulse 2s infinite;
+}
+
+/* 사용자 정보 영역 */
+.name-card-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.user-id {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.3;
+    word-break: break-all;
+}
+
+.user-role {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.user-company {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.user-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    line-height: 1.3;
+}
+
+.meta-separator {
+    font-size: 0.75rem;
+    color: #d1d5db;
+}
+
+/* 뱃지 영역 */
+.name-card-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.primary-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.primary-badge.실무자 {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.primary-badge.관리자 {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.primary-badge.VIP {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.secondary-badges {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.secondary-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 8px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* 액션 버튼 영역 */
+.name-card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    color: #374151;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.action-btn.primary {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+.action-btn.primary:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.action-btn.secondary {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.action-btn i {
+    font-size: 0.75rem;
+}
+
+/* 통계 정보 영역 */
+.name-card-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    line-height: 1;
+}
+
+/* 추가 콘텐츠 영역 */
+.name-card-content {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.content-text {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* 카드 변형 */
+.wave-name-card.compact {
+    padding: 12px;
+    gap: 8px;
+}
+
+.wave-name-card.compact #avatar-image,
+.wave-name-card.compact .avatar-fallback {
+    width: 36px;
+    height: 36px;
+}
+
+.wave-name-card.compact .user-name {
+    font-size: 0.875rem;
+}
+
+.wave-name-card.compact .user-id {
+    font-size: 0.8125rem;
+}
+
+.wave-name-card.large {
+    padding: 20px;
+    gap: 16px;
+}
+
+.wave-name-card.large #avatar-image,
+.wave-name-card.large .avatar-fallback {
+    width: 56px;
+    height: 56px;
+}
+
+.wave-name-card.large .user-name {
+    font-size: 1.125rem;
+}
+
+.wave-name-card.large .primary-badge {
+    font-size: 0.8125rem;
+    padding: 4px 10px;
+}
+
+/* 세로형 카드 */
+.wave-name-card.vertical {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+    padding: 20px;
+    max-width: 200px;
+}
+
+.wave-name-card.vertical .name-card-info {
+    align-items: center;
+}
+
+.wave-name-card.vertical .name-card-badges {
+    align-items: center;
+}
+
+.wave-name-card.vertical .name-card-actions {
+    justify-content: center;
+}
+
+.wave-name-card.vertical .user-meta {
+    justify-content: center;
+}
+
+/* 리스트형 카드 */
+.wave-name-card.list {
+    padding: 8px 12px;
+    gap: 10px;
+}
+
+.wave-name-card.list #avatar-image,
+.wave-name-card.list .avatar-fallback {
+    width: 32px;
+    height: 32px;
+}
+
+.wave-name-card.list .user-name {
+    font-size: 0.875rem;
+}
+
+.wave-name-card.list .user-id,
+.wave-name-card.list .user-role {
+    font-size: 0.8125rem;
+}
+
+.wave-name-card.list .primary-badge {
+    font-size: 0.6875rem;
+    padding: 2px 6px;
+}
+
+/* 테마 변형 */
+.wave-name-card.primary {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, #eff6ff 0%, #fff 100%);
+}
+
+.wave-name-card.success {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #ecfdf5 0%, #fff 100%);
+}
+
+.wave-name-card.warning {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
+}
+
+/* 반응형 대응 */
+@media (max-width: 640px) {
+    .wave-name-card {
+        padding: 12px;
+        gap: 10px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .name-card-info {
+        align-items: center;
+    }
+    
+    .name-card-badges {
+        align-items: center;
+    }
+    
+    .name-card-actions {
+        justify-content: center;
+        margin-top: 12px;
+    }
+    
+    .user-meta {
+        justify-content: center;
+    }
+    
+    .name-card-stats {
+        justify-content: center;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wave-name-card.vertical {
+        max-width: 100%;
+    }
+    
+    .secondary-badges {
+        justify-content: center;
+    }
+    
+    .action-btn {
+        padding: 8px 12px;
+        font-size: 0.875rem;
+    }
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .wave-name-card {
+        background: #1f2937;
+        border-color: #374151;
+    }
+    
+    .user-name {
+        color: #f9fafb;
+    }
+    
+    .user-id,
+    .content-text {
+        color: #d1d5db;
+    }
+    
+    .user-role,
+    .user-company,
+    .meta-item {
+        color: #9ca3af;
+    }
+    
+    .meta-separator {
+        color: #6b7280;
+    }
+    
+    .avatar-fallback {
+        background: #374151;
+        border-color: #4b5563;
+        color: #9ca3af;
+    }
+    
+    .avatar-status {
+        border-color: #1f2937;
+    }
+    
+    .name-card-stats,
+    .name-card-content {
+        border-color: #374151;
+    }
+    
+    .stat-value {
+        color: #f9fafb;
+    }
+    
+    .action-btn {
+        background: #374151;
+        border-color: #4b5563;
+        color: #d1d5db;
+    }
+    
+    .action-btn:hover {
+        background: #4b5563;
+        border-color: #6b7280;
+    }
+    
+    .action-btn.secondary {
+        background: #4b5563;
+        border-color: #6b7280;
+    }
+    
+    .secondary-badge {
+        background: #374151;
+        color: #9ca3af;
+    }
+}
+
+/* 접근성 */
+.action-btn:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* 애니메이션 */
+.wave-name-card {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}

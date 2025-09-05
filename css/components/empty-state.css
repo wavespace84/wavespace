@@ -1,0 +1,270 @@
+/**
+ * EmptyState 컴포넌트 CSS
+ * 빈 데이터 상태 표시 통합 스타일
+ */
+
+.wave-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    min-height: 300px;
+    text-align: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.empty-state-container {
+    max-width: 400px;
+    width: 100%;
+}
+
+/* 아이콘 영역 */
+.empty-state-icon {
+    margin-bottom: 24px;
+    opacity: 0.6;
+}
+
+.empty-state-icon i {
+    font-size: 4rem;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+/* 메시지 영역 */
+.empty-state-content {
+    margin-bottom: 32px;
+}
+
+.empty-state-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #495057;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+}
+
+.empty-state-description {
+    font-size: 1rem;
+    color: #6c757d;
+    line-height: 1.6;
+    margin: 0;
+    word-break: keep-all;
+}
+
+/* 액션 영역 */
+.empty-state-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* 액션 버튼 스타일 */
+.empty-state-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    background: transparent;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.empty-state-btn:hover {
+    background: #007bff;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+}
+
+.empty-state-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,123,255,0.2);
+}
+
+/* 버튼 변형들 */
+.empty-state-btn.primary {
+    background: #007bff;
+    color: #fff;
+}
+
+.empty-state-btn.primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.empty-state-btn.secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.empty-state-btn.secondary:hover {
+    background: #6c757d;
+    color: #fff;
+}
+
+.empty-state-btn.outline {
+    border-style: dashed;
+    border-width: 2px;
+}
+
+/* 빈 상태 타입별 스타일 */
+.wave-empty-state.no-data .empty-state-icon i {
+    color: #17a2b8;
+}
+
+.wave-empty-state.no-results .empty-state-icon i {
+    color: #ffc107;
+}
+
+.wave-empty-state.error .empty-state-icon i {
+    color: #dc3545;
+}
+
+.wave-empty-state.loading .empty-state-icon i {
+    color: #28a745;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 크기 변형 */
+.wave-empty-state.small {
+    padding: 40px 20px;
+    min-height: 200px;
+}
+
+.wave-empty-state.small .empty-state-icon i {
+    font-size: 2.5rem;
+}
+
+.wave-empty-state.small .empty-state-title {
+    font-size: 1.25rem;
+}
+
+.wave-empty-state.small .empty-state-description {
+    font-size: 0.9rem;
+}
+
+.wave-empty-state.large {
+    padding: 80px 20px;
+    min-height: 400px;
+}
+
+.wave-empty-state.large .empty-state-icon i {
+    font-size: 5rem;
+}
+
+.wave-empty-state.large .empty-state-title {
+    font-size: 1.75rem;
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+    .wave-empty-state {
+        padding: 40px 16px;
+        min-height: 250px;
+    }
+    
+    .empty-state-icon i {
+        font-size: 3rem;
+    }
+    
+    .empty-state-title {
+        font-size: 1.25rem;
+    }
+    
+    .empty-state-description {
+        font-size: 0.9rem;
+    }
+    
+    .empty-state-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .empty-state-btn {
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .wave-empty-state {
+        padding: 32px 12px;
+        min-height: 200px;
+    }
+    
+    .empty-state-icon i {
+        font-size: 2.5rem;
+    }
+    
+    .empty-state-title {
+        font-size: 1.1rem;
+    }
+    
+    .empty-state-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* 호버 효과 */
+.wave-empty-state:hover .empty-state-icon i {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .empty-state-title {
+        color: #f8f9fa;
+    }
+    
+    .empty-state-description {
+        color: #adb5bd;
+    }
+    
+    .empty-state-icon i {
+        color: #adb5bd;
+    }
+    
+    .empty-state-btn {
+        border-color: #6c757d;
+        color: #f8f9fa;
+    }
+    
+    .empty-state-btn:hover {
+        background: #495057;
+        border-color: #495057;
+    }
+}

@@ -1,0 +1,780 @@
+/**
+ * DownloadModal 컴포넌트 CSS
+ * 파일 다운로드 모달 통합 스타일
+ */
+
+.wave-download-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.wave-download-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 백드롭 */
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+/* 모달 컨테이너 */
+.modal-dialog {
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.95) translateY(-20px);
+    transition: transform 0.3s ease;
+    z-index: 1051;
+}
+
+.wave-download-modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 모달 헤더 */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px 0;
+    border-bottom: 1px solid #dee2e6;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    color: #495057;
+    background: #f8f9fa;
+}
+
+/* 모달 본문 */
+.modal-body {
+    flex: 1;
+    padding: 24px 28px;
+    overflow-y: auto;
+}
+
+/* 파일 정보 섹션 */
+.download-file-info {
+    margin-bottom: 24px;
+}
+
+.file-preview {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.file-icon-large {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e3f2fd;
+    border-radius: 8px;
+}
+
+.file-icon-large i {
+    font-size: 2rem;
+    color: #007bff;
+}
+
+.file-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0 0 8px 0;
+    word-break: break-all;
+}
+
+.file-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.file-meta span {
+    font-size: 0.85rem;
+    color: #6c757d;
+    background: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.file-description {
+    font-size: 0.9rem;
+    color: #495057;
+    line-height: 1.4;
+}
+
+/* 포인트 정보 섹션 */
+.download-point-info {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 1px solid #f0c674;
+    border-radius: 8px;
+}
+
+.point-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.point-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.point-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f39c12;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.point-details h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #856404;
+    margin: 0 0 4px 0;
+}
+
+.point-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.required-points {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d68910;
+}
+
+.point-unit {
+    font-size: 0.9rem;
+    color: #856404;
+}
+
+.point-balance {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0c674;
+}
+
+.balance-info,
+.balance-after {
+    text-align: center;
+}
+
+.balance-label,
+.after-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #856404;
+    margin-bottom: 4px;
+}
+
+.balance-amount,
+.after-amount {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #b7950b;
+}
+
+/* 무료 다운로드 섹션 */
+.download-free-info {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #d4edda 0%, #a3d9a4 100%);
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+}
+
+.free-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.free-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #28a745;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.free-text h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #155724;
+    margin: 0 0 4px 0;
+}
+
+.free-text p {
+    font-size: 0.9rem;
+    color: #155724;
+    margin: 0;
+}
+
+/* 권한 부족 섹션 */
+.download-permission-info {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8d7da 0%, #f1aeb5 100%);
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+}
+
+.permission-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.permission-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dc3545;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.permission-text h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #721c24;
+    margin: 0 0 4px 0;
+}
+
+.permission-text p {
+    font-size: 0.9rem;
+    color: #721c24;
+    margin: 0;
+}
+
+/* 포인트 부족 섹션 */
+.download-insufficient-info {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+    border: 1px solid #f39c12;
+    border-radius: 8px;
+}
+
+.insufficient-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.insufficient-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e67e22;
+    border-radius: 50%;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.insufficient-text h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #b7950b;
+    margin: 0 0 8px 0;
+}
+
+.insufficient-text p {
+    font-size: 0.9rem;
+    color: #b7950b;
+    margin: 0 0 12px 0;
+}
+
+.charge-suggestion {
+    font-size: 0.9rem;
+    color: #b7950b;
+}
+
+.needed-points {
+    font-weight: 600;
+    color: #d68910;
+}
+
+/* 업로더 정보 섹션 */
+.download-uploader-info {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.uploader-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.uploader-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.uploader-avatar {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #e9ecef;
+}
+
+.uploader-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.uploader-avatar-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #6c757d;
+    color: #fff;
+}
+
+.uploader-details {
+    flex: 1;
+}
+
+.uploader-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 4px;
+}
+
+.uploader-badge {
+    font-size: 0.8rem;
+    color: #007bff;
+    background: #e3f2fd;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.uploader-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #dee2e6;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+/* 다운로드 진행률 */
+.download-progress {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.progress-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.progress-percent {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-details {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* 이용약관 동의 */
+.download-agreement {
+    margin-bottom: 20px;
+}
+
+.agreement-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.agreement-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ced4da;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.agreement-checkbox input[type="checkbox"]:checked + .checkmark {
+    background: #007bff;
+    border-color: #007bff;
+}
+
+.agreement-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.agreement-text {
+    line-height: 1.4;
+}
+
+.agreement-text a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.agreement-text a:hover {
+    text-decoration: underline;
+}
+
+/* 모달 푸터 */
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 20px 28px;
+    border-top: 1px solid #dee2e6;
+    background: #f8f9fa;
+    flex-shrink: 0;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+    border-color: #545b62;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #212529;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background: #e0a800;
+    border-color: #e0a800;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+    .modal-dialog {
+        width: 95%;
+        max-width: none;
+        max-height: 95vh;
+        margin: 8px;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .modal-title {
+        font-size: 1.25rem;
+    }
+    
+    .file-preview {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .file-icon-large {
+        align-self: center;
+    }
+    
+    .point-balance {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .uploader-stats {
+        gap: 12px;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-dialog {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    .file-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .uploader-stats {
+        grid-template-columns: 1fr;
+        text-align: left;
+    }
+    
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+    }
+}
+
+/* 애니메이션 */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.wave-download-modal.show .modal-dialog {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .modal-dialog {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .modal-header {
+        border-color: #4a5568;
+    }
+    
+    .modal-title {
+        color: #f7fafc;
+    }
+    
+    .file-preview {
+        background: #3c4757;
+        border-color: #4a5568;
+    }
+    
+    .file-meta span {
+        background: #2d3748;
+        color: #a0aec0;
+    }
+    
+    .modal-footer {
+        background: #3c4757;
+        border-color: #4a5568;
+    }
+    
+    .download-uploader-info {
+        background: #3c4757;
+        border-color: #4a5568;
+    }
+    
+    .uploader-stats {
+        border-color: #4a5568;
+    }
+}

@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 이 문서는 이 저장소에서 Claude Code (claude.ai/code)가 개발을 진행할 때 반드시 따라야 하는 가이드입니다.  
 목적은 **사용자 요구사항에 정확히 맞는 결과물**을 안정적으로 제공하고, 불필요한 혼란이나 위험을 줄이는 것입니다.
 
@@ -30,7 +32,7 @@
 
 **사용자가 명확히 요청하지 않는 한 기존 기능을 수정·삭제하지 마시오.**
 
-- 추측 금지  
+- 추측 금지 **이해가 추가로 필요하면, 사용자에게 적극 질문하여 의도하는 방향을 명확하게 확인**
 - 최적화 금지  
 - 삭제 금지  
 
@@ -40,7 +42,7 @@
 3. 유지보수상 반드시 필요한 최소한의 구조 정리  
 
 > 🔒 이외의 구조 변경이나 리팩토링은 반드시 사용자의 명시적 요청이 있어야 한다.
-
+> ⭐ 사용자가 요청한 디버깅 및 리펙토링 시 사용자에게 질문 생략하고 **All yes**로 막힘 없이 끝까지 진행한다.
 ---
 
 ## 🧩 다중 요청 & 복잡한 작업 전략
@@ -77,6 +79,11 @@
 - 공통 UI(사이드바, 헤더 등)는 **하드코딩 폴백 코드생성 절대 금지**, 반드시 공용템플릿, 글로벌 컴포넌트로 제작해 모든 페이지에서 재사용  
 - 디자인 일관성 유지, 새로운 방향은 사용자 요청이 있어야만 도입  
 - 디자인 시 **important** 를 많이 사용하면 디자인이 깨지기 때문에 절대 남발하지 말 것
+- **호버 효과 사용 지침**: 
+  - 기본적으로 마우스 호버 시 `transform: translateY()` 등의 위치 이동 효과는 사용하지 않음
+  - 호버 효과는 색상 변경, 그림자 정도로 제한
+  - 컨테이너가 위로 들리는 효과는 사용자가 명시적으로 요청한 경우에만 적용
+  - 과도한 호버 애니메이션은 사용자 경험을 저하시키므로 최소한으로 유지
 
 ---
 
@@ -85,7 +92,9 @@
 - 오류 수정 시 근본 원인을 철저히 파악  
 - 임시 패치나 추측형 수정 금지  
 - 전체 시스템 로직과 사용자 의도에 맞게 해결  
+- **수정 시 재사용성을 고려하여 코드를 작성하고, 수정 완료 시 간략한 최적화 실시**
 - **수정 후 반드시 결과 코드를 다시 검토**하여 문제가 없는지 최종 점검해야 함  
+- **수정 후 기존 코드는 불필요 하므로 삭제**하여 추후 충돌 문제를 사전에 방지
 - **설레발 멘트 금지**: “완료했습니다”, “더 좋아졌습니다” 등은 절대 하지 말 것  
 - 결과는 코드와 TODO 보고로만 증명한다  
 
@@ -106,6 +115,47 @@
 
 ---
 
+## 🛠️ 개발 환경 및 기술 스택
+
+### 기술 스택
+- **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3
+- **Backend**: Supabase (PostgreSQL, Auth, Storage, RLS)
+- **Build System**: NPM scripts with ESLint, Prettier
+- **Architecture**: Component-based vanilla JS with modular service layer
+
+### 핵심 개발 명령어
+```bash
+# 개발 환경 설정
+npm run setup                # 전체 초기화 (install + lint + format)
+npm run dev                  # 품질 검사 실행 
+npm run quality-gates        # 모든 품질 게이트 검증
+
+# 코드 품질
+npm run lint                 # ESLint 검사
+npm run lint:fix             # ESLint 자동 수정
+npm run format               # Prettier 포맷팅
+npm run format:check         # 포맷팅 검증
+
+# 성능 및 빌드
+npm run perf                 # 성능 검사
+npm run build                # 정적 빌드
+npm run quality              # 품질 분석
+```
+
+### 프로젝트 구조
+```
+js/
+├── core/           # 핵심 시스템 (stateManager, eventSystem, WaveSpaceData)  
+├── services/       # 비즈니스 로직 (authService, postService, notificationService)
+├── utils/          # 공통 유틸리티 (logger, errorHandler, xssProtection)
+└── modules/        # 페이지별 모듈
+
+css/                # 스타일시트
+components/         # 미래 컴포넌트 
+supabase/
+└── migrations/     # DB 스키마 변경 관리
+```
+
 ## 📂 개발 환경 및 원칙
 
 1. **동적 웹페이지**  
@@ -120,9 +170,11 @@
    - 모든 기능은 관리자 대시보드에서 관리할 수 있도록 설계해야 함  
    - 회원 승인, 권한 관리, 포인트 정책 변경 등을 관리자 UI로 제어 가능해야 함  
 
-4. **회원 유형 (roles)**  
+4. **회원 유형 및 인증 시스템**  
    - 기본 회원유형: 분양기획, 분양영업, 청약상담, 관계사, 일반  
-   - 추가 규칙: 분양기획·관계사는 관리자 승인 시 실무자로 승급 가능  
+   - 추가 규칙: 분양기획·관계사는 관리자 승인 시 실무자로 승급 가능
+   - Supabase Auth + 자체 users 테이블 구조 (auth_user_id로 연결)
+   - RLS(Row Level Security) 정책으로 권한 관리  
 
 5. **코드 중복 금지**  
    - 동일 로직을 여러 곳에 복붙하지 말 것  
@@ -130,7 +182,9 @@
 
 6. **보안 규칙**  
    - Supabase 키/비밀번호 같은 민감 정보는 절대 코드에 직접 하드코딩하지 말 것  
-   - `.env` 환경변수로 관리  
+   - 현재: config.dev.js에 개발용 키 설정 (운영 환경에서는 다른 방식 사용)  
+   - XSS 보호: xssProtection.js 유틸리티 사용  
+   - CSP 헤더 적용 (index.html 참고)  
    - 로그에 개인정보 노출 금지  
 
 7. **성능/확장성 원칙**  
@@ -174,18 +228,6 @@
 
 ---
 
-## 🎯 작업 우선순위 체계
-
-- **P0 (즉시)**: 서비스 중단, 보안 취약점  
-- **P1 (24시간)**: 핵심 기능 오류, 데이터 손실 위험  
-- **P2 (3일)**: 일반 버그, UX 개선  
-- **P3 (1주)**: 성능 최적화, 리팩토링  
-- **P4 (백로그)**: nice-to-have 기능  
-
-> 사용자가 우선순위를 명시하지 않으면 ClaudeCode는 영향도를 분석하여 제안해야 함.
-
----
-
 ## 📝 코드 리뷰 체크리스트
 
 - [ ] Supabase RLS 정책 확인  
@@ -198,18 +240,29 @@
 
 ---
 
-## 📦 컴포넌트 계층 구조
+## 📦 아키텍처 및 컴포넌트 구조
 
+### 현재 아키텍처
+- **Vanilla JS 모듈 시스템**: ES6 모듈과 동적 import 사용
+- **서비스 계층**: authService, postService 등으로 비즈니스 로직 분리
+- **상태 관리**: stateManager.js를 통한 중앙화된 상태 관리
+- **이벤트 시스템**: eventSystem.js로 컴포넌트 간 통신
+- **동적 사이드바**: SidebarLoader가 모든 페이지에 공통 사이드바 주입
+
+### 미래 컴포넌트 계층 구조
+```
 components/
-├── common/ # 전역 공통 (Header, Sidebar)
-├── features/ # 기능별 (Login, Profile)
-├── ui/ # 순수 UI (Button, Modal, Card)
-└── layouts/ # 페이지 레이아웃 (MainLayout, AuthLayout)
+├── common/     # 전역 공통 (Header, Sidebar)
+├── features/   # 기능별 (Login, Profile)  
+├── ui/         # 순수 UI (Button, Modal, Card)
+└── layouts/    # 페이지 레이아웃 (MainLayout, AuthLayout)
+```
 
-- common: 모든 페이지에서 사용  
-- features: 특정 기능 단위  
-- ui: 상태 없는 순수 UI  
-- layouts: 페이지 구조 템플릿  
+### 핵심 모듈 설명
+- **WaveSpaceData**: 전역 데이터 관리 및 ErrorHandler 초기화
+- **authService**: Supabase 인증 및 사용자 프로필/뱃지 관리  
+- **stateManager**: 애플리케이션 상태 중앙 관리
+- **eventSystem**: 컴포넌트 간 이벤트 기반 통신  
 
 ---
 
@@ -260,10 +313,119 @@ components/
 
 ---
 
+## 🗺️ 사이트맵 및 페이지 구조
+최종 업데이트: 2025-09-05
+
+> ⚠️ **AI 자동 관리 구역** 
+> - 이 섹션은 AI가 자동으로 업데이트하여 관리합니다
+> - 페이지 추가/삭제/수정 시 반드시 이 섹션을 업데이트해야 합니다
+> - 사이트맵 컨포넌트의 변경이 발생한 경우, 클로드.md 파일 내 다른 섹션은 절대 수정하지 않고 이 섹션만 업데이트합니다
+> - 모든 변경사항에는 오늘 날짜를 [YYYY-MM-DD / 시간:분] 형식으로 기록합니다
+> - 본 사이트맵 페이지 관리는 Ai는 변경사항에 대한 기록만 하며, 해당 내용을 토대로 요청 없는 수정,삭제 등의 추가 작업을 하지 않습니다
+> - 본 사이트맵에 대한 내용에 변경 기록이 발생하는 경우, 사용자에게 알려주어야 한다.  
+> - 만약 본 사이트맵에 목록에 삭제가 발생한 경우에는 삭제표시만 하고 목록에서 내용을 실제로 삭제하지는 않도록 한다. (목록에서 실제 삭제는 사용자가 직접 관리함)
+
+### 📂 프로젝트 페이지 구조
+
+> - 해더 ☑️, 사이드바 ✅, 로그인사이드패널 🪟, 마이페이지 😎 등 컴포넌트마다 다른 이모지 사용.
+
+```
+WAVE SPACE/
+│
+├── 🏠 메인
+│   └── index.html (HeaderLoader ☑️, SidebarLoader ✅, LoginSidepanelLoader 🪟)
+│
+├── 👤 인증/계정 관리
+│   ├── login.html (HeaderLoader ☑️, SidebarLoader ✅)
+│   ├── signup.html (HeaderLoader ☑️, SidebarLoader ✅, LoginSidepanelLoader 🪟)
+│   ├── reset-password.html (독립 페이지)
+│   └── ⚠️ profile.html [미구현] (2025-09-05)
+│
+├── 💬 커뮤니티
+│   ├── forum.html (SidebarLoader ✅)
+│   ├── qna.html (SidebarLoader ✅)
+│   ├── humor.html (SidebarLoader ✅)
+│   ├── notice.html (SidebarLoader ✅)
+│   └── updates.html (SidebarLoader ✅)
+│
+├── 💼 채용/구인구직
+│   ├── sales-recruit.html (SidebarLoader ✅)
+│   └── planning-recruitment.html (SidebarLoader ✅)
+│
+├── 💰 포인트/멤버십
+│   ├── points-shop.html (SidebarLoader ✅)
+│   ├── points-ranking.html (SidebarLoader ✅)
+│   ├── points-charge.html (SidebarLoader ✅)
+│   ├── points-policy.html (SidebarLoader ✅)
+│   └── plus-membership.html (SidebarLoader ✅)
+│
+├── 📊 데이터/AI 서비스
+│   ├── data-center.html (SidebarLoader ✅)
+│   ├── ai-matching.html (SidebarLoader ✅)
+│   ├── ai-report.html (SidebarLoader ✅)
+│   └── market-research.html (SidebarLoader ✅)
+│
+├── 🎓 부가 서비스
+│   ├── education.html (SidebarLoader ✅)
+│   ├── events.html (SidebarLoader ✅)
+│   ├── attendance.html (SidebarLoader ✅)
+│   └── hall-of-fame.html (SidebarLoader ✅)
+│
+├── ℹ️ 정보/지원
+│   ├── support.html (SidebarLoader ✅)
+│   ├── proposal.html (SidebarLoader ✅)
+│   ├── policy.html (SidebarLoader ✅)
+│   └── other-docs.html (SidebarLoader ✅)
+│
+└── 🔧 관리자/개발용
+    ├── admin.html
+    ├── admin-feedbacks.html
+    └── create-test-accounts.html
+```
+
+### 🧩 공통 컴포넌트 현황
+
+```
+components/
+├── 헤더 시스템 (2개 파일)
+│   ├── header.html (템플릿)
+│   ├── header-loader.js (현재 사용 ✅)
+│   └── header.js (레거시 ⚠️)
+├── 사이드바 시스템 (3개 파일)
+│   ├── sidebar.html (템플릿)
+│   ├── sidebar-loader.js (현재 사용 ✅)
+│   ├── sidebar-common.js (유틸리티)
+│   └── sidebar.js (레거시 ⚠️)
+└── 로그인 패널 시스템 (2개 파일 - 중복!)
+    ├── login-sidepanel.html (템플릿)
+    ├── LoginSidepanelLoader.js (현재 사용 ✅)
+    └── login-sidepanel.js (중복 ⚠️)
+```
+
+### 📊 컴포넌트 사용 통계
+
+| 컴포넌트 | 사용 페이지 수 | 상태 | 마지막 업데이트 |
+|---------|-------------|------|----------------|
+| SidebarLoader | 35개 페이지 | ✅ 정상 | 2025-09-05 |
+| HeaderLoader | 3개 페이지 | ✅ 정상 | 2025-09-05 |
+| LoginSidepanelLoader | 3개 페이지 | ⚠️ 중복 파일 | 2025-09-05 |
+
+### ⚠️ 이슈 트래킹
+
+#### 🔴 긴급 (2025-09-05)
+- `login-sidepanel.js` vs `LoginSidepanelLoader.js` 중복
+- 마이페이지(`profile.html`) 누락
+
+#### 🟡 정리 필요 (2025-09-05)
+- `header.js` (레거시) → `header-loader.js`로 통합
+- `sidebar.js` (레거시) → `sidebar-loader.js`로 통합
+
+---
+
 ## 요약
 
 Claude Code는 다음을 반드시 지켜야 한다:  
-- 요청하지 않은 리팩토링/변경 금지  
+- 간략한 최적화 외 요청하지 않은 구조변경 등의 정식 리팩토링/변경 금지  
 - 단, 중복 제거·공통화 같은 유지보수 필수 리팩토링은 허용  
 - 모든 작업은 한국어로 설명  
 - 페르소나는 항상 자동으로 최적 적용  
@@ -274,6 +436,8 @@ Claude Code는 다음을 반드시 지켜야 한다:
 - 보안·성능·로그·QA·접근성·버전관리 원칙 준수  
 - 오류 수정 시 설레발 금지 + 최종 코드 검토 필수  
 - 결과는 반드시 TODO 보고
+- 사용자가 요청한 디버깅 및 리펙토링 시 사용자에게 질문 생략하고 **All yes**로 막힘 없이 끝까지 진행한다.
+- **사이트맵 섹션**: 페이지/컴포넌트 변경 시 반드시 업데이트
 
 > 이 문서는 **개발의 헌법**입니다.  
 > 절대 임의로 변경하거나 해석하지 말고, 철저히 준수해야 합니다.
