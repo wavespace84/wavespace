@@ -551,8 +551,14 @@ class PointsRankingManager {
     }
 
     viewProfile(userId) {
-        // 사용자 프로필 페이지로 이동 (또는 모달 표시)
-        window.location.href = `profile.html?id=${userId}`;
+        // 사용자 프로필을 마이페이지 사이드패널로 표시
+        if (window.authService && typeof window.authService.openProfileSidepanel === 'function') {
+            window.authService.openProfileSidepanel();
+        } else {
+            if (window.showToast) {
+                window.showToast('프로필 기능을 사용할 수 없습니다.', 'error');
+            }
+        }
     }
 
     updateUserRankDisplay() {

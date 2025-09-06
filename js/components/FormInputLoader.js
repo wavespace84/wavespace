@@ -298,14 +298,14 @@ class FormInputLoader {
         const { config, elements } = instance;
         
         switch (config.type) {
-            case 'textarea':
-                return elements.textarea;
-            case 'select':
-                return elements.select;
-            case 'file':
-                return elements.fileInput;
-            default:
-                return elements.input;
+        case 'textarea':
+            return elements.textarea;
+        case 'select':
+            return elements.select;
+        case 'file':
+            return elements.fileInput;
+        default:
+            return elements.input;
         }
     }
 
@@ -820,23 +820,23 @@ class FormInputLoader {
         let index = current ? Array.from(items).indexOf(current) : -1;
         
         switch (e.key) {
-            case 'ArrowDown':
+        case 'ArrowDown':
+            e.preventDefault();
+            index = Math.min(index + 1, items.length - 1);
+            break;
+        case 'ArrowUp':
+            e.preventDefault();
+            index = Math.max(index - 1, 0);
+            break;
+        case 'Enter':
+            if (current) {
                 e.preventDefault();
-                index = Math.min(index + 1, items.length - 1);
-                break;
-            case 'ArrowUp':
-                e.preventDefault();
-                index = Math.max(index - 1, 0);
-                break;
-            case 'Enter':
-                if (current) {
-                    e.preventDefault();
-                    current.click();
-                }
-                return;
-            case 'Escape':
-                this.hideAutocomplete(instance);
-                return;
+                current.click();
+            }
+            return;
+        case 'Escape':
+            this.hideAutocomplete(instance);
+            return;
         }
         
         // 하이라이트 업데이트
@@ -964,30 +964,30 @@ class FormInputLoader {
         
         // 타입별 요소 표시
         switch (config.type) {
-            case 'textarea':
-                elements.textarea.style.display = 'block';
-                break;
-            case 'select':
-                elements.select.style.display = 'block';
-                this.renderSelectOptions(instance);
-                break;
-            case 'checkbox':
-            case 'radio':
-                elements.inputGroup.style.display = 'block';
-                this.renderInputGroup(instance);
-                break;
-            case 'file':
-                elements.fileWrapper.style.display = 'block';
-                break;
-            case 'tags':
-                elements.input.style.display = 'block';
-                elements.tagList.style.display = 'flex';
-                this.renderTags(instance);
-                break;
-            default:
-                elements.input.style.display = 'block';
-                elements.input.type = config.type;
-                break;
+        case 'textarea':
+            elements.textarea.style.display = 'block';
+            break;
+        case 'select':
+            elements.select.style.display = 'block';
+            this.renderSelectOptions(instance);
+            break;
+        case 'checkbox':
+        case 'radio':
+            elements.inputGroup.style.display = 'block';
+            this.renderInputGroup(instance);
+            break;
+        case 'file':
+            elements.fileWrapper.style.display = 'block';
+            break;
+        case 'tags':
+            elements.input.style.display = 'block';
+            elements.tagList.style.display = 'flex';
+            this.renderTags(instance);
+            break;
+        default:
+            elements.input.style.display = 'block';
+            elements.input.type = config.type;
+            break;
         }
     }
 

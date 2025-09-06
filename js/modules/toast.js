@@ -65,12 +65,12 @@ function showToastMessage(message, type = 'success', duration = 3000, options = 
             <i class="fas ${iconClass}" aria-hidden="true"></i>
             <span class="toast-text">${escapeHtml(message)}</span>
             ${options.closable !== false ? 
-                '<button class="toast-close" aria-label="닫기">
+        `<button class="toast-close" aria-label="닫기">
                     <i class="fas fa-times"></i>
-                </button>' : ''}
+                </button>` : ''}
         </div>
         ${options.progress ? 
-            `<div class="toast-progress">
+        `<div class="toast-progress">
                 <div class="toast-progress-bar" style="animation-duration: ${duration}ms"></div>
             </div>` : ''}
     `;
@@ -207,22 +207,22 @@ function showUniqueToast(message, type, duration) {
 // 전역 헬퍼에 unique 옵션 추가
 window.showSuccessMessage = function(message, duration, unique = false) {
     return unique ? showUniqueToast(message, 'success', duration) : 
-                   showToastMessage(message, 'success', duration);
+        showToastMessage(message, 'success', duration);
 };
 
 window.showErrorMessage = function(message, duration, unique = false) {
     return unique ? showUniqueToast(message, 'error', duration) : 
-                   showToastMessage(message, 'error', duration);
+        showToastMessage(message, 'error', duration);
 };
 
 window.showInfoMessage = function(message, duration, unique = false) {
     return unique ? showUniqueToast(message, 'info', duration) : 
-                   showToastMessage(message, 'info', duration);
+        showToastMessage(message, 'info', duration);
 };
 
 window.showWarningMessage = function(message, duration, unique = false) {
     return unique ? showUniqueToast(message, 'warning', duration) : 
-                   showToastMessage(message, 'warning', duration);
+        showToastMessage(message, 'warning', duration);
 };
 
 /**

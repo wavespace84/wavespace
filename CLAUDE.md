@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ---
 
 ## 🚀 프로젝트 비전
-- 이 플랫폼은 **수천 명의 부동산 실무자들의 업무 효율을 개선**합니다  
+- 이 플랫폼은 **수천 명의 부동산 분양 실무자들의 업무 효율을 개선**합니다  
 - 우리의 코드 한 줄이 **실무자들의 시간을 절약**합니다  
 - **품질은 타협할 수 없는 핵심 가치**입니다  
 
@@ -43,6 +43,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 > 🔒 이외의 구조 변경이나 리팩토링은 반드시 사용자의 명시적 요청이 있어야 한다.
 > ⭐ 사용자가 요청한 디버깅 및 리펙토링 시 사용자에게 질문 생략하고 **All yes**로 막힘 없이 끝까지 진행한다.
+
+### 🤖 자동 승인 규칙
+
+**질문 없이 자동 진행하는 작업:**
+- 단순 오류 수정 (syntax error, import 경로 수정, 오타 수정)
+- 코드 포맷팅 및 스타일 정리 (ESLint, Prettier)
+- 중복 코드 제거 및 함수 추출
+- 파일 읽기 권한 (Read 도구 사용)
+- 린트 및 포맷 명령어 실행 (npm run lint, npm run format)
+- 테스트 실행 (npm run test)
+- 로그 및 디버깅 정보 확인
+- 간단한 변수명 변경
+- 주석 추가 및 수정
+- console.log 제거
+- 외부 패키지 설치 (npm install)
+- **CLAUDE.md 사이트맵 섹션 자동 업데이트** (컴포넌트/페이지 변경 시) ✨
+
+**반드시 사용자에게 물어봐야 하는 작업:**
+- 파일 삭제
+- 대규모 구조 변경 (폴더 구조, 아키텍처 변경)
+- 데이터베이스 스키마 변경
+- 프로덕션 배포 관련 작업
+- 기존 동작을 변경하는 로직 수정
+- 보안 관련 설정 변경
+- API 엔드포인트 변경
+- 환경 변수 수정
+
 ---
 
 ## 🧩 다중 요청 & 복잡한 작업 전략
@@ -122,6 +149,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Backend**: Supabase (PostgreSQL, Auth, Storage, RLS)
 - **Build System**: NPM scripts with ESLint, Prettier
 - **Architecture**: Component-based vanilla JS with modular service layer
+- **Node.js**: >=16.0.0 (package.json에 명시)
 
 ### 핵심 개발 명령어
 ```bash
@@ -129,6 +157,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run setup                # 전체 초기화 (install + lint + format)
 npm run dev                  # 품질 검사 실행 
 npm run quality-gates        # 모든 품질 게이트 검증
+npm run dev-setup            # 개발 환경 설정 스크립트
 
 # 코드 품질
 npm run lint                 # ESLint 검사
@@ -137,9 +166,15 @@ npm run format               # Prettier 포맷팅
 npm run format:check         # 포맷팅 검증
 
 # 성능 및 빌드
-npm run perf                 # 성능 검사
-npm run build                # 정적 빌드
+npm run perf                 # 성능 검사 (lighthouse 기반)
+npm run build                # 정적 빌드 (dist 폴더로 복사)
 npm run quality              # 품질 분석
+```
+
+### 개발 서버 실행
+```bash
+# Windows 환경에서 HTTPS 로컬 서버
+start-https.bat              # HTTPS 개발 서버 실행
 ```
 
 ### 프로젝트 구조
@@ -148,12 +183,34 @@ js/
 ├── core/           # 핵심 시스템 (stateManager, eventSystem, WaveSpaceData)  
 ├── services/       # 비즈니스 로직 (authService, postService, notificationService)
 ├── utils/          # 공통 유틸리티 (logger, errorHandler, xssProtection)
-└── modules/        # 페이지별 모듈
+├── modules/        # 페이지별 모듈
+├── config/         # 환경 설정 (env.js, firebase.js)
+├── components/     # 컴포넌트 로더 및 공통 컴포넌트
+└── pages/          # 페이지별 비즈니스 로직
 
 css/                # 스타일시트
-components/         # 미래 컴포넌트 
+components/         # HTML 템플릿 컴포넌트
 supabase/
 └── migrations/     # DB 스키마 변경 관리
+```
+
+### 코딩 표준
+
+#### ESLint 규칙 (.eslintrc.cjs)
+- **인덴트**: 4 스페이스
+- **따옴표**: 싱글쿼트 사용
+- **세미콜론**: 항상 사용
+- **var 금지**: const/let만 사용
+- **함수 최대 라인**: 50줄
+- **복잡도**: 최대 10
+- **매개변수**: 최대 4개
+- **console.log 경고**: error/warn만 허용
+
+#### Prettier 규칙 (.prettierrc.cjs)
+- **줄 너비**: 100 (HTML은 120)
+- **탭 너비**: 4
+- **세미콜론**: 필수
+- **줄바꿈**: CRLF (Windows)
 ```
 
 ## 📂 개발 환경 및 원칙
@@ -182,10 +239,23 @@ supabase/
 
 6. **보안 규칙**  
    - Supabase 키/비밀번호 같은 민감 정보는 절대 코드에 직접 하드코딩하지 말 것  
-   - 현재: config.dev.js에 개발용 키 설정 (운영 환경에서는 다른 방식 사용)  
+   - 환경변수는 env.js의 EnvironmentManager를 통해 관리  
+   - 개발환경 Supabase URL: https://sishloxzcqapontycuyz.supabase.co
+   - 운영환경에서는 index.html에서 window.SUPABASE_ANON_KEY 설정 필요
    - XSS 보호: xssProtection.js 유틸리티 사용  
    - CSP 헤더 적용 (index.html 참고)  
    - 로그에 개인정보 노출 금지  
+
+   **Supabase 키 설정 방법**:
+   ```javascript
+   // 개발환경: index.html에 설정
+   window.SUPABASE_URL = 'https://sishloxzcqapontycuyz.supabase.co';
+   window.SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+   
+   // 또는 .env 파일 사용
+   SUPABASE_URL=https://sishloxzcqapontycuyz.supabase.co
+   SUPABASE_ANON_KEY=your_anon_key_here
+   ```  
 
 7. **성능/확장성 원칙**  
    - 쿼리는 필요한 컬럼만 가져올 것 (`select("*")` 금지)  
@@ -238,6 +308,35 @@ supabase/
 - [ ] 성능 영향도 점검  
 - [ ] 관련 문서 업데이트 여부 확인  
 
+## 🧪 개발 워크플로우
+
+### 새로운 기능 개발 시
+1. **기존 패턴 확인**: 유사한 기능이 구현된 파일 먼저 확인
+2. **서비스 레이어 활용**: authService, postService 등 기존 서비스 활용
+3. **컴포넌트 로더 사용**: HeaderLoader, SidebarLoader 등 공통 컴포넌트 로더 활용
+4. **에러 처리**: ErrorHandler 활용하여 일관된 에러 처리
+5. **상태 관리**: stateManager를 통한 중앙화된 상태 관리
+
+### 서비스 계층 아키텍처
+- **BaseService**: 모든 서비스의 기본 클래스 (Supabase 초기화, 에러 처리)
+- **authService**: 인증, 프로필, 뱃지 관리
+- **postService**: 게시글 CRUD 및 검색
+- **notificationService**: 알림 관리
+- **fileService**: 파일 업로드/다운로드
+- **pointService**: 포인트 시스템 관리
+
+### 인증 플로우
+1. Supabase Auth 사용 (auth.users 테이블)
+2. users 테이블과 auth_user_id로 연동
+3. profiles 테이블에서 추가 role 정보 관리
+4. RLS 정책으로 데이터 접근 제어
+
+### 디버깅 팁
+- **개발자 도구 활용**: `window.WaveSpaceData`로 전역 데이터 확인
+- **Supabase 로그**: Supabase 대시보드에서 실시간 쿼리 로그 확인
+- **네트워크 탭**: API 호출 및 응답 확인
+- **로컬 스토리지**: 세션 및 사용자 데이터 확인
+
 ---
 
 ## 📦 아키텍처 및 컴포넌트 구조
@@ -263,6 +362,26 @@ components/
 - **authService**: Supabase 인증 및 사용자 프로필/뱃지 관리  
 - **stateManager**: 애플리케이션 상태 중앙 관리
 - **eventSystem**: 컴포넌트 간 이벤트 기반 통신  
+
+### 전역 객체 및 초기화 순서
+1. **preload.js**: 최우선 로드, 전역 유틸리티 정의
+2. **WaveSpaceData**: 전역 데이터 및 에러 핸들러
+3. **env.js**: 환경변수 관리 (EnvironmentManager)
+4. **authService**: 인증 서비스 초기화
+5. **페이지별 모듈**: DOMContentLoaded 이벤트 후 실행
+
+### 주요 전역 객체
+- `window.WaveSpaceData`: 전역 데이터 및 유틸리티
+- `window.WaveSupabase`: Supabase 클라이언트 관리
+- `window.ENV`: 환경변수 접근
+- `window.authService`: 인증 서비스 (일부 페이지)
+- `window.stateManager`: 상태 관리자
+- `window.ErrorHandler`: 에러 처리 클래스
+
+### 동적 모듈 로딩
+- ES6 모듈과 일반 스크립트 혼재 사용
+- 동적 import 패턴으로 의존성 로드
+- 전역 객체 존재 확인 후 사용 (폴백 처리)
 
 ---
 
@@ -317,108 +436,189 @@ components/
 최종 업데이트: 2025-09-05
 
 > ⚠️ **AI 자동 관리 구역** 
-> - 이 섹션은 AI가 자동으로 업데이트하여 관리합니다
-> - 페이지 추가/삭제/수정 시 반드시 이 섹션을 업데이트해야 합니다
-> - 사이트맵 컨포넌트의 변경이 발생한 경우, 클로드.md 파일 내 다른 섹션은 절대 수정하지 않고 이 섹션만 업데이트합니다
-> - 모든 변경사항에는 오늘 날짜를 [YYYY-MM-DD / 시간:분] 형식으로 기록합니다
-> - 본 사이트맵 페이지 관리는 Ai는 변경사항에 대한 기록만 하며, 해당 내용을 토대로 요청 없는 수정,삭제 등의 추가 작업을 하지 않습니다
-> - 본 사이트맵에 대한 내용에 변경 기록이 발생하는 경우, 사용자에게 알려주어야 한다.  
-> - 만약 본 사이트맵에 목록에 삭제가 발생한 경우에는 삭제표시만 하고 목록에서 내용을 실제로 삭제하지는 않도록 한다. (목록에서 실제 삭제는 사용자가 직접 관리함)
+> 
+> ### 🤖 AI 자동 업데이트 규칙
+> 
+> **필수 업데이트 트리거:**
+> 1. **컴포넌트 파일 생성/수정/삭제 시**
+>    - `components/` 폴더 내 모든 변경사항
+>    - `js/components/` 폴더 내 로더 파일 변경
+>    - HTML 템플릿과 JS 로더 파일 매칭
+> 
+> 2. **페이지 파일 작업 시**
+>    - 새 HTML 페이지 생성
+>    - 기존 페이지에 컴포넌트 추가/제거
+>    - 페이지 삭제 또는 이름 변경
+> 
+> 3. **자동 업데이트 프로세스**
+>    - 작업 완료 직후 즉시 이 섹션 업데이트
+>    - 변경사항을 명확히 기록 (날짜/시간 포함)
+>    - 사용자에게 업데이트 내용 보고
+> 
+> **업데이트 형식:**
+> ```
+> #### ✅ 완료 (YYYY-MM-DD HH:mm)
+> - [작업내용] 파일명 → 변경사항
+> ```
+> 
+> **중요:** AI는 이 규칙을 무조건 따라야 하며, 컴포넌트 관련 작업 시 자동으로 실행됩니다.
 
 ### 📂 프로젝트 페이지 구조
 
-> - 해더 ☑️, 사이드바 ✅, 로그인사이드패널 🪟, 마이페이지 😎 등 컴포넌트마다 다른 이모지 사용.
+#### 🎨 컴포넌트 적용 기본 규칙
+- **모든 페이지**: `SidebarLoader` ✅ (기본 적용)
+- **메인/인증 페이지**: `HeaderLoader` ☑️ (index, login, signup)
+- **로그인 유도 페이지**: `LoginSidepanelLoader` 🪟 (index, signup)
+- **예외**: reset-password.html (독립), admin 페이지들 (별도 레이아웃)
 
 ```
-WAVE SPACE/
+WAVE SPACE/ 페이지 구조
 │
 ├── 🏠 메인
-│   └── index.html (HeaderLoader ☑️, SidebarLoader ✅, LoginSidepanelLoader 🪟)
+│   └── index.html ⭐ (전체 컴포넌트)
 │
 ├── 👤 인증/계정 관리
-│   ├── login.html (HeaderLoader ☑️, SidebarLoader ✅)
-│   ├── signup.html (HeaderLoader ☑️, SidebarLoader ✅, LoginSidepanelLoader 🪟)
-│   ├── reset-password.html (독립 페이지)
-│   └── ⚠️ profile.html [미구현] (2025-09-05)
+│   ├── login.html ☑️ 
+│   ├── signup.html ⭐ (전체 컴포넌트)
+│   ├── reset-password.html 🔒 (독립 페이지)
+│   └── profile.html 📝 (계획 중)
 │
 ├── 💬 커뮤니티
-│   ├── forum.html (SidebarLoader ✅)
-│   ├── qna.html (SidebarLoader ✅)
-│   ├── humor.html (SidebarLoader ✅)
-│   ├── notice.html (SidebarLoader ✅)
-│   └── updates.html (SidebarLoader ✅)
+│   ├── forum.html
+│   ├── qna.html
+│   ├── humor.html
+│   ├── notice.html
+│   └── updates.html
 │
 ├── 💼 채용/구인구직
-│   ├── sales-recruit.html (SidebarLoader ✅)
-│   └── planning-recruitment.html (SidebarLoader ✅)
+│   ├── sales-recruit.html
+│   └── planning-recruitment.html
 │
 ├── 💰 포인트/멤버십
-│   ├── points-shop.html (SidebarLoader ✅)
-│   ├── points-ranking.html (SidebarLoader ✅)
-│   ├── points-charge.html (SidebarLoader ✅)
-│   ├── points-policy.html (SidebarLoader ✅)
-│   └── plus-membership.html (SidebarLoader ✅)
+│   ├── points-shop.html
+│   ├── points-ranking.html
+│   ├── points-charge.html
+│   ├── points-policy.html
+│   └── plus-membership.html
 │
 ├── 📊 데이터/AI 서비스
-│   ├── data-center.html (SidebarLoader ✅)
-│   ├── ai-matching.html (SidebarLoader ✅)
-│   ├── ai-report.html (SidebarLoader ✅)
-│   └── market-research.html (SidebarLoader ✅)
+│   ├── data-center.html
+│   ├── ai-matching.html
+│   ├── ai-report.html
+│   └── market-research.html
 │
 ├── 🎓 부가 서비스
-│   ├── education.html (SidebarLoader ✅)
-│   ├── events.html (SidebarLoader ✅)
-│   ├── attendance.html (SidebarLoader ✅)
-│   └── hall-of-fame.html (SidebarLoader ✅)
+│   ├── education.html
+│   ├── events.html
+│   ├── attendance.html
+│   └── hall-of-fame.html
 │
 ├── ℹ️ 정보/지원
-│   ├── support.html (SidebarLoader ✅)
-│   ├── proposal.html (SidebarLoader ✅)
-│   ├── policy.html (SidebarLoader ✅)
-│   └── other-docs.html (SidebarLoader ✅)
+│   ├── support.html
+│   ├── proposal.html
+│   ├── policy.html
+│   └── other-docs.html
 │
-└── 🔧 관리자/개발용
+└── 🔧 관리자/개발용 🛡️ (별도 레이아웃)
     ├── admin.html
     ├── admin-feedbacks.html
     └── create-test-accounts.html
 ```
 
-### 🧩 공통 컴포넌트 현황
+#### 범례
+- ⭐ 전체 컴포넌트 (Header + Sidebar + LoginPanel)
+- ☑️ Header + Sidebar
+- 🔒 독립 페이지 (컴포넌트 없음)
+- 🛡️ 별도 레이아웃
+- 📝 계획/개발 중
+- 표시 없음: SidebarLoader만 사용 (기본값)
 
+### 🧩 컴포넌트 시스템 개요
+
+#### 📌 핵심 공통 컴포넌트 (전체 페이지용)
 ```
-components/
-├── 헤더 시스템 (2개 파일)
-│   ├── header.html (템플릿)
-│   ├── header-loader.js (현재 사용 ✅)
-│   └── header.js (레거시 ⚠️)
-├── 사이드바 시스템 (3개 파일)
-│   ├── sidebar.html (템플릿)
-│   ├── sidebar-loader.js (현재 사용 ✅)
-│   ├── sidebar-common.js (유틸리티)
-│   └── sidebar.js (레거시 ⚠️)
-└── 로그인 패널 시스템 (2개 파일 - 중복!)
-    ├── login-sidepanel.html (템플릿)
-    ├── LoginSidepanelLoader.js (현재 사용 ✅)
-    └── login-sidepanel.js (중복 ⚠️)
+├── Header (header.html + header-loader.js)
+├── Sidebar (sidebar.html + sidebar-loader.js)  
+├── LoginPanel (login-sidepanel.html + LoginSidepanelLoader.js)
+└── ProfilePanel (profile-sidepanel.html + ProfileSidepanelLoader.js)
 ```
+
+#### 🔧 UI 컴포넌트 (재사용 가능)
+```
+기본 UI: Card, Badge, Button, Dropdown, Tab
+입력: FormInput, AddressSearch
+표시: DataTable, Pagination, EmptyState, LoadingSpinner
+피드백: Modal (Download/Upload), StickySlideCard
+```
+
+#### 📂 컴포넌트 위치
+- HTML 템플릿: `components/*.html`
+- JS 로더: `js/components/*Loader.js`
+- 모듈 로더: `js/modules/*-loader.js`
+
+> 💡 **개발 시 참고**: 새 컴포넌트 추가 시 HTML 템플릿과 Loader를 세트로 생성
+
+#### 📁 파일 구조 정리
+| 컴포넌트 | HTML 템플릿 | 로더 위치 | 상태 |
+|---------|------------|----------|------|
+| 헤더 | components/header.html | js/modules/header-loader.js | ✅ 정상 |
+| 사이드바 | components/sidebar.html | js/modules/sidebar-loader.js | ✅ 정상 |
+| 로그인 패널 | components/login-sidepanel.html | js/modules/LoginSidepanelLoader.js | ✅ 정상 |
+| 프로필 패널 | components/profile-sidepanel.html | js/components/ProfileSidepanelLoader.js | ✅ 새로 생성 |
 
 ### 📊 컴포넌트 사용 통계
 
-| 컴포넌트 | 사용 페이지 수 | 상태 | 마지막 업데이트 |
-|---------|-------------|------|----------------|
-| SidebarLoader | 35개 페이지 | ✅ 정상 | 2025-09-05 |
-| HeaderLoader | 3개 페이지 | ✅ 정상 | 2025-09-05 |
-| LoginSidepanelLoader | 3개 페이지 | ⚠️ 중복 파일 | 2025-09-05 |
+| 컴포넌트 | 사용 페이지 수 | 실제 사용 페이지 | 상태 | 마지막 업데이트 |
+|---------|-------------|---------------|------|----------------|
+| SidebarLoader | 28개 페이지 | 대부분의 페이지 | ✅ 정상 | 2025-09-05 |
+| HeaderLoader | 3개 페이지 | index, login, signup | ✅ 정상 | 2025-09-06 |
+| LoginSidepanelLoader | 2개 페이지 | index, signup | ✅ 정상 | 2025-09-06 |
+| ProfileSidepanelLoader | 0개 페이지 | 아직 미적용 | ✅ 새로 생성 | 2025-09-06 |
 
-### ⚠️ 이슈 트래킹
+### ⚠️ 현재 이슈
 
-#### 🔴 긴급 (2025-09-05)
-- `login-sidepanel.js` vs `LoginSidepanelLoader.js` 중복
-- 마이페이지(`profile.html`) 누락
+### 📝 최근 업데이트 (최근 1주일)
 
-#### 🟡 정리 필요 (2025-09-05)
-- `header.js` (레거시) → `header-loader.js`로 통합
-- `sidebar.js` (레거시) → `sidebar-loader.js`로 통합
+#### 2025-09-06 
+- **레거시 파일 통합 완료**: header.js → header-loader.js, sidebar.js → sidebar-loader.js 통합 및 삭제 ✅
+- **로그인 패널 중복 파일 해결**: 레거시 파일 삭제 완료
+- **프로필 시스템 구축**: mypage → profile 리팩토링
+- **문서 개선**: 사이트맵 간소화, 컴포넌트 통계 정확도 향상
+- **컴포넌트 시스템 문서화**: 전체 컴포넌트 용도별 분류 추가
+
+### ✅ 완료된 이슈 (2025-09-06)
+- ~~`header.js` → `header-loader.js` 통합~~
+- ~~`sidebar.js` → `sidebar-loader.js` 통합~~
+- ~~`login-sidepanel.js` → `LoginSidepanelLoader.js` 중복 해결~~
+
+### 📚 과거 이력
+상세한 변경 이력은 [CHANGELOG.md](./CHANGELOG.md)를 참조하세요.
+
+---
+
+## 🚧 주의사항 및 일반적인 문제 해결
+
+### 자주 발생하는 이슈
+1. **Supabase 초기화 타이밍**
+   - 항상 `waitForSupabase()` 사용하여 클라이언트 준비 확인
+   - 전역 객체 로드 순서 주의
+
+2. **모듈 로딩 에러**
+   - ES6 모듈과 일반 스크립트 혼재로 인한 문제
+   - 동적 import 사용하여 폴백 처리
+
+3. **인증 상태 체크**
+   - 페이지 로드 시 항상 `authService.checkSession()` 호출
+   - 로그인 필요 페이지에서는 리다이렉트 처리
+
+4. **컴포넌트 로더 중복**
+   - 각 페이지에서 필요한 로더만 import
+   - 공통 컴포넌트는 한 번만 로드
+
+### 테스트 데이터 생성
+- `create-test-accounts.html`: 테스트 계정 생성
+- `create-sample-banners.html`: 샘플 배너 생성
+- `generate-banners.html`: 배너 이미지 생성
 
 ---
 
@@ -436,7 +636,7 @@ Claude Code는 다음을 반드시 지켜야 한다:
 - 보안·성능·로그·QA·접근성·버전관리 원칙 준수  
 - 오류 수정 시 설레발 금지 + 최종 코드 검토 필수  
 - 결과는 반드시 TODO 보고
-- 사용자가 요청한 디버깅 및 리펙토링 시 사용자에게 질문 생략하고 **All yes**로 막힘 없이 끝까지 진행한다.
+- 사용자가 요청한 단순 디버깅 및 리펙토링 시 사용자에게 질문 생략하고 **All yes**로 막힘 없이 끝까지 진행한다.
 - **사이트맵 섹션**: 페이지/컴포넌트 변경 시 반드시 업데이트
 
 > 이 문서는 **개발의 헌법**입니다.  

@@ -615,26 +615,26 @@ class DropdownInstance {
 
     handleKeydown(e) {
         switch (e.key) {
-            case 'ArrowDown':
-                e.preventDefault();
-                this.navigateOptions(1);
-                break;
-            case 'ArrowUp':
-                e.preventDefault();
-                this.navigateOptions(-1);
-                break;
-            case 'Enter':
-                e.preventDefault();
-                if (this.focusedIndex >= 0 && this.filteredOptions[this.focusedIndex]) {
-                    this.selectOption(this.filteredOptions[this.focusedIndex]);
-                }
-                break;
-            case 'Escape':
-                this.close();
-                break;
-            case 'Tab':
-                this.close();
-                break;
+        case 'ArrowDown':
+            e.preventDefault();
+            this.navigateOptions(1);
+            break;
+        case 'ArrowUp':
+            e.preventDefault();
+            this.navigateOptions(-1);
+            break;
+        case 'Enter':
+            e.preventDefault();
+            if (this.focusedIndex >= 0 && this.filteredOptions[this.focusedIndex]) {
+                this.selectOption(this.filteredOptions[this.focusedIndex]);
+            }
+            break;
+        case 'Escape':
+            this.close();
+            break;
+        case 'Tab':
+            this.close();
+            break;
         }
     }
 

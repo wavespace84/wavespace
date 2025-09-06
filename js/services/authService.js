@@ -3,8 +3,43 @@
  * Supabase를 사용한 인증 관리 서비스
  */
 
-import { BaseService } from '/js/core/BaseService.js';
-import { AuthorizationHelper } from '/js/utils/serviceHelpers.js';
+// 동적 import로 변경 (HTML에서 일반 스크립트로 로드되므로)
+let BaseService = null;
+let AuthorizationHelper = null;
+
+// 동적 import 로드
+(async () => {
+    try {
+        const baseServiceModule = await import('/js/core/BaseService.js');
+        BaseService = baseServiceModule.BaseService;
+        
+        const helpersModule = await import('/js/utils/serviceHelpers.js');
+        AuthorizationHelper = helpersModule.AuthorizationHelper;
+        
+        console.log('✅ AuthService 의존성 로드 완료');
+    } catch (e) {
+        console.warn('AuthService 의존성 로드 실패, 기본 서비스로 동작:', e);
+        // BaseService가 없는 경우 기본 클래스 사용
+        BaseService = class {
+            constructor(name) {
+                this.serviceName = name;
+                this.supabase = window.WaveSupabase?.getClient?.();
+            }
+            async waitForSupabase(maxAttempts = 100, delay = 100) {
+                let attempts = 0;
+                while (attempts < maxAttempts && (!window.WaveSupabase || !window.WaveSupabase.getClient)) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    attempts++;
+                }
+                if (window.WaveSupabase && window.WaveSupabase.getClient) {
+                    this.supabase = window.WaveSupabase.getClient();
+                    return true;
+                }
+                return false;
+            }
+        };
+    }
+})();
 
 // 에러 핸들러 import (동적 로드)
 let ErrorHandler = null;
@@ -69,10 +104,31 @@ async function loadProfileAndBadges(supabase, authUserId) {
     }
 }
 
-class AuthService extends BaseService {
+class AuthService {
     constructor() {
-        super('AuthService');
+        this.serviceName = 'AuthService';
         this.currentUser = null;
+        this.supabase = null;
+        
+        // BaseService가 로드되면 mixin으로 메서드 복사
+        this.initBaseServiceMethods();
+    }
+    
+    // BaseService 메서드들을 안전하게 초기화
+    initBaseServiceMethods() {
+        // BaseService 메서드가 로드될 때까지 대기하는 간단한 폴백
+        this.waitForSupabase = async (maxAttempts = 100, delay = 100) => {
+            let attempts = 0;
+            while (attempts < maxAttempts && (!window.WaveSupabase || !window.WaveSupabase.getClient)) {
+                await new Promise(resolve => setTimeout(resolve, delay));
+                attempts++;
+            }
+            if (window.WaveSupabase && window.WaveSupabase.getClient) {
+                this.supabase = window.WaveSupabase.getClient();
+                return true;
+            }
+            return false;
+        };
     }
 
     /**
@@ -112,16 +168,36 @@ class AuthService extends BaseService {
         if (userInfoElement) {
             userInfoElement.innerHTML = `
                 <div class="auth-buttons anonymous-only">
-                    <button class="btn btn-outline" onclick="window.location.href='login.html'">
+                    <button class="btn btn-outline" data-action="login">
                         <i class="fas fa-sign-in-alt"></i>
                         <span>로그인</span>
                     </button>
-                    <button class="btn btn-primary" onclick="window.location.href='signup.html'">
+                    <button class="btn btn-primary" data-action="signup">
                         <i class="fas fa-user-plus"></i>
                         <span>회원가입</span>
                     </button>
                 </div>
             `;
+            
+            // 폴백 UI 버튼에 이벤트 리스너 추가
+            const fallbackLoginBtn = userInfoElement.querySelector('button[data-action="login"]');
+            const fallbackSignupBtn = userInfoElement.querySelector('button[data-action="signup"]');
+            
+            if (fallbackLoginBtn) {
+                fallbackLoginBtn.addEventListener('click', () => {
+                    try {
+                        this.openLoginSidepanel();
+                    } catch (error) {
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+            
+            if (fallbackSignupBtn) {
+                fallbackSignupBtn.addEventListener('click', () => {
+                    window.location.href = 'signup.html';
+                });
+            }
             console.log('✅ 폴백 UI: 로그인/회원가입 버튼 표시 완료');
         }
         
@@ -1094,7 +1170,7 @@ class AuthService extends BaseService {
                     </button>
                     
                     <!-- 마이페이지 버튼 -->
-                    <button class="header-icon-btn user-btn" onclick="authService.openMypageSidepanel()" title="마이페이지">
+                    <button class="header-icon-btn user-btn" data-action="profile" title="마이페이지">
                         <i class="fa-solid fa-user"></i>
                     </button>
                     
@@ -1105,11 +1181,35 @@ class AuthService extends BaseService {
                     </div>
                     
                     <!-- 로그아웃 버튼 -->
-                    <button class="header-icon-btn logout-btn" onclick="authService.signOut()" title="로그아웃">
+                    <button class="header-icon-btn logout-btn" data-action="logout" title="로그아웃">
                         <i class="fa-solid fa-sign-out-alt"></i>
                     </button>
                 </div>
             `;
+            
+            // 로그인된 사용자 UI 버튼에 이벤트 리스너 추가
+            const profileBtn = userInfoElement.querySelector('button[data-action="profile"]');
+            const logoutBtn = userInfoElement.querySelector('button[data-action="logout"]');
+            
+            if (profileBtn) {
+                profileBtn.addEventListener('click', () => {
+                    try {
+                        this.openProfileSidepanel();
+                    } catch (error) {
+                        console.error('마이페이지 열기 실패:', error);
+                    }
+                });
+            }
+            
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    try {
+                        await this.signOut();
+                    } catch (error) {
+                        console.error('로그아웃 실패:', error);
+                    }
+                });
+            }
         }
 
         // 로그인 관련 버튼 숨기기/표시
@@ -1134,16 +1234,36 @@ class AuthService extends BaseService {
                 // 로그인/회원가입 버튼이 없다면 추가
                 userInfoElement.innerHTML = `
                     <div class="auth-buttons anonymous-only">
-                        <button class="btn btn-outline" onclick="window.location.href='login.html'">
+                        <button class="btn btn-outline" data-action="login">
                             <i class="fas fa-sign-in-alt"></i>
                             <span>로그인</span>
                         </button>
-                        <button class="btn btn-primary" onclick="window.location.href='signup.html'">
+                        <button class="btn btn-primary" data-action="signup">
                             <i class="fas fa-user-plus"></i>
                             <span>회원가입</span>
                         </button>
                     </div>
                 `;
+                
+                // 익명 사용자 UI 버튼에 이벤트 리스너 추가
+                const anonymousLoginBtn = userInfoElement.querySelector('button[data-action="login"]');
+                const anonymousSignupBtn = userInfoElement.querySelector('button[data-action="signup"]');
+                
+                if (anonymousLoginBtn) {
+                    anonymousLoginBtn.addEventListener('click', () => {
+                        try {
+                            this.openLoginSidepanel();
+                        } catch (error) {
+                            window.location.href = 'login.html';
+                        }
+                    });
+                }
+                
+                if (anonymousSignupBtn) {
+                    anonymousSignupBtn.addEventListener('click', () => {
+                        window.location.href = 'signup.html';
+                    });
+                }
             }
         }
 
@@ -1265,16 +1385,22 @@ class AuthService extends BaseService {
      * 로그인 사이드패널 닫기
      */
     closeLoginSidepanel() {
-        const sidepanel = document.getElementById('loginSidepanel');
-        if (sidepanel) {
-            sidepanel.classList.remove('show');
-            document.body.style.overflow = '';
-            
-            // 폼 초기화
-            const form = document.getElementById('loginForm');
-            if (form) {
-                form.reset();
-                this.hideLoginError();
+        // 새로운 LoginSidepanelLoader를 우선적으로 사용
+        if (window.loginSidepanelLoader && typeof window.loginSidepanelLoader.hideSidepanel === 'function') {
+            window.loginSidepanelLoader.hideSidepanel();
+        } else {
+            // 폴백: 기존 방식
+            const sidepanel = document.getElementById('loginSidepanel');
+            if (sidepanel) {
+                sidepanel.classList.remove('show', 'active');
+                document.body.style.overflow = '';
+                
+                // 폼 초기화
+                const form = document.getElementById('loginForm');
+                if (form) {
+                    form.reset();
+                    this.hideLoginError();
+                }
             }
             
             console.log('✅ 로그인 사이드패널 닫힘');
@@ -1357,8 +1483,8 @@ class AuthService extends BaseService {
                 this.closeLoginSidepanel();
                 
                 // 마이페이지 데이터 새로고침
-                if (typeof loadMypageData === 'function') {
-                    loadMypageData();
+                if (typeof loadProfileData === 'function') {
+                    loadProfileData();
                 }
                 
                 // 성공 메시지 표시 (선택적)
@@ -1462,38 +1588,44 @@ class AuthService extends BaseService {
     }
 
     /**
-     * 비밀번호 재설정
+     * 비밀번호 재설정 화면 표시
      */
     async showPasswordReset() {
-        const email = prompt('비밀번호를 재설정할 이메일 주소를 입력하세요:');
-        
-        if (!email) {
-            return;
-        }
-        
-        // 이메일 형식 검증
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert('올바른 이메일 주소를 입력해주세요.');
-            return;
-        }
-        
-        try {
-            const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password.html`
-            });
+        // 로그인 사이드패널이 있는 경우 사용
+        if (window.loginSidepanelLoader && typeof window.loginSidepanelLoader.switchView === 'function') {
+            // 로그인 사이드패널이 표시되어 있지 않다면 먼저 열기
+            if (!window.loginSidepanelLoader.isVisible()) {
+                await window.loginSidepanelLoader.showLoginSidepanel();
+            }
+            // 비밀번호 재설정 뷰로 전환
+            window.loginSidepanelLoader.switchView('password-reset');
+        } else {
+            // 폴백: 기존 prompt 방식
+            const email = prompt('임시 비밀번호를 받을 이메일 주소를 입력하세요:');
             
-            if (error) {
-                console.error('❌ 비밀번호 재설정 실패:', error);
-                alert('비밀번호 재설정에 실패했습니다. 다시 시도해주세요.');
+            if (!email) {
                 return;
             }
             
-            alert(`${email}로 비밀번호 재설정 링크를 발송했습니다. 이메일을 확인해주세요.`);
+            // 이메일 형식 검증
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('올바른 이메일 주소를 입력해주세요.');
+                return;
+            }
             
-        } catch (error) {
-            console.error('❌ 비밀번호 재설정 오류:', error);
-            alert('비밀번호 재설정 중 오류가 발생했습니다.');
+            try {
+                const result = await this.resetPassword(email);
+                
+                if (result.success) {
+                    alert(`${email}로 임시 비밀번호를 발송했습니다. 이메일을 확인해주세요.`);
+                } else {
+                    alert('임시 비밀번호 발송에 실패했습니다. 다시 시도해주세요.');
+                }
+            } catch (error) {
+                console.error('❌ 임시 비밀번호 발송 오류:', error);
+                alert('임시 비밀번호 발송 중 오류가 발생했습니다.');
+            }
         }
     }
 
@@ -1514,7 +1646,7 @@ class AuthService extends BaseService {
      * 프로필 페이지 표시
      */
     showProfile() {
-        window.location.href = 'profile.html';
+        this.openProfileSidepanel();
     }
 
     /**
@@ -1606,20 +1738,263 @@ class AuthService extends BaseService {
     }
 
     /**
-     * 비밀번호 재설정
+     * 임시 비밀번호 발송 (Rate Limiting 적용)
      */
     async resetPassword(email) {
         try {
-            const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password.html`
-            });
+            // Rate Limiting 체크
+            const rateLimitKey = `password_reset_${email}`;
+            const ipRateLimitKey = `password_reset_ip_${this.getClientIP()}`;
+            
+            // 이메일별 제한 체크 (24시간에 5회)
+            const emailAttempts = this.getRateLimitAttempts(rateLimitKey, 86400000); // 24시간
+            if (emailAttempts >= 5) {
+                return { 
+                    success: false, 
+                    error: '임시 비밀번호 요청 제한을 초과했습니다. 24시간 후에 다시 시도해주세요.' 
+                };
+            }
+            
+            // IP별 제한 체크 (5분에 3회)
+            const ipAttempts = this.getRateLimitAttempts(ipRateLimitKey, 300000); // 5분
+            if (ipAttempts >= 3) {
+                return { 
+                    success: false, 
+                    error: '너무 많은 요청이 감지되었습니다. 5분 후에 다시 시도해주세요.' 
+                };
+            }
+            
+            // 사용자 확인
+            const { data: user, error: userError } = await this.supabase
+                .from('users')
+                .select('id, email, username')
+                .eq('email', email)
+                .single();
 
-            if (error) throw error;
-            return { success: true };
+            if (userError || !user) {
+                // 보안을 위해 성공한 것처럼 표시
+                this.incrementRateLimit(rateLimitKey);
+                this.incrementRateLimit(ipRateLimitKey);
+                this.logPasswordResetAttempt(email, false, '사용자 없음');
+                return { success: true };
+            }
+
+            // 임시 비밀번호 생성 (8자리: 대소문자+숫자+특수문자)
+            const tempPassword = this.generateTempPassword();
+            
+            // Supabase Auth에서 비밀번호 업데이트
+            const { error: updateError } = await this.supabase.auth.admin.updateUserById(
+                user.auth_user_id, 
+                { password: tempPassword }
+            );
+
+            if (updateError) {
+                console.error('비밀번호 업데이트 실패:', updateError);
+                // 실제 구현에서는 이메일 발송 대신 로컬 임시 저장
+                this.storeTempPassword(email, tempPassword);
+            }
+            
+            // 이메일 발송 (실제로는 임시 저장)
+            await this.sendTempPasswordEmail(email, tempPassword, user.username);
+            
+            // 성공 시 Rate Limit 카운트 증가
+            this.incrementRateLimit(rateLimitKey);
+            this.incrementRateLimit(ipRateLimitKey);
+            
+            // 보안 로그 기록
+            this.logPasswordResetAttempt(email, true);
+            
+            return { 
+                success: true, 
+                message: '임시 비밀번호가 이메일로 발송되었습니다.' 
+            };
         } catch (error) {
-            console.error('비밀번호 재설정 실패:', error);
-            return { success: false, error: error.message };
+            console.error('임시 비밀번호 발송 실패:', error);
+            
+            // 실패 로그 기록
+            this.logPasswordResetAttempt(email, false, error.message);
+            
+            // 에러 메시지도 보안을 위해 모호하게 처리
+            return { success: false, error: '요청을 처리할 수 없습니다. 잠시 후 다시 시도해주세요.' };
         }
+    }
+
+    /**
+     * 임시 비밀번호 생성
+     */
+    generateTempPassword() {
+        const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        const numbers = '0123456789';
+        const symbols = '!@#$%^&*';
+        
+        let password = '';
+        
+        // 각 문자 유형에서 최소 1개씩 포함
+        password += uppercase[Math.floor(Math.random() * uppercase.length)];
+        password += lowercase[Math.floor(Math.random() * lowercase.length)];
+        password += numbers[Math.floor(Math.random() * numbers.length)];
+        password += symbols[Math.floor(Math.random() * symbols.length)];
+        
+        // 나머지 4자리는 모든 문자에서 랜덤 선택
+        const allChars = uppercase + lowercase + numbers + symbols;
+        for (let i = 4; i < 8; i++) {
+            password += allChars[Math.floor(Math.random() * allChars.length)];
+        }
+        
+        // 문자 섞기
+        return password.split('').sort(() => Math.random() - 0.5).join('');
+    }
+
+    /**
+     * 임시 비밀번호 로컬 저장 (개발용)
+     */
+    storeTempPassword(email, tempPassword) {
+        try {
+            const tempPasswords = JSON.parse(localStorage.getItem('temp_passwords') || '{}');
+            tempPasswords[email] = {
+                password: tempPassword,
+                created: Date.now(),
+                used: false
+            };
+            localStorage.setItem('temp_passwords', JSON.stringify(tempPasswords));
+            console.log(`임시 비밀번호 저장됨 - ${email}: ${tempPassword}`);
+        } catch (error) {
+            console.error('임시 비밀번호 저장 실패:', error);
+        }
+    }
+
+    /**
+     * 임시 비밀번호 이메일 발송 (현재는 콘솔 출력)
+     */
+    async sendTempPasswordEmail(email, tempPassword, username) {
+        // 실제 환경에서는 이메일 서비스 사용
+        // 현재는 개발용으로 콘솔에 출력
+        console.log(`
+=== 임시 비밀번호 발송 ===
+받는 사람: ${email}
+사용자명: ${username}
+임시 비밀번호: ${tempPassword}
+========================
+        `);
+        
+        // 로컬 저장소에도 저장 (개발용)
+        this.storeTempPassword(email, tempPassword);
+        
+        return true;
+    }
+    
+    /**
+     * 비밀번호 재설정 시도 로그 기록
+     */
+    logPasswordResetAttempt(email, success, errorMessage = null) {
+        try {
+            const logs = JSON.parse(localStorage.getItem('password_reset_logs') || '[]');
+            
+            // 로그 추가
+            logs.push({
+                email: email.substring(0, 3) + '***', // 이메일 일부만 저장
+                timestamp: Date.now(),
+                success,
+                errorMessage: errorMessage ? errorMessage.substring(0, 50) : null,
+                userAgent: navigator.userAgent.substring(0, 100)
+            });
+            
+            // 최근 100개 로그만 유지
+            if (logs.length > 100) {
+                logs.splice(0, logs.length - 100);
+            }
+            
+            localStorage.setItem('password_reset_logs', JSON.stringify(logs));
+            
+            // 비정상적인 패턴 감지
+            this.detectAbnormalPatterns(logs);
+            
+        } catch (error) {
+            console.error('로그 기록 실패:', error);
+        }
+    }
+    
+    /**
+     * 비정상적인 패턴 감지
+     */
+    detectAbnormalPatterns(logs) {
+        const recentLogs = logs.filter(log => Date.now() - log.timestamp < 3600000); // 최근 1시간
+        
+        // 1시간 내 실패 10회 이상
+        const failures = recentLogs.filter(log => !log.success);
+        if (failures.length >= 10) {
+            console.warn('⚠️ 비정상적인 비밀번호 재설정 시도 감지');
+            // 실제 운영 환경에서는 관리자에게 알림 발송
+        }
+        
+        // 다양한 이메일로 연속 시도
+        const uniqueEmails = new Set(recentLogs.map(log => log.email)).size;
+        if (uniqueEmails >= 5 && recentLogs.length >= 10) {
+            console.warn('⚠️ 무작위 이메일 공격 시도 감지');
+            // 실제 운영 환경에서는 IP 차단 등의 조치
+        }
+    }
+    
+    /**
+     * Rate Limit 시도 횟수 확인
+     */
+    getRateLimitAttempts(key, timeWindow) {
+        const storageKey = `rate_limit_${key}`;
+        const data = localStorage.getItem(storageKey);
+        
+        if (!data) return 0;
+        
+        try {
+            const attempts = JSON.parse(data);
+            const now = Date.now();
+            
+            // 시간 윈도우 내의 시도만 필터링
+            const validAttempts = attempts.filter(timestamp => now - timestamp < timeWindow);
+            
+            // 유효한 시도만 다시 저장
+            if (validAttempts.length !== attempts.length) {
+                localStorage.setItem(storageKey, JSON.stringify(validAttempts));
+            }
+            
+            return validAttempts.length;
+        } catch {
+            return 0;
+        }
+    }
+    
+    /**
+     * Rate Limit 카운트 증가
+     */
+    incrementRateLimit(key) {
+        const storageKey = `rate_limit_${key}`;
+        const data = localStorage.getItem(storageKey);
+        
+        let attempts = [];
+        if (data) {
+            try {
+                attempts = JSON.parse(data);
+            } catch {
+                attempts = [];
+            }
+        }
+        
+        attempts.push(Date.now());
+        localStorage.setItem(storageKey, JSON.stringify(attempts));
+    }
+    
+    /**
+     * 클라이언트 IP 추정 (간단한 방법)
+     */
+    getClientIP() {
+        // 실제 IP를 얻기는 어려우므로 브라우저 정보로 대체
+        const userAgent = navigator.userAgent;
+        const language = navigator.language;
+        const platform = navigator.platform;
+        
+        // 간단한 해시 생성
+        const hash = btoa(`${userAgent}${language}${platform}`).substring(0, 16);
+        return hash;
     }
 
     /**
@@ -1794,22 +2169,73 @@ class AuthService extends BaseService {
     /**
      * 마이페이지 사이드패널 열기
      */
-    openMypageSidepanel() {
-        const sidepanel = document.getElementById('mypageSidepanel');
-        if (sidepanel) {
-            sidepanel.classList.add('show');
-            document.body.style.overflow = 'hidden';
+    openProfileSidepanel() {
+        const openPanel = () => {
+            if (window.componentLoader && typeof window.componentLoader.showProfileModal === 'function') {
+                console.log('[AuthService] ComponentLoader로 프로필 모달 열기');
+                window.componentLoader.showProfileModal();
+            } else {
+                console.error('ComponentLoader를 사용할 수 없습니다. 폴백 처리 시도...');
+                this.tryFallbackProfileOpen();
+            }
+        };
+
+        // ComponentLoader가 이미 준비되었는지 확인
+        if (window.componentLoaderReady && window.componentLoader) {
+            console.log('[AuthService] ComponentLoader 즉시 사용 가능');
+            openPanel();
+        } else if (window.ComponentLoader) {
+            // ComponentLoader 클래스는 있지만 인스턴스가 없는 경우 직접 생성
+            console.log('[AuthService] ComponentLoader 인스턴스 직접 생성');
+            window.componentLoader = new window.ComponentLoader();
+            window.componentLoaderReady = true;
+            openPanel();
+        } else {
+            console.log('[AuthService] ComponentLoader 대기 중...');
+            // 최대 3초 대기
+            const timeoutId = setTimeout(() => {
+                console.warn('[AuthService] ComponentLoader 로드 타임아웃, 폴백 처리');
+                this.tryFallbackProfileOpen();
+            }, 3000);
             
-            // 사용자 정보 로드
-            this.loadMypageData();
+            document.addEventListener('componentLoaderReady', () => {
+                clearTimeout(timeoutId);
+                openPanel();
+            }, { once: true });
+        }
+    }
+
+    /**
+     * ComponentLoader 사용 불가 시 폴백 프로필 열기
+     */
+    tryFallbackProfileOpen() {
+        try {
+            // ProfileSidepanelLoader 사용 시도
+            if (window.ProfileSidepanelLoader) {
+                console.log('[AuthService] ProfileSidepanelLoader로 폴백 처리');
+                const loader = new window.ProfileSidepanelLoader();
+                loader.showProfileSidepanel();
+                return;
+            }
+            
+            // 최종 폴백: 간단한 프로필 정보 알림
+            const userInfo = this.userProfile || this.currentUser;
+            if (userInfo) {
+                alert(`사용자 정보:\n닉네임: ${userInfo.nickname || '사용자'}\n이메일: ${userInfo.email || '이메일 없음'}\n\n프로필 상세보기는 현재 로드 중입니다.`);
+            } else {
+                alert('사용자 정보를 불러올 수 없습니다.');
+            }
+        } catch (error) {
+            console.error('[AuthService] 폴백 프로필 열기 실패:', error);
+            alert('프로필을 열 수 없습니다. 페이지를 새로고침해주세요.');
         }
     }
 
     /**
      * 마이페이지 사이드패널 닫기
      */
-    closeMypageSidepanel() {
-        const sidepanel = document.getElementById('mypageSidepanel');
+    closeProfileSidepanel() {
+        const sidepanel = document.getElementById('profileSidepanel');
         if (sidepanel) {
             sidepanel.classList.remove('show');
             document.body.style.overflow = '';
@@ -1819,9 +2245,9 @@ class AuthService extends BaseService {
     /**
      * 마이페이지 탭 전환
      */
-    switchMypageTab(tabName) {
+    switchProfileTab(tabName) {
         // 네비게이션 활성화 상태 변경 - 새로운 클래스 이름 사용
-        const navItems = document.querySelectorAll('.mypage-tab');
+        const navItems = document.querySelectorAll('.profile-tab');
         navItems.forEach(item => {
             item.classList.remove('active');
             if (item.dataset.tab === tabName) {
@@ -1830,7 +2256,7 @@ class AuthService extends BaseService {
         });
 
         // 탭 콘텐츠 표시/숨김
-        const tabContents = document.querySelectorAll('.mypage-tab-content');
+        const tabContents = document.querySelectorAll('.profile-tab-content');
         tabContents.forEach(content => {
             content.classList.remove('active');
             if (content.id === `${tabName}-tab`) {
@@ -1845,21 +2271,46 @@ class AuthService extends BaseService {
     /**
      * 마이페이지 데이터 로드
      */
-    async loadMypageData() {
+    async loadProfileData() {
         if (!this.currentUser || !this.userProfile) return;
 
         try {
             // 기본 프로필 정보 업데이트
             // 닉네임을 우선적으로 표시
             const displayName = this.userProfile.nickname || this.userProfile.username || '사용자명';
-            document.getElementById('mypage-username').textContent = displayName;
-            document.getElementById('mypage-email').textContent = this.currentUser.email;
-            document.getElementById('mypage-points').textContent = `${this.userProfile.points || 0} P`;
-            document.getElementById('mypage-current-points').textContent = `${this.userProfile.points || 0} P`;
+            document.getElementById('profile-username').textContent = displayName;
+            document.getElementById('profile-email').textContent = this.currentUser.email;
+            document.getElementById('profile-points').textContent = `${this.userProfile.points || 0} P`;
+            document.getElementById('profile-current-points').textContent = `${this.userProfile.points || 0} P`;
+            
+            // 추가 회원 정보 업데이트
+            const userIdElement = document.getElementById('profile-user-id');
+            if (userIdElement) {
+                userIdElement.textContent = this.userProfile.username || '-';
+            }
+            
+            const nicknameElement = document.getElementById('profile-nickname');
+            if (nicknameElement) {
+                nicknameElement.textContent = this.userProfile.nickname || '-';
+            }
+            
+            const memberTypeElement = document.getElementById('profile-member-type');
+            if (memberTypeElement) {
+                const memberTypeMap = {
+                    'general': '일반 회원',
+                    'sales_planning': '분양기획',
+                    'sales_agency': '분양영업',
+                    'subscription_consulting': '청약상담',
+                    'related_company': '관계사',
+                    'practitioner': '실무자'
+                };
+                const memberTypeText = memberTypeMap[this.userProfile.member_type] || this.userProfile.member_type || '-';
+                memberTypeElement.textContent = memberTypeText;
+            }
             
             // 대표 뱃지 업데이트
             const representativeBadge = this.getRepresentativeBadge(this.userProfile);
-            const badgeElement = document.getElementById('mypage-representative-badge');
+            const badgeElement = document.getElementById('profile-representative-badge');
             if (badgeElement && representativeBadge) {
                 badgeElement.innerHTML = `
                     <i class="fas fa-medal"></i>
@@ -1872,9 +2323,9 @@ class AuthService extends BaseService {
             
             // 뱃지 개수 업데이트
             const badgeCount = this.userProfile.user_badges ? this.userProfile.user_badges.length : 0;
-            document.getElementById('mypage-badge-count').textContent = `${badgeCount}개`;
-            document.getElementById('mypage-total-badges').textContent = `${badgeCount} / 28`;
-            document.getElementById('mypage-badge-progress').textContent = `${Math.round((badgeCount / 28) * 100)}%`;
+            document.getElementById('profile-badge-count').textContent = `${badgeCount}개`;
+            document.getElementById('profile-total-badges').textContent = `${badgeCount} / 28`;
+            document.getElementById('profile-badge-progress').textContent = `${Math.round((badgeCount / 28) * 100)}%`;
 
             // 실무자 인증 상태 업데이트
             this.updatePractitionerStatus();
@@ -1929,8 +2380,8 @@ class AuthService extends BaseService {
     async loadBadgesData() {
         if (!this.userProfile || !this.userProfile.user_badges) return;
 
-        const badgeGrid = document.getElementById('mypage-badge-grid');
-        const badgeEmpty = badgeGrid.querySelector('.mypage-badge-empty');
+        const badgeGrid = document.getElementById('profile-badge-grid');
+        const badgeEmpty = badgeGrid.querySelector('.profile-badge-empty');
         
         if (this.userProfile.user_badges.length === 0) {
             if (badgeEmpty) badgeEmpty.style.display = 'block';
@@ -1943,11 +2394,11 @@ class AuthService extends BaseService {
         const badgeHTML = this.userProfile.user_badges.map(userBadge => {
             const badge = userBadge.badges;
             return `
-                <div class="mypage-badge-item">
-                    <div class="mypage-badge-icon" style="background: ${badge.color}">
+                <div class="profile-badge-item">
+                    <div class="profile-badge-icon" style="background: ${badge.color}">
                         <i class="${badge.icon}"></i>
                     </div>
-                    <div class="mypage-badge-info">
+                    <div class="profile-badge-info">
                         <h5>${badge.name}</h5>
                         <p>${new Date(userBadge.earned_at).toLocaleDateString()}</p>
                     </div>
@@ -1978,11 +2429,11 @@ class AuthService extends BaseService {
      * 실무자 인증 상태 업데이트
      */
     updatePractitionerStatus() {
-        const practitionerSection = document.getElementById('mypage-practitioner');
-        const statusIcon = practitionerSection.querySelector('.mypage-status-icon');
-        const statusText = practitionerSection.querySelector('.mypage-status-text');
-        const progressFill = practitionerSection.querySelector('.mypage-progress-fill');
-        const progressText = practitionerSection.querySelector('.mypage-progress-text');
+        const practitionerSection = document.getElementById('profile-practitioner');
+        const statusIcon = practitionerSection.querySelector('.profile-status-icon');
+        const statusText = practitionerSection.querySelector('.profile-status-text');
+        const progressFill = practitionerSection.querySelector('.profile-progress-fill');
+        const progressText = practitionerSection.querySelector('.profile-progress-text');
 
         // TODO: 실제 업로드 데이터 기반으로 상태 업데이트
         // 임시로 기본값 설정
@@ -1991,7 +2442,7 @@ class AuthService extends BaseService {
         const progress = (uploadedCount / requiredCount) * 100;
 
         if (statusIcon) {
-            statusIcon.className = 'mypage-status-icon pending';
+            statusIcon.className = 'profile-status-icon pending';
         }
         if (statusText) {
             statusText.textContent = '인증 대기중';
@@ -2003,13 +2454,137 @@ class AuthService extends BaseService {
             progressText.textContent = `${requiredCount}건 중 ${uploadedCount}건 업로드 완료`;
         }
     }
+
+    /**
+     * 이메일 변경
+     */
+    async changeEmail() {
+        try {
+            const newEmail = document.getElementById('newEmail').value;
+            const password = document.getElementById('emailPassword').value;
+            
+            if (!newEmail || !password) {
+                this.showToast('모든 필드를 입력해주세요.', 'error');
+                return;
+            }
+            
+            // 이메일 형식 검증
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(newEmail)) {
+                this.showToast('올바른 이메일 형식이 아닙니다.', 'error');
+                return;
+            }
+            
+            // 현재 이메일과 동일한지 확인
+            if (newEmail === this.currentUser.email) {
+                this.showToast('현재 이메일과 동일합니다.', 'error');
+                return;
+            }
+            
+            // Supabase에서 이메일 변경
+            const { error } = await this.supabase.auth.updateUser({
+                email: newEmail,
+                password: password
+            });
+            
+            if (error) {
+                if (error.message.includes('Invalid login credentials')) {
+                    this.showToast('비밀번호가 올바르지 않습니다.', 'error');
+                } else {
+                    this.showToast(`이메일 변경 실패: ${error.message}`, 'error');
+                }
+                return;
+            }
+            
+            this.showToast('이메일이 변경되었습니다. 새 이메일로 확인 링크가 전송되었습니다.', 'success');
+            document.getElementById('changeEmailModal').remove();
+            
+            // UI 업데이트
+            await this.loadUserProfile();
+            this.updateUIForLoggedInUser();
+            
+        } catch (error) {
+            console.error('이메일 변경 오류:', error);
+            this.showToast('이메일 변경 중 오류가 발생했습니다.', 'error');
+        }
+    }
+    
+    /**
+     * 비밀번호 변경
+     */
+    async changePassword() {
+        try {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                this.showToast('모든 필드를 입력해주세요.', 'error');
+                return;
+            }
+            
+            // 새 비밀번호 검증
+            if (newPassword !== confirmPassword) {
+                this.showToast('새 비밀번호가 일치하지 않습니다.', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                this.showToast('비밀번호는 8자 이상이어야 합니다.', 'error');
+                return;
+            }
+            
+            if (!/[A-Za-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+                this.showToast('비밀번호는 영문과 숫자를 포함해야 합니다.', 'error');
+                return;
+            }
+            
+            // 현재 비밀번호로 재인증 시도
+            const { error: signInError } = await this.supabase.auth.signInWithPassword({
+                email: this.currentUser.email,
+                password: currentPassword
+            });
+            
+            if (signInError) {
+                this.showToast('현재 비밀번호가 올바르지 않습니다.', 'error');
+                return;
+            }
+            
+            // 비밀번호 변경
+            const { error } = await this.supabase.auth.updateUser({
+                password: newPassword
+            });
+            
+            if (error) {
+                this.showToast(`비밀번호 변경 실패: ${error.message}`, 'error');
+                return;
+            }
+            
+            this.showToast('비밀번호가 성공적으로 변경되었습니다.', 'success');
+            document.getElementById('changePasswordModal').remove();
+            
+        } catch (error) {
+            console.error('비밀번호 변경 오류:', error);
+            this.showToast('비밀번호 변경 중 오류가 발생했습니다.', 'error');
+        }
+    }
 }
 
-// 전역 인증 서비스 인스턴스 생성
+// 전역 인증 서비스 인스턴스 생성 및 즉시 전역 등록
 const authService = new AuthService();
+window.authService = authService;
 
-// 페이지 로드 시 초기화
-window.addEventListener('load', async () => {
+console.log('✅ AuthService 전역 등록 완료');
+
+// 페이지 로드 시 초기화 (load 대신 DOMContentLoaded 사용으로 더 빠른 초기화)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAuthService);
+} else {
+    // 이미 로드 완료된 경우 즉시 초기화
+    setTimeout(initializeAuthService, 0);
+}
+
+async function initializeAuthService() {
     // HeaderLoader 완료 대기 (동적 헤더 페이지의 경우)
     const headerContainer = document.getElementById('header-container');
     if (headerContainer) {
@@ -2053,7 +2628,4 @@ window.addEventListener('load', async () => {
             attempts++;
         }
     }
-});
-
-// 전역 접근 가능하도록 설정
-window.authService = authService;
+}

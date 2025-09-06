@@ -59,7 +59,7 @@ class EmptyStateLoader {
             this.currentConfig = config;
             this.isLoaded = true;
 
-            console.log(`✅ EmptyState 로드 완료:`, config.title);
+            console.log('✅ EmptyState 로드 완료:', config.title);
             
         } catch (error) {
             console.error('[EmptyStateLoader] 로드 실패:', error);

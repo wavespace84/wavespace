@@ -222,7 +222,7 @@ class BadgeInstance {
         const { config } = this;
         
         // 기본 클래스 설정
-        let classes = ['wave-badge'];
+        const classes = ['wave-badge'];
         
         // 색상 및 타입
         if (config.color && config.color !== 'default') {
@@ -455,39 +455,39 @@ class BadgeInstance {
         this.element.style.transition = `all ${animation.duration}ms ease`;
         
         switch (type) {
-            case 'show':
-                if (animation.type === 'fadeIn') {
-                    this.element.style.opacity = '0';
-                    this.element.style.transform = 'scale(0.8)';
+        case 'show':
+            if (animation.type === 'fadeIn') {
+                this.element.style.opacity = '0';
+                this.element.style.transform = 'scale(0.8)';
                     
-                    requestAnimationFrame(() => {
-                        this.element.style.opacity = '1';
-                        this.element.style.transform = 'scale(1)';
-                    });
-                } else if (animation.type === 'slideIn') {
-                    this.element.style.transform = 'translateX(-10px)';
-                    this.element.style.opacity = '0';
+                requestAnimationFrame(() => {
+                    this.element.style.opacity = '1';
+                    this.element.style.transform = 'scale(1)';
+                });
+            } else if (animation.type === 'slideIn') {
+                this.element.style.transform = 'translateX(-10px)';
+                this.element.style.opacity = '0';
                     
-                    requestAnimationFrame(() => {
-                        this.element.style.transform = 'translateX(0)';
-                        this.element.style.opacity = '1';
-                    });
-                }
-                break;
+                requestAnimationFrame(() => {
+                    this.element.style.transform = 'translateX(0)';
+                    this.element.style.opacity = '1';
+                });
+            }
+            break;
                 
-            case 'hide':
-                if (animation.type === 'fadeOut') {
-                    this.element.style.opacity = '0';
-                    this.element.style.transform = 'scale(0.8)';
-                } else if (animation.type === 'slideOut') {
-                    this.element.style.transform = 'translateX(-10px)';
-                    this.element.style.opacity = '0';
-                }
+        case 'hide':
+            if (animation.type === 'fadeOut') {
+                this.element.style.opacity = '0';
+                this.element.style.transform = 'scale(0.8)';
+            } else if (animation.type === 'slideOut') {
+                this.element.style.transform = 'translateX(-10px)';
+                this.element.style.opacity = '0';
+            }
                 
-                if (callback) {
-                    setTimeout(callback, animation.duration);
-                }
-                break;
+            if (callback) {
+                setTimeout(callback, animation.duration);
+            }
+            break;
         }
     }
 

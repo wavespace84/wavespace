@@ -303,15 +303,15 @@ class BaseSupabaseManager {
         this.invalidateCache();
         
         switch (payload.eventType) {
-            case 'INSERT':
-                this.onRealtimeInsert(payload.new);
-                break;
-            case 'UPDATE':
-                this.onRealtimeUpdate(payload.new, payload.old);
-                break;
-            case 'DELETE':
-                this.onRealtimeDelete(payload.old);
-                break;
+        case 'INSERT':
+            this.onRealtimeInsert(payload.new);
+            break;
+        case 'UPDATE':
+            this.onRealtimeUpdate(payload.new, payload.old);
+            break;
+        case 'DELETE':
+            this.onRealtimeDelete(payload.old);
+            break;
         }
     }
 

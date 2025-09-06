@@ -237,31 +237,31 @@ class BaseSupabaseManager {
         const { eventType, new: newRecord, old: oldRecord } = payload;
 
         switch (eventType) {
-            case 'INSERT':
-                if (newRecord) {
+        case 'INSERT':
+            if (newRecord) {
+                const transformedData = this.transformData([newRecord]);
+                this.data.unshift(transformedData[0]);
+                this.applyClientSideFiltering();
+            }
+            break;
+
+        case 'UPDATE':
+            if (newRecord) {
+                const index = this.data.findIndex(item => item.id === newRecord.id);
+                if (index !== -1) {
                     const transformedData = this.transformData([newRecord]);
-                    this.data.unshift(transformedData[0]);
+                    this.data[index] = transformedData[0];
                     this.applyClientSideFiltering();
                 }
-                break;
+            }
+            break;
 
-            case 'UPDATE':
-                if (newRecord) {
-                    const index = this.data.findIndex(item => item.id === newRecord.id);
-                    if (index !== -1) {
-                        const transformedData = this.transformData([newRecord]);
-                        this.data[index] = transformedData[0];
-                        this.applyClientSideFiltering();
-                    }
-                }
-                break;
-
-            case 'DELETE':
-                if (oldRecord) {
-                    this.data = this.data.filter(item => item.id !== oldRecord.id);
-                    this.applyClientSideFiltering();
-                }
-                break;
+        case 'DELETE':
+            if (oldRecord) {
+                this.data = this.data.filter(item => item.id !== oldRecord.id);
+                this.applyClientSideFiltering();
+            }
+            break;
         }
 
         this.triggerCallback('onDataChange', this.data);

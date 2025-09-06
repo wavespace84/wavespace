@@ -238,22 +238,22 @@ class StickySlideCardLoader {
             if (!this.isVisible() || this.isMinimized) return;
 
             switch (e.key) {
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    this.handlePrevSlide();
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    this.handleNextSlide();
-                    break;
-                case ' ':
-                    e.preventDefault();
-                    this.handlePlayPause();
-                    break;
-                case 'Escape':
-                    e.preventDefault();
-                    this.minimize();
-                    break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                this.handlePrevSlide();
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                this.handleNextSlide();
+                break;
+            case ' ':
+                e.preventDefault();
+                this.handlePlayPause();
+                break;
+            case 'Escape':
+                e.preventDefault();
+                this.minimize();
+                break;
             }
         });
 

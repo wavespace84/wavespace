@@ -85,7 +85,7 @@ class LoadingSpinnerLoader {
                 config: config
             });
 
-            console.log(`✅ LoadingSpinner 로드 완료:`, instanceId);
+            console.log('✅ LoadingSpinner 로드 완료:', instanceId);
             return instanceId;
             
         } catch (error) {
@@ -166,8 +166,8 @@ class LoadingSpinnerLoader {
      */
     getSpinnerHTML(type) {
         switch (type) {
-            case 'ring':
-                return `
+        case 'ring':
+            return `
                     <div class="spinner-ring">
                         <div></div>
                         <div></div>
@@ -175,8 +175,8 @@ class LoadingSpinnerLoader {
                         <div></div>
                     </div>
                 `;
-            case 'dots':
-                return `
+        case 'dots':
+            return `
                     <div class="spinner-dots">
                         <div></div>
                         <div></div>
@@ -184,18 +184,18 @@ class LoadingSpinnerLoader {
                         <div></div>
                     </div>
                 `;
-            case 'bars':
-                return `
+        case 'bars':
+            return `
                     <div class="spinner-bars">
                         <div></div>
                         <div></div>
                         <div></div>
                     </div>
                 `;
-            case 'pulse':
-                return `<div class="spinner-pulse"></div>`;
-            default:
-                return `
+        case 'pulse':
+            return '<div class="spinner-pulse"></div>';
+        default:
+            return `
                     <div class="spinner-ring">
                         <div></div>
                         <div></div>

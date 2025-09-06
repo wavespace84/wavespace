@@ -78,6 +78,7 @@ body {
     color: var(--gray-700);
     white-space: nowrap;
     transition: all 0.3s ease;
+    margin-bottom: 0;
 }
 
 .sidebar-slogan.menu-open {
@@ -200,7 +201,7 @@ body {
     position: relative;
 }
 
-.nav-section:not(:last-child):not(.active):not(.next-active)::after {
+.nav-section:not(:last-child):not(.has-active-category):not(.next-active)::after {
     content: "";
     position: absolute;
     bottom: 0;
@@ -511,70 +512,6 @@ body {
     width: 4px;
 }
 
-/* Minigame Section */
-.minigame-section {
-    margin-top: 32px;
-    padding-top: 32px;
-    border-top: 1px solid var(--gray-100);
-}
-
-.minigame-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 24px;
-    margin-bottom: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--gray-500);
-}
-
-.minigame-header i {
-    font-size: 14px;
-}
-
-.minigame-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 0 24px;
-}
-
-.minigame-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: 500;
-    background-color: var(--gray-100);
-    color: var(--gray-600);
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
-.minigame-btn i {
-    font-size: 12px;
-    transition: all 0.2s ease;
-}
-
-.minigame-btn:hover {
-    background-color: rgba(139, 92, 246, 0.1);
-    color: var(--purple);
-    box-shadow: 0 1px 3px rgba(139, 92, 246, 0.2);
-}
-
-.minigame-btn:hover i {
-    transform: rotate(12deg);
-}
-
-.minigame-btn.active {
-    background-color: rgba(233, 213, 255, 1);
-    color: var(--purple);
-    border: 1px solid rgba(196, 181, 253, 1);
-    font-weight: 600;
-}
 
 /* Main Container */
 .main-container {
@@ -903,7 +840,6 @@ body {
 }
 
 .hero-cta-btn:hover {
-    transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -1170,7 +1106,6 @@ body {
 }
 
 .hero-main-cta:hover {
-    transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(48, 128, 255, 0.4);
 }
 
@@ -1259,15 +1194,15 @@ body {
 }
 
 .hero-visual:hover .hero-card.card-1 {
-    transform: rotate(-3deg) translateY(-10px);
+    transform: rotate(-3deg);
 }
 
 .hero-visual:hover .hero-card.card-2 {
-    transform: rotate(5deg) translateY(-5px);
+    transform: rotate(5deg);
 }
 
 .hero-visual:hover .hero-card.card-3 {
-    transform: rotate(0deg) translateY(-2px);
+    transform: rotate(0deg);
 }
 
 .hero-glow {
@@ -1336,7 +1271,6 @@ body {
 .feature-card:hover {
     background: white;
     border-color: var(--primary-blue);
-    transform: translateY(-4px);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
 }
 
@@ -1441,7 +1375,6 @@ body {
 }
 
 .community-cta:hover {
-    transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(48, 128, 255, 0.4);
 }
 
@@ -1510,7 +1443,6 @@ body {
 }
 
 .reward-card:hover {
-    transform: translateY(-8px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -1588,7 +1520,6 @@ body {
 }
 
 .reward-shop-btn:hover {
-    transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(48, 128, 255, 0.4);
 }
 
@@ -1614,7 +1545,6 @@ body {
 }
 
 .flow-card:hover {
-    transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
@@ -1726,7 +1656,6 @@ body {
 }
 
 .cta-primary:hover {
-    transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
 }
 

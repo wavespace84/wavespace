@@ -106,7 +106,6 @@
 /* .form-section:hover {
     border-color: rgba(46, 140, 230, 0.3);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
 }
 
 .form-section:hover::before {
@@ -218,7 +217,6 @@
 .check-btn:hover {
     background: var(--primary-blue);
     color: white;
-    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(46, 140, 230, 0.3);
 }
 
@@ -277,7 +275,6 @@
 .member-type-item:hover {
     border-color: var(--gray-300);
     background: var(--gray-50);
-    transform: translateY(-1px);
 }
 
 .member-type-item.selected {
@@ -480,7 +477,6 @@
 }
 
 .btn-submit:hover:not(:disabled) {
-    transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(46, 140, 230, 0.3);
 }
 

@@ -521,7 +521,7 @@ class DataTableLoader {
             config.columns.forEach(column => {
                 if (column.hidden) return;
                 
-                let cellContent = this.formatCellContent(row[column.key], column, row);
+                const cellContent = this.formatCellContent(row[column.key], column, row);
                 bodyHTML += `<td>${cellContent}</td>`;
             });
 
@@ -614,21 +614,21 @@ class DataTableLoader {
 
         // 타입별 기본 포맷팅
         switch (column.type) {
-            case 'date':
-                return new Date(value).toLocaleDateString();
-            case 'datetime':
-                return new Date(value).toLocaleString();
-            case 'number':
-                return Number(value).toLocaleString();
-            case 'currency':
-                return `${Number(value).toLocaleString()}원`;
-            case 'boolean':
-                return value ? '예' : '아니오';
-            case 'badge':
-                const badgeClass = column.badgeClass || 'primary';
-                return `<span class="badge ${badgeClass}">${value}</span>`;
-            default:
-                return String(value);
+        case 'date':
+            return new Date(value).toLocaleDateString();
+        case 'datetime':
+            return new Date(value).toLocaleString();
+        case 'number':
+            return Number(value).toLocaleString();
+        case 'currency':
+            return `${Number(value).toLocaleString()}원`;
+        case 'boolean':
+            return value ? '예' : '아니오';
+        case 'badge':
+            const badgeClass = column.badgeClass || 'primary';
+            return `<span class="badge ${badgeClass}">${value}</span>`;
+        default:
+            return String(value);
         }
     }
 
@@ -949,14 +949,14 @@ class DataTableLoader {
         
         // 기본 내보내기 로직
         switch (format) {
-            case 'csv':
-                this.exportCSV(filteredData, config.columns);
-                break;
-            case 'json':
-                this.exportJSON(filteredData);
-                break;
-            default:
-                console.warn(`Unsupported export format: ${format}`);
+        case 'csv':
+            this.exportCSV(filteredData, config.columns);
+            break;
+        case 'json':
+            this.exportJSON(filteredData);
+            break;
+        default:
+            console.warn(`Unsupported export format: ${format}`);
         }
     }
 

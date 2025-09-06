@@ -75,15 +75,15 @@ class ForumManager extends BaseSupabaseManager {
         // 답변 상태 필터
         if (filters.answerStatus) {
             switch (filters.answerStatus) {
-                case 'answered':
-                    query = query.gt('answer_count', 0);
-                    break;
-                case 'unanswered':
-                    query = query.eq('answer_count', 0);
-                    break;
-                case 'best_answered':
-                    query = query.not('best_answer_id', 'is', null);
-                    break;
+            case 'answered':
+                query = query.gt('answer_count', 0);
+                break;
+            case 'unanswered':
+                query = query.eq('answer_count', 0);
+                break;
+            case 'best_answered':
+                query = query.not('best_answer_id', 'is', null);
+                break;
             }
         }
         

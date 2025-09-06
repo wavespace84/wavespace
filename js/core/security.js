@@ -186,40 +186,40 @@ class WaveSpaceSecurity {
         
         // 타입별 추가 정제
         switch (type.toLowerCase()) {
-            case 'email':
-                // 이메일 형식 검증
-                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                return emailRegex.test(sanitized) ? sanitized : '';
+        case 'email':
+            // 이메일 형식 검증
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return emailRegex.test(sanitized) ? sanitized : '';
                 
-            case 'url':
-                // URL 형식 검증
-                try {
-                    new URL(sanitized);
-                    return this.safeUrl(sanitized);
-                } catch {
-                    return '';
-                }
+        case 'url':
+            // URL 형식 검증
+            try {
+                new URL(sanitized);
+                return this.safeUrl(sanitized);
+            } catch {
+                return '';
+            }
                 
-            case 'number':
-                // 숫자만 허용 (소수점, 음수 포함)
-                const numberOnly = sanitized.replace(/[^0-9.-]/g, '');
-                return isNaN(parseFloat(numberOnly)) ? '' : numberOnly;
+        case 'number':
+            // 숫자만 허용 (소수점, 음수 포함)
+            const numberOnly = sanitized.replace(/[^0-9.-]/g, '');
+            return isNaN(parseFloat(numberOnly)) ? '' : numberOnly;
                 
-            case 'alphanumeric':
-                // 영문자와 숫자만 허용
-                return sanitized.replace(/[^a-zA-Z0-9]/g, '');
+        case 'alphanumeric':
+            // 영문자와 숫자만 허용
+            return sanitized.replace(/[^a-zA-Z0-9]/g, '');
                 
-            case 'korean':
-                // 한글, 영문, 숫자, 일부 특수문자만 허용
-                return sanitized.replace(/[^가-힣a-zA-Z0-9\s\-_.]/g, '');
+        case 'korean':
+            // 한글, 영문, 숫자, 일부 특수문자만 허용
+            return sanitized.replace(/[^가-힣a-zA-Z0-9\s\-_.]/g, '');
                 
-            case 'safe_html':
-                // 안전한 HTML 태그만 허용 (기본적인 텍스트 포맷팅)
-                return this.sanitizeHtml(sanitized);
+        case 'safe_html':
+            // 안전한 HTML 태그만 허용 (기본적인 텍스트 포맷팅)
+            return this.sanitizeHtml(sanitized);
                 
-            default:
-                // 기본: HTML 특수문자 이스케이프
-                return this.escapeHtml(sanitized);
+        default:
+            // 기본: HTML 특수문자 이스케이프
+            return this.escapeHtml(sanitized);
         }
     }
     
@@ -341,14 +341,14 @@ class WaveSpaceSecurity {
      * @returns {string} CSP 헤더 값
      */
     getCSPHeader() {
-        return "default-src 'self'; " +
-               "script-src 'self' 'unsafe-inline'; " +
-               "style-src 'self' 'unsafe-inline'; " +
-               "img-src 'self' data: https:; " +
-               "connect-src 'self'; " +
-               "font-src 'self'; " +
-               "object-src 'none'; " +
-               "base-uri 'self';";
+        return 'default-src \'self\'; ' +
+               'script-src \'self\' \'unsafe-inline\'; ' +
+               'style-src \'self\' \'unsafe-inline\'; ' +
+               'img-src \'self\' data: https:; ' +
+               'connect-src \'self\'; ' +
+               'font-src \'self\'; ' +
+               'object-src \'none\'; ' +
+               'base-uri \'self\';';
     }
 }
 

@@ -395,17 +395,17 @@ export class BaseComponent {
         const logMessage = `${prefix} ${message}`;
         
         switch (level) {
-            case 'info':
-                data ? console.log(logMessage, data) : console.log(logMessage);
-                break;
-            case 'warn':
-                data ? console.warn(logMessage, data) : console.warn(logMessage);
-                break;
-            case 'error':
-                data ? console.error(logMessage, data) : console.error(logMessage);
-                break;
-            default:
-                data ? console.log(logMessage, data) : console.log(logMessage);
+        case 'info':
+            data ? console.log(logMessage, data) : console.log(logMessage);
+            break;
+        case 'warn':
+            data ? console.warn(logMessage, data) : console.warn(logMessage);
+            break;
+        case 'error':
+            data ? console.error(logMessage, data) : console.error(logMessage);
+            break;
+        default:
+            data ? console.log(logMessage, data) : console.log(logMessage);
         }
     }
 

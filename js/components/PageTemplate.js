@@ -80,8 +80,15 @@ class PageTemplate {
                 <!-- 페이지 초기화 -->
                 <script>
                     document.addEventListener('DOMContentLoaded', async () => {
-                        const componentLoader = new ComponentLoader();
-                        await componentLoader.loadCommonComponents();
+                        console.log('[PageTemplate] DOMContentLoaded 시작');
+                        window.componentLoader = new ComponentLoader();
+                        console.log('[PageTemplate] loadCommonComponents 호출 전');
+                        await window.componentLoader.loadCommonComponents();
+                        console.log('[PageTemplate] loadCommonComponents 호출 후');
+                        window.componentLoaderReady = true;
+                        console.log('[PageTemplate] componentLoaderReady 플래그 설정 완료');
+                        document.dispatchEvent(new CustomEvent('componentLoaderReady'));
+                        console.log('[PageTemplate] componentLoaderReady 이벤트 발생 완료');
                         
                         // 페이지별 초기화 함수 호출
                         if (window.initPage && typeof window.initPage === 'function') {

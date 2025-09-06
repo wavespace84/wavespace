@@ -1,5 +1,20 @@
 /* sidebar.css - 사이드바 관련 스타일 */
 
+/* Sidebar Base */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width, 364px);
+    height: 100vh;
+    background-color: var(--white);
+    border-right: 1px solid var(--gray-200);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    overflow: hidden;
+}
+
 /* Sidebar Header */
 .sidebar-header {
     position: relative;
@@ -59,6 +74,7 @@
     color: var(--gray-700);
     white-space: nowrap;
     transition: var(--transition-normal);
+    margin-bottom: 0;
 }
 
 .sidebar-slogan.menu-open {
@@ -126,7 +142,7 @@
     position: relative;
 }
 
-.nav-section:not(:last-of-type):not(.active):not(.next-active)::after {
+.nav-section:not(:last-child):not(.has-active-category):not(.next-active)::after {
     content: "";
     position: absolute;
     bottom: 0;
@@ -400,8 +416,8 @@
 
 /* Minigame Section - 마지막 섹션으로 특별 처리 */
 .minigame-section {
-    margin-top: var(--spacing-md);
-    padding: var(--spacing-md) var(--spacing-lg);
+    margin-top: 40px;
+    padding: var(--spacing-md) var(--spacing-sm);
     background-color: transparent;
     border-radius: var(--radius-lg);
     position: relative;
@@ -425,40 +441,42 @@
 
 .minigame-buttons {
     display: flex;
-    gap: var(--spacing-sm);
+    gap: 6px;
 }
 
 .minigame-btn {
     flex: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 4px;
-    padding: 8px;
+    justify-content: center;
+    gap: 8px;
+    padding: 5px 2px;
     background-color: var(--gray-50);
     border: 1px solid var(--gray-200);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xl);
     font-size: 11px;
     font-weight: 500;
     color: var(--gray-600);
     text-decoration: none;
     transition: var(--transition-fast);
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .minigame-btn:hover {
-    background-color: var(--gray-50);
-    border-color: var(--gray-300);
-    transform: translateY(-1px);
+    background-color: rgba(233, 213, 255, 0.15);
+    border-color: rgba(123, 97, 255, 0.3);
 }
 
 .minigame-btn i {
     font-size: 16px;
-    color: var(--purple);
+    color: var(--gray-500);
     transition: var(--transition-fast);
 }
 
 .minigame-btn:hover i {
-    transform: rotate(12deg);
+    color: var(--purple);
 }
 
 .minigame-btn.active {

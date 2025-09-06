@@ -127,13 +127,12 @@ async function waitForServices() {
     const initializeServices = async () => {
         const promises = [];
         
-        // NoticeService 초기화
-        if (!window.noticeService && supabaseReady) {
+        // NoticeService 초기화 - 이미 전역에 생성된 인스턴스 사용
+        if (window.noticeService && supabaseReady) {
             promises.push(
                 (async () => {
                     try {
                         console.log('📦 NoticeService 초기화 시작...');
-                        window.noticeService = new NoticeService();
                         await window.noticeService.init();
                         console.log('✅ NoticeService 초기화 완료');
                         return 'noticeService';
@@ -145,14 +144,13 @@ async function waitForServices() {
             );
         }
         
-        // FeedbackService 초기화
-        if (!window.feedbackService && supabaseReady) {
+        // FeedbackService 초기화 - 이미 전역에 생성된 인스턴스 사용
+        if (window.feedbackService && supabaseReady) {
             promises.push(
                 (async () => {
                     try {
                         console.log('📦 FeedbackService 초기화 시작...');
-                        window.feedbackService = new FeedbackService();
-                        await window.feedbackService.init();
+                        await window.feedbackService.initPromise;  // 이미 내부에서 초기화가 진행 중
                         console.log('✅ FeedbackService 초기화 완료');
                         return 'feedbackService';
                     } catch (error) {
@@ -585,12 +583,16 @@ function createNoticeElement(notice) {
 function renderEmptyState() {
     if (!noticeList) return;
     
+    const isSearching = searchInput?.value?.trim() || selectedCategory !== 'all';
+    
     noticeList.innerHTML = `
         <div class="empty-state">
-            <div class="empty-icon">📢</div>
-            <div class="empty-title">공지사항이 없습니다</div>
+            <div class="empty-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <div class="empty-title">업데이트가 없습니다</div>
             <div class="empty-description">
-                ${searchInput?.value ? '검색 결과가 없습니다.' : '등록된 공지사항이 없습니다.'}
+                아직 등록된 업데이트가 없습니다.
             </div>
         </div>
     `;

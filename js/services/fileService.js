@@ -3,13 +3,67 @@
  * 파일 업로드/다운로드 관련 기능을 처리하는 서비스
  */
 
-import { BaseService } from '/js/core/BaseService.js';
-import { ApiResponse, AuthorizationHelper, ValidationHelper } from '/js/utils/serviceHelpers.js';
+// 의존성 관리를 위한 모듈 로더
+const loadFileServiceDependencies = async () => {
+    try {
+        const baseServiceModule = await import('/js/core/BaseService.js');
+        const helpersModule = await import('/js/utils/serviceHelpers.js');
+        
+        return {
+            BaseService: baseServiceModule.BaseService,
+            ApiResponse: helpersModule.ApiResponse,
+            AuthorizationHelper: helpersModule.AuthorizationHelper,
+            ValidationHelper: helpersModule.ValidationHelper
+        };
+    } catch (error) {
+        console.warn('FileService 의존성 로드 실패, 기본 서비스로 동작:', error);
+        return {
+            BaseService: class {
+                constructor(name) {
+                    this.serviceName = name;
+                    this.supabase = window.WaveSupabase?.getClient?.();
+                }
+                async waitForSupabase(maxAttempts = 100, delay = 100) {
+                    let attempts = 0;
+                    while (attempts < maxAttempts && (!window.WaveSupabase || !window.WaveSupabase.getClient)) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        attempts++;
+                    }
+                    if (window.WaveSupabase && window.WaveSupabase.getClient) {
+                        this.supabase = window.WaveSupabase.getClient();
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            ApiResponse: null,
+            AuthorizationHelper: null,
+            ValidationHelper: null
+        };
+    }
+};
 
-class FileService extends BaseService {
+class FileService {
     constructor() {
-        super('FileService');
+        this.serviceName = 'FileService';
+        this.supabase = null;
         this.bucketName = 'wave-files'; // Supabase Storage 버킷명
+        this.initBaseServiceMethods();
+    }
+    
+    initBaseServiceMethods() {
+        this.waitForSupabase = async (maxAttempts = 100, delay = 100) => {
+            let attempts = 0;
+            while (attempts < maxAttempts && (!window.WaveSupabase || !window.WaveSupabase.getClient)) {
+                await new Promise(resolve => setTimeout(resolve, delay));
+                attempts++;
+            }
+            if (window.WaveSupabase && window.WaveSupabase.getClient) {
+                this.supabase = window.WaveSupabase.getClient();
+                return true;
+            }
+            return false;
+        };
     }
 
     /**
@@ -688,13 +742,19 @@ class FileService extends BaseService {
     }
 }
 
-// 전역 파일 서비스 인스턴스 생성
+// 전역 파일 서비스 인스턴스 생성 및 즉시 전역 등록
 const fileService = new FileService();
+window.fileService = fileService;
+
+console.log('✅ FileService 전역 등록 완료');
 
 // 페이지 로드 시 초기화
-window.addEventListener('load', async () => {
-    await fileService.init();
-});
-
-// 전역 접근 가능하도록 설정
-window.fileService = fileService;
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', async () => {
+        await fileService.init();
+    });
+} else {
+    setTimeout(async () => {
+        await fileService.init();
+    }, 0);
+}

@@ -322,25 +322,6 @@ class LayoutManager {
         return 'wide';
     }
 
-    /**
-     * 다크모드 토글
-     */
-    toggleDarkMode(enable) {
-        if (enable === undefined) {
-            enable = !document.body.classList.contains('dark-mode');
-        }
-        
-        document.body.classList.toggle('dark-mode', enable);
-        localStorage.setItem('darkMode', enable ? 'true' : 'false');
-    }
-
-    /**
-     * 다크모드 설정 로드
-     */
-    loadDarkModePreference() {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        this.toggleDarkMode(darkMode);
-    }
 }
 
 // 전역으로 내보내기
@@ -349,7 +330,6 @@ window.LayoutManager = LayoutManager;
 // 자동 초기화
 document.addEventListener('DOMContentLoaded', () => {
     window.layoutManager = new LayoutManager();
-    window.layoutManager.loadDarkModePreference();
 });
 
 export default LayoutManager;

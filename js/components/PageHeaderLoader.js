@@ -50,7 +50,7 @@ class PageHeaderLoader {
             this.currentConfig = config;
             this.isLoaded = true;
 
-            console.log(`✅ PageHeader 로드 완료:`, config.title);
+            console.log('✅ PageHeader 로드 완료:', config.title);
             
         } catch (error) {
             console.error('[PageHeaderLoader] 로드 실패:', error);

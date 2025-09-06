@@ -285,7 +285,7 @@ function showLoadingState() {
     noticeList.innerHTML = `
         <div class="loading-state">
             <div class="loading-spinner"></div>
-            <div>공지사항을 불러오는 중...</div>
+            <div>공지사항을 최신정렬로 불러오는 중...</div>
         </div>
     `;
 }

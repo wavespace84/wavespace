@@ -260,27 +260,27 @@ class DownloadModalLoader {
         this.hideElement('download-charge-btn');
 
         switch (status.status) {
-            case 'free':
-                this.showElement('download-free-info');
-                break;
+        case 'free':
+            this.showElement('download-free-info');
+            break;
                 
-            case 'paid':
-                this.showElement('download-point-info');
-                this.setElementText('download-required-points', file.requiredPoints);
-                this.setElementText('download-user-points', user.points);
-                this.setElementText('download-remaining-points', user.points - file.requiredPoints);
-                break;
+        case 'paid':
+            this.showElement('download-point-info');
+            this.setElementText('download-required-points', file.requiredPoints);
+            this.setElementText('download-user-points', user.points);
+            this.setElementText('download-remaining-points', user.points - file.requiredPoints);
+            break;
                 
-            case 'no_permission':
-                this.showElement('download-permission-info');
-                this.setElementText('download-permission-message', status.message);
-                break;
+        case 'no_permission':
+            this.showElement('download-permission-info');
+            this.setElementText('download-permission-message', status.message);
+            break;
                 
-            case 'insufficient_points':
-                this.showElement('download-insufficient-info');
-                this.showElement('download-charge-btn');
-                this.setElementText('download-needed-points', status.needed);
-                break;
+        case 'insufficient_points':
+            this.showElement('download-insufficient-info');
+            this.showElement('download-charge-btn');
+            this.setElementText('download-needed-points', status.needed);
+            break;
         }
     }
 
@@ -297,25 +297,25 @@ class DownloadModalLoader {
         let text = '다운로드';
 
         switch (status.status) {
-            case 'free':
-                text = '무료 다운로드';
-                disabled = !termsCheckbox?.checked;
-                break;
+        case 'free':
+            text = '무료 다운로드';
+            disabled = !termsCheckbox?.checked;
+            break;
                 
-            case 'paid':
-                text = `${status.cost} 포인트로 다운로드`;
-                disabled = !termsCheckbox?.checked;
-                break;
+        case 'paid':
+            text = `${status.cost} 포인트로 다운로드`;
+            disabled = !termsCheckbox?.checked;
+            break;
                 
-            case 'no_permission':
-                text = '권한 없음';
-                disabled = true;
-                break;
+        case 'no_permission':
+            text = '권한 없음';
+            disabled = true;
+            break;
                 
-            case 'insufficient_points':
-                text = '포인트 부족';
-                disabled = true;
-                break;
+        case 'insufficient_points':
+            text = '포인트 부족';
+            disabled = true;
+            break;
         }
 
         downloadBtn.disabled = disabled;

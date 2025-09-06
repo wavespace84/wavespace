@@ -7,7 +7,7 @@ const STORAGE_KEYS = {
     ACTIVE_CATEGORY: 'wave-active-category',
 };
 
-export class SidebarLoader {
+class SidebarLoader {
     constructor() {
         this.isLoaded = false;
         this.sidebarContent = null;
@@ -64,7 +64,9 @@ export class SidebarLoader {
             return false;
         }
 
+        console.log(`[SidebarLoader] 컨테이너에 HTML 삽입 시작, 콘텐츠 길이: ${this.sidebarContent.length}`);
         container.innerHTML = this.sidebarContent;
+        console.log(`[SidebarLoader] 컨테이너에 HTML 삽입 완료`);
         
         // SidebarLoader에 의해 로드되었음을 표시
         const sidebar = container.querySelector('.sidebar');
@@ -192,9 +194,12 @@ export class SidebarLoader {
                 navCategories.forEach((cat) => {
                     cat.classList.remove('active');
 
-                    // 다음 섹션의 active 상태 제거
+                    // 해당 섹션의 active 상태도 제거
                     const section = cat.closest('.nav-section');
                     if (section) {
+                        section.classList.remove('has-active-category');
+                        
+                        // 다음 섹션의 active 상태 제거
                         const nextSection = section.nextElementSibling;
                         if (nextSection && nextSection.classList.contains('nav-section')) {
                             section.classList.remove('next-active');
@@ -206,21 +211,30 @@ export class SidebarLoader {
                 if (!wasActive) {
                     category.classList.add('active');
 
-                    // 슬로건 스타일 변경
-                    if (sidebarSlogan) {
-                        sidebarSlogan.classList.add('menu-open');
-                    }
-
-                    // 다음 섹션 확인
+                    // 해당 섹션에도 active 상태 클래스 추가
                     const section = category.closest('.nav-section');
                     if (section) {
+                        section.classList.add('has-active-category');
+                        
+                        // 다음 섹션 확인
                         const nextSection = section.nextElementSibling;
                         if (nextSection && nextSection.classList.contains('nav-section')) {
                             section.classList.add('next-active');
                         }
                     }
+
+                    // 슬로건 스타일 변경
+                    if (sidebarSlogan) {
+                        sidebarSlogan.classList.add('menu-open');
+                    }
                 } else {
                     category.classList.remove('active');
+                    
+                    // 해당 섹션의 active 상태도 제거
+                    const section = category.closest('.nav-section');
+                    if (section) {
+                        section.classList.remove('has-active-category');
+                    }
                     
                     // 모든 카테고리가 닫혔는지 확인
                     const anyActive = sidebar.querySelector('.nav-category.active');
@@ -255,18 +269,21 @@ export class SidebarLoader {
                 if (parentCategory) {
                     parentCategory.classList.add('active');
 
-                    // 슬로건 스타일도 변경
-                    if (sidebarSlogan) {
-                        sidebarSlogan.classList.add('menu-open');
-                    }
-
-                    // 다음 섹션 확인
+                    // 해당 섹션에도 active 상태 클래스 추가
                     const section = parentCategory.closest('.nav-section');
                     if (section) {
+                        section.classList.add('has-active-category');
+                        
+                        // 다음 섹션 확인
                         const nextSection = section.nextElementSibling;
                         if (nextSection && nextSection.classList.contains('nav-section')) {
                             section.classList.add('next-active');
                         }
+                    }
+
+                    // 슬로건 스타일도 변경
+                    if (sidebarSlogan) {
+                        sidebarSlogan.classList.add('menu-open');
                     }
                 }
             }
@@ -300,10 +317,8 @@ export class SidebarLoader {
             });
         }
 
-        // 저장된 상태 복원 (홈페이지 제외)
-        if (this.currentPage !== 'index') {
-            this.restoreSidebarState();
-        }
+        // 저장된 상태 복원
+        this.restoreSidebarState();
 
         // 페이지 로드 완료 후 최종 체크
         window.addEventListener('load', checkScrollNeeded);
@@ -375,9 +390,9 @@ export class SidebarLoader {
                 localStorage.getItem(STORAGE_KEYS.ACTIVE_CATEGORY) || '[]'
             );
 
-            // 먼저 모든 next-active 상태 초기화
+            // 먼저 모든 상태 초기화
             document.querySelectorAll('.nav-section').forEach((section) => {
-                section.classList.remove('next-active');
+                section.classList.remove('next-active', 'has-active-category');
             });
 
             // 저장된 카테고리 복원
@@ -388,6 +403,12 @@ export class SidebarLoader {
                         const category = button.closest('.nav-category');
                         if (category) {
                             category.classList.add('active');
+                            
+                            // 해당 섹션에도 active 상태 클래스 추가
+                            const section = category.closest('.nav-section');
+                            if (section) {
+                                section.classList.add('has-active-category');
+                            }
 
                             // 슬로건 스타일 변경
                             const sidebarSlogan = document.querySelector('.sidebar-slogan');

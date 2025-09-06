@@ -1,11 +1,36 @@
 /**
- * WAVE SPACE - Point Service
- * 포인트 시스템 관련 기능을 처리하는 서비스
+ * WAVE SPACE - Point Service 
+ * 포인트 시스템, 등급, 레벨 관리 서비스
  */
 
 class PointService {
     constructor() {
         this.supabase = null;
+        this.authService = null;
+        this.levelSystem = this.initLevelSystem();
+        this.cache = {
+            points: null,
+            history: null,
+            lastUpdated: null,
+            expiry: 3 * 60 * 1000 // 3분
+        };
+    }
+
+    /**
+     * 등급 시스템 초기화
+     */
+    initLevelSystem() {
+        return {
+            levels: [
+                { name: '브론즈', minPoints: 0, maxPoints: 999, color: '#CD7F32', icon: 'fas fa-medal' },
+                { name: '실버', minPoints: 1000, maxPoints: 2999, color: '#C0C0C0', icon: 'fas fa-medal' },
+                { name: '골드', minPoints: 3000, maxPoints: 6999, color: '#FFD700', icon: 'fas fa-trophy' },
+                { name: '플래티넘', minPoints: 7000, maxPoints: 14999, color: '#E5E4E2', icon: 'fas fa-crown' },
+                { name: '다이아몬드', minPoints: 15000, maxPoints: 29999, color: '#B9F2FF', icon: 'fas fa-gem' },
+                { name: '마스터', minPoints: 30000, maxPoints: 99999, color: '#9966CC', icon: 'fas fa-star' },
+                { name: '챌린저', minPoints: 100000, maxPoints: Infinity, color: '#FF6B6B', icon: 'fas fa-fire' }
+            ]
+        };
     }
 
     /**
@@ -39,14 +64,158 @@ class PointService {
     }
 
     /**
-     * 초기화
+     * 서비스 초기화
      */
     async init() {
         try {
-            this.supabase = window.WaveSupabase.getClient();
+            this.supabase = window.WaveSupabase?.getClient();
+            this.authService = this.getAuthService();
+            
+            if (!this.supabase) {
+                console.warn('PointService: Supabase 클라이언트를 사용할 수 없습니다.');
+                return false;
+            }
+            
+            console.log('✅ PointService 초기화 완료');
+            return true;
         } catch (error) {
             console.error('PointService 초기화 실패:', error);
+            return false;
         }
+    }
+
+    /**
+     * 사용자 포인트 정보 조회
+     */
+    async getUserPoints(userId = null) {
+        try {
+            if (!await this.init()) {
+                throw new Error('PointService 초기화 실패');
+            }
+
+            // 기본값으로 현재 로그인한 사용자 사용
+            if (!userId) {
+                const user = this.getCurrentUser();
+                if (!user?.id) {
+                    throw new Error('사용자 정보 없음');
+                }
+                userId = user.id;
+            }
+
+            // 캐시 확인
+            if (this.isValidCache()) {
+                console.log('PointService: 캐시된 포인트 데이터 사용');
+                return this.cache.points;
+            }
+
+            console.log('PointService: 새로운 포인트 데이터 로드 중...');
+
+            // 현재 사용자 정보에서 포인트 가져오기
+            const currentUser = this.getCurrentUser();
+            const currentPoints = currentUser?.points || 0;
+            
+            const currentLevel = this.calculateLevel(currentPoints);
+            const nextLevel = this.getNextLevel(currentPoints);
+            
+            const pointsInfo = {
+                current: currentPoints,
+                level: currentLevel,
+                nextLevel: nextLevel,
+                progress: this.calculateProgress(currentPoints, currentLevel, nextLevel),
+                user: currentUser
+            };
+
+            // 캐시 저장
+            this.cache.points = pointsInfo;
+            this.cache.lastUpdated = Date.now();
+
+            console.log('✅ 포인트 정보 로드 완료:', pointsInfo);
+            return pointsInfo;
+
+        } catch (error) {
+            console.error('PointService: 포인트 정보 로드 실패:', error);
+            
+            // 에러 시 기본 데이터 반환
+            return {
+                current: 0,
+                level: this.levelSystem.levels[0],
+                nextLevel: this.levelSystem.levels[1],
+                progress: { percent: 0, needed: 1000, toNext: 1000 },
+                user: null
+            };
+        }
+    }
+
+    /**
+     * 포인트로 등급 계산
+     */
+    calculateLevel(points) {
+        for (let i = this.levelSystem.levels.length - 1; i >= 0; i--) {
+            const level = this.levelSystem.levels[i];
+            if (points >= level.minPoints) {
+                return { ...level, index: i };
+            }
+        }
+        return { ...this.levelSystem.levels[0], index: 0 };
+    }
+
+    /**
+     * 다음 등급 정보 조회
+     */
+    getNextLevel(points) {
+        const currentLevel = this.calculateLevel(points);
+        const nextIndex = currentLevel.index + 1;
+        
+        if (nextIndex < this.levelSystem.levels.length) {
+            return { ...this.levelSystem.levels[nextIndex], index: nextIndex };
+        }
+        
+        return null; // 최고 등급
+    }
+
+    /**
+     * 등급 진행도 계산
+     */
+    calculateProgress(points, currentLevel, nextLevel) {
+        if (!nextLevel) {
+            // 최고 등급
+            return {
+                percent: 100,
+                needed: 0,
+                toNext: 0,
+                isMaxLevel: true
+            };
+        }
+
+        const levelPoints = points - currentLevel.minPoints;
+        const levelRange = nextLevel.minPoints - currentLevel.minPoints;
+        const percent = Math.min((levelPoints / levelRange) * 100, 100);
+        const needed = nextLevel.minPoints - points;
+
+        return {
+            percent: Math.round(percent),
+            needed: Math.max(needed, 0),
+            toNext: levelRange - levelPoints,
+            isMaxLevel: false
+        };
+    }
+
+    /**
+     * 캐시 유효성 검사
+     */
+    isValidCache() {
+        return this.cache.points && this.cache.lastUpdated && 
+               (Date.now() - this.cache.lastUpdated) < this.cache.expiry;
+    }
+
+    /**
+     * 캐시 무효화
+     */
+    invalidateCache() {
+        this.cache.points = null;
+        this.cache.history = null;
+        this.cache.lastUpdated = null;
+        console.log('PointService: 캐시 무효화됨');
     }
 
     /**
@@ -178,6 +347,94 @@ class PointService {
         } catch (error) {
             console.error('❌ 포인트 내역 조회 실패:', error);
             return { success: false, error: error.message, data: [] };
+        }
+    }
+
+    /**
+     * 최근 포인트 내역 요약 (7일)
+     */
+    async getRecentPointSummary(userId = null) {
+        try {
+            // 기본값으로 현재 로그인한 사용자 사용
+            if (!userId) {
+                const user = this.getCurrentUser();
+                if (!user?.id) {
+                    throw new Error('사용자 정보 없음');
+                }
+                userId = user.id;
+            }
+
+            // 캐시 확인 (history)
+            if (this.cache.history && this.cache.lastUpdated && 
+                (Date.now() - this.cache.lastUpdated) < this.cache.expiry) {
+                console.log('PointService: 캐시된 포인트 내역 사용');
+                return this.cache.history;
+            }
+
+            const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+            
+            const { data, error } = await this.supabase
+                .from('point_transactions')
+                .select(`
+                    id,
+                    amount,
+                    transaction_type,
+                    category,
+                    description,
+                    created_at
+                `)
+                .eq('user_id', userId)
+                .gte('created_at', sevenDaysAgo.toISOString())
+                .order('created_at', { ascending: false })
+                .limit(10);
+
+            if (error) throw error;
+
+            // 데이터 통계 계산
+            const earnTransactions = data.filter(t => t.transaction_type === 'earn');
+            const spendTransactions = data.filter(t => t.transaction_type === 'spend');
+            
+            const totalEarned = earnTransactions.reduce((sum, t) => sum + t.amount, 0);
+            const totalSpent = spendTransactions.reduce((sum, t) => sum + t.amount, 0);
+
+            // 최근 내역 변환 (최대 5개)
+            const recentHistory = data.slice(0, 5).map(transaction => ({
+                id: transaction.id,
+                amount: transaction.transaction_type === 'spend' ? -Math.abs(transaction.amount) : Math.abs(transaction.amount),
+                type: transaction.category,
+                description: transaction.description,
+                created_at: transaction.created_at,
+                isEarn: transaction.transaction_type === 'earn'
+            }));
+
+            const summary = {
+                totalEarned,
+                totalSpent,
+                netChange: totalEarned - totalSpent,
+                recentHistory,
+                period: '7일',
+                transactionCount: data.length
+            };
+
+            // 캐시 저장
+            this.cache.history = summary;
+            this.cache.lastUpdated = Date.now();
+
+            console.log('✅ 최근 포인트 요약 조회 완료:', summary);
+            return summary;
+
+        } catch (error) {
+            console.error('❌ 최근 포인트 요약 조회 실패:', error);
+            
+            // 에러 시 기본 데이터 반환
+            return {
+                totalEarned: 0,
+                totalSpent: 0,
+                netChange: 0,
+                recentHistory: [],
+                period: '7일',
+                transactionCount: 0
+            };
         }
     }
 

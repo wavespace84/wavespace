@@ -3,12 +3,66 @@
  * 게시판 관련 기능을 처리하는 서비스
  */
 
-import { BaseService } from '/js/core/BaseService.js';
-import { ApiResponse, AuthorizationHelper, ValidationHelper } from '/js/utils/serviceHelpers.js';
+// 의존성 관리를 위한 모듈 로더
+const loadPostServiceDependencies = async () => {
+    try {
+        const baseServiceModule = await import('/js/core/BaseService.js');
+        const helpersModule = await import('/js/utils/serviceHelpers.js');
+        
+        return {
+            BaseService: baseServiceModule.BaseService,
+            ApiResponse: helpersModule.ApiResponse,
+            AuthorizationHelper: helpersModule.AuthorizationHelper,
+            ValidationHelper: helpersModule.ValidationHelper
+        };
+    } catch (error) {
+        console.warn('PostService 의존성 로드 실패, 기본 서비스로 동작:', error);
+        return {
+            BaseService: class {
+                constructor(name) {
+                    this.serviceName = name;
+                    this.supabase = window.WaveSupabase?.getClient?.();
+                }
+                async waitForSupabase(maxAttempts = 100, delay = 100) {
+                    let attempts = 0;
+                    while (attempts < maxAttempts && (!window.WaveSupabase || !window.WaveSupabase.getClient)) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        attempts++;
+                    }
+                    if (window.WaveSupabase && window.WaveSupabase.getClient) {
+                        this.supabase = window.WaveSupabase.getClient();
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            ApiResponse: null,
+            AuthorizationHelper: null,
+            ValidationHelper: null
+        };
+    }
+};
 
-class PostService extends BaseService {
+class PostService {
     constructor() {
-        super('PostService');
+        this.serviceName = 'PostService';
+        this.supabase = null;
+        this.initBaseServiceMethods();
+    }
+    
+    initBaseServiceMethods() {
+        this.waitForSupabase = async (maxAttempts = 100, delay = 100) => {
+            let attempts = 0;
+            while (attempts < maxAttempts && (!window.WaveSupabase || !window.WaveSupabase.getClient)) {
+                await new Promise(resolve => setTimeout(resolve, delay));
+                attempts++;
+            }
+            if (window.WaveSupabase && window.WaveSupabase.getClient) {
+                this.supabase = window.WaveSupabase.getClient();
+                return true;
+            }
+            return false;
+        };
     }
 
     /**
@@ -715,13 +769,19 @@ class PostService extends BaseService {
     }
 }
 
-// 전역 게시판 서비스 인스턴스 생성
+// 전역 게시판 서비스 인스턴스 생성 및 즉시 전역 등록
 const postService = new PostService();
+window.postService = postService;
+
+console.log('✅ PostService 전역 등록 완료');
 
 // 페이지 로드 시 초기화
-window.addEventListener('load', async () => {
-    await postService.init();
-});
-
-// 전역 접근 가능하도록 설정
-window.postService = postService;
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', async () => {
+        await postService.init();
+    });
+} else {
+    setTimeout(async () => {
+        await postService.init();
+    }, 0);
+}

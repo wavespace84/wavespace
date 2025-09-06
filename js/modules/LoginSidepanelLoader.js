@@ -292,35 +292,35 @@ class LoginSidepanelLoader {
         const welcomeMessage = document.getElementById('sidepanel-welcome-message');
         
         switch(viewName) {
-            case 'login':
-                if (titleIcon) titleIcon.className = 'fas fa-sign-in-alt';
-                if (titleText) titleText.textContent = '로그인';
-                if (welcomeMessage) welcomeMessage.style.display = 'block';
-                // 로그인 뷰에서 첫 번째 입력 필드에 포커스
-                setTimeout(() => {
-                    const firstInput = sidepanelElement.querySelector('#sidepanel-login-username');
-                    if (firstInput) firstInput.focus();
-                }, 100);
-                break;
-            case 'password-reset':
-                if (titleIcon) titleIcon.className = 'fas fa-key';
-                if (titleText) titleText.textContent = '비밀번호 찾기';
-                if (welcomeMessage) welcomeMessage.style.display = 'none';
-                // 비밀번호 찾기 뷰에서 이메일 입력 필드에 포커스
-                setTimeout(() => {
-                    const emailInput = sidepanelElement.querySelector('#reset-email');
-                    if (emailInput) {
-                        emailInput.focus();
-                        // 기존 내용이 있다면 선택
-                        emailInput.select();
-                    }
-                }, 100);
-                break;
-            case 'email-sent':
-                if (titleIcon) titleIcon.className = 'fas fa-envelope-circle-check';
-                if (titleText) titleText.textContent = '이메일 발송 완료';
-                if (welcomeMessage) welcomeMessage.style.display = 'none';
-                break;
+        case 'login':
+            if (titleIcon) titleIcon.className = 'fas fa-sign-in-alt';
+            if (titleText) titleText.textContent = '로그인';
+            if (welcomeMessage) welcomeMessage.style.display = 'block';
+            // 로그인 뷰에서 첫 번째 입력 필드에 포커스
+            setTimeout(() => {
+                const firstInput = sidepanelElement.querySelector('#sidepanel-login-username');
+                if (firstInput) firstInput.focus();
+            }, 100);
+            break;
+        case 'password-reset':
+            if (titleIcon) titleIcon.className = 'fas fa-key';
+            if (titleText) titleText.textContent = '비밀번호 찾기';
+            if (welcomeMessage) welcomeMessage.style.display = 'none';
+            // 비밀번호 찾기 뷰에서 이메일 입력 필드에 포커스
+            setTimeout(() => {
+                const emailInput = sidepanelElement.querySelector('#reset-email');
+                if (emailInput) {
+                    emailInput.focus();
+                    // 기존 내용이 있다면 선택
+                    emailInput.select();
+                }
+            }, 100);
+            break;
+        case 'email-sent':
+            if (titleIcon) titleIcon.className = 'fas fa-envelope-circle-check';
+            if (titleText) titleText.textContent = '이메일 발송 완료';
+            if (welcomeMessage) welcomeMessage.style.display = 'none';
+            break;
         }
     }
     
@@ -483,15 +483,15 @@ class LoginSidepanelLoader {
         let url;
         
         switch(service) {
-            case 'google':
-                url = 'https://gmail.com';
-                break;
-            case 'naver':
-                url = 'https://mail.naver.com';
-                break;
-            default:
-                console.error('지원하지 않는 이메일 서비스:', service);
-                return;
+        case 'google':
+            url = 'https://gmail.com';
+            break;
+        case 'naver':
+            url = 'https://mail.naver.com';
+            break;
+        default:
+            console.error('지원하지 않는 이메일 서비스:', service);
+            return;
         }
         
         // 새 창으로 이메일 서비스 열기

@@ -73,6 +73,7 @@
     color: var(--gray-600);
     line-height: 1.4;
     margin: 0;
+    margin-bottom: 0;
 }
 
 /* 사이드바 네비게이션 */
@@ -381,80 +382,7 @@
     font-size: 12px;
 }
 
-/* Auth Buttons - 둥근 테두리 디자인 적용 */
-.auth-buttons {
-    display: flex !important;
-    align-items: center !important;
-    gap: var(--spacing-sm) !important;
-}
-
-.header-right .auth-buttons .auth-btn,
-.auth-btn {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 4px !important;
-    padding: var(--spacing-sm) var(--spacing-md) !important;
-    background-color: var(--white) !important;
-    border: 1px solid var(--gray-200) !important;
-    border-radius: var(--radius-lg) !important;  /* 12px 둥근 모서리 */
-    font-size: var(--font-size-xs) !important;
-    font-weight: 500 !important;
-    color: var(--gray-600) !important;
-    cursor: pointer !important;
-    transition: var(--transition-fast) !important;
-    text-decoration: none !important;
-    min-width: 70px !important;
-    box-sizing: border-box !important;
-}
-
-.header-right .auth-buttons .auth-btn:hover,
-.auth-btn:hover {
-    background-color: var(--gray-50) !important;
-    border-color: var(--gray-300) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: var(--shadow-sm) !important;
-}
-
-.header-right .auth-buttons .auth-btn i,
-.auth-btn i {
-    font-size: 16px !important;
-    transition: var(--transition-fast) !important;
-}
-
-.header-right .auth-buttons .login-btn i,
-.login-btn i {
-    color: var(--primary-blue) !important;
-}
-
-.header-right .auth-buttons .login-btn:hover,
-.login-btn:hover {
-    background-color: rgba(59, 130, 246, 0.05) !important;
-    border-color: var(--primary-blue) !important;
-}
-
-.header-right .auth-buttons .login-btn:hover i,
-.login-btn:hover i {
-    color: var(--bright-blue) !important;
-    transform: rotate(-5deg) !important;
-}
-
-.header-right .auth-buttons .signup-btn i,
-.signup-btn i {
-    color: var(--success) !important;
-}
-
-.header-right .auth-buttons .signup-btn:hover,
-.signup-btn:hover {
-    background-color: rgba(34, 197, 94, 0.05) !important;
-    border-color: var(--success) !important;
-}
-
-.header-right .auth-buttons .signup-btn:hover i,
-.signup-btn:hover i {
-    color: var(--success) !important;
-    transform: rotate(5deg) !important;
-}
+/* Auth Buttons - header.css에서 관리하므로 주석 처리 */
 
 /* Page Content */
 .page-content {

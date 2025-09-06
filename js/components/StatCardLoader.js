@@ -262,7 +262,7 @@ class StatCardInstance {
         const { config } = this;
         
         // 테마 및 크기 적용
-        let classes = ['wave-stat-card'];
+        const classes = ['wave-stat-card'];
         if (config.theme !== 'default') classes.push(config.theme);
         if (config.size !== 'medium') classes.push(config.size);
         if (config.animated) classes.push('animated');

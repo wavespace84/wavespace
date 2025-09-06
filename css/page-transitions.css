@@ -48,12 +48,12 @@
 }
 
 /* 깜빡임 방지를 위한 초기 스타일 */
-.sidebar-container {
+#sidebar-container {
     opacity: 1; /* 사이드바 즉시 표시로 변경 */
     transition: opacity var(--fade-transition);
 }
 
-.page-loaded .sidebar-container {
+.page-loaded #sidebar-container {
     opacity: 1;
 }
 

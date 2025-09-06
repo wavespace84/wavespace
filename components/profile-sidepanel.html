@@ -1,0 +1,285 @@
+<!-- 프로필 사이드패널 - 컴팩트 디자인 -->
+<div class="profile-sidepanel-overlay" id="profileSidepanel">
+    <div class="profile-sidepanel">
+        <div class="profile-sidepanel-header">
+            <h2>
+                <i class="fas fa-user-circle"></i>
+                마이페이지
+            </h2>
+            <button class="profile-close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- 상단 탭 네비게이션 (2행 5열) -->
+        <nav class="profile-top-nav">
+            <!-- 1행: 개인정보 & 자산 관련 -->
+            <button class="profile-nav-item active" data-tab="profile" data-group="personal">
+                <i class="fas fa-user"></i>
+                <span>내 정보</span>
+            </button>
+            <button class="profile-nav-item" data-tab="badges" data-group="personal">
+                <i class="fas fa-trophy"></i>
+                <span>뱃지 관리</span>
+            </button>
+            <button class="profile-nav-item" data-tab="inventory" data-group="personal">
+                <i class="fas fa-box"></i>
+                <span>보관함</span>
+            </button>
+            <button class="profile-nav-item" data-tab="cart" data-group="personal">
+                <i class="fas fa-shopping-cart"></i>
+                <span>장바구니</span>
+            </button>
+            <button class="profile-nav-item" data-tab="payments" data-group="personal">
+                <i class="fas fa-credit-card"></i>
+                <span>결제내역</span>
+            </button>
+            
+            <!-- 2행: 활동이력 & 계정관리 -->
+            <button class="profile-nav-item" data-tab="points" data-group="management">
+                <i class="fas fa-coins"></i>
+                <span>포인트내역</span>
+            </button>
+            <button class="profile-nav-item" data-tab="activity" data-group="management">
+                <i class="fas fa-history"></i>
+                <span>활동기록</span>
+            </button>
+            <button class="profile-nav-item" data-tab="notifications" data-group="management">
+                <i class="fas fa-bell"></i>
+                <span>알림내역</span>
+            </button>
+            <button class="profile-nav-item" data-tab="verification" data-group="management">
+                <i class="fas fa-certificate"></i>
+                <span>실무자인증</span>
+            </button>
+            <button class="profile-nav-item" data-tab="settings" data-group="management">
+                <i class="fas fa-cog"></i>
+                <span>설정</span>
+            </button>
+        </nav>
+        
+        <!-- 컨텐츠 레이아웃 -->
+        <div class="profile-layout">
+        
+        <div class="profile-content">
+            <!-- 내 정보 탭 -->
+            <div class="profile-tab-content active" id="profile-tab">
+                <!-- 히어로 섹션 -->
+                <div class="profile-hero-section">
+                    <div class="profile-hero-bg"></div>
+                    <div class="profile-hero-content">
+                        <div class="profile-avatar-large">
+                            <img src="/img/default-avatar.png" alt="프로필 이미지" onerror="this.style.display='none'; this.parentElement.querySelector('.avatar-placeholder').style.display='flex';">
+                            <div class="avatar-placeholder" style="display:none;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <button class="avatar-edit-btn">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <h2 class="profile-username">{{NICKNAME}}</h2>
+                        <div class="profile-badges">
+                            <!-- 대표 뱃지 및 프리미엄 뱃지 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 정보 카드 섹션 (개편) -->
+                <div class="profile-info-cards">
+                    <!-- (1) 기본정보 -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <i class="fas fa-id-card"></i>
+                            <h3>기본정보</h3>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-item"><span class="info-label">아이디</span><span class="info-value" id="profile-basic-id">-</span></div>
+                            <div class="info-item"><span class="info-label">이름</span><span class="info-value" id="profile-basic-name">-</span></div>
+                            <div class="info-item"><span class="info-label">연락처</span><span class="info-value" id="profile-basic-phone">-</span></div>
+                            <div class="info-item"><span class="info-label">이메일</span><span class="info-value" id="profile-basic-email">-</span></div>
+                            <div class="info-item"><span class="info-label">회원유형</span><span class="info-value" id="profile-basic-member-type">-</span></div>
+                            <div class="info-item"><span class="info-label">실무자인증</span><span class="info-value" id="profile-basic-verified">-</span></div>
+                        </div>
+                    </div>
+
+                    <!-- (2) 접속정보 -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <i class="fas fa-signal"></i>
+                            <h3>접속정보</h3>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-item"><span class="info-label">가입일</span><span class="info-value" id="profile-access-joined">-</span></div>
+                            <div class="info-item"><span class="info-label">최종접속</span><span class="info-value" id="profile-access-last">-</span></div>
+                            <div class="info-item"><span class="info-label">포인트</span><span class="info-value" id="profile-access-points">0 P</span></div>
+                        </div>
+                    </div>
+
+                    <!-- (3) 최근알림 -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <i class="fas fa-bell"></i>
+                            <h3>최근 알림</h3>
+                            <div class="header-actions">
+                                <button class="btn-small btn-outline" id="profile-notif-more">더보기</button>
+                            </div>
+                        </div>
+                        <div class="info-card-body" id="profile-recent-notifications">
+                            <!-- 최근 알림 3개가 로드됩니다. -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 빠른 메뉴 섹션 -->
+                <div class="profile-quick-menu">
+                    <!-- 빠른 메뉴 컨텐츠 -->
+                </div>
+            </div>
+            
+            <!-- 뱃지 관리 탭 -->
+            <div class="profile-tab-content" id="badges-tab">
+                <!-- 뱃지 컨텐츠 -->
+            </div>
+            
+            <!-- 보관함 탭 -->
+            <div class="profile-tab-content" id="inventory-tab">
+                <!-- 보관함 컨텐츠 -->
+            </div>
+
+            <!-- 장바구니 탭 -->
+            <div class="profile-tab-content" id="cart-tab">
+                <!-- 장바구니 컨텐츠 -->
+            </div>
+
+            <!-- 포인트 내역 탭 -->
+            <div class="profile-tab-content" id="points-tab">
+                <!-- 포인트 내역 컨텐츠 -->
+            </div>
+
+            <!-- 결제 내역 탭 -->
+            <div class="profile-tab-content" id="payments-tab">
+                <!-- 결제 내역 컨텐츠 -->
+            </div>
+
+            <!-- 활동 기록 탭 -->
+            <div class="profile-tab-content" id="activity-tab">
+                <div class="tab-content-placeholder">
+                    <i class="fas fa-history placeholder-icon"></i>
+                    <p>활동 기록을 여기에 표시합니다</p>
+                </div>
+            </div>
+            
+            <!-- 알림내역 탭 -->
+            <div class="profile-tab-content" id="notifications-tab">
+                <div class="notifications-container">
+                    <div class="notifications-header">
+                        <div class="notifications-controls">
+                            <button class="btn-small btn-outline" id="markAllReadBtn">
+                                <i class="fas fa-check-double"></i>
+                                모두 읽음
+                            </button>
+                            <div class="notification-filter">
+                                <select id="notificationFilter" class="form-select-small">
+                                    <option value="all">전체</option>
+                                    <option value="unread">읽지 않음</option>
+                                    <option value="system">시스템</option>
+                                    <option value="comment">댓글</option>
+                                    <option value="like">좋아요</option>
+                                    <option value="point">포인트</option>
+                                    <option value="event">이벤트</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notifications-list" id="notificationsList">
+                        <!-- 알림 목록이 동적으로 로드됩니다 -->
+                        <div class="notification-item unread">
+                            <div class="notification-icon system">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="notification-content">
+                                <h4 class="notification-title">시스템 점검 안내</h4>
+                                <p class="notification-message">2024년 1월 15일 새벽 2시~4시 시스템 점검이 예정되어 있습니다.</p>
+                                <span class="notification-time">2시간 전</span>
+                            </div>
+                            <div class="notification-actions">
+                                <button class="notification-read-btn" title="읽음 처리">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 실무자 인증 탭 -->
+            <div class="profile-tab-content" id="verification-tab">
+                <div class="verification-container">
+                    <div class="verification-status pending">
+                        <div class="status-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="status-content">
+                            <h3>실무자 인증 대기 중</h3>
+                            <p>제출하신 서류를 검토 중입니다. 영업일 기준 3-5일 소요됩니다.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="verification-process">
+                        <h4>인증 절차</h4>
+                        <div class="process-steps">
+                            <div class="step completed">
+                                <i class="fas fa-check-circle"></i>
+                                <span>서류 제출</span>
+                            </div>
+                            <div class="step active">
+                                <i class="fas fa-clock"></i>
+                                <span>서류 검토</span>
+                            </div>
+                            <div class="step">
+                                <i class="fas fa-certificate"></i>
+                                <span>인증 완료</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 설정 탭 -->
+            <div class="profile-tab-content" id="settings-tab">
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h4>계정 설정</h4>
+                        <div class="settings-item">
+                            <label class="setting-label">이메일 변경</label>
+                            <button class="btn-small btn-outline">변경</button>
+                        </div>
+                        <div class="settings-item">
+                            <label class="setting-label">비밀번호 변경</label>
+                            <button class="btn-small btn-outline">변경</button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>알림 설정</h4>
+                        <div class="settings-item">
+                            <label class="setting-label">이메일 알림</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-item">
+                            <label class="setting-label">푸시 알림</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

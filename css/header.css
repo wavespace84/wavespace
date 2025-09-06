@@ -1,8 +1,14 @@
 /* header.css - 헤더 관련 스타일 */
 
-/* Header Left */
+/* Header Left - 데스크탑에서는 기본적으로 숨김, 모바일에서만 표시 */
 .header-left {
     display: none;
+}
+
+@media (max-width: 768px) {
+    .header-left {
+        display: flex;
+    }
 }
 
 .mobile-menu-btn {
@@ -202,7 +208,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--spacing-sm);
-    padding: 10px 20px;
+    padding: 5px 10px;
     border-radius: var(--radius-lg);
     font-size: var(--font-size-base);
     font-weight: 600;
@@ -215,42 +221,100 @@
 
 /* 윤곽선 버튼 - 로그인 */
 .btn-outline {
-    color: var(--gray-700);
-    background-color: transparent;
-    border-color: var(--gray-300);
+    color: var(--primary-blue);
+    background: linear-gradient(var(--white), var(--white)) padding-box,
+                linear-gradient(135deg, var(--primary-blue), var(--bright-blue)) border-box;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-outline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(46, 140, 230, 0.1),
+        transparent
+    );
+    transition: var(--transition-normal);
+}
+
+.btn-outline:hover::before {
+    left: 100%;
 }
 
 .btn-outline:hover {
-    background-color: var(--gray-100);
-    border-color: var(--gray-400);
-    color: var(--gray-800);
+    background: linear-gradient(135deg, 
+                    rgba(46, 140, 230, 0.05) 0%, 
+                    rgba(77, 163, 237, 0.05) 100%);
+    color: var(--deep-blue);
+    box-shadow: 0 4px 12px rgba(46, 140, 230, 0.15);
 }
 
 .btn-outline:active {
-    background-color: var(--gray-200);
+    background: linear-gradient(135deg, 
+                    rgba(46, 140, 230, 0.1) 0%, 
+                    rgba(77, 163, 237, 0.1) 100%);
 }
 
 /* 채워진 버튼 - 회원가입 */
 .btn-primary {
     color: var(--white);
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--bright-blue) 100%);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(46, 140, 230, 0.2);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: var(--transition-normal);
+}
+
+.btn-primary:hover::before {
+    left: 100%;
 }
 
 .btn-primary:hover {
-    background-color: var(--deep-blue);
-    border-color: var(--deep-blue);
-    box-shadow: 0 4px 12px rgba(46, 140, 230, 0.3);
+    background: linear-gradient(135deg, var(--deep-blue) 0%, var(--primary-blue) 100%);
+    box-shadow: 0 6px 20px rgba(46, 140, 230, 0.4);
 }
 
 .btn-primary:active {
-    background-color: var(--deep-blue);
-    transform: scale(0.98);
+    box-shadow: 0 3px 12px rgba(46, 140, 230, 0.3);
 }
 
 /* 버튼 아이콘 스타일 */
 .btn i {
     font-size: 16px;
+    transition: var(--transition-fast);
+}
+
+.btn-outline:hover i {
+    color: var(--bright-blue);
+    transform: rotate(-5deg) scale(1.05);
+}
+
+.btn-primary:hover i {
+    transform: rotate(5deg) scale(1.05);
 }
 
 /* 익명 사용자용 표시/숨김 제어 */
@@ -264,9 +328,7 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-    .header-left {
-        display: block;
-    }
+    /* .header-left는 위에서 이미 정의됨 */
 
     .user-info {
         display: none;

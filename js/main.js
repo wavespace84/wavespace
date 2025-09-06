@@ -4,13 +4,13 @@
 // 전역 데이터 시스템 (반드시 첫 번째로 로드)
 // WaveSpaceData는 script 태그로 별도 로드되므로 전역 객체로 접근
 
-// 기존 모듈들
-import { initSidebar } from './modules/sidebar.js';
-import { initHeader } from './modules/header.js';
-import { initPreload } from './modules/preload.js';
-import { initClock } from './modules/clock.js';
+// 통합된 로더 모듈들
 import { HeaderLoader } from './modules/header-loader.js';
 import { SidebarLoader } from './modules/sidebar-loader.js';
+
+// 기타 모듈들
+import { initPreload } from './modules/preload.js';
+import { initClock } from './modules/clock.js';
 
 // 새로운 코어 시스템
 import { eventSystem } from './core/eventSystem.js';
@@ -22,8 +22,7 @@ import { accessibilityManager } from './components/accessibility.js';
 // 페이지 최적화 시스템
 import { initOptimizer } from './modules/page-optimizer.js';
 
-// 로그인 사이드패널 시스템
-import { initLoginSidepanel } from './modules/login-sidepanel.js';
+// 로그인 사이드패널 시스템 - LoginSidepanelLoader.js가 직접 처리
 
 // 🚀 통합 초기화 시스템
 async function initializeWaveSpace() {
@@ -79,27 +78,42 @@ async function initializeWaveSpace() {
         // 동적 사이드바 로드 시스템 체크
         const sidebarContainer = document.getElementById('sidebar-container');
         if (sidebarContainer) {
+            console.log('[WaveSpace] 사이드바 컨테이너 발견:', sidebarContainer);
+            
             // 새로운 동적 사이드바 로드 시스템 사용
             const sidebarLoader = new SidebarLoader();
             const sidebarSuccess = await sidebarLoader.loadSidebar();
             
             if (sidebarSuccess) {
                 console.log('[WaveSpace] 동적 사이드바 로드 완료');
-                // SidebarLoader가 이미 모든 기능을 처리하므로 initSidebar 불필요
+                
+                // 디버그: 사이드바 로드 후 상태 확인
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) {
+                    console.log('[WaveSpace] 사이드바 요소 확인:', {
+                        exists: true,
+                        display: getComputedStyle(sidebar).display,
+                        visibility: getComputedStyle(sidebar).visibility,
+                        width: getComputedStyle(sidebar).width,
+                        innerHTML: sidebar.innerHTML.substring(0, 100) + '...'
+                    });
+                } else {
+                    console.error('[WaveSpace] 사이드바 요소를 찾을 수 없음');
+                }
             } else {
-                // 동적 로드 실패 시에만 정적 시스템 폴백
-                initSidebar();
-                console.log('[WaveSpace] 동적 사이드바 로드 실패, 정적 사이드바로 폴백');
+                console.log('[WaveSpace] 동적 사이드바 로드 실패');
             }
         } else {
-            // sidebar-container가 없는 경우에만 정적 사이드바 시스템 사용
-            initSidebar();
-            console.log('[WaveSpace] 정적 사이드바 초기화 완료');
+            console.warn('[WaveSpace] 사이드바 컨테이너를 찾을 수 없음');
         }
         
         // 동적 헤더 로드 시스템 
         const headerContainer = document.getElementById('header-container');
-        if (headerContainer) {
+        
+        // signup 또는 login 페이지에서는 헤더를 로드하지 않음
+        if (currentPage === 'signup' || currentPage === 'login') {
+            console.log('[WaveSpace] signup/login 페이지에서는 헤더를 로드하지 않습니다');
+        } else if (headerContainer) {
             // 새로운 동적 헤더 로드 시스템 사용
             const headerLoader = new HeaderLoader();
             const headerSuccess = await headerLoader.loadHeader();
@@ -107,14 +121,8 @@ async function initializeWaveSpace() {
             if (headerSuccess) {
                 console.log('[WaveSpace] 동적 헤더 로드 완료');
             } else {
-                // 동적 로드 실패 시에만 정적 시스템 폴백
-                initHeader();
-                console.log('[WaveSpace] 동적 헤더 로드 실패, 정적 헤더로 폴백');
+                console.log('[WaveSpace] 동적 헤더 로드 실패');
             }
-        } else {
-            // header-container가 없는 경우에만 정적 헤더 시스템 사용
-            initHeader();
-            console.log('[WaveSpace] 정적 헤더 초기화 완료');
         }
         
         // AuthService 초기화
@@ -137,9 +145,8 @@ async function initializeWaveSpace() {
         initClock();
         console.log('[WaveSpace] Clock 초기화 완료');
 
-        // 3. 로그인 사이드패널 로드 (모든 페이지에서 필요)
-        await initLoginSidepanel();
-        console.log('[WaveSpace] 로그인 사이드패널 초기화 완료');
+        // 3. 로그인 사이드패널은 LoginSidepanelLoader.js가 자동 처리
+        console.log('[WaveSpace] 로그인 사이드패널은 LoginSidepanelLoader가 자동 처리');
 
         // 4. 페이지별 모듈 동적 로드
         if (currentPage) {

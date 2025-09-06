@@ -1,0 +1,236 @@
+<!-- MarketResearchUploadModal 컴포넌트 템플릿 -->
+<div class="simple-upload-modal" id="market-research-upload-modal">
+    <!-- 모달 오버레이 -->
+    <div class="simple-upload-overlay" id="market-upload-overlay"></div>
+    
+    <!-- 모달 컨테이너 -->
+    <div class="simple-upload-content">
+        <div class="simple-modal-header">
+            <h2 class="simple-modal-title">시장조사서 업로드</h2>
+            <button class="simple-modal-close" id="market-upload-close" aria-label="닫기">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="simple-modal-body">
+            <!-- 파일 업로드 -->
+            <div class="simple-upload-zone" id="market-upload-zone">
+                <i class="fas fa-cloud-upload-alt simple-upload-icon"></i>
+                <p class="simple-upload-text">파일을 드래그하거나 클릭하여 선택</p>
+                <p class="simple-upload-hint">PDF, PPT, DOC, XLS • 최대 50MB</p>
+                <p class="upload-warning-text">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>24개월이 경과된 자료는 업로드할 수 없습니다.</span>
+                </p>
+                <input type="file" hidden id="market-file-input" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx" aria-label="시장조사 파일 업로드">
+            </div>
+
+            <!-- 파일 정보 리스트 (최대 2개) -->
+            <div id="market-files-container"></div>
+
+            <!-- 중복 검수 안내 -->
+            <div class="duplicate-check-info" id="market-duplicate-check-info" style="display: none; margin-top: 8px; padding: 8px 12px; background: #fef3c7; border: 1px solid #fbbf24; border-radius: 6px;">
+                <i class="fas fa-exclamation-triangle" style="color: #f59e0b; margin-right: 6px; font-size: 12px;"></i>
+                <span style="font-size: 12px; color: #92400e;" id="market-duplicate-check-message">중복 파일 검사를 진행합니다...</span>
+            </div>
+
+            <!-- 시장조사서 정보 입력 -->
+            <div class="simple-quick-info">
+                <!-- 지역 선택 (2단계 드롭다운) -->
+                <div class="simple-form-group">
+                    <label class="simple-form-label">
+                        <i class="fas fa-map-marker-alt" style="color: #6b7280; margin-right: 4px;"></i>
+                        지역 선택 <span style="color: #dc2626;">*</span>
+                    </label>
+                    <div class="upload-region-selectors">
+                        <select id="market-region1" class="simple-form-input" required aria-label="광역시도 선택">
+                            <option value="">광역시도 선택</option>
+                            <option value="seoul">서울특별시</option>
+                            <option value="gyeonggi">경기도</option>
+                            <option value="incheon">인천광역시</option>
+                            <option value="busan">부산광역시</option>
+                            <option value="daegu">대구광역시</option>
+                            <option value="gwangju">광주광역시</option>
+                            <option value="daejeon">대전광역시</option>
+                            <option value="ulsan">울산광역시</option>
+                            <option value="sejong">세종특별자치시</option>
+                            <option value="gangwon">강원특별자치도</option>
+                            <option value="chungbuk">충청북도</option>
+                            <option value="chungnam">충청남도</option>
+                            <option value="jeonbuk">전북특별자치도</option>
+                            <option value="jeonnam">전라남도</option>
+                            <option value="gyeongbuk">경상북도</option>
+                            <option value="gyeongnam">경상남도</option>
+                            <option value="jeju">제주특별자치도</option>
+                        </select>
+                        <select id="market-region2" class="simple-form-input" disabled required aria-label="시/군/구 선택">
+                            <option value="">시/군/구 선택</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 상품유형 -->
+                <div class="simple-form-group">
+                    <label class="simple-form-label">
+                        <i class="fas fa-building" style="color: #6b7280; margin-right: 4px;"></i>
+                        상품유형 <span style="color: #dc2626;">*</span>
+                    </label>
+                    <div class="upload-product-types">
+                        <button type="button" class="upload-type-btn" data-type="apartment" data-name="아파트">
+                            <span>아파트</span>
+                        </button>
+                        <button type="button" class="upload-type-btn" data-type="officetel-residential" data-name="주거형OT">
+                            <span>주거형OT</span>
+                        </button>
+                        <button type="button" class="upload-type-btn" data-type="officetel-profit" data-name="수익형OT">
+                            <span>수익형OT</span>
+                        </button>
+                        <button type="button" class="upload-type-btn" data-type="urban" data-name="도생">
+                            <span>도생</span>
+                        </button>
+                        <button type="button" class="upload-type-btn" data-type="commercial" data-name="상가">
+                            <span>상가</span>
+                        </button>
+                        <button type="button" class="upload-type-btn" data-type="lifestyle-lodge" data-name="생활형숙박시설">
+                            <span>생활형숙박시설</span>
+                        </button>
+                        <button type="button" class="upload-type-btn" data-type="knowledge" data-name="지식산업센터">
+                            <span>지식산업센터</span>
+                        </button>
+                        <button type="button" class="upload-type-btn" data-type="office" data-name="오피스">
+                            <span>오피스</span>
+                        </button>
+                        <button type="button" class="upload-type-btn" data-type="other" data-name="기타">
+                            <span>기타</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 공급유형 -->
+                <div class="simple-form-group">
+                    <label class="simple-form-label">
+                        <i class="fas fa-handshake" style="color: #6b7280; margin-right: 4px;"></i>
+                        공급유형 <span style="color: #dc2626;">*</span>
+                    </label>
+                    <div class="upload-supply-types">
+                        <button type="button" class="upload-type-btn supply-btn" data-type="private-sale" data-name="민간분양">
+                            <span>민간분양</span>
+                        </button>
+                        <button type="button" class="upload-type-btn supply-btn" data-type="public-sale" data-name="공공분양">
+                            <span>공공분양</span>
+                        </button>
+                        <button type="button" class="upload-type-btn supply-btn" data-type="private-rental" data-name="민간임대">
+                            <span>민간임대</span>
+                        </button>
+                        <button type="button" class="upload-type-btn supply-btn" data-type="public-rental" data-name="공공임대">
+                            <span>공공임대</span>
+                        </button>
+                        <button type="button" class="upload-type-btn supply-btn" data-type="other" data-name="기타">
+                            <span>기타</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 포인트 규정 안내 (접을 수 있는) -->
+            <div class="points-rules-info" style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 1px solid #bfdbfe; margin-top: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="flex: 1;">
+                        <h4 style="color: #1e40af; font-size: 14px; font-weight: 600; margin: 0; display: flex; align-items: center;">
+                            <i class="fas fa-coins" style="margin-right: 6px; color: #3b82f6;"></i>
+                            포인트 지급 규정
+                        </h4>
+                        <p style="color: #1e40af; font-size: 12px; margin: 2px 0; opacity: 0.8;">최신성 지수와 페이지 지수에 따라 차등 지급</p>
+                    </div>
+                    <button type="button" class="points-toggle-btn" id="market-points-toggle" style="background: none; border: none; color: #3b82f6; cursor: pointer; padding: 4px;">
+                        <span style="font-size: 12px;">자세히보기</span>
+                        <i class="fas fa-chevron-down" style="margin-left: 4px; font-size: 10px;"></i>
+                    </button>
+                </div>
+                
+                <div class="points-details" id="market-points-details" style="display: none; margin-top: 12px;">
+                    <div style="display: flex; gap: 16px;">
+                        <!-- 최신성 지수 표 -->
+                        <div style="flex: 1;">
+                            <h5 style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px;">
+                                <i class="fas fa-clock" style="color: #6b7280; margin-right: 4px; font-size: 10px;"></i>
+                                최신성 지수 (조사일 기준)
+                            </h5>
+                            <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb; font-weight: 600;">기간</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb; font-weight: 600; text-align: center;">지수</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">6개월 이내</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #059669;">1.5</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;">1년 이내</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #059669; background: #f9fafb;">1.3</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">2년 이내</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #d97706;">1.0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;">2년 초과</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #dc2626; background: #f9fafb;">업로드 불가</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- 페이지 지수 표 -->
+                        <div style="flex: 1;">
+                            <h5 style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px;">
+                                <i class="fas fa-file-alt" style="color: #6b7280; margin-right: 4px; font-size: 10px;"></i>
+                                페이지 지수
+                            </h5>
+                            <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb; font-weight: 600;">페이지 수</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb; font-weight: 600; text-align: center;">지수</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">100페이지 이상</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #059669;">1.5</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;">50-99페이지</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #059669; background: #f9fafb;">1.3</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">20-49페이지</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #d97706;">1.0</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;">20페이지 미만</td>
+                                    <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #dc2626; background: #f9fafb;">0.8</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- 계산식 예시 -->
+                    <div style="margin-top: 12px; padding: 8px; background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 4px;">
+                        <p style="font-size: 11px; color: #0c4a6e; margin: 0; font-weight: 600;">
+                            <i class="fas fa-calculator" style="margin-right: 4px;"></i>
+                            계산식: 기본 100P × 최신성 지수 × 페이지 지수
+                        </p>
+                        <p style="font-size: 11px; color: #0c4a6e; margin: 4px 0 0 0; opacity: 0.8;">
+                            예시: 6개월 이내, 67페이지 → 100P × 1.5 × 1.3 = 195P
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 액션 버튼 -->
+            <div class="simple-modal-actions">
+                <button type="button" class="simple-btn simple-btn-cancel" id="market-upload-cancel">취소</button>
+                <button type="button" class="simple-btn simple-btn-upload" disabled id="market-upload-submit" style="display: none;">
+                    <span id="market-upload-btn-text">업로드 완료</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

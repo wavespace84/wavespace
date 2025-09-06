@@ -9,8 +9,11 @@
     <script src="config.dev.js"></script>
     <!-- CSS 파일들 -->
     <link rel="stylesheet" href="css/base.css?v=7">
+        <link rel="stylesheet" href="css/modules/variables.css" />
     <link rel="stylesheet" href="common.css?v=7">
     <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="css/header.css?v=7">
+    <link rel="stylesheet" href="css/sidebar.css?v=7">
     <link rel="stylesheet" href="market-research.css?v=7">
     <link rel="stylesheet" href="market-research-minimal.css?v=7">
     <link rel="stylesheet" href="css/checkbox-interaction.css?v=7">
@@ -19,6 +22,10 @@
     
     <!-- 기본 스크립트 -->
     <script src="preload.js"></script>
+                <!-- 공통 컴포넌트 로더 -->
+        <script src="js/modules/header-loader.js"></script>
+        <script src="js/modules/sidebar-loader.js"></script>
+        <script src="js/common-loaders.js"></script>
     
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -36,6 +43,11 @@
 <body data-page="market-research">
     <!-- 전체 컨테이너 -->
     <div class="app-container">
+        <!-- 헤더 (동적 로드) -->
+        <div id="header-container">
+            <!-- HeaderLoader가 동적으로 헤더를 여기에 로드합니다 -->
+        </div>
+        
         <!-- 사이드바 (동적 로드) -->
         <div id="sidebar-container">
             <!-- SidebarLoader가 동적으로 사이드바를 여기에 로드합니다 -->
@@ -519,255 +531,46 @@
         </div>
     </div>
 
-    <!-- 개선된 업로드 모달 -->
-    <div class="simple-upload-modal" id="uploadModal">
-        <div class="simple-upload-content">
-            <div class="simple-modal-header">
-                <h2 class="simple-modal-title">시장조사서 업로드</h2>
-                <button class="simple-modal-close" id="modalClose">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+    <!-- 시장조사서 전용 업로드 모달 컴포넌트 -->
+    <div id="market-research-upload-modal-container">
+        <!-- MarketResearchUploadModalLoader가 동적으로 모달을 여기에 로드합니다 -->
+    </div>
+
+
+
+    <!-- 헤더 로더 스크립트 -->
+    <!-- 컴포넌트 로더 및 초기화 스크립트 -->
+    <script type="module">
+        import { MarketResearchUploadModalLoader } from './js/components/MarketResearchUploadModalLoader.js';
+
+        // 전역으로 모달 로더 인스턴스 생성
+        window.marketUploadModal = new MarketResearchUploadModalLoader();
+
+        // 업로드 버튼 클릭 이벤트 연결
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) {
+                uploadBtn.addEventListener('click', () => {
+                    window.marketUploadModal.show();
+                });
+            }
+        });
+    </script>
+
+    <script>
+        // 현재 미리보기 중인 문서 ID
+        let currentPreviewId = 1;
+        
+        // market-research.js의 openPreview 함수를 사용
+        
+        // 미리보기 내용 업데이트 함수
+        function updatePreviewContent(doc) {
+            const productType = typeof productTypes !== 'undefined' ? 
+                productTypes.find(t => t.id === doc.type) : null;
             
-            <div class="simple-modal-body">
-                <!-- 파일 업로드 -->
-                <div class="simple-upload-zone" id="uploadZone">
-                    <i class="fas fa-cloud-upload-alt simple-upload-icon"></i>
-                    <p class="simple-upload-text">파일을 드래그하거나 클릭하여 선택</p>
-                    <p class="simple-upload-hint">PDF, PPT, DOC, XLS • 최대 50MB</p>
-                    <p class="upload-warning-text">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>24개월이 경과된 자료는 업로드할 수 없습니다.</span>
-                    </p>
-                    <input type="file" hidden id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx" aria-label="시장조사 파일 업로드">
-                </div>
-
-                <!-- 파일 정보 리스트 (최대 2개) -->
-                <div id="filesContainer"></div>
-
-                <!-- 중복 검수 안내 (파일생성날짜 바로 아래) -->
-                <div class="duplicate-check-info" id="duplicateCheckInfo" style="display: none; margin-top: 8px; padding: 8px 12px; background: #fef3c7; border: 1px solid #fbbf24; border-radius: 6px;">
-                    <i class="fas fa-exclamation-triangle" style="color: #f59e0b; margin-right: 6px; font-size: 12px;"></i>
-                    <span style="font-size: 12px; color: #92400e;" id="duplicateCheckMessage">중복 파일 검사를 진행합니다...</span>
-                </div>
-
-                <!-- 개선된 정보 입력 -->
-                <div class="simple-quick-info">
-
-                    <!-- 지역 선택 (2단계 드롭다운) -->
-                    <div class="simple-form-group">
-                        <label class="simple-form-label">
-                            <i class="fas fa-map-marker-alt" style="color: #6b7280; margin-right: 4px;"></i>
-                            지역 선택 <span style="color: #dc2626;">*</span>
-                        </label>
-                        <div class="upload-region-selectors">
-                            <select id="uploadRegion1" class="simple-form-input" required aria-label="광역시도 선택">
-                                <option value="">광역시도 선택</option>
-                                <option value="seoul">서울특별시</option>
-                                <option value="gyeonggi">경기도</option>
-                                <option value="incheon">인천광역시</option>
-                                <option value="busan">부산광역시</option>
-                                <option value="daegu">대구광역시</option>
-                                <option value="gwangju">광주광역시</option>
-                                <option value="daejeon">대전광역시</option>
-                                <option value="ulsan">울산광역시</option>
-                                <option value="sejong">세종특별자치시</option>
-                                <option value="gangwon">강원도</option>
-                                <option value="chungbuk">충청북도</option>
-                                <option value="chungnam">충청남도</option>
-                                <option value="jeonbuk">전라북도</option>
-                                <option value="jeonnam">전라남도</option>
-                                <option value="gyeongbuk">경상북도</option>
-                                <option value="gyeongnam">경상남도</option>
-                                <option value="jeju">제주특별자치도</option>
-                            </select>
-                            <select id="uploadRegion2" class="simple-form-input" disabled required aria-label="시/군/구 선택">
-                                <option value="">시/군/구 선택</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- 상품유형 (아이콘 포함) -->
-                    <div class="simple-form-group">
-                        <label class="simple-form-label">
-                            <i class="fas fa-building" style="color: #6b7280; margin-right: 4px;"></i>
-                            상품유형 <span style="color: #dc2626;">*</span>
-                        </label>
-                        <div class="upload-product-types">
-                            <button type="button" class="upload-type-btn" data-type="apartment" data-name="아파트">
-                                <span>아파트</span>
-                            </button>
-                            <button type="button" class="upload-type-btn" data-type="officetel-residential" data-name="주거형OT">
-                                <span>주거형OT</span>
-                            </button>
-                            <button type="button" class="upload-type-btn" data-type="officetel-profit" data-name="수익형OT">
-                                <span>수익형OT</span>
-                            </button>
-                            <button type="button" class="upload-type-btn" data-type="urban" data-name="도생">
-                                <span>도생</span>
-                            </button>
-                            <button type="button" class="upload-type-btn" data-type="commercial" data-name="상가">
-                                <span>상가</span>
-                            </button>
-                            <button type="button" class="upload-type-btn" data-type="lifestyle-lodge" data-name="생활형숙박시설">
-                                <span>생활형숙박시설</span>
-                            </button>
-                            <button type="button" class="upload-type-btn" data-type="knowledge" data-name="지식산업센터">
-                                <span>지식산업센터</span>
-                            </button>
-                            <button type="button" class="upload-type-btn" data-type="office" data-name="오피스">
-                                <span>오피스</span>
-                            </button>
-                            <button type="button" class="upload-type-btn" data-type="other" data-name="기타">
-                                <span>기타</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 공급유형 (아이콘 포함) -->
-                    <div class="simple-form-group">
-                        <label class="simple-form-label">
-                            <i class="fas fa-handshake" style="color: #6b7280; margin-right: 4px;"></i>
-                            공급유형 <span style="color: #dc2626;">*</span>
-                        </label>
-                        <div class="upload-supply-types">
-                            <button type="button" class="upload-type-btn supply-btn" data-type="private-sale" data-name="민간분양">
-                                <span>민간분양</span>
-                            </button>
-                            <button type="button" class="upload-type-btn supply-btn" data-type="public-sale" data-name="공공분양">
-                                <span>공공분양</span>
-                            </button>
-                            <button type="button" class="upload-type-btn supply-btn" data-type="private-rental" data-name="민간임대">
-                                <span>민간임대</span>
-                            </button>
-                            <button type="button" class="upload-type-btn supply-btn" data-type="public-rental" data-name="공공임대">
-                                <span>공공임대</span>
-                            </button>
-                            <button type="button" class="upload-type-btn supply-btn" data-type="other" data-name="기타">
-                                <span>기타</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 포인트 규정 안내 (간소화) -->
-                <div class="points-rules-info" style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 1px solid #bfdbfe; margin-top: 20px;">
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="flex: 1;">
-                            <h4 style="font-size: 14px; font-weight: 600; color: #1e40af; margin: 0; display: flex; align-items: center; gap: 6px;">
-                                <i class="fas fa-info-circle" style="font-size: 13px; color: #3b82f6;"></i>
-                                최대 4,000P 획득 가능
-                            </h4>
-                            <p style="font-size: 12px; color: #64748b; margin-top: 4px; margin-bottom: 0;">
-                                기본 3,000P × 최신성% × 페이지%
-                            </p>
-                        </div>
-                        <button type="button" onclick="togglePointDetails()" style="padding: 6px 12px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; color: #6b7280; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                            <span id="detailsToggleText">자세히보기</span>
-                            <i class="fas fa-chevron-down" id="detailsToggleIcon" style="font-size: 10px; transition: transform 0.2s;"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- 드롭다운 상세 내용 (포인트 규정 박스 밖) -->
-                <div id="pointDetailsDropdown" style="display: none; margin-top: 8px; padding: 12px; background: white; border: 1px solid #e5e7eb; border-radius: 8px;">
-                        <div style="display: flex; gap: 12px;">
-                            <!-- 최신성 지수 표 (우선) -->
-                            <div style="flex: 1;">
-                                <h5 style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px;">
-                                    <i class="fas fa-calendar-check" style="color: #6b7280; margin-right: 4px; font-size: 10px;"></i>
-                                    최신성 지수
-                                </h5>
-                                <table class="point-detail-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="fresh-6m">6개월 이내</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #dc2626;" id="fresh-6m-value">120%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="fresh-1y">1년 이내</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #0066FF;" id="fresh-1y-value">100%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="fresh-2y">2년 이내</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #6b7280;" id="fresh-2y-value">70%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="fresh-over2y">2년 초과</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #dc2626;" id="fresh-over2y-value">업로드 불가</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            
-                            <!-- 페이지 지수 표 -->
-                            <div style="flex: 1;">
-                                <h5 style="font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px;">
-                                    <i class="fas fa-file-alt" style="color: #6b7280; margin-right: 4px; font-size: 10px;"></i>
-                                    페이지 지수
-                                </h5>
-                                <table class="point-detail-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="page-40">40페이지 이상</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #dc2626;" id="page-40-value">120%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="page-30">30-39페이지</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #059669;" id="page-30-value">110%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="page-20">20-29페이지</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #0066FF;" id="page-20-value">100%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="page-10">10-19페이지</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #f59e0b;" id="page-10-value">90%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; background: #f9fafb;" id="page-under10">10페이지 미만</td>
-                                        <td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #6b7280;" id="page-under10-value">60%</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                
-                <script>
-                    function togglePointDetails() {
-                        const dropdown = document.getElementById('pointDetailsDropdown');
-                        const toggleText = document.getElementById('detailsToggleText');
-                        const toggleIcon = document.getElementById('detailsToggleIcon');
-                        
-                        if (dropdown.style.display === 'none') {
-                            dropdown.style.display = 'block';
-                            toggleText.textContent = '접기';
-                            toggleIcon.style.transform = 'rotate(180deg)';
-                        } else {
-                            dropdown.style.display = 'none';
-                            toggleText.textContent = '자세히보기';
-                            toggleIcon.style.transform = 'rotate(0deg)';
-                        }
-                    }
-                </script>
-                
-                <script>
-                    // 다운로드 모달 포인트 상세정보 토글
-                    function togglePreviewPointDetails() {
-                        const details = document.getElementById('previewPointDetails');
-                        const toggleText = document.getElementById('previewToggleText');
-                        const toggleIcon = document.getElementById('previewToggleIcon');
-                        const toggleBtn = event.currentTarget;
-                        
-                        if (details.classList.contains('show')) {
-                            details.classList.remove('show');
-                            toggleText.textContent = '자세히보기';
-                            toggleBtn.classList.remove('active');
-                        } else {
-                            details.classList.add('show');
-                            toggleText.textContent = '접기';
-                            toggleBtn.classList.add('active');
-                            
-                            // 해당 항목 강조
-                            highlightActiveRows();
-                        }
+            const titleEl = document.getElementById('previewTitle');
+            const typeEl = document.getElementById('previewType');
+            const locationEl = document.getElementById('previewLocation');
                     }
                     
                     // 현재 문서에 해당하는 행 강조
@@ -1499,6 +1302,21 @@
     
     <!-- 레거시 스크립트 (하위 호환성) -->
     <script src="script.js?v=7"></script>
+
+    <!-- 헤더 수동 로드 스크립트 -->
+    <script>
+        console.log('[MARKET-RESEARCH] === 헤더 초기화 시작 ===');
+        
+        window.addEventListener('DOMContentLoaded', async () => {
+            // 헤더 로드
+            if (window.HeaderLoader) {
+                const headerLoader = new window.HeaderLoader();
+                const headerSuccess = await headerLoader.loadHeader();
+                console.log('[MARKET-RESEARCH] 헤더 로드:', headerSuccess ? '성공' : '실패');
+            }
+        });
+    </script>
+
     <!-- MarketResearchSupabase는 Supabase 초기화 후 로드 -->
     <script>
         // Supabase 초기화 완료 대기

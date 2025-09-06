@@ -468,28 +468,28 @@ class TabNavigationLoader {
 
         if (isTabFocused) {
             switch (e.key) {
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    this.navigateTab(-1);
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    this.navigateTab(1);
-                    break;
-                case 'Home':
-                    e.preventDefault();
-                    this.focusTab(0);
-                    break;
-                case 'End':
-                    e.preventDefault();
-                    this.focusTab(this.tabs.length - 1);
-                    break;
-                case 'Enter':
-                case ' ':
-                    e.preventDefault();
-                    const index = parseInt(focusedElement.getAttribute('data-index'));
-                    this.activateTab(index);
-                    break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                this.navigateTab(-1);
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                this.navigateTab(1);
+                break;
+            case 'Home':
+                e.preventDefault();
+                this.focusTab(0);
+                break;
+            case 'End':
+                e.preventDefault();
+                this.focusTab(this.tabs.length - 1);
+                break;
+            case 'Enter':
+            case ' ':
+                e.preventDefault();
+                const index = parseInt(focusedElement.getAttribute('data-index'));
+                this.activateTab(index);
+                break;
             }
         }
     }

@@ -332,9 +332,9 @@ class ForumManager extends BaseSupabaseManager {
                     <div class="post-author">
                         <div class="author-avatar">
                             ${post.users?.avatar_url 
-                                ? `<img src="${post.users.avatar_url}" alt="${author}">` 
-                                : `<i class="fas fa-user"></i>`
-                            }
+        ? `<img src="${post.users.avatar_url}" alt="${author}">` 
+        : '<i class="fas fa-user"></i>'
+}
                         </div>
                         <div class="author-info">
                             <span class="author-name">${author}</span>

@@ -271,7 +271,7 @@ class NameCardInstance {
         const { config } = this;
         
         // 레이아웃 및 테마 적용
-        let classes = ['wave-name-card'];
+        const classes = ['wave-name-card'];
         if (config.layout !== 'horizontal') classes.push(config.layout);
         if (config.theme !== 'default') classes.push(config.theme);
         if (config.size !== 'medium') classes.push(config.size);
@@ -330,7 +330,7 @@ class NameCardInstance {
             const actionBtn = e.target.closest('.action-btn');
             if (actionBtn) {
                 const actionType = actionBtn.classList.contains('primary') ? 'primary' :
-                                  actionBtn.classList.contains('secondary') ? 'secondary' : 'menu';
+                    actionBtn.classList.contains('secondary') ? 'secondary' : 'menu';
                 
                 this.executeCallback('onActionClick', {
                     action: actionType,

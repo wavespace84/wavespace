@@ -85,7 +85,7 @@ class AddressSearchLoader {
             this.currentConfig = config;
             this.isLoaded = true;
 
-            console.log(`✅ AddressSearch 로드 완료:`, config.provider);
+            console.log('✅ AddressSearch 로드 완료:', config.provider);
             
         } catch (error) {
             console.error('[AddressSearchLoader] 로드 실패:', error);

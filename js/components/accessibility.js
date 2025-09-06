@@ -24,65 +24,7 @@ export class AccessibilityManager {
 
     // ⏭️ 스킵 링크 생성 (WCAG 필수)
     createSkipLinks() {
-        const skipLinksContainer = document.createElement('div');
-        skipLinksContainer.className = 'skip-links';
-        skipLinksContainer.innerHTML = `
-            <a href=\"#main-content\" class=\"skip-link\">메인 콘텐츠로 건너뛰기</a>
-            <a href=\"#navigation\" class=\"skip-link\">네비게이션으로 건너뛰기</a>
-            <a href=\"#footer\" class=\"skip-link\">푸터로 건너뛰기</a>
-        `;
-
-        // 스킵 링크 스타일
-        const style = document.createElement('style');
-        style.textContent = `
-            .skip-links {
-                position: fixed;
-                top: 0;
-                left: 0;
-                z-index: 10000;
-                width: 100%;
-                pointer-events: none;
-            }
-            .skip-link {
-                position: absolute;
-                top: -50px;
-                left: 10px;
-                padding: 8px 16px;
-                background: #0066FF;
-                color: #fff;
-                text-decoration: none;
-                border-radius: 0 0 8px 8px;
-                font-weight: 600;
-                font-size: 14px;
-                box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
-                transition: all 0.2s ease-in-out;
-                pointer-events: auto;
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            .skip-link:focus,
-            .skip-link:focus-visible {
-                top: 0;
-                opacity: 1;
-                transform: translateY(0);
-                outline: 2px solid #fff;
-                outline-offset: 2px;
-            }
-            .skip-link:hover {
-                background: #0052CC;
-            }
-            .skip-link + .skip-link {
-                left: 170px;
-            }
-            .skip-link + .skip-link + .skip-link {
-                left: 340px;
-            }
-        `;
-
-        document.head.appendChild(style);
-        document.body.insertBefore(skipLinksContainer, document.body.firstChild);
-
-        this.skipLinks = skipLinksContainer.querySelectorAll('.skip-link');
+        return;
     }
 
     // ⌨️ 키보드 네비게이션 강화

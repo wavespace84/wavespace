@@ -20,7 +20,9 @@
     
     <!-- CSS 파일들 -->
     <link rel="stylesheet" href="common.css?v=7" />
+        <link rel="stylesheet" href="css/modules/variables.css" />
     <link rel="stylesheet" href="styles.css?v=7" />
+    <link rel="stylesheet" href="css/header.css?v=7" />
     <link rel="stylesheet" href="css/sidebar.css?v=7" />
     <link rel="stylesheet" href="signup.css?v=7" />
     <link rel="stylesheet" href="mobile-fix.css?v=7" />
@@ -28,6 +30,10 @@
     
     <!-- 기본 스크립트 -->
     <script src="preload.js"></script>
+                <!-- 공통 컴포넌트 로더 -->
+        <script src="js/modules/header-loader.js"></script>
+        <script src="js/modules/sidebar-loader.js"></script>
+        <script src="js/common-loaders.js"></script>
     
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -343,7 +349,7 @@
                         <!-- 로그인 링크 -->
                         <div class="login-link">
                             이미 계정이 있으신가요? 
-                            <a href="login.html">로그인하기</a>
+                            <button type="button" class="login-btn" data-action="login">로그인하기</button>
                         </div>
                     </div>
                 </div>
@@ -351,11 +357,20 @@
         </div>
     </div>
 
+    <!-- 로그인 사이드패널 컨테이너 -->
+    <div id="login-sidepanel-container">
+        <!-- LoginSidepanelLoader가 동적으로 로그인 사이드패널을 여기에 로드합니다 -->
+    </div>
+
     <!-- Supabase 관련 스크립트 -->
     <script src="js/config/supabase.js?v=7"></script>
     <script src="js/config/firebase.js?v=7"></script>
+    <script src="js/services/smsAuthService.js?v=7"></script>
     <script src="js/services/phoneAuthService.js?v=7"></script>
     <script src="js/services/authService.js?v=7"></script>
+    
+    <!-- 로그인 사이드패널 로더 -->
+    <script src="js/modules/LoginSidepanelLoader.js?v=7"></script>
     
     <!-- 메인 모듈 (ES6 모듈 시스템) -->
     <script type="module" src="js/main.js?v=7"></script>
@@ -366,6 +381,27 @@
 
         // Firebase 자동 초기화 (페이지 로드 완료 후)
         document.addEventListener('DOMContentLoaded', () => {
+            // 첫 번째 입력 필드(아이디)에 자동 포커스
+            setTimeout(() => {
+                const userIdInput = document.getElementById('userId');
+                if (userIdInput) {
+                    userIdInput.focus();
+                }
+            }, 100);
+
+            // 로그인 버튼 이벤트 리스너 설정
+            const loginBtn = document.querySelector('button[data-action="login"]');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', () => {
+                    if (window.loginSidepanelLoader && typeof window.loginSidepanelLoader.showLoginSidepanel === 'function') {
+                        window.loginSidepanelLoader.showLoginSidepanel();
+                    } else {
+                        // 폴백: 로그인 페이지로 이동
+                        console.warn('LoginSidepanelLoader를 사용할 수 없습니다. 로그인 페이지로 이동합니다.');
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
             // Firebase 서비스가 로드될 때까지 대기
             let initAttempts = 0;
             const maxAttempts = 50; // 5초 대기
@@ -1043,6 +1079,44 @@
                     e.preventDefault();
                     inputs[currentIndex + 1].focus();
                 }
+            }
+        });
+    </script>
+
+    <style>
+        /* 로그인 버튼 스타일 */
+        .login-link .login-btn {
+            background: none;
+            border: none;
+            color: var(--primary-blue, #3b82f6);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0;
+            font-size: inherit;
+            transition: color 0.2s;
+        }
+
+        .login-link .login-btn:hover {
+            color: var(--deep-blue, #2563eb);
+            text-decoration: underline;
+        }
+
+        .login-link .login-btn:focus {
+            outline: 2px solid var(--primary-blue, #3b82f6);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+    </style>
+
+    <script>
+        // 헤더 초기화 스크립트 추가
+        window.addEventListener('DOMContentLoaded', async () => {
+            // 헤더 로드
+            if (window.HeaderLoader) {
+                const headerLoader = new window.HeaderLoader();
+                const headerSuccess = await headerLoader.loadHeader();
+                console.log('[SIGNUP] 헤더 로드:', headerSuccess ? '성공' : '실패');
             }
         });
     </script>

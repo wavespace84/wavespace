@@ -12,7 +12,6 @@ class AuthGuard {
             'points-shop.html',
             'points-charge.html',
             'hall-of-fame.html',
-            'profile.html',
             'game.html'
         ];
     }
