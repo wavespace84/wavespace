@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오프라인 - WAVE space</title>
+  
+  <!-- 기본 스타일 -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Pretendard', 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .offline-container {
+      text-align: center;
+      max-width: 500px;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .wave-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .offline-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #1f2937;
+    }
+    
+    .offline-message {
+      font-size: 1.1rem;
+      color: #6b7280;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .connection-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      border-radius: 50px;
+      color: #dc2626;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+    
+    .connection-status.online {
+      background: #d1fae5;
+      border-color: #a7f3d0;
+      color: #059669;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: blink 1.5s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0.3; }
+    }
+    
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #f9fafb;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    
+    .btn-secondary:hover {
+      background: #f3f4f6;
+      transform: translateY(-1px);
+    }
+    
+    .offline-features {
+      text-align: left;
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-list {
+      list-style: none;
+      space-y: 0.5rem;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      color: #6b7280;
+    }
+    
+    .feature-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #10b981;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    
+    .retry-info {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      margin-top: 1rem;
+    }
+    
+    @media (max-width: 640px) {
+      .offline-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+      
+      .offline-title {
+        font-size: 1.5rem;
+      }
+      
+      .wave-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <!-- 로고 -->
+    <div class="wave-logo">W</div>
+    
+    <!-- 제목 -->
+    <h1 class="offline-title">오프라인 상태</h1>
+    
+    <!-- 메시지 -->
+    <p class="offline-message">
+      인터넷 연결을 확인할 수 없습니다.<br>
+      연결이 복구되면 자동으로 다시 시도합니다.
+    </p>
+    
+    <!-- 연결 상태 -->
+    <div class="connection-status" id="connectionStatus">
+      <div class="status-dot"></div>
+      <span id="statusText">연결 확인 중...</span>
+    </div>
+    
+    <!-- 액션 버튼 -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" onclick="retryConnection()">
+        🔄 다시 시도
+      </button>
+      
+      <button class="btn btn-secondary" onclick="goHome()">
+        🏠 홈으로 이동
+      </button>
+    </div>
+    
+    <!-- 오프라인 기능 안내 -->
+    <div class="offline-features">
+      <h3 class="feature-title">오프라인에서도 가능한 기능</h3>
+      <ul class="feature-list">
+        <li class="feature-item">
+          <div class="feature-icon">✓</div>
+          <span>이전에 방문한 페이지 보기</span>
+        </li>
+        <li class="feature-item">
+          <div class="feature-icon">✓</div>
+          <span>저장된 게시글 및 댓글 보기</span>
+        </li>
+        <li class="feature-item">
+          <div class="feature-icon">✓</div>
+          <span>작성한 글 임시 저장 (연결 시 동기화)</span>
+        </li>
+        <li class="feature-item">
+          <div class="feature-icon">✓</div>
+          <span>캐시된 이미지 및 콘텐츠 보기</span>
+        </li>
+      </ul>
+    </div>
+    
+    <p class="retry-info">
+      💡 온라인 상태가 되면 자동으로 최신 정보로 업데이트됩니다.
+    </p>
+  </div>
+
+  <script>
+    let retryAttempts = 0;
+    const maxRetryAttempts = 10;
+    const baseRetryDelay = 1000; // 1초
+    
+    // 연결 상태 확인
+    function checkConnection() {
+      return fetch('/', { 
+        cache: 'no-cache',
+        method: 'HEAD'
+      })
+        .then(response => response.ok)
+        .catch(() => false);
+    }
+    
+    // 연결 상태 업데이트
+    function updateConnectionStatus(isOnline) {
+      const statusElement = document.getElementById('connectionStatus');
+      const statusText = document.getElementById('statusText');
+      
+      if (isOnline) {
+        statusElement.classList.add('online');
+        statusText.textContent = '연결됨';
+        
+        // 온라인 상태가 되면 홈으로 리디렉션
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500);
+      } else {
+        statusElement.classList.remove('online');
+        statusText.textContent = '오프라인';
+      }
+    }
+    
+    // 자동 재시도
+    function autoRetry() {
+      if (retryAttempts >= maxRetryAttempts) {
+        document.getElementById('statusText').textContent = '연결 실패 - 수동으로 다시 시도해주세요';
+        return;
+      }
+      
+      const delay = Math.min(baseRetryDelay * Math.pow(2, retryAttempts), 30000); // 최대 30초
+      retryAttempts++;
+      
+      document.getElementById('statusText').textContent = `다시 시도 중... (${retryAttempts}/${maxRetryAttempts})`;
+      
+      setTimeout(async () => {
+        const isOnline = await checkConnection();
+        updateConnectionStatus(isOnline);
+        
+        if (!isOnline) {
+          autoRetry();
+        }
+      }, delay);
+    }
+    
+    // 수동 재시도
+    async function retryConnection() {
+      document.getElementById('statusText').textContent = '연결 확인 중...';
+      
+      const isOnline = await checkConnection();
+      updateConnectionStatus(isOnline);
+      
+      if (!isOnline) {
+        retryAttempts = 0; // 수동 재시도 시 카운터 리셋
+        autoRetry();
+      }
+    }
+    
+    // 홈으로 이동
+    function goHome() {
+      window.location.href = '/';
+    }
+    
+    // 브라우저 온라인/오프라인 이벤트 감지
+    window.addEventListener('online', () => {
+      updateConnectionStatus(true);
+    });
+    
+    window.addEventListener('offline', () => {
+      updateConnectionStatus(false);
+    });
+    
+    // 페이지 로드 시 연결 상태 확인
+    document.addEventListener('DOMContentLoaded', () => {
+      // 브라우저 navigator.onLine 상태 확인
+      if (navigator.onLine) {
+        checkConnection().then(updateConnectionStatus);
+      } else {
+        updateConnectionStatus(false);
+      }
+      
+      // 자동 재시도 시작
+      autoRetry();
+    });
+    
+    // 백그라운드에서 주기적으로 연결 확인 (visibility API 사용)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && navigator.onLine) {
+        checkConnection().then(updateConnectionStatus);
+      }
+    });
+  </script>
+</body>
+</html>
